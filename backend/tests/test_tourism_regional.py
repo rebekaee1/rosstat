@@ -384,3 +384,57 @@ def test_api_detail_frequency(tour_client):
     assert det["frequency"] == "quarterly" and det["series"][-1]["value"] == 42.0
     det = tour_client.get("/api/v1/regions/belgorodskaya-oblast/i/tour-ksr-nochevki-mes/monthly").json()
     assert det["frequency"] == "monthly"
+
+
+# --- доработка 20.11.2026: страны, реестр туроператоров, живые ФНС/Росстат, другие единицы ---------------------
+
+
+def test_destinations_and_origins_are_series():
+    dest = [s for s in R.SERIES if s.code.startswith("tour-turisty-turfirm-")]
+    assert len(dest) == 39  # всего, по России, за рубеж + 36 стран
+    assert R.SERIES_BY_CODE["tour-turisty-turfirm-greciya"].emiss.match == (("ГРЕЦИЯ",),)
+    assert R.SERIES_BY_CODE["tour-inostrancy-turfirm-kitay"].emiss.dataset == 31598
+
+
+def test_touroperators_by_ogrn_region():
+    pts = {(s, v) for _c, s, _p, v in L.touroperator_points(["1230200045613", "1267700105364", "bad"], 202611)}
+    assert pts == {("respublika-bashkortostan", 1), ("moskva", 1), ("russia", 2)}
+
+
+def test_fns_archive_month():
+    assert L.fns_zip_month("1nm010926reg.zip") == 202608
+    assert L.fns_zip_month("1nm010126reg.zip") == 202512
+    assert L.fns_zip_month("1nm01112025reg.zip") == 202510
+    assert L.fns_zip_month("1nm01022025m_reg.zip") == 202501
+
+
+def test_fns_archive_parsed_like_snapshot(terr):
+    from pathlib import Path
+
+    zpath = Path("/Users/iprofi/tradingeconomics/rosstat/.artifacts/tourism-2026-11-20/a5/raw/fns/1nm_reg/1nm010926reg.zip")
+    if not zpath.exists():
+        pytest.skip("архив 1-НМ 20.11.2026 есть только на Mac владельца")
+    rows = L.fns_zip_rows(zpath.read_bytes(), 202608)
+    pts = {(c, s, p): v for c, s, p, v in L.fns_tax_points(rows, terr)}
+    seed = {(c, s, p): v for c, s, p, v in L.read_seed()}
+    key = ("tour-nalog-s-nachala-goda", "russia", 202608)
+    assert pts[key] == seed[key]
+
+
+def test_other_page_unit_rescales(terr):
+    s = R.SERIES_BY_CODE["tour-obshchepit-oborot-mes"]
+
+    async def fetch_page(dataset):
+        return _page(dataset, "миллион рублей").replace("1540294: {title: 'январь-февраль'},", "")
+
+    async def post_grid(dataset, params):
+        return {"results": [{"dim57831": "Краснодарский край", "dim3": "2026", "dim1540283_d1_i1": "1500,5"}]}
+
+    pts = asyncio.run(L.fetch_emiss_dataset(31258, [s], [2026], terr, today=TODAY,
+                                            fetch_page=fetch_page, post_grid=post_grid))
+    assert pts == [("tour-obshchepit-oborot-mes", "krasnodarskiy-kray", 202601, 1500.5)]
+
+
+def test_turpotok_link_on_rosstat_page():
+    html = '<a href="/storage/mediabank/Turpotok_3kv-2026.xlsx">Оценка турпотока</a>'
+    assert L._TURPOTOK_LINK.findall(html) == ["/storage/mediabank/Turpotok_3kv-2026.xlsx"]

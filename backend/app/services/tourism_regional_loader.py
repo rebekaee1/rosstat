@@ -9,6 +9,8 @@
   отвечает 403 всем нашим адресам; набор, который не ответил, просто ждёт следующего прогона;
 - Банк России — ``exp/imp_services_reg_YY.xlsx`` (экспорт и импорт услуг по субъектам, блок «Поездки»);
 - Росаккредитация — открытый API реестра средств размещения;
+- ФНС — архивы 1-НМ по регионам со страницы отчёта (последние три), турналог; Росстат — файл оценки турпотока со
+  страницы «Туризм» (имя меняется); Минэкономразвития — реестр туроператоров (JSON) и турагентов (xlsx);
 - уже скачанное 20.11.2026 (ЕМИСС до бана, оценка турпотока Росстата, туристический налог ФНС, реестр турагентов,
   СберИндекс) — снимок ``app/data/regional/tourism_seed.csv.gz``; он пишется «только если точки нет»
   (ON CONFLICT DO NOTHING), живой ответ источника пишется с обновлением значения (ADR-0002).
@@ -34,7 +36,7 @@ import logging
 import re
 import time
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date
 from math import isfinite
 from pathlib import Path
@@ -435,7 +437,14 @@ async def fetch_emiss_dataset(
     page_html = await (fetch_page(dataset) if fetch_page else asyncio.to_thread(_fetch_page_sync, dataset))
     page = parse_indicator_page(page_html)
     unit = norm_value(page["unit"])
-    usable = [s for s in series_list if norm_value(s.emiss.src_unit) == unit or not unit]
+    usable = []
+    for s in series_list:
+        if norm_value(s.emiss.src_unit) == unit or not unit:
+            usable.append(s)
+        else:
+            alt = {norm_value(u): k for u, k in s.emiss.alt_units}
+            if unit in alt:
+                usable.append(replace(s, scale=alt[unit]))
     if not usable:
         raise ValueError(f"ЕМИСС {dataset}: единица набора {page['unit']!r}, ожидалась "
                          f"{series_list[0].emiss.src_unit!r} — масштаб рядов был бы неверен")
@@ -522,8 +531,12 @@ def _get_sync(url: str, timeout: int = 60) -> bytes | None:
     from app.services.http_client import create_session
 
     session = create_session(timeout=timeout)
+    if "rosstat.gov.ru" in url:
+        from app.config import settings
+
+        session.verify = settings.rosstat_ca_cert  # цепочка Минцифры, как у остальных загрузок Росстата
     try:
-        resp = session.get(url, timeout=timeout)
+        resp = session.get(url, timeout=timeout, headers={"User-Agent": _BROWSER_UA})
         if resp.status_code == 404:
             return None
         resp.raise_for_status()
@@ -624,6 +637,97 @@ def fns_rows_from_csv(text: str) -> list[tuple[int, str, float]]:
         if v is not None:
             out.append((int(y) * 100 + int(m), r["region"], v))
     return out
+
+
+_FNS_PAGE = "https://www.nalog.gov.ru/rn77/related_activities/statistics_and_analytics/forms/16619097/"
+_FNS_ZIP = re.compile(r'href="([^"]*/(1nm01(\d\d)(\d{2}|\d{4})m?_?reg\.zip))"', re.I)
+
+
+def fns_zip_month(name: str) -> int | None:
+    """Имя архива → месяц нарастающего итога: отчёт на 01.MM.YYYY — данные по MM−1, на 01.01 — по декабрю."""
+    m = re.search(r"1nm01(\d\d)(\d{2}|\d{4})m?_?reg\.zip", name, re.I)
+    if not m:
+        return None
+    mm, yy = int(m.group(1)), 2000 + int(m.group(2)[-2:])
+    return (yy - 1) * 100 + 12 if mm == 1 else yy * 100 + mm - 1
+
+
+def fns_zip_rows(content: bytes, month: int) -> list[tuple[int, str, float]]:
+    """Архив 1-НМ по регионам → строки «территория, поступило с начала года» (файл 11О «Поступление по
+    территориям», графа 1434.3 — в консолидированный бюджет; имена файлов в архиве то cp866, то utf-8)."""
+    import zipfile
+
+    import openpyxl
+
+    z = zipfile.ZipFile(io.BytesIO(content))
+
+    def name(n: str) -> str:
+        try:
+            return n.encode("cp437").decode("cp866")
+        except (UnicodeEncodeError, UnicodeDecodeError):
+            return n
+
+    member = next((n for n in z.namelist() if "оступ" in name(n) and "территор" in name(n) and "ЕСН" not in name(n)),
+                  None)
+    if member is None:
+        raise ValueError("1-НМ: в архиве нет файла «Поступление по территориям»")
+    wb = openpyxl.load_workbook(io.BytesIO(z.read(member)), read_only=True, data_only=True)
+    out: list[tuple[int, str, float]] = []
+    for ws in wb.worksheets:
+        rows = list(ws.iter_rows(values_only=True))
+        start = next((i for i, r in enumerate(rows[:15]) if r and r[0] == "А"), None)
+        if start is None:
+            continue
+        codes = [str(x) for x in rows[start]]
+        if "1434.3" not in codes:
+            continue
+        col = codes.index("1434.3")
+        for r in rows[start + 1:]:
+            if not r or not r[0] or str(r[0]).startswith("в том"):
+                continue
+            v = r[col] if col < len(r) else None
+            value = v if isinstance(v, (int, float)) else parse_ru_float(v)
+            if value is not None:
+                out.append((month, str(r[0]).strip(), float(value)))
+    if not out:
+        raise ValueError("1-НМ: графа 1434.3 (туристический налог) не найдена")
+    return out
+
+
+async def fetch_fns(territories: Territories, *, last: int = 3) -> list[Point]:
+    """Страница 1-НМ текущего года → последние ``last`` архивов по регионам (ревизии прошлых месяцев)."""
+    page = (await asyncio.to_thread(_get_sync, _FNS_PAGE)) or b""
+    links = []
+    for href, fname, *_ in _FNS_ZIP.findall(page.decode("utf-8", "ignore")):
+        month = fns_zip_month(fname)
+        if month:
+            links.append((month, href if href.startswith("http") else "https://www.nalog.gov.ru" + href))
+    if not links:
+        raise ValueError("ФНС: на странице 1-НМ нет архивов по регионам")
+    rows: list[tuple[int, str, float]] = []
+    for month, url in sorted(set(links))[-last:]:
+        content = await asyncio.to_thread(_get_sync, url, 120)
+        if content:
+            rows += fns_zip_rows(content, month)
+    # Годовая точка — только из декабря; если декабря в окне нет, пишется только ряд «с начала года».
+    return fns_tax_points(rows, territories)
+
+
+_ROSSTAT_TOURISM = "https://rosstat.gov.ru/statistics/turizm"
+_TURPOTOK_LINK = re.compile(r'href="([^"]*Turpotok[^"]*\.xlsx)"', re.I)
+
+
+async def fetch_turpotok(territories: Territories) -> list[Point]:
+    """Страница «Туризм» Росстата → свежий файл оценки турпотока (имя меняется: Turpotok_2kv-2026.xlsx …)."""
+    page = (await asyncio.to_thread(_get_sync, _ROSSTAT_TOURISM)) or b""
+    links = _TURPOTOK_LINK.findall(page.decode("utf-8", "ignore"))
+    if not links:
+        raise ValueError("Росстат: на странице «Туризм» нет файла оценки турпотока")
+    href = links[0]
+    content = await asyncio.to_thread(_get_sync, href if href.startswith("http") else "https://rosstat.gov.ru" + href, 120)
+    if not content:
+        raise ValueError(f"Росстат: {href} — 404")
+    return turpotok_points(content, territories)
 
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -728,6 +832,58 @@ def turagent_points(inns: Iterable[str], month: int) -> list[Point]:
             counts[slug] += 1
             counts["russia"] += 1
     return to_points(SERIES_BY_CODE["tour-reestr-turagenty"], {(s, month): v for s, v in counts.items()})
+
+
+def touroperator_points(ogrns: Iterable[str], month: int) -> list[Point]:
+    """Туроператоры реестра: код субъекта — 4–5-я цифры ОГРН (1 230 02 … — Башкортостан)."""
+    counts: dict[str, float] = defaultdict(float)
+    for ogrn in ogrns:
+        ogrn = str(ogrn or "").strip()
+        slug = INN_REGION.get(ogrn[3:5]) if len(ogrn) in (13, 15) and ogrn.isdigit() else None
+        if slug:
+            counts[slug] += 1
+            counts["russia"] += 1
+    return to_points(SERIES_BY_CODE["tour-reestr-turoperatory"], {(s, month): v for s, v in counts.items()})
+
+
+# Реестр живьём (20.11.2026 проверено с Mac через en0: без браузерного User-Agent — 403). Турагенты — выгрузка
+# xlsx в base64, туроператоры — JSON-список.
+_EFRT = "https://ev.economy.gov.ru/lk_exp/registry/integ/public/subjects"
+_BROWSER_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36"
+
+
+def _efrt_sync() -> tuple[list[str], list[str]]:
+    import base64
+
+    import openpyxl
+
+    from app.services.http_client import create_session
+
+    session = create_session(timeout=180)
+    headers = {"User-Agent": _BROWSER_UA, "Content-Type": "application/json",
+               "Referer": "https://ev.economy.gov.ru/lk_exp/registry/"}
+    try:
+        ops = session.post(f"{_EFRT}/touroperators", data="{}", headers=headers, timeout=180)
+        ops.raise_for_status()
+        ogrns = [str(x.get("ogrn") or "") for x in ops.json().get("touroperators", [])]
+        exp = session.post(f"{_EFRT}/export", data="{}", headers=headers, timeout=180)
+        exp.raise_for_status()
+        ws = openpyxl.load_workbook(io.BytesIO(base64.b64decode(exp.json()["file"])), read_only=True).worksheets[0]
+        rows = ws.iter_rows(values_only=True)
+        head = [str(c or "").strip() for c in next(rows)]
+        col = next(i for i, h in enumerate(head) if h.upper() == "ИНН")
+        inns = [str(r[col] or "") for r in rows if r and len(r) > col]
+    finally:
+        session.close()
+    if len(ogrns) < 1000 or len(inns) < 10000:
+        raise ValueError(f"реестр турфирм: {len(ogrns)} туроператоров, {len(inns)} турагентов — похоже на сбой выдачи")
+    return ogrns, inns
+
+
+async def fetch_efrt(today: date) -> list[Point]:
+    ogrns, inns = await asyncio.to_thread(_efrt_sync)
+    month = today.year * 100 + today.month
+    return touroperator_points(ogrns, month) + turagent_points(inns, month)
 
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -876,7 +1032,7 @@ def plan_years(series_list: Sequence[TSeries], last: int | None, today: date) ->
 
 
 async def run_tourism_regional_update(
-    db, *, today: date | None = None, emiss: bool = True, cbr: bool = True, fsa: bool = True,
+    db, *, today: date | None = None, emiss: bool = True, cbr: bool = True, fsa: bool = True, others: bool = True,
     fetch_page: Callable | None = None, post_grid: Callable | None = None,
 ) -> dict[str, object]:
     """Снимок (только недостающие точки) → живые источники по очереди; сбой одного не останавливает остальные."""
@@ -904,6 +1060,9 @@ async def run_tourism_regional_update(
     for name, enabled, fetch in (
         ("cbr", cbr, lambda: fetch_cbr(territories, today=today)),
         ("fsa", fsa, lambda: _fsa_live(territories, today)),
+        ("fns", others, lambda: fetch_fns(territories)),
+        ("turpotok", others, lambda: fetch_turpotok(territories)),
+        ("efrt", others, lambda: fetch_efrt(today)),
     ):
         if not enabled:
             continue
@@ -931,7 +1090,9 @@ async def tourism_regional_job() -> dict[str, object]:
     started = time.monotonic()
     async with async_session() as db:
         stats = await run_tourism_regional_update(db)
-    failed = [f for f in stats.get("failed", []) if not str(f).startswith(("ЕМИСС", "fedstat"))]
+    # ЕМИСС (бан fedstat) и реестр Минэкономразвития (пускает не все адреса) ждут следующего прогона молча:
+    # данные из снимка на сайте остаются, лог — в статистике прогона.
+    failed = [f for f in stats.get("failed", []) if not str(f).startswith(("ЕМИСС", "fedstat", "efrt"))]
     logger.info("tourism_regional_job done in %.1fs: %s", time.monotonic() - started, stats)
     if failed:
         from html import escape

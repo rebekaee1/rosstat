@@ -12,6 +12,7 @@
 from __future__ import annotations
 
 import gzip
+import json
 import sys
 from collections import Counter
 from datetime import date
@@ -73,6 +74,8 @@ def main(root: Path, cbr_dir: Path | None, today: date) -> None:
     ws = openpyxl.load_workbook(root / "a2" / "raw" / "minec_registry" / "subjects.xlsx", read_only=True).worksheets[0]
     inns = [r[3] for r in ws.iter_rows(min_row=2, values_only=True) if r and len(r) > 3]
     points += L.turagent_points(inns, today.year * 100 + today.month)
+    tops = json.loads((root / "a2" / "raw" / "minec_registry" / "touroperators_2026-11-20.json").read_text("utf-8"))
+    points += L.touroperator_points([t.get("ogrn") for t in tops["touroperators"]], today.year * 100 + today.month)
 
     sber = root / "a5" / "raw" / "sberindex" / "kolichestvo-vnutrennikh-turistov.csv"
     points += L.sber_points(sber.read_text(encoding="utf-8"), terr)

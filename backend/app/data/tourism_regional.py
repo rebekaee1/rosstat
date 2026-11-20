@@ -93,14 +93,15 @@ SOURCES: dict[str, dict[str, str]] = {
                     "built from registration dates and record status.",
     },
     "minec": {
-        "ru": "Минэкономразвития, реестр турагентов",
-        "en": "Ministry of Economic Development, travel agent register",
+        "ru": "Минэкономразвития, реестр туроператоров и турагентов",
+        "en": "Ministry of Economic Development, register of tour operators and travel agents",
         "about_ru": "Источник — единый федеральный реестр туроператоров и турагентов Минэкономразвития. Регион — "
-                    "по месту постановки на налоговый учёт (первые цифры ИНН), поэтому у сетевых агентств он "
-                    "может не совпадать с местом работы офисов.",
+                    "по месту регистрации компании (код субъекта в ОГРН или ИНН), поэтому у сетевых компаний он "
+                    "может не совпадать с местом работы офисов. Ряд — число записей реестра на конец месяца.",
         "about_en": "Source: Ministry of Economic Development, federal register of tour operators and travel "
-                    "agents. The region is where the agent is registered for tax (first digits of the taxpayer "
-                    "number), so for chains it may differ from where offices operate.",
+                    "agents. The region is where the company is registered (region code in its registration or "
+                    "taxpayer number), so for chains it may differ from where offices operate. The series is the "
+                    "number of register entries at month end.",
     },
     "sber": {
         "ru": "СберИндекс (приближённая оценка)",
@@ -135,6 +136,8 @@ class Emiss:
     match: tuple[tuple[str, ...], ...] = ((),)
     seed: bool = True                   # скачано 20.11.2026 и лежит в tourism_seed.csv.gz
     territory_dim: str | None = None    # None — найти по названию («ОКАТО», «Субъекты РФ»)
+    # Другие допустимые единицы страницы и масштаб к единице сайта (для наборов, не открытых до бана fedstat).
+    alt_units: tuple[tuple[str, float], ...] = ()
 
 
 @dataclass(frozen=True)
@@ -328,6 +331,57 @@ def _travellers(code: str, country: str, name_ru: str, name_en: str, table: str,
                    first_year=2004, emiss=Emiss(31591, "человек", match=((country,),)), keywords=keywords)
 
 
+# Направления турфирм по странам (31591, ~250 стран). На сайт — страны, куда турфирмы отправили не меньше 10 тыс.
+# человек в каком-то году 2023–2025 или не меньше 50 тыс. в каком-то году с 2004 (крупные направления до 2022 года:
+# Греция, Испания, Кипр, Чехия…). Это 36 стран с первыми шестью; хвост из сотни стран с сотнями туристов на страницу
+# региона не выносится — он есть в источнике. Сверка по строке России 20.11.2026. Подпись — как у Росстата.
+# (slug, подпись Росстата, ru, en, «в …» для поиска, ключевые слова)
+DESTINATIONS: tuple[tuple[str, str, str, str, str, str], ...] = (
+    ("vetnam", "ВЬЕТНАМ", "Вьетнам", "Vietnam", "Вьетнам", "Нячанг, Фукуок"),
+    ("maldivy", "МАЛЬДИВЫ", "Мальдивы", "Maldives", "на Мальдивы", "отдых на Мальдивах"),
+    ("shri-lanka", "ШРИ-ЛАНКА", "Шри-Ланка", "Sri Lanka", "Шри-Ланку", "отдых на Шри-Ланке"),
+    ("belarus", "БЕЛАРУСЬ", "Беларусь", "Belarus", "Беларусь", "туры в Белоруссию, Минск"),
+    ("kuba", "КУБА", "Куба", "Cuba", "на Кубу", "отдых на Кубе"),
+    ("indiya", "ИНДИЯ", "Индия", "India", "Индию", "Гоа"),
+    ("katar", "КАТАР", "Катар", "Qatar", "Катар", "Доха"),
+    ("indoneziya", "ИНДОНЕЗИЯ", "Индонезия", "Indonesia", "Индонезию", "Бали"),
+    ("tunis", "ТУНИС", "Тунис", "Tunisia", "Тунис", "отдых в Тунисе"),
+    ("kazahstan", "КАЗАХСТАН", "Казахстан", "Kazakhstan", "Казахстан", "туры в Казахстан"),
+    ("saudovskaya-araviya", "САУДОВСКАЯ АРАВИЯ", "Саудовская Аравия", "Saudi Arabia", "Саудовскую Аравию",
+     "хадж, умра"),
+    ("italiya", "ИТАЛИЯ", "Италия", "Italy", "Италию", "отдых в Италии"),
+    ("gruziya", "ГРУЗИЯ", "Грузия", "Georgia", "Грузию", "отдых в Грузии"),
+    ("seyshely", "СЕЙШЕЛЫ", "Сейшелы", "Seychelles", "на Сейшелы", "отдых на Сейшелах"),
+    ("azerbaydzhan", "АЗЕРБАЙДЖАН", "Азербайджан", "Azerbaijan", "Азербайджан", "Баку"),
+    ("yaponiya", "ЯПОНИЯ", "Япония", "Japan", "Японию", "туры в Японию"),
+    ("uzbekistan", "УЗБЕКИСТАН", "Узбекистан", "Uzbekistan", "Узбекистан", "Самарканд"),
+    ("franciya", "ФРАНЦИЯ", "Франция", "France", "Францию", "Париж"),
+    ("greciya", "ГРЕЦИЯ", "Греция", "Greece", "Грецию", "отдых в Греции"),
+    ("ispaniya", "ИСПАНИЯ", "Испания", "Spain", "Испанию", "отдых в Испании"),
+    ("kipr", "КИПР", "Кипр", "Cyprus", "на Кипр", "отдых на Кипре"),
+    ("chehiya", "ЧЕХИЯ", "Чехия", "Czech Republic", "Чехию", "Прага"),
+    ("bolgariya", "БОЛГАРИЯ", "Болгария", "Bulgaria", "Болгарию", "отдых в Болгарии"),
+    ("ukraina", "УКРАИНА", "Украина", "Ukraine", "Украину", "туры на Украину до 2014 года"),
+    ("dominikanskaya-respublika", "ДОМИНИКАНСКАЯ РЕСПУБЛИКА", "Доминиканская Республика", "Dominican Republic",
+     "Доминикану", "отдых в Доминикане"),
+    ("finlyandiya", "ФИНЛЯНДИЯ", "Финляндия", "Finland", "Финляндию", "туры в Финляндию"),
+    ("germaniya", "ГЕРМАНИЯ", "Германия", "Germany", "Германию", "туры в Германию"),
+    ("izrail", "ИЗРАИЛЬ", "Израиль", "Israel", "Израиль", "туры в Израиль"),
+    ("horvatiya", "ХОРВАТИЯ", "Хорватия", "Croatia", "Хорватию", "отдых в Хорватии"),
+    ("shveciya", "ШВЕЦИЯ", "Швеция", "Sweden", "Швецию", "туры в Швецию"),
+)
+# Страны, откуда турфирмы принимали не меньше 50 тыс. иностранцев в каком-то году (31598).
+ORIGINS: tuple[tuple[str, str, str, str, str], ...] = (
+    ("kitay", "КИТАЙ", "Китай", "China", "Китая"),
+    ("ssha", "США,включая Гавайские острова", "США", "the United States", "США"),
+    ("germaniya", "ГЕРМАНИЯ", "Германия", "Germany", "Германии"),
+    ("finlyandiya", "ФИНЛЯНДИЯ", "Финляндия", "Finland", "Финляндии"),
+    ("italiya", "ИТАЛИЯ", "Италия", "Italy", "Италии"),
+    ("velikobritaniya", "СОЕДИНЕННОЕ КОРОЛЕВСТВО ВЕЛИКОБРИТАНИИ И СЕВЕРНОЙ ИРЛАНДИИ", "Великобритания",
+     "the United Kingdom", "Великобритании"),
+    ("franciya", "ФРАНЦИЯ", "Франция", "France", "Франции"),
+)
+
 ANNUAL_FIRMS: tuple[TSeries, ...] = (
     TSeries("turistskie-firmy-chislo-turistskih-firm", "annual", "", "", "", "", "", "", "emiss", "6.8.1",
             first_year=2004, min_year=2025, own_metadata=False,
@@ -364,6 +418,18 @@ ANNUAL_FIRMS: tuple[TSeries, ...] = (
                 "Tourists sent to China by tour companies", "6.t31", keywords="туры в Китай"),
     _travellers("tour-turisty-turfirm-abhaziya", "АБХАЗИЯ", "Туристы, отправленные турфирмами в Абхазию",
                 "Tourists sent to Abkhazia by tour companies", "6.t32", keywords="туры в Абхазию"),
+    *(_travellers(f"tour-turisty-turfirm-{slug}", label, f"Туристы, отправленные турфирмами: {ru}",
+                  f"Tourists sent by tour companies: {en}", f"6.t{100 + n}", keywords=f"туры в {ru_in}, {ru_kw}")
+      for n, (slug, label, ru, en, ru_in, ru_kw) in enumerate(DESTINATIONS)),
+    *(TSeries(f"tour-inostrancy-turfirm-{slug}", "annual", f"Иностранные туристы, принятые турфирмами: {ru}",
+              f"Foreign tourists served by tour companies: {en}", "человек", "people",
+              f"Сколько граждан страны «{ru}» обслужили турфирмы региона за год, по данным годовой отчётности "
+              "турфирм.",
+              f"Citizens of {en} served by the region's tour companies during the year, from tour company "
+              "reporting.",
+              "emiss", f"6.t{150 + n}", first_year=2004, emiss=Emiss(31598, "человек", match=((label,),)),
+              keywords=f"туристы из {ru_from}, въездной туризм")
+      for n, (slug, label, ru, en, ru_from) in enumerate(ORIGINS)),
     TSeries("tour-inostrancy-turfirm", "annual",
             "Иностранные туристы, принятые турфирмами", "Foreign tourists served by tour companies",
             "человек", "people",
@@ -388,6 +454,16 @@ ANNUAL_PENDING: tuple[TSeries, ...] = (
             "industries serving tourists (Rosstat estimate).",
             "emiss", "6.t40", first_year=2019, emiss=Emiss(62199, "процент", seed=False),
             keywords="доля туризма в ВРП, вклад туризма в экономику региона"),
+    TSeries("tour-deti-organizacii-otdyha", "annual",
+            "Число организаций отдыха и оздоровления детей", "Children's holiday and recreation organisations",
+            "единиц", "units",
+            "Сколько в регионе работало лагерей и других организаций отдыха и оздоровления детей за год "
+            "(загородные, санаторные, палаточные, лагеря при школах). Продолжает закрытый в 2017 году ряд "
+            "«детские оздоровительные лагеря».",
+            "Children's holiday and recreation organisations operating in the region during the year (country, "
+            "sanatorium, tent and school-based camps). Continues the children's camps series closed in 2017.",
+            "emiss", "6.t42", first_year=2018, emiss=Emiss(59153, "единица", seed=False),
+            keywords="детские лагеря, сколько детских лагерей, летний отдых детей"),
     TSeries("tour-deti-turpoezdki", "annual",
             "Доля школьников, совершивших туристские поездки", "Share of schoolchildren who went on tourist trips",
             "% детей", "% of children",
@@ -469,6 +545,17 @@ MONTHLY_EMISS: tuple[TSeries, ...] = (
             _SAN_EN + "Revenue from services excluding VAT during the month." + _OPER_EN,
             "emiss", "6.tm8", transform="diff", scale=THOUSAND, first_year=2023,
             emiss=Emiss(62280, "тысяча рублей", periods="ytd", seed=False)),
+    TSeries("tour-obshchepit-oborot-mes", "monthly",
+            "Оборот общественного питания за месяц", "Food service turnover per month",
+            "миллионов рублей", "RUB million",
+            "Сколько потратили в ресторанах, кафе, столовых и барах региона за месяц, по оценке Росстата. "
+            "Годовой ряд того же показателя — в разделе «Торговля и услуги населению».",
+            "Spending in the region's restaurants, cafés, canteens and bars during the month, Rosstat estimate. "
+            "The annual series is in the Trade and consumer services section.",
+            "emiss", "6.tm13", scale=THOUSAND, first_year=2017,
+            emiss=Emiss(31258, "тысяча рублей", periods="month", seed=False,
+                        alt_units=(("миллион рублей", 1.0), ("миллиард рублей", 1000.0))),
+            keywords="оборот общепита по месяцам, рестораны, кафе"),
     # Платные услуги населению (57788): гостиницы и специализированные средства размещения (базы отдыха,
     # турбазы, санатории без лечения), миллионы рублей за месяц. У гостиниц Росстат в разные годы называл
     # позицию по-разному — обе подписи, новая первой.
@@ -732,6 +819,14 @@ REGISTRIES: tuple[TSeries, ...] = (
             "Travel agents from the region listed in the federal register at month end. The region is where the "
             "agent is registered for tax.",
             "minec", "6.tm31", first_year=2026, keywords="реестр турагентов, сколько турагентств"),
+    TSeries("tour-reestr-turoperatory", "monthly",
+            "Туроператоры в федеральном реестре", "Tour operators in the federal register",
+            "организаций", "companies",
+            "Сколько туроператоров из региона числится в едином федеральном реестре на конец месяца. Регион — по "
+            "месту регистрации компании (код субъекта в ОГРН).",
+            "Tour operators from the region listed in the federal register at month end. The region is where the "
+            "company is registered (region code in its registration number).",
+            "minec", "6.tm33", first_year=2026, keywords="реестр туроператоров, сколько туроператоров"),
     TSeries("tour-sber-vnutrennie-turisty", "monthly",
             "Внутренние туристы: изменение к прошлому году (СберИндекс)",
             "Domestic tourists, change on a year earlier (SberIndex)",
