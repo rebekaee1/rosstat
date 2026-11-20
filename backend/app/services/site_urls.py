@@ -342,6 +342,16 @@ def _static_lastmod(path: str, catalog_last: date | None) -> str | None:
     return None
 
 
+def _research_article_urls() -> list[SiteUrl]:
+    """Статьи раздела «Исследования» (/research/{slug}, 20.11.2026). lastmod — дата среза данных статьи."""
+    from app.api.research import load_articles
+
+    return [
+        _u(paths.research_article(slug), a.get("published"), "monthly", "0.7")
+        for slug, a in sorted(load_articles().items(), key=lambda kv: -int(kv[1].get("number") or 0))
+    ]
+
+
 async def _core_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
     del today
     catalog_last, by_category = await _listed_lastmods(db)
@@ -350,6 +360,7 @@ async def _core_urls(db: AsyncSession, today: date) -> list[SiteUrl]:
         _u(path, _static_lastmod(path, catalog_last), freq, priority)
         for path, freq, priority in STATIC_PAGES
     ]
+    urls.extend(_research_article_urls())
     urls.append(_u(paths.russia_home(), _iso(catalog_last), "daily", "0.95"))
     urls.append(_u(paths.russia_categories(), _iso(catalog_last), "weekly", "0.85"))
     urls.append(_u(paths.region_rating_hub(), region_last, "weekly", "0.7"))

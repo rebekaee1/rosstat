@@ -102,6 +102,15 @@ export function forecastsPath() {
   return '/forecasts';
 }
 
+/** Раздел «Исследования» и статья исследования (зеркало backend `site_paths.research*`). */
+export function researchPath() {
+  return '/research';
+}
+
+export function researchArticlePath(articleSlug) {
+  return `/research/${slug(articleSlug)}`;
+}
+
 export function countryPath(countrySlug) {
   return `/${slug(countrySlug)}`;
 }

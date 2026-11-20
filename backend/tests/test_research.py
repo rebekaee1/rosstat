@@ -110,3 +110,88 @@ def test_digest_line_splits_sources(monkeypatch):
     line = asyncio.run(analytics_scheduler._research_download_lines(date(2026, 11, 9)))[0]
     assert "Скачали исследования вчера: 7" in line and "с сайта 5" in line and "из канала 2" in line
     assert "40 без перехода" in line
+
+
+# --- Статьи исследований /research/{slug} (20.11.2026, туризм) -------------------------------------------------
+
+ARTICLE_SLUGS = ("russians-travel-abroad", "foreign-tourists-russia", "tourist-tax-russia", "domestic-tourism-russia")
+
+
+def test_articles_valid_and_merged():
+    """Статьи живут рядом с каталогом content-factory и сливаются при чтении; номера и слаги не повторяются."""
+    from pathlib import Path
+
+    from app.api.research import load_articles, load_catalog
+
+    arts = load_articles()
+    assert set(ARTICLE_SLUGS) <= set(arts)
+    items = load_catalog()["items"]
+    numbers = [i["number"] for i in items]
+    assert len(set(numbers)) == len(numbers), "номер исследования повторяется: следующий отчёт к ролику — с 31"
+    assert [i["number"] for i in items] == sorted(numbers, reverse=True)
+    public = Path(__file__).resolve().parents[2] / "frontend" / "public"
+    for slug in ARTICLE_SLUGS:
+        a = arts[slug]
+        item = next(i for i in items if i["slug"] == slug)
+        assert item["has_article"] and "article" not in item
+        for lang in ("ru", "en"):
+            body = a["article"][lang]
+            assert 30 <= len(body["seo_title"]) <= 70, (slug, lang)
+            assert 100 <= len(body["description"]) <= 200, (slug, lang)
+            assert body["keywords"] and "<h2" in body["html"] and "<table>" in body["html"]
+            assert "forecasteconomy.com/" not in body["html"].split('class="fe-ra-cite"')[0], "ссылки на сайт — относительные"
+            for src in __import__("re").findall(r'src="(/research/articles/[^"]+)"', body["html"]):
+                assert (public / src.lstrip("/")).is_file(), src
+        assert a["en"]["title"] and len(a["en"]["figures"]) == 4 and a["en"]["conclusions"]
+
+
+def test_article_api_localized(auth_client):
+    r = auth_client.get("/api/v1/research/tourist-tax-russia")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["lang"] == "ru" and data["path"] == "/research/tourist-tax-russia"
+    assert "Туристический налог" in data["title"] and "fe-ra-lead" in data["html"]
+    r_en = auth_client.get("/api/v1/research/tourist-tax-russia", headers={"x-fe-locale": "en"})
+    assert r_en.json()["lang"] == "en" and r_en.json()["title"].startswith("Tourist tax in Russia")
+    # отчёт к ролику без статьи и неизвестный слаг — 404
+    assert auth_client.get("/api/v1/research/ergodicity").status_code == 404
+    assert auth_client.get("/api/v1/research/nope").status_code == 404
+    lst = {i["slug"]: i for i in auth_client.get("/api/v1/research", headers={"x-fe-locale": "en"}).json()["items"]}
+    assert lst["domestic-tourism-russia"]["title"].startswith("Domestic tourism in Russia")
+    assert lst["ergodicity"]["lang"] == "ru"  # отчёты к роликам — только по-русски
+
+
+def test_article_ssr():
+    import asyncio
+
+    from app.services.seo_research import render_research_article_html
+
+    status, html = asyncio.run(render_research_article_html("russians-travel-abroad"))
+    assert status == 200
+    assert "<h1>Куда ездят россияне за границу" in html
+    assert '"@type": "Article"' in html or '"@type":"Article"' in html
+    assert "/research/russians-travel-abroad" in html and "/api/v1/research/russians-travel-abroad/download" in html
+    assert "Где смотреть данные на сайте" in html and 'href="/russia/indicator/tour-outbound-trips"' in html
+    assert asyncio.run(render_research_article_html("ergodicity")) is None
+
+
+def test_ssr_list_links_articles():
+    import asyncio
+
+    from app.services.seo_research import render_research_html
+
+    status, html = asyncio.run(render_research_html())
+    assert status == 200
+    for slug in ARTICLE_SLUGS:
+        assert f'href="/research/{slug}"' in html
+
+
+def test_article_route_and_sitemap(auth_client):
+    from app.services.site_paths import research_article
+    from app.services.site_urls import _research_article_urls
+
+    assert research_article("tourist-tax-russia") == "/research/tourist-tax-russia"
+    paths = [u.path for u in _research_article_urls()]
+    assert set(paths) == {f"/research/{s}" for s in ARTICLE_SLUGS}
+    assert auth_client.get("/seo/research/domestic-tourism-russia").status_code == 200
+    assert auth_client.get("/seo/research/ergodicity").status_code == 404

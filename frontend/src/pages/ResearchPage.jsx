@@ -1,5 +1,6 @@
+import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Download, FileText, Send, Bot } from 'lucide-react';
+import { Download, FileText, Send, Bot, ArrowRight } from 'lucide-react';
 import Breadcrumbs from '../components/Breadcrumbs';
 import Button from '../components/Button';
 import { toolTrail } from '../lib/breadcrumbs';
@@ -7,6 +8,7 @@ import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import { useLocale, useT } from '../i18n';
 import { fetchResearch, researchDownloadHref } from '../lib/api';
+import { researchArticlePath } from '../lib/sitePaths';
 import { track, events } from '../lib/track';
 import '../styles/w5-pages.css';
 import '../styles/research.css';
@@ -37,7 +39,9 @@ function ReportCard({ item, locale, t }) {
           <span aria-hidden="true"> — </span>
           {(item.topics || []).join(', ')}
         </div>
-        <h2 className="fe-research-card__title">{item.title}</h2>
+        <h2 className="fe-research-card__title">
+          {item.has_article ? <Link to={researchArticlePath(item.slug)}>{item.title}</Link> : item.title}
+        </h2>
         <p className="fe-research-card__subtitle">{item.subtitle}</p>
         <ul className="fe-research-card__figures">
           {(item.figures || []).slice(0, 4).map((f) => (
@@ -55,6 +59,12 @@ function ReportCard({ item, locale, t }) {
           </ol>
         </details>
         <div className="fe-research-card__actions">
+          {item.has_article && (
+            <Button as={Link} to={researchArticlePath(item.slug)} variant="secondary">
+              {t('research.read')}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Button>
+          )}
           <Button
             as="a"
             href={researchDownloadHref(item.slug)}
