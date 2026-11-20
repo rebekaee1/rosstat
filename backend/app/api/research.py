@@ -1,6 +1,7 @@
 """Раздел «Исследования»: каталог PDF-отчётов к роликам ForecastEconomy и счётчик скачиваний (09.11.2026).
 
-Каталог — `app/data/research_catalog.json` (готовит `content-factory/материалы/выгрузить_на_сайт.py`), файлы лежат
+Каталог — `app/data/research_catalog.json` (готовит `content-factory/материалы/выгрузить_на_сайт.py`) плюс исследования
+со страницей-статьёй `app/data/research_articles/*.json` (20.11.2026: туризм, RU/EN, адрес `/research/{slug}`); файлы лежат
 в `frontend/public/research/`. Скачивание идёт через `/api/v1/research/{slug}/download`: счётчик +1 (один адрес —
 не чаще раза в сутки на отчёт, метка в Redis с хэшем) и 302 на статический PDF. ПДн не храним.
 
@@ -28,6 +29,7 @@ from app.services.display import today_msk
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/research", tags=["research"])
 CATALOG_PATH = Path(__file__).resolve().parent.parent / "data" / "research_catalog.json"
+ARTICLES_DIR = Path(__file__).resolve().parent.parent / "data" / "research_articles"
 DEDUP_TTL = 24 * 3600
 SOURCES = ("site", "bot", "tg", "direct")
 PUBLIC_SOURCES = ("site", "bot", "tg")
@@ -36,16 +38,65 @@ _OWN_HOST_SUFFIX = "forecasteconomy.com"
 
 
 @lru_cache(maxsize=1)
+def load_articles() -> dict[str, dict]:
+    """Исследования со страницей-статьёй (20.11.2026, туризм): `app/data/research_articles/<slug>.json`.
+
+    Файл = карточка каталога (поля как у `research_catalog.json`, английские — в `en`) + `article.{ru,en}` с SEO и HTML
+    статьи. Готовит `.artifacts/tourism-2026-11-20/research/scripts/to_site.py`. Каталог content-factory не трогаем:
+    его выгрузка пересоздаёт файл целиком, статьи живут рядом и сливаются при чтении."""
+    out: dict[str, dict] = {}
+    for path in sorted(ARTICLES_DIR.glob("*.json")):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            logger.exception("research article unreadable: %s", path.name)
+            continue
+        if data.get("slug") and (data.get("article") or {}).get("ru", {}).get("html"):
+            out[data["slug"]] = data
+    return out
+
+
+@lru_cache(maxsize=1)
 def load_catalog() -> dict:
     try:
-        return json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+        cat = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         logger.exception("research catalog unreadable")
-        return {"items": []}
+        cat = {"items": []}
+    articles = load_articles()
+    items = [i for i in cat.get("items", []) if i.get("slug") not in articles]
+    items += [{**{k: v for k, v in a.items() if k != "article"}, "has_article": True} for a in articles.values()]
+    items.sort(key=lambda i: -int(i.get("number") or 0))
+    return {**cat, "items": items}
 
 
 def catalog_item(slug: str) -> dict | None:
     return next((i for i in load_catalog().get("items", []) if i.get("slug") == slug), None)
+
+
+_LOCALIZED = ("title", "subtitle", "annotation", "figures", "conclusions", "topics", "authors")
+
+
+def localize_item(item: dict, locale: str) -> dict:
+    """Карточка на языке хоста: у статей есть английские поля (`en`), у отчётов к роликам — только русские."""
+    out = {k: v for k, v in item.items() if k != "en"}
+    if locale == "en" and item.get("en"):
+        out.update({k: item["en"][k] for k in _LOCALIZED if item["en"].get(k)})
+        out["lang"] = "en"
+    else:
+        out["lang"] = "ru"
+    return out
+
+
+def article_page(slug: str, locale: str) -> dict | None:
+    """Статья исследования на языке хоста: карточка + SEO + HTML. None — у исследования нет страницы."""
+    art = load_articles().get(slug)
+    if not art:
+        return None
+    body = art["article"].get(locale) or art["article"]["ru"]
+    return {**localize_item({k: v for k, v in art.items() if k != "article"}, locale), "has_article": True,
+            "seo_title": body["seo_title"], "description": body["description"], "keywords": body.get("keywords", ""),
+            "html": body["html"], "path": f"/research/{slug}"}
 
 
 async def download_counts(db: AsyncSession) -> dict[str, int]:
@@ -68,7 +119,10 @@ async def research_list(response: Response, db: AsyncSession = Depends(get_db)):
     cat = load_catalog()
     counts = await download_counts(db)
     response.headers["Cache-Control"] = "public, max-age=60"
-    items = [{**i, "downloads": counts.get(i["slug"], 0)} for i in cat.get("items", [])]
+    from app.services.locale import get_locale
+
+    locale = "en" if get_locale() == "en" else "ru"
+    items = [{**localize_item(i, locale), "downloads": counts.get(i["slug"], 0)} for i in cat.get("items", [])]
     return {"release": cat.get("release"), "release_en": cat.get("release_en"), "group_url": cat.get("group_url") or None,
             "items": items,
             "total_downloads": sum(counts.values())}
@@ -142,6 +196,18 @@ async def _bump(slug: str, db: AsyncSession, source: str = "site") -> None:
     except Exception:
         logger.warning("research download count failed", exc_info=True)
         await db.rollback()
+
+
+@router.get("/{slug}")
+async def research_article(slug: str, response: Response):
+    """Статья исследования (страница /research/{slug}): карточка, SEO и HTML на языке хоста. 404 — статьи нет."""
+    from app.services.locale import get_locale
+
+    page = article_page(slug, "en" if get_locale() == "en" else "ru")
+    if not page:
+        raise HTTPException(status_code=404, detail="Not found")
+    response.headers["Cache-Control"] = "public, max-age=300"
+    return page
 
 
 @router.get("/{slug}/download", include_in_schema=False)

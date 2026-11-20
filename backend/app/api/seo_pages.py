@@ -548,6 +548,21 @@ async def seo_page(page: str, request: Request, db: AsyncSession = Depends(get_d
     return _html_response(status, html, request)
 
 
+@router.api_route("/seo/research/{slug}", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_research_article(slug: str, request: Request):
+    """Статья исследования /research/{slug} (20.11.2026); неизвестный slug или исследование без статьи — 404."""
+    from app.services.seo_research import render_research_article_html
+
+    result = await render_research_article_html(slug)
+    if result is None:
+        from app.services.seo_renderer import get_app_assets
+
+        await get_app_assets()
+        return _html_response(404, render_not_found_html(path=request.headers.get("x-original-uri")))
+    status, html = result
+    return _html_response(status, html, request)
+
+
 @router.api_route("/seo/category", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_categories_hub(request: Request, db: AsyncSession = Depends(get_db)):
     status, html = await render_categories_hub_html(db)

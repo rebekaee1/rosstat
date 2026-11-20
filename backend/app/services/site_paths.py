@@ -129,6 +129,16 @@ def forecasts() -> str:
     return "/forecasts"
 
 
+def research() -> str:
+    """Раздел «Исследования»: /research."""
+    return "/research"
+
+
+def research_article(slug: str) -> str:
+    """Статья исследования: /research/{slug}."""
+    return f"/research/{_slug(slug)}"
+
+
 def country(slug: str) -> str:
     """Карточка страны: /{slug}."""
     return f"/{_slug(slug)}"

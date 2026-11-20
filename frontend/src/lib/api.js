@@ -190,6 +190,10 @@ export const fetchCalendarUpcoming = (params = {}, { signal } = {}) => {
 export const fetchResearch = ({ signal } = {}) =>
   api.get('/research', { signal }).then((r) => r.data);
 
+/** Статья исследования /research/{slug} (20.11.2026): карточка, SEO и HTML на языке хоста; 404 — статьи нет. */
+export const fetchResearchArticle = (slug, { signal } = {}) =>
+  api.get(`/research/${encodeURIComponent(slug)}`, { signal }).then((r) => r.data);
+
 /** Ссылка на скачивание отчёта: сервер считает скачивание и отдаёт 302 на статический PDF. */
 export const researchDownloadHref = (slug) => `/api/v1/research/${encodeURIComponent(slug)}/download`;
 
