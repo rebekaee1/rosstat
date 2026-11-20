@@ -38,6 +38,9 @@ html[lang="en"] .ru,html[lang="ru"] .en{display:none}
 var h=location.hostname,q=location.search,en=/^(www\.)?forecasteconomy\.com$/i.test(h);
 if(/^ru\./i.test(h)||/[?&]preview_locale=ru/.test(q))en=false;
 if(/[?&]preview_locale=en/.test(q))en=true;
+/* Правка 51: выбранный человеком язык (cookie fe_locale_pref) помним и на 404; на хостах ru./en. решает хост. */
+var pm=document.cookie.match(/(?:^|;\s*)fe_locale_pref=(en|ru)/i);
+if(pm&&!/^(ru|en)\./i.test(h)&&!/[?&]preview_locale=/.test(q))en=pm[1].toLowerCase()==='en';
 document.documentElement.lang=en?'en':'ru';
 document.title=en?'404 — Page not found | Forecast Economy':'404 — Страница не найдена | Forecast Economy';
 }catch(e){}

@@ -18,6 +18,26 @@ import PwaInstallCard from './PwaInstallCard';
 // где панель появляется при каждом движении вверх, карточка почти не показывалась бы.
 const BLOCKERS = '[data-analytics-overlay="cookie-consent"], [role="dialog"][aria-modal="true"], .fe-nudge-root, .fe-k8-sticky';
 const POLL_MS = 1500;
+// Правка 33: один показ за визит (вкладку). Закрытую или показанную карточку этим же визитом не возвращаем.
+const SHOWN_KEY = 'fe:pwa-card-shown';
+
+function shownThisVisit() {
+  try { return window.sessionStorage.getItem(SHOWN_KEY) === '1'; } catch { return false; }
+}
+function markShownThisVisit() {
+  try { window.sessionStorage.setItem(SHOWN_KEY, '1'); } catch { /* без хранилища правило «раз за визит» держится только до перезагрузки */ }
+}
+
+/**
+ * Правка 33: карточка не стоит поверх чисел. Пока подвал сайта не показался в окне, человек читает данные, и карточка
+ * не появляется; у подвала она ложится на ссылки и реквизиты, а не на цифры. Страница без подвала (виджет, тест) не ограничена.
+ */
+function footerInView() {
+  if (typeof document === 'undefined') return true;
+  const footer = document.querySelector('footer.fe-footer');
+  if (!footer) return true;
+  return footer.getBoundingClientRect().top < (window.innerHeight || 0);
+}
 
 function overlayPresent() {
   if (typeof document === 'undefined') return false;
@@ -52,7 +72,10 @@ export default function PwaInstallPrompt() {
   }, [candidate, stateKey]);
 
   const now = Date.now();
-  const show = candidate && shouldShowInstallCard({
+  // Показанная в этом визите карточка возвращается только к подвалу и пока её не закрыли; вторая в этом же визите не открывается.
+  const latchedRef = useRef(false);
+  const allowed = footerInView() && (latchedRef.current || !shownThisVisit());
+  const show = candidate && allowed && shouldShowInstallCard({
     state,
     now,
     platform,
@@ -67,6 +90,10 @@ export default function PwaInstallPrompt() {
   });
   // tick намеренно читается: перерисовка по таймеру пересчитывает show.
   void tick;
+
+  useEffect(() => {
+    if (show) { latchedRef.current = true; markShownThisVisit(); }
+  }, [show]);
 
   useEffect(() => {
     setCardVisible(show);

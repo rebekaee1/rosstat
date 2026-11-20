@@ -4,11 +4,30 @@ import RegisterNudge from './RegisterNudge';
 import { mockApiGet, renderPage } from '../test/renderPage';
 import { isDownloadablePath, NUDGE_ACTIONS_KEY, shouldOfferNudge } from '../lib/registerNudge';
 
+// Правка 33: мобильная плашка показывается только у подвала. Подвал в тестах «виден», если его IntersectionObserver так велит.
+const RealIO = window.IntersectionObserver;
+let footerVisible = true;
+let observers = [];
+class FooterIO {
+  constructor(cb) { this.cb = cb; observers.push(this); }
+  observe() { this.cb([{ isIntersecting: footerVisible }]); }
+  unobserve() {}
+  disconnect() {}
+}
+
 beforeEach(() => {
   window.localStorage.clear();
   window.sessionStorage.clear();
+  footerVisible = true;
+  observers = [];
+  window.IntersectionObserver = FooterIO;
+  document.body.appendChild(document.createElement('footer'));
 });
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => {
+  vi.restoreAllMocks();
+  window.IntersectionObserver = RealIO;
+  document.querySelectorAll('body > footer').forEach((el) => el.remove());
+});
 
 const DATA_PAGE = '/russia/indicator/cpi';
 
@@ -25,6 +44,25 @@ async function findCard() {
     return el;
   });
 }
+
+describe('RegisterNudge (правка 33: не поверх чисел, один раз за визит)', () => {
+  it('пока подвал не виден, мобильная плашка не показывается', async () => {
+    footerVisible = false;
+    renderNudge(null);
+    await new Promise((resolve) => { setTimeout(resolve, 50); });
+    expect(document.querySelector('aside.fe-nudge-m')).toBeNull();
+  });
+
+  it('у подвала показывается, а после ухода от подвала в этом визите больше не возвращается', async () => {
+    renderNudge(null);
+    await findCard();
+    act(() => { observers.forEach((o) => o.cb([{ isIntersecting: false }])); });
+    await waitFor(() => expect(document.querySelector('aside.fe-nudge-m')).toBeNull());
+    expect(window.sessionStorage.getItem('fe_nudge_m_done')).toBe('1');
+    act(() => { observers.forEach((o) => o.cb([{ isIntersecting: true }])); });
+    expect(document.querySelector('aside.fe-nudge-m')).toBeNull();
+  });
+});
 
 describe('RegisterNudge (карточка на телефоне)', () => {
   it('одинокая «Зарегистрироваться ✕» заменена карточкой: значок, выгода одной фразой, кнопка и закрытие', async () => {
