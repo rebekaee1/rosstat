@@ -1208,19 +1208,28 @@ def moscow_points(rows: Iterable[dict]) -> list[Point]:
 _MONTH_RE = re.compile(r"^(\d{4})-(\d{2})$")
 
 
-def g1_points(rows: Iterable[dict], specs: dict[str, str], territories: Territories) -> list[Point]:
+def g1_points(rows: Iterable[dict], specs: dict[str, str | tuple[str, ...]], territories: Territories) -> list[Point]:
     """Длинная выгрузка ЕМИСС (``country_or_region;period;…;indicator;value``) → точки рядов.
 
     ``specs``: код ряда → хвост подписи показателя после названия набора (значения измерений через «, », как в
     выгрузке). Период — «YYYY-MM» у месячных рядов, «YYYY» у годовых (строки «…, январь-июнь» не совпадают с хвостом
     и не берутся). Россия двумя строками — по году, как у остальной ЕМИСС."""
-    by_suffix = {f", {suffix}": code for code, suffix in specs.items()}
+    # Хвост → (код, приоритет): у переименованной позиции несколько подписей, первая главнее.
+    by_suffix: dict[str, tuple[str, int]] = {}
+    for code, suffixes in specs.items():
+        for n, suffix in enumerate((suffixes,) if isinstance(suffixes, str) else suffixes):
+            by_suffix[f", {suffix}"] = (code, n * 20)
     cols: dict[str, Collector] = defaultdict(Collector)
     for r in rows:
         ind = str(r.get("indicator") or "")
-        code = next((c for suf, c in by_suffix.items() if ind.endswith(suf)), None)
-        if code is None:
+        cut = ind.find(", ")
+        hit = None
+        while cut >= 0 and hit is None:  # хвосты сравниваются по границам «, » — без перебора всех рядов
+            hit = by_suffix.get(ind[cut:])
+            cut = ind.find(", ", cut + 2)
+        if hit is None:
             continue
+        code, prio = hit
         s = SERIES_BY_CODE[code]
         period, value = str(r.get("period") or ""), parse_ru_float(r.get("value"))
         if value is None:
@@ -1236,7 +1245,7 @@ def g1_points(rows: Iterable[dict], specs: dict[str, str], territories: Territor
         slug, spare = territories.resolve(name)
         if slug is None:
             continue
-        rank = (russia_rank(name, year) if slug == "russia" else 0) + (5 if spare else 0)
+        rank = prio + (russia_rank(name, year) if slug == "russia" else 0) + (5 if spare else 0)
         cols[code].add(code, slug, p, value, rank)
     points: list[Point] = []
     for code, col in cols.items():
@@ -1463,7 +1472,7 @@ async def run_tourism_regional_update(
     """Снимок (только недостающие точки) → живые источники по очереди; сбой одного не останавливает остальные."""
     today = today or date.today()
     territories = Territories()
-    stats: dict[str, object] = {"seed": await write_points(db, read_seed(), overwrite=False), "failed": []}
+    stats: dict[str, object] = {"seed": await _apply_seed_once(db), "failed": []}
     if emiss:
         for dataset, series_list in emiss_datasets().items():
             try:
@@ -1512,6 +1521,29 @@ async def _fsa_live(territories: Territories, today: date) -> list[Point]:
     if len(records) < 1000:
         raise ValueError(f"реестр Росаккредитации: {len(records)} записей — похоже на сбой выдачи")
     return fsa_points(records, territories, today=today)
+
+
+async def _apply_seed_once(db) -> dict[str, int] | str:
+    """Снимок (~840 тыс. точек с ИПЦ 31074) пишется, пока его версия не применена: отметка в кэше по хэшу файла.
+    Повтор безопасен (только недостающие точки), отметка лишь экономит ежедневный проход."""
+    import hashlib
+
+    from app.core.cache import cache_get, cache_set
+
+    if not SEED_PATH.exists():
+        return {"added": 0, "updated": 0}
+    key = "tourism_regional:seed:" + hashlib.sha1(SEED_PATH.read_bytes()).hexdigest()[:16]
+    try:
+        if await cache_get(key):
+            return "applied earlier"
+    except Exception:  # noqa: BLE001 — без кэша просто пишем снимок
+        pass
+    stats = await write_points(db, read_seed(), overwrite=False)
+    try:
+        await cache_set(key, True, 30 * 24 * 3600)
+    except Exception:  # noqa: BLE001
+        pass
+    return stats
 
 
 async def tourism_regional_job() -> dict[str, object]:

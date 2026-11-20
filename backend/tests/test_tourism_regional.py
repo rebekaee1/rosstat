@@ -309,9 +309,9 @@ def test_seed_matches_sources_and_registry():
     assert pts[("tour-nalog-za-god", "russia", 2025)] == 5635.253
     # Наборы, не скачанные до бана fedstat, в снимке пусты — их догрузит живой прогон.
     # Сборник «Туризм в России» 2024 закрыл часть не скачанных наборов (санатории, номера высшей категории).
-    # 21.11.2026: очередь a1 докачала ЕМИСС — без снимка остаются только наборы, историю которых берёт живая загрузка.
-    no_seed = {s.code for s in R.SERIES if s.emiss is not None and s.emiss.dataset == 31074}
-    assert not no_seed & {c for c, _s, _p in pts}
+    # 21.11.2026: очередь a1 докачала ЕМИСС, ИПЦ 31074 — из выгрузки g1: у каждого ряда ЕМИСС есть история.
+    codes = {c for c, _s, _p in pts}
+    assert all(s.code in codes for s in R.SERIES if s.emiss is not None)
     # ЕМИСС 57731 (гостиницы и аналогичные средства) главнее сборника (только гостиницы, 61 018).
     assert pts[("tour-gostinicy-nomera-vysshey-kategorii", "russia", 2023)] == 66751
     assert pts[("tour-kurortnyy-sbor", "sankt-peterburg", 2024)] == 747.068857
@@ -684,3 +684,11 @@ def test_formerly_pending_sets_now_in_snapshot():
         assert code in codes, code
     assert ("oborot-obschestvennogo-pitaniya", "russia", 2024) not in pts  # у сборника; продление — с 2025
     assert not {"tour-deti-turpoezdki", "tour-ksr-nomera-klassificirovannye", "obshchepit-oborot-mes"} & codes
+
+
+
+def test_cpi_history_in_snapshot_from_2002():
+    pts = {(c, s, p): v for c, s, p, v in L.read_seed() if c.startswith(("tour-ipc-", "ipc-"))}
+    assert pts[("tour-ipc-turciya", "russia", 202204)] == 226.09  # расхождение 18: это число Росстата
+    assert pts[("tour-ipc-gostinicy", "moskva", 200201)] == 111.78
+    assert max(p for (c, _s, p) in pts if c == "tour-ipc-gostinicy") == 202609

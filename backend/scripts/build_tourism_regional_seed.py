@@ -103,8 +103,9 @@ def main(root: Path, cbr_dir: Path | None, today: date) -> None:
     points += [(c, s, p, v) for (c, s, p), (_r, v) in best.items()]
     points += L.occupancy_points(points)
 
-    # Добор g1 (21.11.2026): выгрузки ЕМИСС через стенд (оборот, работники, инвестиции) и реестр МСП. ИПЦ 31074 и
-    # средние цены 31448 в снимок не идут — их историю целиком берёт живая загрузка (снимок остановил бы её на 2022).
+    # Добор g1 (21.11.2026): выгрузки ЕМИСС через стенд (оборот, работники, инвестиции), реестр МСП, ИПЦ 31074.
+    # Средние цены 31448 в снимок не идут: на боевом их история с 2000 года уже есть (загрузчик цен), а 2022–2026 —
+    # в снимке из файлов Росстата (c4); недостающие месяцы до 2022 года на боевом не найдены.
     g1 = root / "g1" / "out"
     from app.data import tourism_regional as R
 
@@ -123,6 +124,14 @@ def main(root: Path, cbr_dir: Path | None, today: date) -> None:
                                   {c: suf for c, (d, suf) in specs.items() if d == dataset}, terr)
     with open(g1 / "msp_rsmp_tourism_tidy.csv", encoding="utf-8") as fh:
         points += L.msp_points(csv.DictReader(fh, delimiter=";"), terr)
+
+    # ИПЦ 31074 (35 позиций, 2002-01…2026-09): боевому fedstat отвечает 403 (21.11.2026), поэтому история — снимком;
+    # снимок пишет только недостающее, живая загрузка дальше идёт от последнего года (``_last_years``) и дописывает
+    # новые месяцы. Вид индекса — «к соответствующему периоду предыдущего года».
+    cpi_specs = {s.code: tuple(f"{label}, {kind}" for label, kind in s.emiss.match)
+                 for s in R.SERIES if s.emiss is not None and s.emiss.dataset == 31074}
+    with gzip.open(g1 / "emiss_31074_tidy.csv.gz", "rt", encoding="utf-8") as fh:
+        points += L.g1_points(csv.DictReader(fh, delimiter=";"), cpi_specs, terr)
 
     # Добор g2 (20.11.2026): оценки турпотока регионов с методикой и открытые данные Москвы.
     g2 = root / "g2"
