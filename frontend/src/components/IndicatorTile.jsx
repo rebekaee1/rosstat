@@ -64,7 +64,9 @@ export default function IndicatorTile({
   // R6-B: «3 072,80 млрд руб.» читается как «3,1 трлн руб.»; изменение берётся в тех же единицах, что и число.
   const big = displayVal != null && displayUnit !== '%' ? formatTileValue(displayVal, displayUnit, { locale }) : null;
   const compact = big?.compacted ? big : null;
-  const shownText = compact ? compact.text : formatValue(displayVal, undefined, locale);
+  // Счётчики без дроби: «17 535 ед.», а не «17 535,00 ед.» (целое значение не в процентах).
+  const wholeCount = big && Number.isInteger(Number(displayVal));
+  const shownText = compact ? compact.text : formatValue(displayVal, wholeCount ? 0 : undefined, locale);
   const shownUnit = compact ? compact.unit : displayUnit;
   const dateFmt = resolveDateFormat({ frequency: indicator.frequency });
   const polarity = indicatorPolarity(indicator.name, indicator.name_en, indicator.code);

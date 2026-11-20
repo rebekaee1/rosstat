@@ -16,19 +16,24 @@ from app.services.tourism_showcase import tourism_overview
 _COPY = {
     "ru": {
         "regions": "Туризм по регионам России",
-        "regions_lead": "Рейтинги субъектов: где больше гостиниц, туристов и поездок. Три лидера — по последнему году.",
+        "regions_lead": "Субъекты по группам показателей: турпоток, размещение, деньги, цены, транспорт, турфирмы. Три лидера — по последним данным.",
         "leaders": "Лидеры",
         "world": "Туризм в странах мира",
         "world_lead": "Официальные ряды национальных служб статистики и международных организаций.",
         "ratings": "Рейтинги стран",
+        "groups": {"flows": "Турпоток и гости", "stay": "Гостиницы и санатории", "money": "Доходы, траты и налоги",
+                   "prices": "Цены", "transport": "Транспорт", "business": "Турфирмы и общепит"},
     },
     "en": {
         "regions": "Tourism across Russia's regions",
-        "regions_lead": "Regional rankings: where there are more hotels, tourists and trips. Top three for the latest year.",
+        "regions_lead": "Regions by group: tourist flows, accommodation, money, prices, transport, tour operators. Top three on the latest data.",
         "leaders": "Leaders",
         "world": "Tourism in countries worldwide",
         "world_lead": "Official series from national statistical offices and international organisations.",
         "ratings": "Country rankings",
+        "groups": {"flows": "Tourist flows and guests", "stay": "Hotels and health resorts",
+                   "money": "Revenue, spending and taxes", "prices": "Prices", "transport": "Transport",
+                   "business": "Tour operators and catering"},
     },
 }
 
@@ -48,17 +53,23 @@ async def tourism_sections(db: AsyncSession) -> tuple[str, list[dict]]:
 
     regions = data.get("regions", {}).get("items") or []
     if regions:
-        items = []
-        for row in regions:
-            leaders = row.get("leaders") or []
-            tail = ""
-            if leaders:
-                tail = f' — {escape(copy["leaders"])}: ' + ", ".join(_a(l["path"], l["name"]) for l in leaders)
-            items.append(f'<li>{_a(row["rating_path"], row["name"])}{tail}</li>')
-            entities.append({"@type": "Dataset", "name": row["name"], "url": _absolute(row["rating_path"])})
+        groups_html = []
+        for key in data["regions"].get("groups") or []:
+            rows = [r for r in regions if r.get("group") == key]
+            if not rows:
+                continue
+            items = []
+            for row in rows:
+                leaders = row.get("leaders") or []
+                tail = ""
+                if leaders:
+                    tail = f' — {escape(copy["leaders"])}: ' + ", ".join(_a(l["path"], l["name"]) for l in leaders)
+                items.append(f'<li>{_a(row["path"], row["name"])}{tail}</li>')
+                entities.append({"@type": "Dataset", "name": row["name"], "url": _absolute(row["path"])})
+            groups_html.append(f'<h3>{escape(copy["groups"].get(key, key))}</h3><ul>{"".join(items)}</ul>')
         parts.append(
             f'<section><h2>{escape(copy["regions"])}</h2><p>{escape(copy["regions_lead"])}</p>'
-            f'<ul>{"".join(items)}</ul></section>'
+            f'{"".join(groups_html)}</section>'
         )
 
     world = data.get("world", {})

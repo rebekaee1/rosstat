@@ -116,7 +116,10 @@ def test_overview_has_regions_with_leaders_and_world(tourism_client):
     codes = [row["code"] for row in body["regions"]["items"]]
     assert codes == ["kollektivnye-sredstva"]  # театры не туризм
     hotels = body["regions"]["items"][0]
-    assert hotels["rating_path"] == "/russia/region-rating/kollektivnye-sredstva"
+    assert hotels["group"] == "stay"
+    # Четыре субъекта — у ряда нет страницы рейтинга и карты (нужно ≥ 10): ссылка на ряд по России.
+    assert hotels["rating_path"] is None and hotels["map_path"] is None
+    assert hotels["path"] == "/russia/region/russia/kollektivnye-sredstva"
     assert [leader["slug"] for leader in hotels["leaders"]] == ["krasnodarskiy-kray", "moskva", "respublika-krym"]
     assert hotels["leaders"][0]["path"] == "/russia/region/krasnodarskiy-kray/kollektivnye-sredstva"
 
@@ -137,7 +140,8 @@ def test_ssr_tourism_page_has_three_floors_and_markup(tourism_client):
     assert '<link rel="canonical" href="https://forecasteconomy.com/russia/category/tourism"' in html
     assert re.search(r"<h1>Туризм в России, регионах и мире", html)
     assert 'href="/russia/indicator/tour-outbound-trips"' in html
-    assert "Туризм по регионам России" in html and 'href="/russia/region-rating/kollektivnye-sredstva"' in html
+    assert "Туризм по регионам России" in html and 'href="/russia/region/russia/kollektivnye-sredstva"' in html
+    assert "<h3>Гостиницы и санатории</h3>" in html
     assert 'href="/russia/region/krasnodarskiy-kray/kollektivnye-sredstva"' in html
     assert "Туризм в странах мира" in html and 'href="/turkey/indicator/tr-tourist-arrivals"' in html
     assert f'href="/world/rating/{rating.slug}"' in html
@@ -145,7 +149,7 @@ def test_ssr_tourism_page_has_three_floors_and_markup(tourism_client):
     ld = [json.loads(m) for m in re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)]
     page = next(b for b in ld if b.get("@type") == "CollectionPage")
     urls = {e["url"] for e in page["mainEntity"]}
-    assert any(u.endswith("/russia/region-rating/kollektivnye-sredstva") for u in urls)
+    assert any(u.endswith("/russia/region/russia/kollektivnye-sredstva") for u in urls)
     assert any(u.endswith("/turkey/indicator/tr-tourist-arrivals") for u in urls)
 
 
@@ -177,3 +181,64 @@ def test_tourism_is_in_sitemap_categories():
     from app.services.seo_i18n import localize_category_name
 
     assert localize_category_name("Туризм", locale="en") == "Tourism"
+
+
+@pytest.mark.parametrize(("name", "group"), [
+    ("Гости гостиниц и прочих средств размещения за месяц", "flows"),
+    ("Туристы, отправленные турфирмами: Турция", "flows"),
+    ("Траты жителей региона в зарубежных поездках", "money"),
+    ("Туристический налог за год", "money"),
+    ("Средняя цена: санаторий, рублей за день", "prices"),
+    ("Средняя цена: проезд в купейном вагоне нефирменного скорого поезда, 100 км", "transport"),
+    ("Число туроператоров", "business"),
+    ("Туристские фирмы — число туристских фирм", "business"),
+    ("Число мест в санаториях", "stay"),
+])
+def test_region_groups_by_meaning(name, group):
+    from app.services.tourism_showcase import region_group
+
+    assert region_group(name) == group
+
+
+def test_world_series_russia_then_total_first():
+    from app.services.tourism_showcase import _world_series_key
+
+    rows = [("tr-arr-az", "Прибытия иностранных туристов: Азербайджан", 200),
+            ("tr-arr", "Прибытия иностранных туристов", 150),
+            ("tr-emp", "Занятые в туризме, тысяч человек", 300),
+            ("tr-arr-russia", "Прибытия туристов из России", 100)]
+    ordered = [code for code, name, pts in sorted(rows, key=lambda r: _world_series_key(*r))]
+    assert ordered[:2] == ["tr-arr-russia", "tr-arr"]
+    assert ordered[-1] == "tr-emp"
+
+
+def test_rating_links_only_when_page_exists(auth_env):
+    from app.models import Region, RegionDataPoint, RegionIndicator, RegionMonthlyPoint
+    from app.services.tourism_showcase import build_overview
+
+    async def run():
+        async with auth_env["session_maker"]() as db:
+            regions = [Region(slug=f"r{i}", name=f"Регион {i}", kind="region") for i in range(11)]
+            year = RegionIndicator(code="tour-nalog-za-god", table_code="t", section_num=90, section_name="Туризм",
+                                   name="Туристический налог за год", unit="млн руб.", year_max=2025, is_listed=True)
+            month = RegionIndicator(code="tour-ksr-razmeshcheno-mes", table_code="t", section_num=90,
+                                    section_name="Туризм", name="Гости гостиниц за месяц", unit="тыс.",
+                                    year_max=2026, is_listed=True)
+            db.add_all([*regions, year, month])
+            await db.flush()
+            for i, r in enumerate(regions):
+                db.add(RegionDataPoint(indicator_id=year.id, region_id=r.id, year=2025, value=i + 1))
+                db.add(RegionMonthlyPoint(indicator_id=month.id, region_id=r.id, month=202609, value=i + 1))
+            await db.commit()
+            return await build_overview(db)
+
+    body = asyncio.run(run())
+    rows = {r["code"]: r for r in body["regions"]["items"]}
+    assert rows["tour-nalog-za-god"]["rating_path"] == "/russia/region-rating/tour-nalog-za-god"
+    assert rows["tour-nalog-za-god"]["map_path"] == "/russia/region/map/tour-nalog-za-god"
+    assert rows["tour-ksr-razmeshcheno-mes"]["rating_path"] is None
+    assert rows["tour-ksr-razmeshcheno-mes"]["map_path"] is None
+    assert rows["tour-ksr-razmeshcheno-mes"]["path"] == "/russia/region/russia/tour-ksr-razmeshcheno-mes"
+    # По карточке с лидерами на группу: поток (месячный) и деньги (годовой).
+    assert rows["tour-ksr-razmeshcheno-mes"]["leaders"][0]["slug"] == "r10"
+    assert rows["tour-nalog-za-god"]["leaders"][0]["slug"] == "r10"
