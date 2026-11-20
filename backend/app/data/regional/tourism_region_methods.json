@@ -7,7 +7,8 @@
   "who_en": "tourists and day visitors, including those coming for treatment",
   "how_en": "estimate of the territory's tourism department; the method is not published",
   "caveat_en": "Recent years are known from the governor's statements. Rosstat's estimate for the territory is about 2.5 times lower.",
-  "breaks": []
+  "breaks": [],
+  "url": "https://tourism.alregn.ru/deyatelnost/realizatsiya-gosudarstvennoy-programmy-razvitie-turizma-v-altayskom-krae/ezhegodnye-otchety-o-realizatsii-gosudarstvennoy-programmy/"
  },
  "irkutskaya-oblast": {
   "who_ru": "туристов из других регионов и иностранцев",
@@ -16,7 +17,8 @@
   "who_en": "tourists from other regions and foreigners",
   "how_en": "estimate of the regional tourism agency; the method is not published",
   "caveat_en": "Foreigners are counted by all entries, including transit and business trips.",
-  "breaks": []
+  "breaks": [],
+  "url": "https://irkobl.ru/news/966112/"
  },
  "kaliningradskaya-oblast": {
   "who_ru": "туристские посещения россиян и иностранцев",
@@ -25,7 +27,8 @@
   "who_en": "tourist visits by Russians and foreigners",
   "how_en": "calculation of the regional culture and tourism ministry from passenger traffic and border crossings",
   "caveat_en": "Rosstat's trip-based estimate for the region is noticeably lower. The 2023 figure is known only from press reports.",
-  "breaks": []
+  "breaks": [],
+  "url": "https://culture-tourism.gov39.ru/deyatelnost/indicators/"
  },
  "kamchatskiy-kray": {
   "who_ru": "туристов, включая иностранцев, круизных пассажиров и, с 2022 года, жителей края в поездках по полуострову",
@@ -34,7 +37,8 @@
   "who_en": "tourists, including foreigners, cruise passengers and, from 2022, residents travelling around the peninsula",
   "how_en": "monitoring by the territory's tourism ministry based on airport traffic and tourist group registrations",
   "caveat_en": "For some years the ministry published several different figures.",
-  "breaks": []
+  "breaks": [],
+  "url": "https://kamgov.ru/files/682d13cf2e4ae0.46195018.pdf"
  },
  "krasnodarskiy-kray": {
   "who_ru": "туристов с ночёвкой; однодневные посетители считаются отдельно",
@@ -43,7 +47,10 @@
   "who_en": "overnight tourists; day visitors are counted separately",
   "how_en": "monthly monitoring of occupancy in hotels and private rentals across municipalities, plus an estimate of independent holidaymakers (territory's resort ministry)",
   "caveat_en": "From 2020 monitoring covers 43 municipalities instead of 20, plus private rentals. For 2024 the ministry published both 18.7 and 20.1 million; the latter is used.",
-  "breaks": [2020]
+  "breaks": [
+   2020
+  ],
+  "url": "https://kurort.krasnodar.ru/activity/reports/otchety-po-itogam-sotsialno-ekonomicheskogo-razvitiya-sanatorno-kurortnogo-i-turistskogo-kompleksa"
  },
  "moskovskaya-oblast": {
   "who_ru": "всех посетителей, включая однодневные поездки",
@@ -52,7 +59,8 @@
   "who_en": "all visitors, including day trips",
   "how_en": "preliminary estimate published by the regional culture and tourism ministry",
   "caveat_en": "Only 2022 is available. Later the region cited overnight tourists from Rosstat data (about 6.4 million in 2025), which is a different measure.",
-  "breaks": []
+  "breaks": [],
+  "url": "https://welcome.mosreg.ru/news/podmoskove-vozglavilo-rossijskij-rejting-po-turpotoku-v-2022-godu-3656"
  },
  "moskva": {
   "who_ru": "туристов, посетивших Москву",
@@ -61,7 +69,8 @@
   "who_en": "tourists who visited Moscow",
   "how_en": "data of the Moscow City Tourism Committee, open dataset 62056 on data.mos.ru",
   "caveat_en": "",
-  "breaks": []
+  "breaks": [],
+  "url": "https://data.mos.ru/opendata/62056"
  },
  "nizhegorodskaya-oblast": {
   "who_ru": "всех приезжих из других регионов, включая однодневных",
@@ -70,7 +79,8 @@
   "who_en": "all visitors from other regions, including day visitors",
   "how_en": "mobile operator data, regional tourism ministry",
   "caveat_en": "About 2.5 times Rosstat's estimate, because all visitors are counted, not only overnight tourists.",
-  "breaks": []
+  "breaks": [],
+  "url": "https://nobl.ru/novosti-nizhegorodskoj-oblasti-za-vse-vremya/pyat-millionov-turistov-posetili-nizhegorodskuyu-oblast-v-2025-godu"
  },
  "primorskiy-kray": {
   "who_ru": "туристов из других регионов и иностранцев",
@@ -79,7 +89,8 @@
   "who_en": "tourists from other regions and foreigners",
   "how_en": "estimate of the territory's tourism ministry; the method is not published",
   "caveat_en": "Foreigners are counted by border entries. From 2025 the measure is called “tourist trips”.",
-  "breaks": []
+  "breaks": [],
+  "url": "https://primorsky.ru/news/122428/"
  },
  "respublika-altay": {
   "who_ru": "все туристские посещения, включая отдыхающих в палатках и в частном жилье",
@@ -88,7 +99,8 @@
   "who_en": "all tourist visits, including campers and guests in private housing",
   "how_en": "calculation of the republic's ministry from estimates and surveys",
   "caveat_en": "Rosstat's trip-based estimate is about 2.5 times lower. Recent years are known from the head of the republic's statements.",
-  "breaks": []
+  "breaks": [],
+  "url": "https://xn--04-vlciihi2j.xn--p1ai/activity/upravlenie-po-razvitiyu-turizma/turizm-v-tsifrakh/"
  },
  "respublika-dagestan": {
   "who_ru": "всех туристов, приехавших в республику",
@@ -97,7 +109,8 @@
   "who_en": "all tourists arriving in the republic",
   "how_en": "monitoring of hotels, air and rail traffic plus an expert estimate of private housing (republic's tourism ministry)",
   "caveat_en": "Several times higher than Rosstat's accommodation data because private housing is included. Before 2022 figures come from ministers' statements.",
-  "breaks": []
+  "breaks": [],
+  "url": "https://www.ticrd.ru/dagestan2025/"
  },
  "respublika-kareliya": {
   "who_ru": "туристские поездки",
@@ -106,7 +119,11 @@
   "who_en": "tourist trips",
   "how_en": "until 2023 the republic's economic development ministry estimate, in 2024 Rosstat's estimate, in 2025 again the ministry's",
   "caveat_en": "Figures come from press reports; sources differ noticeably for the same years.",
-  "breaks": [2024, 2025]
+  "breaks": [
+   2024,
+   2025
+  ],
+  "url": "http://kodeks.karelia.ru/api/show/465405310"
  },
  "respublika-krym": {
   "who_ru": "приезжих на срок от суток, кроме местных жителей",
@@ -115,7 +132,8 @@
   "who_en": "visitors staying at least a day, excluding residents",
   "how_en": "republic's resort ministry estimate from transport data (Crimean Bridge, trains, land corridor) and hotel occupancy",
   "caveat_en": "Arrivals are counted, not people. The airport has been closed since 2022 and the land corridor added in 2023, so years before and after are only partly comparable.",
-  "breaks": []
+  "breaks": [],
+  "url": "https://mtur.rk.gov.ru/structure/c87655f2-82c0-4165-99be-964b615a442c"
  },
  "respublika-tatarstan": {
   "who_ru": "туристов и однодневных посетителей",
@@ -124,7 +142,8 @@
   "who_en": "tourists and day visitors",
   "how_en": "estimate of the republic's tourism committee; from 2023 the committee relies on Rosstat's estimate",
   "caveat_en": "Figures are revised; the latest published value is used; 2025 is preliminary.",
-  "breaks": []
+  "breaks": [],
+  "url": "https://tourism.tatarstan.ru/documents.htm"
  },
  "sankt-peterburg": {
   "who_ru": "туристские поездки с ночёвкой жителей других регионов и иностранцев; жители города и Ленинградской области, командировки и однодневные поездки не входят",
@@ -133,7 +152,8 @@
   "who_en": "overnight tourist trips by residents of other regions and foreigners; city and Leningrad Region residents, business and day trips are excluded",
   "how_en": "study commissioned by the city tourism committee: the average of three estimates — transport, hotels plus private rentals, and a survey",
   "caveat_en": "Trips are counted, not people. No surveys were run in 2020.",
-  "breaks": []
+  "breaks": [],
+  "url": "https://www.gov.spb.ru/static/writable/content/2026/04/15/Годовой_отчет_туризм.pdf"
  },
  "sevastopol": {
   "who_ru": "гостей, остановившихся в гостиницах и других средствах размещения города",
@@ -142,7 +162,8 @@
   "who_en": "guests staying in the city's hotels and other accommodation",
   "how_en": "city tourism department data from accommodation providers",
   "caveat_en": "Museum and excursion visitors are counted separately, so the figures are not comparable with Crimea's.",
-  "breaks": []
+  "breaks": [],
+  "url": "https://sev.gov.ru/info/news/269942/"
  },
  "stavropolskiy-kray": {
   "who_ru": "туристов, посетивших край",
@@ -151,7 +172,10 @@
   "who_en": "tourists who visited the territory",
   "how_en": "until 2022 the territory's tourism ministry estimate based on hotels and sanatoriums, from 2023 Rosstat's tourist flow estimate",
   "caveat_en": "The 2023 jump is partly due to the change of source. The governor's figure of 9 million visitors from mobile data is a different measure and is not used.",
-  "breaks": [2023]
+  "breaks": [
+   2023
+  ],
+  "url": "https://www.stavregion.ru/programms/svodnyj-godovoj-doklad-o-hode-realizacii-gosudarstvennyh-program/"
  },
  "yaroslavskaya-oblast": {
   "who_ru": "всех гостей — с ночёвкой и без, включая пассажиров речных круизов",
@@ -160,6 +184,7 @@
   "who_en": "all guests, with and without overnight stays, including river cruise passengers",
   "how_en": "regional estimate based on the total number of trips; the region has no precise method",
   "caveat_en": "2022–2024 are known from the governor's statements. Growth largely reflects counting all guests rather than tourists only.",
-  "breaks": []
+  "breaks": [],
+  "url": "https://www.yarregion.ru/Pages/about/history/history_11.aspx"
  }
 }

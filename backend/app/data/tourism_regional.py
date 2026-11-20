@@ -168,6 +168,7 @@ SOURCES: dict[str, dict[str, str]] = {
 SECTION_TOURISM = (6, "Культура, отдых и туризм", "Culture, leisure and tourism")
 SECTION_TRANSPORT = (16, "Транспорт", "Transport")
 SECTION_PRICES = (20, "Цены и тарифы", "Prices and tariffs")
+SECTION_TRADE = (15, "Торговля и услуги населению", "Trade and consumer services")
 
 THOUSAND = 0.001  # человек → тысячи, тысячи рублей → миллионы рублей
 
@@ -612,14 +613,14 @@ MONTHLY_EMISS: tuple[TSeries, ...] = (
             _SAN_EN + "Revenue from services excluding VAT during the month." + _OPER_EN,
             "emiss", "6.tm8", transform="diff", scale=THOUSAND, first_year=2023,
             emiss=Emiss(62280, "тысяча рублей", periods="ytd", seed=False)),
-    TSeries("tour-obshchepit-oborot-mes", "monthly",
+    TSeries("obshchepit-oborot-mes", "monthly",
             "Оборот общественного питания за месяц", "Food service turnover per month",
             "миллионов рублей", "RUB million",
             "Сколько потратили в ресторанах, кафе, столовых и барах региона за месяц, по оценке Росстата. "
             "Годовой ряд того же показателя — в разделе «Торговля и услуги населению».",
             "Spending in the region's restaurants, cafés, canteens and bars during the month, Rosstat estimate. "
             "The annual series is in the Trade and consumer services section.",
-            "emiss", "6.tm13", scale=THOUSAND, first_year=2017,
+            "emiss", "15.tm1", section=SECTION_TRADE, scale=THOUSAND, first_year=2017,
             emiss=Emiss(31258, "тысяча рублей", periods="month", seed=False,
                         alt_units=(("миллион рублей", 1.0), ("миллиард рублей", 1000.0))),
             keywords="оборот общепита по месяцам, рестораны, кафе"),
@@ -694,7 +695,7 @@ MONTHLY_TRANSPORT: tuple[TSeries, ...] = (
             "emiss", "16.tm2", section=SECTION_TRANSPORT, transform="diff", scale=THOUSAND, first_year=2025,
             emiss=Emiss(63001, "человек", periods="ytd", match=(("Всего",),)),
             keywords="паромы, морские перевозки пассажиров"),
-    TSeries("tour-avtobusy-passazhiry", "monthly",
+    TSeries("avtobusy-passazhiry-mes", "monthly",
             "Пассажиры автобусов регулярных маршрутов за месяц", "Scheduled bus passengers per month",
             "тысяч человек", "thousand people",
             "Сколько пассажиров перевезли автобусы по регулярным маршрутам (городским, пригородным, "
@@ -864,10 +865,12 @@ REGISTRIES: tuple[TSeries, ...] = (
             "Классифицированные средства размещения в реестре", "Classified accommodation in the register",
             "объектов", "properties",
             "Сколько гостиниц, баз отдыха, гостевых домов, кемпингов и санаториев с действующей классификацией "
-            "числится в реестре Росаккредитации на конец месяца. Работать без классификации средствам "
+            "числится в реестре Росаккредитации на дату загрузки в этом месяце (у текущего месяца — на день "
+            "последнего обновления, не на конец месяца). Работать без классификации средствам "
             "размещения закон не разрешает, поэтому число близко к легальному номерному фонду региона.",
             "Hotels, holiday centres, guest houses, campsites and sanatoriums with a valid classification in the "
-            "Rosaccreditation register at month end. The law does not allow accommodation to operate without "
+            "Rosaccreditation register on the load date in that month (for the current month, the latest update, not "
+            "month end). The law does not allow accommodation to operate without "
             "classification, so this is close to the region's legal accommodation stock.",
             "fsa", "6.tm30", first_year=2026, keywords="реестр гостиниц, сколько гостиниц в регионе, классификация гостиниц"),
     TSeries("tour-reestr-ksr-novye", "annual",
@@ -881,18 +884,18 @@ REGISTRIES: tuple[TSeries, ...] = (
     TSeries("tour-reestr-turagenty", "monthly",
             "Турагенты в федеральном реестре", "Travel agents in the federal register",
             "организаций и предпринимателей", "companies and sole proprietors",
-            "Сколько турагентов из региона числится в едином федеральном реестре на конец месяца. Регион — по "
-            "месту налогового учёта.",
-            "Travel agents from the region listed in the federal register at month end. The region is where the "
-            "agent is registered for tax.",
+            "Сколько турагентов из региона числится в едином федеральном реестре на дату загрузки в этом месяце. "
+            "Регион — по месту налогового учёта.",
+            "Travel agents from the region listed in the federal register on the load date in that month. The region "
+            "is where the agent is registered for tax.",
             "minec", "6.tm31", first_year=2026, keywords="реестр турагентов, сколько турагентств"),
     TSeries("tour-reestr-turoperatory", "monthly",
             "Туроператоры в федеральном реестре", "Tour operators in the federal register",
             "организаций", "companies",
-            "Сколько туроператоров из региона числится в едином федеральном реестре на конец месяца. Регион — по "
-            "месту регистрации компании (код субъекта в ОГРН).",
-            "Tour operators from the region listed in the federal register at month end. The region is where the "
-            "company is registered (region code in its registration number).",
+            "Сколько туроператоров из региона числится в едином федеральном реестре на дату загрузки в этом "
+            "месяце. Регион — по месту регистрации компании (код субъекта в ОГРН).",
+            "Tour operators from the region listed in the federal register on the load date in that month. The "
+            "region is where the company is registered (region code in its registration number).",
             "minec", "6.tm33", first_year=2026, keywords="реестр туроператоров, сколько туроператоров"),
     TSeries("tour-sber-vnutrennie-turisty", "monthly",
             "Внутренние туристы: изменение к прошлому году (СберИндекс)",
@@ -1009,19 +1012,19 @@ PUBLICATIONS: tuple[TSeries, ...] = (
     _pub("tour-ipc-zarubezhnyy-turizm-dek", "Индекс цен на зарубежный туризм за год (декабрь к декабрю)",
          "Outbound tourism price index, December on December", "% к декабрю прошлого года",
          "% of December a year earlier", _IPC_DEC_RU, _IPC_DEC_EN, "20.ct13", 2022, section=SECTION_PRICES),
-    _pub("tour-obshchepit-restorany", "Число ресторанов, кафе и баров", "Restaurants, cafés and bars",
+    _pub("obshchepit-restorany", "Число ресторанов, кафе и баров", "Restaurants, cafés and bars",
          "единиц", "units", "Рестораны, кафе и бары на конец года (сборник «Торговля в России»).",
-         "Restaurants, cafés and bars at year end (Trade in Russia yearbook).", "6.t89", 2022,
+         "Restaurants, cafés and bars at year end (Trade in Russia yearbook).", "15.t1", 2022, section=SECTION_TRADE,
          keywords="сколько ресторанов и кафе в регионе"),
-    _pub("tour-obshchepit-stolovye", "Число общедоступных столовых и закусочных", "Public canteens and snack bars",
+    _pub("obshchepit-stolovye", "Число общедоступных столовых и закусочных", "Public canteens and snack bars",
          "единиц", "units", "Общедоступные столовые и закусочные на конец года.",
-         "Public canteens and snack bars at year end.", "6.t90", 2022),
-    _pub("tour-obshchepit-rezultat-restorany", "Прибыль минус убыток ресторанов", "Restaurants' net financial result",
+         "Public canteens and snack bars at year end.", "15.t2", 2022, section=SECTION_TRADE),
+    _pub("obshchepit-rezultat-restorany", "Прибыль минус убыток ресторанов", "Restaurants' net financial result",
          "миллионов рублей", "RUB million",
          "Сальдированный финансовый результат организаций «рестораны и доставка еды» за год: прибыль "
          "прибыльных минус убыток убыточных.",
          "Net financial result of restaurant and food delivery companies over the year: profits minus losses.",
-         "6.t91", 2020, allow_negative=True),
+         "15.t3", 2020, section=SECTION_TRADE, allow_negative=True),
     _pub("tour-investicii-gostinicy-restorany", "Инвестиции в гостиницы и рестораны",
          "Investment in hotels and restaurants", "миллионов рублей", "RUB million",
          "Инвестиции в основной капитал по виду деятельности «гостиницы и общепит» за год.",
@@ -1047,9 +1050,15 @@ PUBLICATIONS: tuple[TSeries, ...] = (
             keywords="цена плацкарта"),
     TSeries("tour-ksr-zagruzka-mest", "annual", "Загрузка мест в гостиницах и прочих средствах размещения (расчёт)",
             "Bed occupancy in collective accommodation (calculated)", "% мест", "% of bed places",
-            "Какая доля мест была занята в среднем за год: ночёвки за год, делённые на число мест на конец года "
-            "× 365. Расчёт по данным Росстата, не официальный показатель.",
-            "Average share of bed places occupied over the year: nights divided by year-end bed places × 365. "
+            "Какая доля мест была занята в среднем за год. Формула: ночёвки за год во всех гостиницах, санаториях, "
+            "базах отдыха и прочих коллективных средствах размещения (набор 31587) / (места на конец года, набор "
+            "31583, × 365) × 100. Сезонные места считаются открытыми весь год, поэтому у курортов (Краснодарский "
+            "край, Крым) загрузка в сезон занижена, а у городов с круглогодичным спросом — нет; сравнивать регионы "
+            "по этому числу нельзя, рейтинга нет. Расчёт по данным Росстата, не официальный показатель.",
+            "Average share of bed places occupied over the year. Formula: nights in all hotels, sanatoriums, holiday "
+            "centres and other collective accommodation (dataset 31587) / (year-end bed places, dataset 31583, × 365) "
+            "× 100. Seasonal beds are treated as open all year, so resorts (Krasnodar, Crimea) look underused while "
+            "year-round cities do not; regions should not be compared by this figure and there is no ranking. "
             "Calculated from Rosstat data, not an official indicator.",
             "rosstat_calc", "6.t93", first_year=2002, keywords="загрузка гостиниц, заполняемость отелей"),
 )
@@ -1084,7 +1093,7 @@ REGIONAL_ESTIMATES: tuple[TSeries, ...] = (
             "Места во всех средствах размещения из реестра Москвы.",
             "Bed places in all properties of the Moscow register.", "mos", "6.t98", first_year=2024),
 )
-NOT_RANKED = frozenset(s.code for s in REGIONAL_ESTIMATES)
+NOT_RANKED = frozenset({*(s.code for s in REGIONAL_ESTIMATES), "tour-ksr-zagruzka-mest"})
 
 SERIES: tuple[TSeries, ...] = (
     *ANNUAL_KSR, *ANNUAL_SANATORIUMS, *ANNUAL_FIRMS, *ANNUAL_PENDING, *MONTHLY_EMISS, *MONTHLY_TRANSPORT,
@@ -1196,3 +1205,101 @@ def region_method(code: str, slug: str | None, locale: str = "ru") -> str | None
             text += f" Методика менялась в {breaks} {'годах' if many else 'году'} — здесь ряд разрывается."
     caveat = m.get(f"caveat_{lang}")
     return f"{text} {caveat}" if caveat else text
+
+
+
+# --- Адреса источников (круг наблюдателей 20.11.2026, правка №4): ссылка на конкретную публикацию, а не на раздел.
+# rosstat.gov.ru на iPhone без сертификата Минцифры показывает предупреждение, поэтому где ряд есть в ЕМИСС —
+# ведём в ЕМИСС; файлы Росстата — прямой ссылкой на файл.
+SOURCE_URLS: dict[str, str] = {
+    "rosstat_turpotok": "https://rosstat.gov.ru/storage/mediabank/Turpotok_2kv-2026.xlsx",
+    "cbr": "https://www.cbr.ru/vfs/statistics/credit_statistics/trade/imp_services_reg_26.xlsx",
+    "fns": "https://www.nalog.gov.ru/rn77/related_activities/statistics_and_analytics/forms/16619097/",
+    "fsa": "https://tourism.fsa.gov.ru/ru/resorts/showcase/hotels",
+    "minec": "https://ev.economy.gov.ru/lk_exp/registry/",
+    "treasury": "https://roskazna.gov.ru/ispolnenie-byudzhetov/konsolidirovannye-byudzhety-subektov-rossijskoj-federacii/",
+    # Сборники Росстата по субъектам в плоской выгрузке «Если быть точным» (там же — ссылки на выпуски Росстата).
+    "rosstat_pub": "https://tochno.st/datasets/regions_collection",
+    "rosstat_calc": "https://www.fedstat.ru/indicator/31587",
+    "mos": "https://data.mos.ru/opendata/62056",
+    "sber": "https://sberindex.ru/ru/dashboards/kolichestvo-vnutrennikh-turistov",
+}
+# Ряды из конкретного файла или сборника — точнее, чем адрес источника в целом.
+_SERIES_URLS: dict[str, str] = {
+    # «Туризм в России» 2024, раздел 5: на сайте Росстата файл снят (404) — копия web.archive.org.
+    **{c: "https://web.archive.org/web/20250201063454/https://rosstat.gov.ru/storage/mediabank/R5-tur.xlsx" for c in (
+        "tour-gostinicy-chislo", "tour-gostinicy-nomera", "tour-gostinicy-mesta", "tour-hostely-chislo",
+        "tour-hostely-mesta", "tour-organizacii-otdyha-mesta")},
+    "tour-cbr-poezdki-eksport": "https://www.cbr.ru/vfs/statistics/credit_statistics/trade/exp_services_reg_26.xlsx",
+    "tour-cbr-poezdki-eksport-delovye": "https://www.cbr.ru/vfs/statistics/credit_statistics/trade/exp_services_reg_26.xlsx",
+    "tour-cbr-poezdki-eksport-lichnye": "https://www.cbr.ru/vfs/statistics/credit_statistics/trade/exp_services_reg_26.xlsx",
+    "tour-cbr-turuslugi-eksport": "https://www.cbr.ru/vfs/statistics/credit_statistics/trade/exp_services_reg_26.xlsx",
+    "tour-cena-kupe-nefirmennyy": "https://rosstat.gov.ru/storage/mediabank/sred_potreb_cen_09-2026.xlsx",
+    "tour-cena-plackart-nefirmennyy": "https://rosstat.gov.ru/storage/mediabank/sred_potreb_cen_09-2026.xlsx",
+}
+
+
+def source_url(code: str, slug: str | None = None) -> str | None:
+    s = SERIES_BY_CODE.get(code)
+    if s is None:
+        return None
+    if s.emiss is not None:
+        return f"https://www.fedstat.ru/indicator/{s.emiss.dataset}"
+    if code == "tour-turpotok-ocenka-regiona" and slug:
+        return _region_method_entry(slug).get("url") or None
+    return _SERIES_URLS.get(code) or SOURCE_URLS.get(s.source)
+
+
+def _region_method_entry(slug: str) -> dict:
+    import json
+    from pathlib import Path
+
+    path = Path(__file__).resolve().parent / "regional" / "tourism_region_methods.json"
+    return json.loads(path.read_text(encoding="utf-8")).get(slug) or {}
+
+
+def api_source(code: str, slug: str | None, locale: str) -> dict | None:
+    """Поле ``source`` карточек API регионов: подпись, адрес, что важно знать о данных, методика региона.
+
+    Отрисовку делает страница показателя (z2); здесь — только данные."""
+    s = SERIES_BY_CODE.get(code)
+    if s is None or not s.own_metadata:
+        return None
+    lang = "en" if locale == "en" else "ru"
+    src = SOURCES[s.source]
+    out = {"name": src[lang], "url": source_url(code, slug), "about": src[f"about_{lang}"],
+           "dataset": s.emiss.dataset if s.emiss is not None else None,
+           "calculated": s.source == "rosstat_calc", "approximate": s.source == "sber",
+           "ranked": code not in NOT_RANKED}
+    method = region_method(code, slug, lang)
+    if method:
+        out["region_method"] = method
+    return out
+
+
+# Туристический налог: ноль — не «−100 %». Ноль за весь год в отчёте ФНС — налога в регионе нет (поступлений не
+# было); ноль в отдельные месяцы — платёж за квартал ещё не пришёл. Москва налог в 2025–2026 годах не вводила
+# (в отчётах Казначейства строки Москвы нет, в 1-НМ — нули), остальным годовым нулям даётся нейтральный статус.
+ZERO_NOT_CHANGE = frozenset({"tour-nalog-s-nachala-goda", "tour-nalog-za-god", "tour-kurortnyy-sbor"})
+TAX_NOT_INTRODUCED: dict[str, frozenset[int]] = {"moskva": frozenset({2025, 2026})}
+
+
+# Круг наблюдателей 20.11.2026 (№37): городские автобусы и общепит — не туризм. Коды без «tour-», общепит — в разделе
+# 15 «Торговля и услуги населению». Старые коды уже стояли на стенде: миграция 20261120_region_data_updated и
+# ``ensure_indicators`` переименовывают их на месте (точки сохраняются).
+RENAMED: dict[str, str] = {
+    "tour-avtobusy-passazhiry": "avtobusy-passazhiry-mes",
+    "tour-obshchepit-oborot-mes": "obshchepit-oborot-mes",
+    "tour-obshchepit-restorany": "obshchepit-restorany",
+    "tour-obshchepit-stolovye": "obshchepit-stolovye",
+    "tour-obshchepit-rezultat-restorany": "obshchepit-rezultat-restorany",
+}
+# Блок «Ещё в разделе» у туристических рядов: без театров, музеев, спорта, библиотек и газет (таблицы 6.1–6.4).
+_NON_TOURISM_TABLES = ("6.1.", "6.2.", "6.3.", "6.4")
+
+
+def is_tourism_sibling(code: str, table_code: str | None) -> bool:
+    if code in SERIES_BY_CODE:
+        return True
+    t = table_code or ""
+    return not (t.startswith(_NON_TOURISM_TABLES) or t == "6.4")
