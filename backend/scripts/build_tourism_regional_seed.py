@@ -23,35 +23,6 @@ from app.data.tourism_regional import emiss_datasets
 from app.services import tourism_regional_loader as L
 
 
-KIND_EN = {"overnight": "overnight tourists only", "visitors": "all visitors, including day trippers",
-           "tourists": "tourists as defined by the regional authority"}
-
-
-def _first_sentences(text: str, limit: int = 320) -> str:
-    text = " ".join(str(text or "").replace("\n", " ").split())
-    if len(text) <= limit:
-        return text
-    cut = text.rfind(". ", 0, limit)
-    return text[:cut + 1] if cut > 80 else text[:limit].rsplit(" ", 1)[0] + "…"
-
-
-def write_methods(path: Path, meta: dict, terr) -> None:
-    """Методика каждого региона → ``app/data/regional/tourism_region_methods.json`` (для страницы региона)."""
-    out = {"moskva": {"who": "Туристы, посетившие Москву, по данным Комитета по туризму (открытые данные "
-                             "data.mos.ru, набор 62056).", "method": "", "note": "", "breaks": [],
-                      "kind_en": "tourists counted by the Moscow City Tourism Committee (open data)"}}
-    with open(path, encoding="utf-8") as fh:
-        for r in csv.DictReader(fh, delimiter=";"):
-            slug, spare = terr.resolve(r["region"])
-            if slug is None or spare or slug not in meta:
-                continue
-            out[slug] = {"who": _first_sentences(r["who_counted"]), "method": _first_sentences(r["method"]),
-                         "note": _first_sentences(r["comparability_note"]), "breaks": meta[slug]["breaks"],
-                         "kind_en": KIND_EN[meta[slug]["kind"]]}
-    target = Path(L.__file__).resolve().parents[1] / "data" / "regional" / "tourism_region_methods.json"
-    target.write_text(json.dumps(out, ensure_ascii=False, indent=1, sort_keys=True), encoding="utf-8")
-
-
 def main(root: Path, cbr_dir: Path | None, today: date) -> None:
     terr = L.Territories()
     points: list[L.Point] = []
@@ -135,7 +106,14 @@ def main(root: Path, cbr_dir: Path | None, today: date) -> None:
     points += flow
     with open(g2 / "tidy" / "moscow_opendata_tidy.csv", encoding="utf-8") as fh:
         points += L.moscow_points(csv.DictReader(fh, delimiter=";"))
-    write_methods(g2 / "regions" / "methods.csv", meta, terr)
+    # Методика регионов — вручную в app/data/regional/tourism_region_methods.json (публичный текст ru/en);
+    # здесь только сверка: годы разрывов, найденные по данным, должны быть отмечены и там.
+    curated = json.loads((Path(L.__file__).resolve().parents[1] / "data" / "regional" /
+                          "tourism_region_methods.json").read_text("utf-8"))
+    for slug, m in meta.items():
+        missing = set(m["breaks"]) - set(curated.get(slug, {}).get("breaks", []))
+        if slug not in curated or missing:
+            print(f"методика {slug}: нет описания или не отмечены разрывы {sorted(missing)}")
 
     n = L.write_seed(points)
     by_code = Counter(p[0] for p in points)

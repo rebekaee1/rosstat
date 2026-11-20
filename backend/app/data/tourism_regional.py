@@ -1183,13 +1183,16 @@ def region_method(code: str, slug: str | None, locale: str = "ru") -> str | None
     m = json.loads(_METHODS_PATH.read_text(encoding="utf-8")).get(slug)
     if not m:
         return None
-    breaks = m.get("breaks") or []
-    if locale == "en":
-        text = f"Method of this region: {m['kind_en']}."
+    lang = "en" if locale == "en" else "ru"
+    breaks = ", ".join(map(str, m.get("breaks") or []))
+    if lang == "en":
+        text = f"Who is counted: {m['who_en']}. Method: {m['how_en']}."
         if breaks:
-            text += " The method changed in " + ", ".join(map(str, breaks)) + ": the series has a break there."
-        return text
-    text = f"Как считает регион: {m['who']} {m['method']}".strip()
-    if breaks:
-        text += " Методика менялась в " + ", ".join(map(str, breaks)) + " году — в эти годы ряд разрывается."
-    return text + (f" {m['note']}" if m.get("note") else "")
+            text += f" The method changed in {breaks}: the series breaks there."
+    else:
+        text = f"Кого считают: {m['who_ru']}. Как считают: {m['how_ru']}."
+        if breaks:
+            many = len(m["breaks"]) > 1
+            text += f" Методика менялась в {breaks} {'годах' if many else 'году'} — здесь ряд разрывается."
+    caveat = m.get(f"caveat_{lang}")
+    return f"{text} {caveat}" if caveat else text
