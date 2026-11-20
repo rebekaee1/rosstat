@@ -169,6 +169,7 @@ export default function Methodology() {
 
         <InfoCard icon={Plane} title={t('kt6_meth_title')} id="tourism" wide>
           <p>{t('kt6_meth_lead')}</p>
+          <InfoMore label={more}>
           <ul className="fe-z8-sources" aria-label={t('kt6_meth_srcAria')}>
             {TOURISM_SOURCES.map((n) => (
               <li key={n} className="fe-z8-source">
@@ -188,6 +189,7 @@ export default function Methodology() {
               {t(`kt6_meth_def_${id}`)}
             </p>
           ))}
+          </InfoMore>
         </InfoCard>
 
         <InfoCard icon={Ban} title={t('x4.meth.skip.title')} id="skip">
