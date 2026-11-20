@@ -309,9 +309,9 @@ def test_seed_matches_sources_and_registry():
     assert pts[("tour-nalog-za-god", "russia", 2025)] == 5635.253
     # Наборы, не скачанные до бана fedstat, в снимке пусты — их догрузит живой прогон.
     # Сборник «Туризм в России» 2024 закрыл часть не скачанных наборов (санатории, номера высшей категории).
-    # 21.11.2026: очередь a1 докачала ЕМИСС — без снимка остаются только наборы, историю которых берёт живая загрузка.
-    no_seed = {s.code for s in R.SERIES if s.emiss is not None and s.emiss.dataset == 31074}
-    assert not no_seed & {c for c, _s, _p in pts}
+    # 21.11.2026: очередь a1 докачала ЕМИСС, ИПЦ 31074 — из выгрузки g1: у каждого ряда ЕМИСС есть история.
+    codes = {c for c, _s, _p in pts}
+    assert all(s.code in codes for s in R.SERIES if s.emiss is not None)
     # ЕМИСС 57731 (гостиницы и аналогичные средства) главнее сборника (только гостиницы, 61 018).
     assert pts[("tour-gostinicy-nomera-vysshey-kategorii", "russia", 2023)] == 66751
     assert pts[("tour-kurortnyy-sbor", "sankt-peterburg", 2024)] == 747.068857
