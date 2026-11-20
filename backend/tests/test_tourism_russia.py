@@ -320,3 +320,19 @@ def test_static_series_tax_resort_fee_and_redenominated_prices():
     sanatorium = get("tour-price-sanatorium")
     assert sanatorium[date(1997, 1, 1)] == pytest.approx(168.016) and sanatorium[date(1998, 1, 1)] == 201.84
     assert get("tour-package-price")[date(2023, 1, 1)] == pytest.approx(111.75, abs=0.01)
+
+
+def test_c5_destination_series_drop_sri_lanka_annual_total_and_label_dubai_as_a_region():
+    text = (SNAP / rt.DESTINATIONS_FILE).read_text(encoding="utf-8")
+    lk = {p.date: p.value for p in rt.parse_destination(text, "LK", "monthly")}
+    assert not any(date(2020, 9, 1) <= d <= date(2020, 12, 1) for d in lk)  # 49 397 четыре месяца подряд
+    assert lk[date(2026, 10, 1)] == 6.75
+    seychelles = rt.parse_destination(text, "SC", "monthly")
+    assert len(seychelles) == 322 and seychelles[0].date == date(2000, 1, 1)  # ряд без пропусков → суммы за год
+    vietnam = {p.date: p.value for p in rt.parse_destination(text, "VN", "monthly")}
+    assert min(vietnam) == date(2012, 2, 1) and vietnam[date(2026, 10, 1)] == 120.116  # 2008 со сноской «*» не взят
+    dubai = reg.SERIES["tour-dest-dubai"]
+    assert "Россию отдельно" in dubai.description and "Прибытия россиян" not in dubai.name
+    # Ряды с пропусками месяцев без шаблона «сумма за год».
+    for code in ("tour-dest-vietnam", "tour-dest-sri-lanka", "tour-dest-zanzibar", "tour-dest-dominican-republic"):
+        assert reg.SERIES[code].family is None

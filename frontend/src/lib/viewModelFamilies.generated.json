@@ -20816,6 +20816,120 @@
     "unit": "тыс. чел.",
     "variantAxis": null
   },
+  "tour-dest-belarus": {
+    "base": "tour-dest-belarus",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-dest-belarus",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-belarus-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-belarus-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Прибытия россиян: Беларусь (данные страны)",
+    "template": "T10",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-dest-cuba": {
+    "base": "tour-dest-cuba",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-dest-cuba",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-cuba-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-cuba-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Прибытия россиян: Куба (данные страны)",
+    "template": "T10",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
   "tour-dest-egypt": {
     "base": "tour-dest-egypt",
     "defaultMode": "level",
@@ -20870,6 +20984,645 @@
     ],
     "name": "Прибытия россиян: Египет (данные страны)",
     "template": "T10",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-dest-indonesia": {
+    "base": "tour-dest-indonesia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-dest-indonesia",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-indonesia-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-indonesia-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-indonesia-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-indonesia-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-indonesia-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-indonesia-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-indonesia-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-indonesia-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Прибытия россиян: Индонезия (данные страны)",
+    "template": "T6",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-dest-maldives": {
+    "base": "tour-dest-maldives",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-dest-maldives",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-maldives-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-maldives-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Прибытия россиян: Мальдивы (данные страны)",
+    "template": "T10",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-dest-mauritius": {
+    "base": "tour-dest-mauritius",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-dest-mauritius",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-mauritius-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-mauritius-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Прибытия россиян: Маврикий (данные страны)",
+    "template": "T10",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-dest-mauritius-monthly": {
+    "base": "tour-dest-mauritius-monthly",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-dest-mauritius-monthly",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-mauritius-monthly-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-mauritius-monthly-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-mauritius-monthly-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-mauritius-monthly-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-mauritius-monthly-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-mauritius-monthly-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-mauritius-monthly-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-mauritius-monthly-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Прибытия россиян: Маврикий (данные страны, по месяцам)",
+    "template": "T6",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-dest-mongolia": {
+    "base": "tour-dest-mongolia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-dest-mongolia",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-mongolia-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-mongolia-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Прибытия россиян: Монголия (данные страны)",
+    "template": "T10",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-dest-mongolia-monthly": {
+    "base": "tour-dest-mongolia-monthly",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-dest-mongolia-monthly",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-mongolia-monthly-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-mongolia-monthly-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-mongolia-monthly-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-mongolia-monthly-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-mongolia-monthly-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-mongolia-monthly-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-mongolia-monthly-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-mongolia-monthly-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Прибытия россиян: Монголия (данные страны, по месяцам)",
+    "template": "T6",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-dest-seychelles": {
+    "base": "tour-dest-seychelles",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-dest-seychelles",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-seychelles-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-seychelles-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-seychelles-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-seychelles-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-seychelles-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-seychelles-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-seychelles-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-seychelles-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Прибытия россиян: Сейшелы (данные страны)",
+    "template": "T6",
     "unit": "тыс. чел.",
     "variantAxis": null
   },
