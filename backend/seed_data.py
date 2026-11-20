@@ -21,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from app.data.emiss_income import seed_indicators as emiss_income_indicators
 from app.data.emiss_labor import seed_indicators as emiss_labor_indicators
 from app.data.emiss_steel import seed_indicators as emiss_steel_indicators
+from app.data import tourism_russia as _tourism_russia
 from app.data.cbr_household_credit import seed_indicators as cbr_household_credit_indicators
 from app.data.cbr_household_rates import seed_indicators as cbr_household_indicators
 from app.data.minfin_debt import seed_indicators as minfin_debt_indicators
@@ -4800,6 +4801,9 @@ INDICATORS = [
     },
     # Сталь в России (19.11.2026): помесячные цены производителей Росстата вместо снятого `steel`.
     *emiss_steel_indicators(),
+    # Туризм по России в целом (20.11.2026): ЦБ «Поездки», въезд/выезд по данным ФСБ, туриндустрия в ВВП,
+    # авиаперевозки, аэропорты, железная дорога, гостиницы, санатории, турфирмы (app/data/tourism_russia.py).
+    *_tourism_russia.seed_indicators(),
     # Банк России (19.11.2026): максимальная ставка по вкладам 10 банков, инфляционные ожидания и настроения населения.
     *cbr_household_indicators(),
     # Цены производителей по видам деятельности и товарам, цены в строительстве (ЕМИСС, 19.11.2026).
@@ -5232,6 +5236,8 @@ MONTHLY_AUTO_FORECAST_CODES = {
     # Включены обновлённым алгоритмом (июнь 2026): rolling+пер-горизонтная
     # реконструкция чинят строительство/розницу/ИПП — раньше прогноз был выключен.
     "construction-work", "retail-trade", "ipi",
+    # Туризм (20.11.2026): траты в поездках по месяцам, авиапассажиры, железная дорога.
+    *sorted(_tourism_russia.forecast_codes("monthly_auto")),
     # ИПП по разделам ОКВЭД2 (добыча/обработка/энергетика/водоснабжение) —
     # те же месячные индексы, что и агрегат, прогноз тем же monthly_auto.
     "ipi-mining", "ipi-manufacturing", "ipi-energy", "ipi-water",
@@ -5268,6 +5274,8 @@ ANNUAL_AUTO_FORECAST_CODES = {
     "pensioners", "depreciation-rate", "grad-students", "doctoral-students",
     "rd-organizations", "rd-personnel", "innovation-activity",
     "tech-innovation-share", "small-business-innovation",
+    # Туризм (20.11.2026): размещённые в гостиницах и санаториях, ночёвки в гостиницах.
+    *sorted(_tourism_russia.forecast_codes("annual_auto")),
 }
 
 for _ind in INDICATORS:

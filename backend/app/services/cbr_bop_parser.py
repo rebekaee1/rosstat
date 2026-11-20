@@ -5,6 +5,12 @@
   Row 6: заголовки — "1 квартал 1994 г.", "2 квартал 1994 г.", …
   Row 14: Экспорт товаров (млн $)
   Row 15: Импорт товаров (млн $)
+
+Статья «Поездки» (раздел «Туризм», 20.11.2026): `travel-balance` / `travel-exports` / `travel-imports` — строка
+«Поездки» после «Услуги» и «Экспорт»/«Импорт» под ней (с 1994 года); `travel-business-*` и `travel-personal-*` —
+«Деловые поездки» и «Личные поездки» (публикуются с 1999 года). Нули в начале истории — непубликация, а не ноль:
+отбрасываются. Строки «Медицинское обслуживание», «Услуги образования», «Прочие личные поездки», «Оплачиваемые
+приграничными…» — нули за всю историю, ряды по ним не заводятся.
 """
 
 from __future__ import annotations
@@ -37,6 +43,18 @@ QUARTER_MONTH = {1: 3, 2: 6, 3: 9, 4: 12}
 class DataPoint:
     date: date
     value: float
+
+
+# Статья «Поездки»: target → (подпись строки статьи, «Экспорт»/«Импорт» под ней или None = сальдо статьи).
+_TRAVEL_TARGETS = {
+    "travel-balance": ("Поездки", None),
+    "travel-exports": ("Поездки", "Экспорт"),
+    "travel-imports": ("Поездки", "Импорт"),
+    "travel-business-exports": ("Деловые поездки", "Экспорт"),
+    "travel-business-imports": ("Деловые поездки", "Импорт"),
+    "travel-personal-exports": ("Личные поездки", "Экспорт"),
+    "travel-personal-imports": ("Личные поездки", "Импорт"),
+}
 
 
 def _parse_quarter_header(header: str | None) -> date | None:
@@ -185,6 +203,23 @@ def parse_bop_xlsx(content: bytes, target: str) -> list[DataPoint]:
             if cell.startswith("Счет текущих операций"):
                 data_row_idx = i
                 break
+    elif target in _TRAVEL_TARGETS:
+        article, sub = _TRAVEL_TARGETS[target]
+        services_row = next(
+            (i for i, row in enumerate(rows_data)
+             if str(row[0] or "").strip() == "Услуги" and i > (goods_section_start or 0)),
+            None,
+        )
+        if services_row is None:
+            raise ValueError("BOP XLSX: 'Услуги' section not found")
+        article_row = next(
+            (i for i in range(services_row, len(rows_data)) if str(rows_data[i][0] or "").strip() == article),
+            None,
+        )
+        if article_row is not None:
+            data_row_idx = article_row if sub is None else next(
+                (i for i in (article_row + 1, article_row + 2) if str(rows_data[i][0] or "").strip() == sub), None,
+            )
     else:
         raise ValueError(f"Unknown BOP target: {target}")
 
@@ -202,6 +237,11 @@ def parse_bop_xlsx(content: bytes, target: str) -> list[DataPoint]:
                 pass
 
     points.sort(key=lambda p: p.date)
+    if target in _TRAVEL_TARGETS:
+        first = next((i for i, p in enumerate(points) if p.value != 0), None)
+        if first is None:
+            raise ValueError(f"BOP XLSX: row for '{target}' is zero over the whole history")
+        points = points[first:]
     return points
 
 

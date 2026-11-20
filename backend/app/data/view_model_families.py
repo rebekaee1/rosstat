@@ -519,7 +519,7 @@ def _build_gdp(f: "FamilyDef") -> Family:
     base, unit = f.base, f.unit
     ov = f.overrides
     modes = [
-        Mode("level", "level", GRAN_LABEL["quarter"], base, (), unit, "quarterly", True),
+        Mode("level", "level", GRAN_LABEL["quarter"], base, (), unit, "quarterly", f.forecastable),
         Mode("sum-year", "level", GRAN_LABEL["year"], _code(base, "sum-year", ov),
              (("period_sum", {"granularity": "year"}),), unit, "annual", False),
         Mode("qoq", "pop", "Кв/Кв", _code(base, "qoq", ov), (("qoq", {}),), "%", "quarterly", False),
@@ -593,7 +593,7 @@ def _build_signed_quarterly(f: "FamilyDef") -> Family:
     base, unit, ov = f.base, f.unit, f.overrides
     yoy_unit = f.yoy_unit or unit
     modes = [
-        Mode("level", "level", GRAN_LABEL["quarter"], base, (), unit, "quarterly", True),
+        Mode("level", "level", GRAN_LABEL["quarter"], base, (), unit, "quarterly", f.forecastable),
         Mode("sum-year", "level", GRAN_LABEL["year"], _code(base, "sum-year", ov),
              (("period_sum", {"granularity": "year"}),), unit, "annual", False),
         Mode("qoq", "pop", "Кв/Кв", _code(base, "qoq", ov), (("qoq_abs", {}),),
@@ -931,6 +931,11 @@ _FAMILY_DEFS: list[FamilyDef] = [
         yoy_unit="п.п.", forecastable=False,
     ),
 ]
+
+# Туризм по России (20.11.2026): шаблоны рядов заданы в реестре раздела (поток/сальдо/годовой счёт/доля).
+from app.data.tourism_russia import family_defs as _tourism_family_defs  # noqa: E402
+
+_FAMILY_DEFS.extend(_tourism_family_defs())
 
 
 def _add_pop_yoy_alias(fam: Family) -> None:
