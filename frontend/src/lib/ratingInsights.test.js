@@ -65,6 +65,21 @@ describe('ratingInsights', () => {
     expect(shifts.fallers[0].code).toBe('B');
   });
 
+  it('rankShifts ranks both years only among countries present in both', () => {
+    const codes = 'ABCDEFGHIJ'.split('');
+    const rows = { 2020: {}, 2025: {} };
+    // 2020: десять общих стран плюс пять лишних, которые были выше всех.
+    ['X1', 'X2', 'X3', 'X4', 'X5'].forEach((c, i) => { rows[2020][c] = 1000 - i; });
+    codes.forEach((c, i) => { rows[2020][c] = 100 - i; rows[2025][c] = 100 - i; });
+    const shifts = rankShifts(build(rows), [2020, 2025], 2025, 'desc');
+    expect(shifts.compared).toBe(10);
+    expect(shifts.risers).toEqual([]);
+    expect(shifts.fallers).toEqual([]);
+    rows[2025].J = 99.5;
+    const moved = rankShifts(build(rows), [2020, 2025], 2025, 'desc');
+    expect(moved.risers[0]).toMatchObject({ code: 'J', then: 10, now: 2, change: 8 });
+  });
+
   it('rankShifts returns null when there is nothing to compare with', () => {
     expect(rankShifts(byYear, years, 2025, 'desc')).toBeNull();
     expect(rankShifts({}, [], 2025, 'desc')).toBeNull();
