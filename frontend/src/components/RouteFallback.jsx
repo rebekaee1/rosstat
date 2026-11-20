@@ -1,12 +1,64 @@
+import { useEffect, useState } from 'react';
 import { SkeletonBox } from './Skeleton';
 import LoadingNote from './LoadingNote';
+import { isLanguageSwitchLanding } from '../i18n/langScroll';
 
 /**
- * Что видно, пока подгружается чанк страницы: тонкая полоса прогресса сверху, подпись «Загружаем данные…»
- * (через 8 с к ней добавляется кнопка «Обновить») и каркас страницы (крошка, шапка, два блока):
- * контент не «прыгает» при появлении. Серверный текст человеку не показываем, роботам он остаётся в HTML.
+ * Серверная разметка страницы, снятая ДО первого рендера React (createRoot стирает #root).
+ * Модуль выполняется при импорте приложения, раньше mountApp, поэтому #root ещё не тронут.
+ * Берём только настоящую страницу (есть h1 и заметный объём), не пустую оболочку.
  */
-export default function RouteFallback() {
+function readServerMarkup() {
+  try {
+    if (typeof document === 'undefined') return null;
+    const root = document.getElementById('root');
+    if (!root || !root.querySelector('h1')) return null;
+    const html = root.innerHTML;
+    return html.length > 400 ? html : null;
+  } catch {
+    return null;
+  }
+}
+let serverMarkup = readServerMarkup();
+
+/** Загрузка после возврата назад/вперёд или смены языка: заставку и каркас не показываем. */
+function readReturnLanding() {
+  try {
+    if (typeof performance !== 'undefined' && performance.getEntriesByType) {
+      const nav = performance.getEntriesByType('navigation')[0];
+      if (nav && nav.type === 'back_forward') return true;
+    }
+  } catch { /* нет Navigation Timing */ }
+  return isLanguageSwitchLanding();
+}
+let returnLanding = readReturnLanding();
+
+/**
+ * Что видно, пока подгружается чанк страницы. Правка 16:
+ * 1. Страница пришла с сервера с содержимым: пока чанк едет, остаётся эта же разметка (без «Загружаем…» и каркаса).
+ * 2. Возврат назад, смена языка (`quiet`): ничего не рисуем, только держим высоту, чтобы место прокрутки не терялось.
+ * 3. Иначе (переход внутри сайта на ещё не загруженную страницу): полоса прогресса, подпись «Загружаем данные…»
+ *    (через 5 с кнопка «Обновить») и каркас страницы (крошка, шапка, плитки, график).
+ */
+export default function RouteFallback({ quiet = false }) {
+  const [held] = useState(() => serverMarkup);
+  const [startedQuiet] = useState(() => returnLanding);
+  useEffect(() => () => { serverMarkup = null; returnLanding = false; }, []);
+
+  if (held) {
+    return (
+      <div
+        className="fe-container fe-route-shell fe-ssr-hold pt-24 md:pt-28"
+        data-testid="ssr-hold"
+        aria-hidden="true"
+        inert
+        dangerouslySetInnerHTML={{ __html: held }}
+      />
+    );
+  }
+  if (quiet || startedQuiet) {
+    return <div className="fe-route-shell" data-testid="route-quiet" aria-busy="true" />;
+  }
   return (
     <div className="fe-container fe-route-shell pt-24 md:pt-28" role="status" aria-busy="true" aria-live="polite">
       <span className="fe-page-progress" aria-hidden="true" />

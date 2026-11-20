@@ -1,4 +1,4 @@
-import { useEffect, useRef, lazy, Suspense } from 'react';
+import { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -22,6 +22,7 @@ import ApiInterestModal from './components/ApiInterestModal';
 import PwaInstallPrompt from './components/PwaInstallPrompt';
 import WelcomeGate from './components/welcome/WelcomeGate';
 import RouteFallback from './components/RouteFallback';
+import { restoreScrollTo } from './lib/restoreScroll';
 import PageProgress from './components/PageProgress';
 import SkipLink from './components/SkipLink';
 import RecentPagesTracker from './components/RecentPagesTracker';
@@ -112,15 +113,35 @@ const EmbedTable = lazy(() => import('./embed/EmbedTable'));
 const EmbedTicker = lazy(() => import('./embed/EmbedTicker'));
 const EmbedCompare = lazy(() => import('./embed/EmbedCompare'));
 
+// Место прокрутки каждой записи истории (ключ location.key): «назад» возвращает человека туда, где он был, а не наверх.
+const scrollByKey = new Map();
+
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, key } = useLocation();
+  const navigationType = useNavigationType();
   const prevPathname = useRef(pathname);
+  const latest = useRef({ key, navigationType });
+  const [prevKey, setPrevKey] = useState(key);
+  // Запоминаем место ухода во время рендера: до коммита новой страницы документ ещё старый, прокрутка не сжата.
+  if (prevKey !== key) {
+    scrollByKey.set(prevKey, Math.round(window.scrollY || 0));
+    if (scrollByKey.size > 100) scrollByKey.delete(scrollByKey.keys().next().value);
+    setPrevKey(key);
+  }
+  // Эффект ниже идёт только по смене адреса (смена одного ?запроса прокрутку не трогает), поэтому свежие key и тип перехода берёт из ref.
+  useEffect(() => { latest.current = { key, navigationType }; });
   useEffect(() => {
     const prev = prevPathname.current;
     prevPathname.current = pathname;
-    if (isVariantSiblingNavigation(prev, pathname)) return;
+    if (isVariantSiblingNavigation(prev, pathname)) return undefined;
+    // «Назад/вперёд»: возвращаем сохранённое место (правка 16), а не прокручиваем наверх.
+    const { key: nowKey, navigationType: nowType } = latest.current;
+    if (nowType === 'POP' && !window.location.hash && scrollByKey.has(nowKey)) {
+      return restoreScrollTo(scrollByKey.get(nowKey));
+    }
     // Мгновенно: при html{scroll-behavior:smooth} обычный scrollTo плавно «уезжал» вверх на каждом переходе.
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    return undefined;
   }, [pathname]);
   return null;
 }
@@ -254,6 +275,9 @@ const renderCompareSave = (spec) => <CompareSaveButton spec={spec} />;
 
 function AppRoutes() {
   const location = useLocation();
+  const navigationType = useNavigationType();
+  // «Назад/вперёд» внутри сайта: каркас и «Загружаем…» не показываем (первая запись истории имеет ключ 'default').
+  const quietFallback = navigationType === 'POP' && location.key !== 'default';
 
   if (EMBED_RE.test(location.pathname)) {
     return <EmbedRoutes />;
@@ -289,7 +313,7 @@ function AppRoutes() {
         <CabinetActionsContext.Provider value={renderCabinetActions}>
         <NumberFormatBoundary>
         <ErrorBoundary>
-        <Suspense fallback={<RouteFallback />}>
+        <Suspense fallback={<RouteFallback quiet={quietFallback} />}>
           <ServerNotFoundGate>
           <Routes>
             <Route path="/" element={<Dashboard />} />

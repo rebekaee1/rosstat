@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  isLanguageSwitchLanding,
   rememberScrollForLanguageSwitch,
   restoreScrollAfterLanguageSwitch,
   takeRememberedScroll,
@@ -75,5 +76,23 @@ describe('сохранение прокрутки при смене языка',
     vi.advanceTimersByTime(160);
     expect(scrollTo).toHaveBeenCalledWith({ top: 900, left: 0, behavior: 'instant' });
     stop();
+  });
+});
+
+describe('метка смены языка (правка 16)', () => {
+  it('смена языка ставит метку даже у верха страницы; она свежая и не стирается чтением', () => {
+    document.cookie = 'fe_lang_switch=; Max-Age=0; Path=/';
+    setScrollY(0);
+    expect(isLanguageSwitchLanding()).toBe(false);
+    expect(rememberScrollForLanguageSwitch()).toBe(false);
+    expect(isLanguageSwitchLanding()).toBe(true);
+    expect(isLanguageSwitchLanding()).toBe(true);
+    document.cookie = 'fe_lang_switch=; Max-Age=0; Path=/';
+  });
+
+  it('старая метка (больше 20 с) не считается', () => {
+    document.cookie = `fe_lang_switch=${Date.now() - 60_000}; Path=/`;
+    expect(isLanguageSwitchLanding()).toBe(false);
+    document.cookie = 'fe_lang_switch=; Max-Age=0; Path=/';
   });
 });
