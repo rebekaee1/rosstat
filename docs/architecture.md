@@ -466,3 +466,28 @@ native title, source frequency world не выдумывается по observat
 Оба HTTP-пути Telegram читают отдельный telegram_proxy_url из общего backend/scheduler env; остальные внешние источники не меняют маршрут. Resend job подбирает также технические виды из telegram_outbox, сохраняя прежние dedup/age/window/attempt limits.
 
 Основной контракт: [data-contracts.md](data-contracts.md#telegram-маршрут-и-техническая-досылка--2026-10-09).
+
+<a id="tourism-2026-11-20"></a>
+
+### Раздел «Туризм» — 2026-11-20 (ADR-0038, `int/2026-11-20-tourism`, не выпущено)
+
+Одна тема проходит три существующих контура данных и одну страницу-категорию
+([ADR-0038](adr/0038-tourism-section.md), контракты — [data-contracts](data-contracts.md#tourism-2026-11-20)):
+
+```text
+Россия:  tourism_russia.py ─► seed_data (indicators tour-*) ─► ETL PARSER_REGISTRY
+         (emiss_tourism_parser, rosstat_tourism_parser ×5, cbr_bop/cbr_trade_services travel-*) ─► indicator_data
+         └ снимок tourism_snapshots/* только для пустого ряда (fallback_used)
+Регионы: tourism_regional.py ─► tourism_regional_loader (задача tourism_regional 08:25 МСК, scheduler)
+         ─► region_data / region_quarterly_data / region_monthly_data  (снимок tourism_seed.csv.gz — DO NOTHING)
+Мир:     world_tourism_sources.py ─► world_tourism_ingest (пн 02:55 МСК, флаг выкл.) ─► world_intl_ingest.upsert_series
+         ─► world_indicators / world_data_points / world_latest_points (category_ru = «Туризм»)
+Витрина: /russia/category/tourism ─► список категории + GET /api/v1/tourism/overview (tourism_showcase, Redis)
+         ─► SPA TourismFloors / SSR seo_tourism; поиск — search_tourism.TOURISM_CONCEPTS в search_intent
+Статьи:  research_articles/<slug>.json ─► research.load_catalog ─► /research/{slug} (nginx → /seo/research/{slug}, SPA)
+```
+
+Внешние границы: fedstat.ru (403 с 20.11.2026, транспорт `emiss_regional_parser._post_grid`), rosstat.gov.ru
+(мediabank, цепочка Минцифры), cbr.ru, ФНС (архивы 1-НМ), API Росаккредитации и ЕФРТ Минэкономразвития,
+api.imf.org, untourism.int, sdmx.oecd.org, Евростат, CYSTAT PxWeb, geostat.ge. Ресурсы: региональная задача
+до 2 ч под `locked_job`; мировой прогон ~2 мин (МВФ ~60 с); оба — в процессе scheduler.

@@ -7344,6 +7344,46 @@
       "local_source_commit": "c9fea738",
       "kind": "production setting change by owner request, observed after recreate",
       "scope": "RUSTATS_OPENROUTER_MODEL в /opt/rosstat/.env: anthropic/claude-sonnet-5 → anthropic/claude-sonnet-5.5 (просьба владельца 09.11.2026). Копия прежнего .env — /root/env-before-sonnet55-20261109. backend и scheduler пересозданы `docker compose up -d --no-build` на прежнем образе, оба healthy; переменная в обоих контейнерах = anthropic/claude-sonnet-5.5; https://forecasteconomy.com/ → 200. Пробный запрос к OpenRouter через RUSTATS_OPENROUTER_PROXY_URL: HTTP 200, модель anthropic/claude-sonnet-5.5. Код прода (git) не менялся: 117d391d. Первый Пульс на новой модели не наблюдался."
+    },
+    {
+      "id": "tourism-code-flags-2026-11-20",
+      "observed_date_msk": "2026-11-20",
+      "local_source_commit": "03727d3b",
+      "kind": "code defaults, not a server observation",
+      "scope": "Флаги и задачи расписания раздела «Туризм» в коде ветки int/2026-11-20-tourism (config.py, main.py, tasks/scheduler.py, docker-compose.yml). Сервер и стенд не опрашивались; код не выпущен. Порядок включения — docs/workflow.md#tourism-release-2026-11-20, решение — ADR-0038.",
+      "settings": [
+        {
+          "env": "RUSTATS_WORLD_TOURISM_INGEST_ENABLED",
+          "setting": "world_tourism_ingest_enabled",
+          "default": false,
+          "passed_by_compose": false,
+          "effect": "регистрирует еженедельную задачу world_tourism_ingest (пн, час world_eurostat_ingest_hour=2, минута 55, МСК; locked_job ttl 3600 с): МВФ, UN Tourism, ОЭСР, Евростат, CYSTAT, Geostat + снимок национальных служб. Без флага задачи нет; ручной запуск python -m app.services.world_tourism_ingest работает всегда. В environment docker-compose переменной нет — значение из .env хоста до контейнера не дойдёт"
+        }
+      ],
+      "scheduled_jobs": [
+        {
+          "id": "tourism_regional",
+          "trigger": "cron 08:25 Europe/Moscow ежедневно",
+          "flag": null,
+          "lock": "locked_job ttl 7200 с",
+          "effect": "снимок regional/tourism_seed.csv.gz (ON CONFLICT DO NOTHING) + ЕМИСС по названиям (403 → остальные наборы до завтра), ЦБ exp/imp_services_reg, ФНС 1-НМ, Росстат Turpotok, Росаккредитация, ЕФРТ, цены sred_potreb_cen; etl_alert не чаще раза в 3 суток"
+        },
+        {
+          "id": "world_tourism_ingest",
+          "trigger": "cron пн 02:55 Europe/Moscow",
+          "flag": "world_tourism_ingest_enabled",
+          "lock": "locked_job ttl 3600 с",
+          "effect": "world_indicators/world_data_points через world_intl_ingest.upsert_series"
+        },
+        {
+          "id": "ETL rosstat_emiss_tourism и др.",
+          "trigger": "общий ETL по parser_type",
+          "flag": null,
+          "lock": "общий",
+          "effect": "ETL_TIMEOUT_BY_PARSER['rosstat_emiss_tourism']=600 с; снимок tourism_snapshots только для пустого ряда (fallback_used)"
+        }
+      ],
+      "migration": "20261120_world_tourism_cat (только данные, down_revision 20261119_region_quarterly; одна голова)"
     }
   ]
 }

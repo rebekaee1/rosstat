@@ -1460,6 +1460,40 @@ SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pag
 для: …». Ответ из частей «X и Y» несёт `intent` первой части и строки частей поочерёдно. Ревизия кэша ответов `r6`.
 Событие `search_query` локальных полей страниц регионов не отправляется, пока набор показателей региона не загружен.
 
+<a id="tourism-2026-11-20"></a>
+## Туризм: ряды России, регионов и стран мира — 2026-11-20 (ADR-0038, `int/2026-11-20-tourism`, не выпущено)
+
+Источники и ловушки по каждому ряду — [data_sources](data_sources.md); решение — [ADR-0038](adr/0038-tourism-section.md);
+витрина и API — [«Раздел „Туризм“»](#forecasts-showcase) выше; статьи исследований — раздел ADR-0028 ниже.
+
+- **Россия (`indicators`, `indicator_data`).** Коды `tour-*`, `category = "Туризм"`, реестр
+  `app/data/tourism_russia.py` (`seed_indicators()`, `forecast_codes(kind)`, EN-копия, SEO, `FamilyDef` T9/T9s/T6/T10/T10a/T2y).
+  Новые `parser_type` в `PARSER_REGISTRY`: `rosstat_emiss_tourism` (`model_config.dataset`, сумма по измерениям,
+  `ytd_monthly` → месяц, отношение двух наборов; таймаут ETL 600 с), `rosstat_tourism_trips`, `rosstat_tourism_gva`,
+  `rosstat_tourism_cpi` (`cpi_item`), `tourism_destination_file`, `tourism_static_file`; `cbr_bop_xlsx` и
+  `cbr_trade_services_monthly` принимают `bop_target=travel-*` (ведущие нули ЦБ не пишутся, ряд из одних нулей —
+  ошибка формата). **Снимок** `app/data/tourism_snapshots/*` применяется, только если у ряда нет ни одной точки:
+  `fetch_log.status = fallback_used` с причиной; при уже загруженной истории сбой источника остаётся сбоем. Прогнозы —
+  `seed_data.MONTHLY_AUTO/ANNUAL_AUTO_FORECAST_CODES` из `forecast_codes(kind)` и `model_config.forecast_strategy` = `generic_quarterly`/`signed_quarterly` (4 шага); страны, доли, короткие ряды — без прогноза.
+- **Регионы (`region_indicators`, `region_data` год, `region_quarterly_data` YYYYQ, `region_monthly_data` YYYYMM).**
+  Реестр `app/data/tourism_regional.py` (`SERIES`, `source_of`, `copy_en`, `monthly_texts`), разделы 6/16/20.
+  Загрузчик `tourism_regional_loader`: `ensure_indicators` (upsert строк реестра), снимок `regional/tourism_seed.csv.gz`
+  пишется `ON CONFLICT DO NOTHING`, живые ответы (ЕМИСС по названиям, ЦБ, ФНС 1-НМ, Росстат «Турпоток», Росаккредитация,
+  ЕФРТ, цены `sred_potreb_cen`) — upsert с обновлением значения. Нарастающие итоги → разность (отрицательная и без
+  предыдущего не пишутся); ряд ЦБ из нулей не пишется; единица набора ЕМИСС ≠ реестру → набор пропускается. Сбой части
+  источников — одно сообщение `etl_alert` «Туризм по регионам…» не чаще раза в 3 суток (`alert_muted`). Источник в
+  SSR карточки — `tourism_regional.source_of` (`seo_regional._tour_source`, `seo_regional_quarterly._ts`).
+- **Мир (`world_indicators`, `world_data_points`, `world_latest_points`).** Коды карточек `{cc}-<суффикс>`
+  (`imf-travel-*`, `unt-*`, `tourism-gdp-share`, `oecd-tourism-employment-share`, `tour-arrivals-*`,
+  `tour-visits-*`, `estat-travel-russia-*`, `estat-accommodation-*`, `tour-(hotel-)accommodation-*`), `category_ru = "Туризм"`,
+  provider: `imf_bop`, `untourism`, `oecd_tourism`, `eurostat_travel`, `cystat`, `geostat`, `ktb_tr`, `armstat`,
+  `azstat`, `mot_india`, `cbs_israel`, `jnto`, `kto_korea`, `monstat`, `rzs_serbia`, `ine_spain`, `eurostat_residence`.
+  Запись — `world_intl_ingest.upsert_series` (идемпотентно, копия последних точек ADR-0037). EN-тексты карточек —
+  `world_tourism_sources.curated_copy_en` (через `api/world._tourism_or_safe_copy`, `seo_world._tourism_copy_en`).
+  Евростат `tour_*`: `CATEGORY_BY_PREFIX` + миграция `20261120_world_tourism_cat`. Понятия рейтинга
+  `tourist-arrivals`, `outbound-trips`, `tourism-gdp-share`, `tourism-employment-share` (только годовые).
+- **ПДн нет** ни в одном контуре: реестры туроператоров/турагентов сводятся к числу на регион и месяц.
+
 <a id="world-latest-points-2026-11-19"></a>
 ## Последние две точки мировых рядов — 2026-11-19 (ADR-0037, ветка агента, не выпущено)
 

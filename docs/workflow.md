@@ -923,3 +923,31 @@ SELECT relname, reloptions FROM pg_class
 4. **Включение**: `RUSTATS_WORLD_LATEST_POINTS_ENABLED=true` в `.env` (backend и scheduler берут его из общего блока compose), пересоздать backend и scheduler вне окна наблюдения выкладки. Каталоги стран в кэше остаются до срока свежести; проверить холодный: `curl -s -o /dev/null -w '%{time_total}\n' 'https://forecasteconomy.com/api/v1/world/countries/kosovo?slim=1'` после сдвига поколения или на стране без записи в Redis. В журнале backend нет `world latest points unavailable`; в журнале scheduler раз в 10 мин в часы 04, 08–21 МСК — `world latest points sweep: …` только когда идёт проход (повтор раз в 7 суток).
 5. **Проверка после**: `pg_stat_statements` — запрос последних точек `world_data_points … LIMIT 2` у каталога больше не растёт в часы без загрузок; `api_timing` людей `countries/*` — сравнить с 14 днями до выпуска.
 6. **Откат**: флаг `false` и пересоздание backend и scheduler — каталог читает таблицу точек. Остановить и ведение копии загрузчиками: `DELETE FROM world_latest_points_state;`. Таблицы удаляет `alembic downgrade 20261119_points_autovacuum`.
+
+<a id="tourism-release-2026-11-20"></a>
+
+## Выпуск раздела «Туризм» — миграция `20261120_world_tourism_cat` (20.11.2026, не выпущено)
+
+Решение — [ADR-0038](adr/0038-tourism-section.md), источники — [data_sources](data_sources.md), контракты —
+[data-contracts](data-contracts.md#tourism-2026-11-20). Миграция только данных: у рядов Евростата `tour_*`
+`category_ru` «Общество» → «Туризм» (одним `UPDATE`, ~8,5 тыс. строк на боевом по оценке t3; откат —
+`alembic downgrade 20261119_region_quarterly` возвращает «Общество»). Голова цепочки одна:
+`… → 20261119_world_latest_points → 20261119_region_quarterly → 20261120_world_tourism_cat`.
+
+1. **Выкладка** кода и миграции обычным порядком; затем `docker compose exec backend python seed_data.py`
+   (карточки `tour-*` России). Первая загрузка России — ETL по типам `rosstat_tourism_trips`,
+   `rosstat_tourism_gva`, `rosstat_emiss_tourism`, `tourism_destination_file`, `rosstat_tourism_cpi`,
+   `tourism_static_file`, `cbr_bop_xlsx`, `cbr_trade_services_monthly` (команда — `.artifacts/tourism-2026-11-20/build/impl-1.md`);
+   при недоступном fedstat/Росстате статус `fallback_used` — это норма первой загрузки (снимок 20.11).
+2. **Регионы** — задача `tourism_regional` (08:25 МСК) сама пишет снимок и пробует живые источники; вручную:
+   `docker compose exec scheduler python -m app.services.tourism_regional_loader` (или `--seed-only`). Миграций и
+   флагов нет. В журнале ожидаемы «незнакомые территории» только для ДНР/ЛНР/Запорожской/Херсонской и сносок.
+3. **Мир** — вручную `docker compose exec backend python -m app.services.world_tourism_ingest` (~2 мин, МВФ ~60 с;
+   снимок национальных служб входит сам). Еженедельная задача (пн 02:55 МСК) — только после
+   `RUSTATS_WORLD_TOURISM_INGEST_ENABLED=true`; **строки в `environment` docker-compose для этого флага нет** —
+   без неё значение из `/opt/rosstat/.env` в контейнер не попадёт (добавить отдельной правкой перед включением).
+4. **Проверка:** `/russia/category/tourism` (RU/EN) — три этажа; `/api/v1/tourism/overview`; карточки из отчётов
+   impl-1/2/3; `/research/{russians-travel-abroad,foreign-tourists-russia,tourist-tax-russia,domestic-tourism-russia}`
+   — nginx `location ~ ^/research/{slug}` ведёт на `/seo/research/{slug}`; sitemap содержит четыре адреса статей.
+5. **Откат:** код — обычный; данные `tour-*` остаются (карточки без витрины безвредны); мировой контур — флаг
+   `false`; категория Евростата — `alembic downgrade 20261119_region_quarterly`.
