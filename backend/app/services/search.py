@@ -71,7 +71,7 @@ _ANNUAL_INFLATION_LEAD = 50
 from app.services.search_r6a import REGION_HEADLINES_R6A, arrears_demotion
 from app.services.search_r7a import REGION_HEADLINES_R7A, r7a_demotion
 from app.services.search_r8a import MAX_NEAREST, nearest_plan, nearest_query, r8a_demotion, short_region_name, sort_cheapest_first
-from app.services.search_rewrite import conjunction_parts, profile_only, rewritten_query
+from app.services.search_rewrite import conjunction_parts, profile_only, rewritten_query, search_text_from_link
 
 _REGION_HEADLINES = {
     "wage": "srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy",
@@ -1633,6 +1633,12 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50, _near
         _rewrite: bool = True) -> dict:
     """One query contract with bounded SQL and truthful availability states."""
     empty = {"results": [], "total": 0, "has_more": False, "version": SEARCH_VERSION}
+    if _reading is None and _rewrite:
+        # Вставленная ссылка на поиск ЕМИСС/Росстата (20.11.2026): ищем то, что искали там.
+        from_link = search_text_from_link(raw)
+        if from_link:
+            found = await federated_search(db, from_link, limit=limit, _nearest=_nearest)
+            return {**found, "corrected_query": found.get("corrected_query") or from_link}
     if not phrase(raw):
         return empty
     if not re.search(r"[a-zа-я]", normalize(raw)):

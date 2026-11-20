@@ -8,6 +8,7 @@ import {
   correctSearchKeyboardLayout,
   normalizeSearchQuery,
   resolveSynonymTargets,
+  searchTextFromLink,
 } from './searchSynonyms';
 
 const CATALOG = [
@@ -385,5 +386,36 @@ describe('ВВП/ВРП: другой порядок слов и недопис�
     expect(regionCodes('валовый внутренний продукт сахар')).toEqual([]);
     // Слово не из фразы понятия — не её часть: «валовый сбор» не становится ВВП.
     expect(regionCodes('валовый сбор')).toEqual([]);
+  });
+});
+
+// Пульс 19.11.2026: на странице Ленинградской области вставили ссылку поиска ЕМИСС и дважды получили ноль.
+describe('вставленная ссылка поиска (fedstat.ru)', () => {
+  const FEDSTAT = 'https://www.fedstat.ru/indicators/search?searchText=';
+  const BIRTH_RATE = '%D0%9A%D0%BE%D1%8D%D1%84%D1%84%D0%B8%D1%86%D0%B8%D0%B5%D0%BD%D1%82+%D1%80%D0%BE%D0%B6%D0%B4%D0%B0%D0%B5%D0%BC%D0%BE%D1%81%D1%82%D0%B8';
+  const rows = [
+    { code: 'obschie-koeffitsienty-rozhdaemosti', name: 'Общие коэффициенты рождаемости' },
+    { code: 'udelnyy-ves-ubytochnyh-organizatsiy', name: 'Удельный вес убыточных организаций' },
+  ];
+
+  it('берёт текст поиска и раскодирует буквы', () => {
+    expect(searchTextFromLink(FEDSTAT + BIRTH_RATE)).toBe('Коэффициент рождаемости');
+    expect(searchTextFromLink('https://www.fedstat.ru/indicators/search?searchtext=%D0%92%D0%A0%D0%9F%20%D0%BD%D0%B0')).toBe('ВРП на');
+    expect(searchTextFromLink('https://rosstat.gov.ru/search?q=&text=%D0%B8%D0%BD%D1%84%D0%BB%D1%8F%D1%86%D0%B8%D1%8F')).toBe('инфляция');
+    expect(searchTextFromLink('www.google.com/search?q=gdp+russia&hl=ru')).toBe('gdp russia');
+    // Оборванный код буквы — так ссылка записана в журнале 19.11.
+    expect(searchTextFromLink(`${FEDSTAT}%D0%9A%D`)).toBe('К');
+  });
+
+  it('не трогает обычный текст и ссылки без текста поиска', () => {
+    for (const raw of ['коэффициент рождаемости', 'https://www.fedstat.ru/indicator/31074', FEDSTAT, 'ввп?', 'что такое https://x.ru/?q=1']) {
+      expect(searchTextFromLink(raw)).toBeNull();
+    }
+  });
+
+  it('локальные поля находят ряд по вставленной ссылке', () => {
+    expect(filterSearchIndicators(rows, FEDSTAT + BIRTH_RATE).map((row) => row.code)).toEqual(['obschie-koeffitsienty-rozhdaemosti']);
+    expect(filterSearchOptions(rows, FEDSTAT + BIRTH_RATE).map((row) => row.code)).toEqual(['obschie-koeffitsienty-rozhdaemosti']);
+    expect(normalizeSearchQuery(FEDSTAT + BIRTH_RATE)).toBe('коэффициент рождаемости');
   });
 });

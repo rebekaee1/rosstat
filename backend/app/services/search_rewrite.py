@@ -25,6 +25,7 @@ import logging
 import os
 import re
 import time
+from urllib.parse import parse_qsl, urlsplit
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -308,3 +309,29 @@ def conjunction_parts(raw: str) -> list[str]:
     if not 2 <= len(parts) <= 3:
         return []
     return parts
+
+
+# Параметры адреса с текстом поиска: ЕМИСС (fedstat.ru) — searchText, Росстат и Яндекс — text, остальные — q/query/search.
+_LINK_TEXT_PARAMS = ("searchtext", "text", "q", "query", "search", "keyword", "keywords")
+_LINK = re.compile(r"^(?:https?://|www\.)\S+$", re.IGNORECASE)
+
+
+def search_text_from_link(raw: str) -> str | None:
+    """Вставленная ссылка на поиск другого сайта → текст, который там искали (20.11.2026).
+
+    Пульс за 19.11: человек вставил «https://www.fedstat.ru/indicators/search?searchText=%D0%9A…» и получил ноль —
+    адрес читался как слова «https www fedstat ru». Буквы в адресе закодированы: раскодируем, оборванный хвост
+    кода отбрасываем. Ссылка без такого параметра или не ссылка — None, запрос остаётся как набран.
+    """
+    text = str(raw or "").strip()
+    if not _LINK.match(text) or "?" not in text:
+        return None
+    by_name: dict[str, str] = {}
+    for name, value in parse_qsl(urlsplit(text).query, keep_blank_values=True):
+        by_name.setdefault(name.lower(), value)
+    for name in _LINK_TEXT_PARAMS:
+        value = re.sub(r"%[0-9a-fA-F]{0,2}$", "", by_name.get(name, "").replace("�", ""))
+        value = " ".join(value.split())
+        if any(ch.isalnum() for ch in value):
+            return value
+    return None
