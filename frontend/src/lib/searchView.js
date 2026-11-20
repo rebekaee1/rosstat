@@ -16,7 +16,7 @@ import {
 import { searchFamilyKey, SEARCH_PRIMARY_LIMIT } from './searchGroups';
 import { groupByTopic, searchTopic } from './searchText';
 import { POPULAR_COUNTRY_SLUGS } from './countryFlag';
-import { worldRatingPath } from './sitePaths';
+import { russiaCategoryPath, worldRatingPath } from './sitePaths';
 
 const ENTITY_KINDS = new Set(['country', 'region', 'subnational_region']);
 const FREQUENCY_ORDER = ['daily', 'weekly', 'monthly', 'quarterly', 'annual'];
@@ -73,6 +73,30 @@ export function ratingRowsFor(query, { intent, concepts, labelOf, t, limit = 2 }
     detail: t('w6d.search.ratingHint'),
     conceptSlug: concept.slug,
   }));
+}
+
+/**
+ * Разделы сайта, которые запрос называет целиком (20.11.2026: «туризм» открывал ряды округа, а не раздел).
+ * Строка раздела стоит первой; Enter открывает её. Запрос с иностранной страной или регионом раздела не получает.
+ */
+const SECTION_TOPICS = [
+  {
+    slug: 'tourism',
+    re: /(?:^|\s)(?:туризм\p{L}*|турпоток\p{L}*|туристическ\p{L}*|туристск\p{L}*|tourism|tourist|travel|путешестви\p{L}*)(?=\s|$)/u,
+    path: russiaCategoryPath('tourism'),
+    titleKey: 'tourism.search.section',
+    hintKey: 'tourism.search.sectionHint',
+  },
+];
+
+export function sectionRowsFor(query, { intent, t } = {}) {
+  if (intent?.regions?.length || (intent?.countries || []).some((slug) => slug !== 'russia')) return [];
+  const text = normalizeSearchQuery(query);
+  if (!text) return [];
+  return SECTION_TOPICS.filter((topic) => topic.re.test(text)).map((topic) => {
+    const item = { key: `section:${topic.slug}`, kind: 'section', code: topic.slug, path: topic.path, navigation: 'spa' };
+    return { id: item.key, type: 'section', item, open: item, name: t(topic.titleKey), detail: t(topic.hintKey) };
+  });
 }
 
 /** Показатель рейтинга по смыслу названия («численность населения» → Население); по синонимам, а не по словам. */
@@ -350,9 +374,13 @@ export function buildSearchView(rows, {
     countryRows[0].quick = place ? ['inflation', 'gdp', 'unemployment']
       .map((id) => ({ id, label: t(`c9b.search.quick.${id}`), query: `${t(`c9b.search.quick.${id}`)} ${place}` })) : [];
   }
-  const order = geoFirst
-    ? [['countries', countryRows], ['ratings', ratingRows], ['indicators', seriesRows]]
-    : [['indicators', seriesRows], ['ratings', ratingRows], ['countries', countryRows]];
+  const sectionRows = sectionRowsFor(query, { intent, t });
+  const order = [
+    ...(sectionRows.length ? [['sections', sectionRows]] : []),
+    ...(geoFirst
+      ? [['countries', countryRows], ['ratings', ratingRows], ['indicators', seriesRows]]
+      : [['indicators', seriesRows], ['ratings', ratingRows], ['countries', countryRows]]),
+  ];
 
   const sections = [];
   const overflow = [];
