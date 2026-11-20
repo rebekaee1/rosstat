@@ -270,7 +270,7 @@ def _seo_chart_figure(
     + клик ведёт на карточку индикатора к якорю #chart."""
     img = (
         f'<img src="{escape(og_path)}" width="1200" height="630" '
-        f'alt="{escape(alt)}" loading="{loading}">'
+        f'alt="{escape(alt)}" loading="{loading}" onerror="this.remove()">'
     )
     from urllib.parse import urlsplit
 

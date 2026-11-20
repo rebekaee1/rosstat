@@ -4,7 +4,7 @@ import {
   ResponsiveContainer, ComposedChart, Area, Line, Bar, XAxis, YAxis,
   Tooltip, CartesianGrid, ReferenceLine, ReferenceArea, ReferenceDot,
 } from 'recharts';
-import { Activity, AreaChart as AreaIcon, BarChart3, LineChart as LineIcon, SlidersHorizontal } from 'lucide-react';
+import { Activity, AreaChart as AreaIcon, BarChart3, LineChart as LineIcon } from 'lucide-react';
 import {
   formatDate, formatAxisTick, formatValue,
   unitSuffix, cn, pickChartAxisTicks, chartAxisTickBudget,
@@ -832,11 +832,11 @@ export default function IndicatorChart({
             aria-controls={viewPanelId}
             onClick={() => setViewOpen((v) => !v)}
             className="fe-chip--ghost fe-chip--icon"
-            title={t('y2.view.change')}
+            title={t('chart.typeAria')}
             data-testid="chart-view-toggle"
           >
-            <SlidersHorizontal className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-            <span className="sr-only">{t('y2.view.change')}</span>
+            <BarChart3 className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+            <span className="sr-only">{t('chart.typeAria')}</span>
           </Chip>
           <ChipGroup label={t('chart.rangeAria')} className="fe-chip-row--tight">
             {rangeOptions.map(opt => (
