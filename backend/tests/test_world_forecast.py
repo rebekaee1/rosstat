@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from types import SimpleNamespace
 import math
 
@@ -648,13 +648,75 @@ def test_forecast_plan_raises_statement_timeout_for_its_transaction(monkeypatch)
 
     monkeypatch.setattr(wfp, "async_session", fake_session)
     monkeypatch.setattr(wfp, "set_local_statement_timeout", fake_timeout)
-    monkeypatch.setattr(wfp, "_load_candidates", fake_candidates)
+    monkeypatch.setattr(wfp, "_load_candidate_rows", fake_candidates)
     monkeypatch.setattr(wfp, "_latest_forecasts_map", fake_latest)
 
     asyncio.run(wfp.load_world_forecast_plan(country_slugs="austria", limit=10))
     assert calls[0] == ("timeout", "db", wfp.WORLD_FORECAST_PLAN_STATEMENT_TIMEOUT_MS)
     assert wfp.WORLD_FORECAST_PLAN_STATEMENT_TIMEOUT_MS >= 300_000
-    assert [c[0] for c in calls[1:]] == ["candidates", "latest"]
+    # Каждое чтение — своя транзакция со своим лимитом (20.11.2026).
+    assert [c[0] for c in calls[1:]] == ["candidates", "timeout", "latest"]
+
+
+def test_forecast_plan_parses_rows_with_no_open_transaction(monkeypatch):
+    """12, 14, 17, 19.11.2026 europe_world_forecast падал «cannot switch to state 15;
+    another operation (2) is in progress»: одна транзакция плана стояла открытой, пока
+    Python разбирал ~277k строк; под свопом хоста разбор шёл дольше
+    idle_in_transaction_session_timeout (120 с), Postgres рвал соединение (FATAL
+    idle-in-transaction 19.11 20:15:54 UTC), и ROLLBACK при закрытии сессии падал.
+    Разбор и сортировка идут после закрытия обеих сессий и вне цикла событий."""
+    import asyncio
+    import threading
+    from contextlib import asynccontextmanager
+
+    import app.services.world_forecast_pipeline as wfp
+
+    state = {"open": 0, "events": []}
+
+    @asynccontextmanager
+    async def fake_session():
+        state["open"] += 1
+        try:
+            yield "db"
+        finally:
+            state["open"] -= 1
+
+    async def fake_timeout(db, ms):
+        return None
+
+    row = SimpleNamespace(
+        id=7, slug="austria", provider="eurostat", dataset_id="ds", code="c",
+        frequency="monthly", history_end=date(2026, 9, 1), points_count=120,
+        history_digest="d", name_quality="curated", unit="", source_status="ok",
+        source_last_success_at=datetime(2026, 11, 1),
+    )
+
+    async def fake_rows(db, slugs):
+        assert state["open"] == 1
+        return [row]
+
+    async def fake_latest(db, *, country_slugs=None):
+        assert state["open"] == 1
+        return {}
+
+    real_from_rows = wfp._candidates_from_rows
+
+    def spy_from_rows(rows):
+        state["events"].append((state["open"], threading.current_thread() is threading.main_thread()))
+        return real_from_rows(rows)
+
+    monkeypatch.setattr(wfp, "async_session", fake_session)
+    monkeypatch.setattr(wfp, "set_local_statement_timeout", fake_timeout)
+    monkeypatch.setattr(wfp, "_load_candidate_rows", fake_rows)
+    monkeypatch.setattr(wfp, "_latest_forecasts_map", fake_latest)
+    monkeypatch.setattr(wfp, "_candidates_from_rows", spy_from_rows)
+
+    candidates, unchanged = asyncio.run(
+        wfp.load_world_forecast_plan(country_slugs="austria", limit=10)
+    )
+    assert state["events"] == [(0, False)]  # ни одной открытой сессии, не главный поток
+    assert [c.id for c in candidates] == [7]
+    assert unchanged == set()
 
 
 def test_strategy_exception_on_degenerate_series_is_a_recorded_failure(monkeypatch):

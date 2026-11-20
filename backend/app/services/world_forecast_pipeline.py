@@ -527,10 +527,10 @@ async def retrain_world_indicator_forecast(
     return gate.status
 
 
-async def _load_candidates(
+async def _load_candidate_rows(
     db: AsyncSession,
     country_slugs: Sequence[str] | None = None,
-) -> list[WorldForecastCandidate]:
+) -> list:
     # Correlated index scan hashes the whole training history in SQL. This
     # detects revisions to existing observations without a new date/count.
     digest = (
@@ -571,7 +571,11 @@ async def _load_candidates(
     )
     if country_slugs:
         stmt = stmt.where(WorldCountry.slug.in_(tuple(country_slugs)))
-    rows = (await db.execute(stmt)).all()
+    return (await db.execute(stmt)).all()
+
+
+def _candidates_from_rows(rows: Sequence) -> list[WorldForecastCandidate]:
+    """Строки каталога → кандидаты (чистый Python, без базы; Европа ~277k строк)."""
     candidates = []
     for row in rows:
         source_ready = str(row.provider or "").lower() != "eurostat" or (
@@ -608,8 +612,13 @@ async def _latest_forecasts_map(
     db: AsyncSession,
     *,
     country_slugs: Sequence[str] | None = None,
-) -> dict[int, WorldForecast]:
-    """Последняя запись world_forecasts на listed M/Q/A — без IN по 35k id."""
+) -> dict[int, object]:
+    """Последняя запись world_forecasts на listed M/Q/A — без IN по 35k id.
+
+    Только поля, которые читает ``forecast_is_unchanged``, а не ORM-объекты:
+    сотни тысяч экземпляров с identity map строились после ответа базы, пока
+    транзакция стояла открытой (и раздували память scheduler).
+    """
     eligible = (
         select(WorldIndicator.id)
         .join(WorldCountry, WorldIndicator.country_id == WorldCountry.id)
@@ -622,7 +631,12 @@ async def _latest_forecasts_map(
         eligible = eligible.where(WorldCountry.slug.in_(tuple(country_slugs)))
     rows = (
         await db.execute(
-            select(WorldForecast)
+            select(
+                WorldForecast.world_indicator_id,
+                WorldForecast.created_at,
+                WorldForecast.model_params,
+                WorldForecast.gate_status,
+            )
             .where(WorldForecast.world_indicator_id.in_(eligible))
             .distinct(WorldForecast.world_indicator_id)
             .order_by(
@@ -631,7 +645,7 @@ async def _latest_forecasts_map(
                 WorldForecast.id.desc(),
             )
         )
-    ).scalars().all()
+    ).all()
     return {int(row.world_indicator_id): row for row in rows}
 
 
@@ -693,16 +707,44 @@ async def load_world_forecast_plan(
 ) -> tuple[list[WorldForecastCandidate], set[int]]:
     """Отсортированный план обхода и id рядов, которые можно пропустить."""
     slugs = parse_country_slugs(country_slugs)
+    # Каждое чтение — своя короткая транзакция, закрытая сразу после ответа.
+    # Раньше одна транзакция жила, пока Python разбирал ~277k строк Европы;
+    # при нехватке памяти хоста (своп, iowait 30 %+) разбор шёл дольше
+    # idle_in_transaction_session_timeout (120 с), Postgres рвал соединение,
+    # и закрытие сессии падало «cannot switch to state 15; another operation (2)
+    # is in progress» (12, 14, 17, 19.11.2026: план не строился, ночь Европы
+    # пропадала целиком).
     async with async_session() as db:
         # md5 истории каждого кандидата — пакетный проход (Европа: ~277k рядов,
-        # ~13 млн точек, ~80 с); публичный лимит 30 с ронял джобу ежедневно.
+        # ~13 млн точек, 3–4 мин); публичный лимит 30 с ронял джобу ежедневно.
         await set_local_statement_timeout(db, WORLD_FORECAST_PLAN_STATEMENT_TIMEOUT_MS)
-        candidates = sort_world_forecast_candidates(
-            await _load_candidates(db, slugs or None),
-        )
-        if eligible_only:
-            candidates = [row for row in candidates if row.eligible_for_training]
+        candidate_rows = await _load_candidate_rows(db, slugs or None)
+    async with async_session() as db:
+        await set_local_statement_timeout(db, WORLD_FORECAST_PLAN_STATEMENT_TIMEOUT_MS)
         latest_by_id = await _latest_forecasts_map(db, country_slugs=slugs or None)
+    # Разбор без открытой транзакции и вне цикла событий: секунды в норме,
+    # минуты под свопом — heartbeat блокировок и соседние задачи не замирают.
+    return await asyncio.to_thread(
+        _build_forecast_plan,
+        candidate_rows,
+        latest_by_id,
+        limit=limit,
+        force=force,
+        eligible_only=eligible_only,
+    )
+
+
+def _build_forecast_plan(
+    candidate_rows: Sequence,
+    latest_by_id: dict[int, object],
+    *,
+    limit: int | None,
+    force: bool,
+    eligible_only: bool,
+) -> tuple[list[WorldForecastCandidate], set[int]]:
+    candidates = sort_world_forecast_candidates(_candidates_from_rows(candidate_rows))
+    if eligible_only:
+        candidates = [row for row in candidates if row.eligible_for_training]
     unchanged_ids = classify_unchanged(
         candidates,
         latest_by_id,
