@@ -69,7 +69,7 @@ def test_digest_v2_matches_the_agreed_shape():
     assert "калькуляторы" not in text and "избранное" not in text
     assert "🪜 Воронка: посетители 310 → смотрели показатель 120 → лимит 41 → «Регистрация» 14 → отправили 6 → зарегистрировались 2" in text
     assert "форма или соцсеть" not in text.split("🪜")[1].split("\n")[0]
-    assert "⚡ Сайт: ошибок своих скриптов 3 · LCP p75 2,4 с · API p75 310 мс · медленнее всего: показатель России, телефон 3,1 с" in text
+    assert "⚡ Сайт: ошибок своих скриптов 3 · LCP p75 у людей 2,4 с · API p75 310 мс · медленнее всего: показатель России, телефон 3,1 с" in text
     assert "<blockquote expandable>" in text and text.count("<blockquote") == text.count("</blockquote>")
     # каждая строка в стиле существующих сообщений: начинается с эмодзи
     for line in lines[:-1]:
@@ -356,7 +356,7 @@ def test_reliability_details_explain_the_causes():
     details = tr.reliability_details(rel)
     assert details[0].startswith("Частые ошибки скриптов: TypeError: x is undefined ×40")
     assert "@" not in details[0]
-    assert details[1] == "Медленные страницы (LCP p75): показатель России, телефон 3,1 с (выборка 12)"
+    assert details[1] == "Медленные страницы у людей (LCP p75): показатель России, телефон 3,1 с (выборка 12)"
     assert tr.reliability_details(None) == [] and tr.reliability_details({"js_errors_own": []}) == []
 
 

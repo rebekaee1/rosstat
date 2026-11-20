@@ -226,9 +226,10 @@ def test_reliability_has_page_group_by_device_cells():
     async def scenario(maker):
         async with maker() as db:
             db.add(BehaviorSession(session_id_hash="s-m", visitor_id_hash="v", started_at=now, device_type="mobile"))
+            db.add(ServerSession(day=now.date(), visitor_id_hash="v", started_at=now, ended_at=now, is_human=True))
             for ms in (3000, 3200, 3400):
-                db.add(BehaviorEvent(event_type="vital", session_id_hash="s-m", page="/russia/indicator/cpi",
-                                     occurred_at=now, params_json={"m": "LCP", "v": ms}))
+                db.add(BehaviorEvent(event_type="vital", session_id_hash="s-m", visitor_id_hash="v",
+                                     page="/russia/indicator/cpi", occurred_at=now, params_json={"m": "LCP", "v": ms}))
             db.add(BehaviorEvent(event_type="js_error", session_id_hash="s-m", page="/russia/indicator/cpi",
                                  occurred_at=now, params_json={"msg": "boom", "src": "https://forecasteconomy.com/a.js"}))
             db.add(BehaviorEvent(event_type="js_error", session_id_hash="s-m", page="/russia/indicator/cpi",
@@ -239,6 +240,37 @@ def test_reliability_has_page_group_by_device_cells():
         assert cell["lcp_samples"] == 3 and cell["lcp_p75_ms"] == 3400.0
         assert cell["js_errors_own"] == 1  # чужие скрипты в «свои ошибки» не входят
         assert data["js_errors_total"] == 2  # прежний показатель не изменился
+
+    _run_with_db(scenario)
+
+
+def test_reliability_speed_counts_only_confirmed_people():
+    """20.11.2026: «LCP региональных страниц на десктопе p75 5,2 с» в Пульсе 19.11 давала ферма с JS; у людей - 2,2 с."""
+    now = _now()
+
+    async def scenario(maker):
+        async with maker() as db:
+            for sid, visitor, human, lcp, api_ms in (("person", "vp", True, 1800, 120),
+                                                     ("farm", "vf", None, 12000, 2500),
+                                                     ("unknown", "vu", False, 9000, 2400)):
+                db.add(BehaviorSession(session_id_hash=sid, visitor_id_hash=visitor, started_at=now, device_type="desktop"))
+                if human is not None:
+                    db.add(ServerSession(day=now.date(), visitor_id_hash=visitor, started_at=now, ended_at=now,
+                                         is_human=human))
+                db.add(BehaviorEvent(event_type="vital", session_id_hash=sid, visitor_id_hash=visitor, occurred_at=now,
+                                     page="/russia/region/moskva/x", params_json={"m": "LCP", "v": lcp}))
+                for _ in range(3):
+                    db.add(BehaviorEvent(event_type="api_timing", session_id_hash=sid, visitor_id_hash=visitor,
+                                         occurred_at=now, page="/russia/region/moskva/x",
+                                         params_json={"u": "/api/v1/regions", "ms": api_ms, "st": 503, "ok": 0}))
+            await db.commit()
+            data = await m.mart_reliability(db, resolve_period("7d"))
+        assert data["vitals_p75"] == {"LCP": 1800.0} and data["vitals_samples"] == {"LCP": 1}
+        cell = next(c for c in data["page_device"] if c["page_group"] == "region" and c["device"] == "desktop")
+        assert cell["lcp_samples"] == 1 and cell["lcp_p75_ms"] == 1800.0
+        assert [(x["endpoint"], x["calls"], x["max_ms"]) for x in data["api_slowest"]] == [("/api/v1/regions", 3, 120.0)]
+        assert data["speed_samples_unconfirmed"] == 8
+        assert data["api_failed_sampled"] == 9 and data["api_5xx_sampled"] == 9  # отказы - по всем, как раньше
 
     _run_with_db(scenario)
 
