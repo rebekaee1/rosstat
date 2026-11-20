@@ -48,8 +48,9 @@ CONCEPTS = (
         "grp per capita", "gross regional product per capita"),
         ("valovoy-regionalnyy-produkt-na-dushu-naseleniya", "валовой региональный продукт на душу",
         "валового регионального продукта на душу", "gross regional product per capita")),
+    # «Внутренний региональный продукт» (20.11.2026): смешение ВВП и ВРП, три человека на страницах регионов 19.11.2026.
     (("врп", "grp", "валовой региональный продукт", "валовый региональный продукт", "валового регионального продукта",
-        "gross regional product"),
+        "внутренний региональный продукт", "gross regional product"),
         ("valovoy-regionalnyy-produkt", "валовой региональный продукт", "валового регионального продукта",
         "gross regional product")),
     # `policy-rate` — код ключевой ставки других стран (us-policy-rate, uk-policy-rate): «ключевая ставка США» находит ставку ФРС.
@@ -537,6 +538,51 @@ def _compile_concept_matchers() -> tuple:
 CONCEPT_MATCHERS = _compile_concept_matchers()
 
 
+def _compile_reordered_phrases() -> dict:
+    """Слова длинной фразы понятия в другом порядке (20.11.2026): «внутренний валовой продукт» — то же понятие, что
+    «валовой внутренний продукт». Только фразы из трёх и более слов не короче четырёх букв: в коротких порядок
+    несёт смысл («евро доллар» — курс евро в долларах), а служебные слова («к», «на») задают отношение.
+    Ключ — слова фразы по алфавиту; первая фраза словаря с таким набором слов выигрывает, как и при точном совпадении."""
+    out: dict[tuple[str, ...], tuple[str, tuple[str, ...]]] = {}
+    for alternatives, matchers in CONCEPT_MATCHERS:
+        if alternatives[0].startswith("search-"):
+            continue
+        for _alias, normalized, parts, _matcher in matchers:
+            if len(parts) >= 3 and all(len(part) >= 4 for part in parts):
+                out.setdefault(tuple(sorted(parts)), (normalized, alternatives))
+    return out
+
+
+REORDERED_PHRASES = _compile_reordered_phrases()
+_REORDERED_SIZES = frozenset(len(key) for key in REORDERED_PHRASES)
+
+
+@lru_cache(maxsize=4096)
+def _reordered_phrase(words: tuple[str, ...]) -> tuple[str, tuple[str, ...]] | None:
+    """Фраза понятия из тех же слов в другом порядке; одно слово может быть с одной опечаткой («внутренний валовый
+    продукт»), как и при разборе фразы в своём порядке."""
+    key = tuple(sorted(words))
+    if key in REORDERED_PHRASES:
+        return REORDERED_PHRASES[key]
+    if any(len(word) < 4 for word in words):
+        return None
+    found = None
+    for parts, value in REORDERED_PHRASES.items():
+        if len(parts) != len(words):
+            continue
+        left, right = list(words), list(parts)
+        for word in words:
+            if word in right:
+                left.remove(word)
+                right.remove(word)
+        if (len(left) == 1 and min(len(left[0]), len(right[0])) >= 5 and not _control_neighbour(left[0])
+                and edit_distance_one(left[0], right[0])):
+            if found is not None and found[1] != value[1]:
+                return None
+            found = value
+    return found
+
+
 def _russian_geo_cases(value: object) -> tuple[str, ...]:
     """Derive complete administrative-name cases from one actual catalogue name.
 
@@ -955,6 +1001,15 @@ def parse_intent(raw: str, geometry: list[dict], *, allow_layout: bool = True,
                         continue
                     term_hits.append((start, end, alias, alternatives))
                     phrase_corrections[(start, end, alias)] = mismatches[0]
+    for size in _REORDERED_SIZES:
+        for offset in range(len(content_tokens) - size + 1):
+            window = content_tokens[offset:offset + size]
+            found = _reordered_phrase(tuple(match[0] for match in window))
+            if found is None:
+                continue
+            start, end = window[0].start(), window[-1].end()
+            if not any(hit[0] == start and hit[1] == end for hit in term_hits):
+                term_hits.append((start, end, found[0], found[1]))
     terms = ([(literal,)] if literal else []) + list(denominator_terms) + list(point_unit_terms) + list(dict.fromkeys(price_base_terms))
     if explicit_percent:
         terms.append(("search-unit-percent",))

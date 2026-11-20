@@ -338,3 +338,52 @@ describe('measure synonyms reach rows without a federal code (2026-10-02)', () =
     expect(filterSearchOptions(regional, 'инфляция зарплата')).toEqual([]);
   });
 });
+
+describe('ВВП/ВРП: другой порядок слов и недописанное слово (Пульс 19.11.2026)', () => {
+  // Настоящие запросы трёх человек в поле страницы региона 19.11.2026 — все давали 0.
+  const asOnRegionPage = (item) => ({
+    ...item, section_name: item.section, country_slug: 'russia', region_slug: 'pskovskaya-oblast', region_name: 'Псковская область',
+  });
+  const region = [
+    { code: 'valovoy-regionalnyy-produkt', name: 'Валовой региональный продукт', section: 'Национальные счета' },
+    { code: 'valovoy-regionalnyy-produkt-na-dushu-naseleniya', name: 'Валовой региональный продукт на душу населения', section: 'Национальные счета' },
+    { code: 'vnutrennie-zatraty-na-issledovaniya', name: 'Внутренние затраты на исследования и разработки', section: 'Наука и инновации' },
+    { code: 'srednyaya-zarplata', name: 'Среднемесячная заработная плата', section: 'Уровень жизни' },
+  ];
+  const regionCodes = (query) => filterSearchOptions(region, query, { getSearchItem: asOnRegionPage }).map((item) => item.code);
+  it.each([
+    'Валовый вн', 'Валовый внут', 'Валовый внутренний', 'Валовый внутренний про', 'Валовый внутренний продукт',
+    'Внутренний валовой пр', 'Внутренний ре', 'Внутренний регион', 'Внутренний региональный', 'Внутренний региональный продукт',
+    'ввп', 'валовой внутренний продукт', 'внутренний валовой продукт', 'региональный валовой продукт',
+  ])('«%s» на странице региона находит ВРП', (query) => {
+    expect(regionCodes(query)[0]).toBe('valovoy-regionalnyy-produkt');
+    expect(regionCodes(query)).not.toContain('srednyaya-zarplata');
+  });
+  it('«ввп на душу» на странице региона — ВРП на душу', () => {
+    expect(regionCodes('ввп на душу')).toEqual(['valovoy-regionalnyy-produkt-na-dushu-naseleniya']);
+  });
+  it('прежние запросы отвечают как раньше', () => {
+    expect(regionCodes('врп')).toEqual(['valovoy-regionalnyy-produkt', 'valovoy-regionalnyy-produkt-na-dushu-naseleniya']);
+    expect(regionCodes('внутренние затраты')).toEqual(['vnutrennie-zatraty-na-issledovaniya']);
+    expect(regionCodes('Валовый')).toContain('valovoy-regionalnyy-produkt');
+    expect(regionCodes('заработная')).toEqual(['srednyaya-zarplata']);
+  });
+  it('в наборе с национальным ВВП «ввп» остаётся ВВП, а другой порядок слов находит его же', () => {
+    const national = [
+      { code: 'gdp-nominal', name: 'ВВП номинальный', country_slug: 'russia' },
+      { code: 'gdp-real', name: 'Реальный ВВП', country_slug: 'russia' },
+      { code: 'valovoy-regionalnyy-produkt', name: 'Валовой региональный продукт', country_slug: 'russia' },
+      { code: 'cpi', name: 'Индекс потребительских цен', country_slug: 'russia' },
+    ];
+    const pick = (query) => filterSearchOptions(national, query).map((item) => item.code);
+    expect(pick('ввп')).toEqual(['gdp-nominal', 'gdp-real']);
+    for (const query of ['внутренний валовой продукт', 'валовый вн', 'внутренний валовой пр', 'продукт валовой внутренний']) {
+      expect(pick(query)).toEqual(['gdp-nominal', 'gdp-real']);
+    }
+  });
+  it('неизвестное слово рядом с понятием остаётся обязательным', () => {
+    expect(regionCodes('валовый внутренний продукт сахар')).toEqual([]);
+    // Слово не из фразы понятия — не её часть: «валовый сбор» не становится ВВП.
+    expect(regionCodes('валовый сбор')).toEqual([]);
+  });
+});
