@@ -1323,6 +1323,23 @@ def _known_line(known: Mapping[str, Mapping[str, int]]) -> str:
     return ("Без изменений, известно: " + "; ".join(parts) + ". ") if parts else ""
 
 
+def _short_reason(error: str) -> str:
+    """Первая строка причины без HTML-страницы источника: «AbsDataError: ABS GET … HTTP 504»."""
+    text = re.sub(r"\s+", " ", re.sub(r"<[^>]*>", " ", error or "")).strip()
+    return text[:180]
+
+
+def failed_reasons_text(real_failed: Mapping[str, Sequence[tuple[str, str]]]) -> str:
+    """«au (10): AbsDataError: … HTTP 504; in (6): MospiApiError: … ConnectTimeout» — причина на страну для журнала прогона.
+
+    20.11.2026: в `world_ingest_runs.error_message` лежали только коды рядов, и Пульс писал «причина не ясна».
+    """
+    return "; ".join(
+        f"{cc} ({len(series)}): {_short_reason(series[0][1])}"
+        for cc, series in real_failed.items() if series
+    )
+
+
 NATIONAL_CORE_COUNTRIES: tuple[str, ...] = (
     "au", "br", "ca", "cn", "in", "jp", "kr", "mx", "uk", "us",
 )
@@ -1402,24 +1419,32 @@ async def run_national_core_ingest(
             f"{type(exc).__name__}"
         )
 
-    series_failed_total = sum(len(v) for v in failed_series.values())
-    series_failed_text = format_failed_series(failed_series, limit=30)
     country_level_failures = [c for c in failures if c not in failed_series]
     real_failed, known_failed = split_failed_series(failed_series)
     real_failed_total = sum(len(v) for v in real_failed.values())
     real_failed_text = format_failed_series(real_failed, limit=30)
+    # Страна с ошибкой — только настоящая ошибка ряда или общий сбой страны. Ряды без ключа API и закрытые
+    # для сервера источники («известно») не красят прогон: 15–19.11 они давали «7 из 10 наборов с ошибкой»
+    # в Пульсе, и новая поломка не отличалась от старых ключей Японии, Кореи и Мексики (20.11.2026).
+    broken = [c for c in countries if c in real_failed or c in country_level_failures]
     async with async_session() as db:
         run = await db.get(WorldIngestRun, run_id)
         assert run is not None
-        run.datasets_succeeded = sum(1 for c in countries if c not in failures)
-        run.datasets_failed = len(failures)
-        if series_failed_text:
-            # Проблемные ряды остаются в журнале прогона, а не только в сводке.
-            note = f"series errors ({series_failed_total}): {series_failed_text}"
+        run.datasets_succeeded = len(countries) - len(broken)
+        run.datasets_failed = len(broken)
+        notes = []
+        if real_failed:
+            # Причина рядом с рядами: журнал прогона читают Пульс и агент, не только сводка в Telegram.
+            notes.append(f"series errors ({real_failed_total}): {failed_reasons_text(real_failed)}")
+        known_text = _known_line(known_failed).strip()
+        if known_text:
+            notes.append(known_text)
+        if notes:
+            note = "; ".join(notes)
             run.error_message = (
                 f"{run.error_message}; {note}" if run.error_message else note
             )[:2000]
-        run.status = "ok" if not failures and not cache_invalidation_error else "partial"
+        run.status = "ok" if not broken and not cache_invalidation_error else "partial"
         if cache_invalidation_error:
             run.error_message = (
                 f"{run.error_message}; {cache_invalidation_error}"

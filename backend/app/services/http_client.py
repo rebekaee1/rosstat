@@ -245,10 +245,16 @@ class ProxyFallbackSession(requests.Session):
         self,
         proxy_url: str | None = None,
         socks_url: str | None = None,
+        *,
+        remember_detour: bool = False,
     ):
         super().__init__()
         self._proxy_url = (proxy_url or "").strip() or None
         self._socks_url = (socks_url or "").strip() or None
+        # Обход, запомненный для хоста (20.11.2026): хост, закрытый для сети сервера, этой сессией идёт сразу
+        # через сработавший прокси-хоп, а не ждёт каждый раз прямой таймаут. Выключено для ETL России.
+        self._remember_detour = remember_detour
+        self._detour_until: dict[str, tuple[int, float]] = {}
 
     def _fallback_urls(self) -> list[str]:
         out: list[str] = []
@@ -261,6 +267,9 @@ class ProxyFallbackSession(requests.Session):
         if "_proxy_hop" in kwargs or kwargs.get("proxies"):
             return self._request_hop(method, url, **kwargs)
         host = _host(url)
+        detoured = self._try_detour(method, url, host, kwargs)
+        if detoured is not None:
+            return detoured
         left = _host_down_remaining(host) if host else 0.0
         if left:
             # Без записи парсеры, глотающие ошибку (недельные цены, недельная инфляция), давали «0 точек, смена вёрстки?».
@@ -300,6 +309,36 @@ class ProxyFallbackSession(requests.Session):
         if resp.status_code >= 500 or resp.status_code in _PROXY_FALLBACK_STATUSES:
             record_fetch_issue(f"{host or url}: HTTP {resp.status_code}")
         return resp
+
+    def _try_detour(
+        self, method: str, url: str, host: str, kwargs: dict[str, Any],
+    ) -> requests.Response | None:
+        """Запомненный обход: сразу через прокси-хоп; при его сбое обход забывается и идёт обычная цепочка."""
+        if not self._remember_detour or not host:
+            return None
+        hop, until = self._detour_until.get(host, (0, 0.0))
+        fallbacks = self._fallback_urls()
+        if until <= time.monotonic() or hop >= len(fallbacks):
+            self._detour_until.pop(host, None)
+            return None
+        try:
+            resp = self._request_hop(
+                method, url, _proxy_hop=hop + 1, proxies=_proxy_dict(fallbacks[hop]),
+                **{k: v for k, v in kwargs.items() if k != "proxies"},
+            )
+        except _PROXY_FALLBACK_EXC:
+            self._detour_until.pop(host, None)
+            return None
+        if resp.status_code in _PROXY_FALLBACK_STATUSES:
+            self._detour_until.pop(host, None)
+            return None
+        return resp
+
+    def _remember(self, url: str, hop: int, resp: requests.Response) -> None:
+        if self._remember_detour and resp.status_code not in _PROXY_FALLBACK_STATUSES:
+            host = _host(url)
+            if host:
+                self._detour_until[host] = (hop, time.monotonic() + HOP_BREAKER_COOLDOWN_S)
 
     def _request_hop(self, method: str, url: str, **kwargs: Any) -> requests.Response:
         hop = int(kwargs.pop("_proxy_hop", 0))
@@ -378,9 +417,11 @@ class ProxyFallbackSession(requests.Session):
         недоступным: возвращаем исходный ответ вместо `ConnectionError`, иначе сработает предохранитель хоста.
         """
         try:
-            return self._request_hop(
+            resp = self._request_hop(
                 method, url, _proxy_hop=hop + 1, proxies=_proxy_dict(nxt), **kwargs,
             )
+            self._remember(url, hop, resp)
+            return resp
         except _PROXY_FALLBACK_EXC:
             _mark_hop_down(_host(url), nxt)
             if banned_resp is not None:
@@ -390,6 +431,26 @@ class ProxyFallbackSession(requests.Session):
                 )
                 return banned_resp
             raise
+
+
+def create_source_session(
+    *,
+    adapter: HTTPAdapter | None = None,
+    timeout: int = 60,
+) -> ProxyFallbackSession:
+    """Сессия официального источника, который может закрыть сеть сервера (мировые адаптеры, 20.11.2026).
+
+    Сначала прямой запрос; отказ сети (таймаут, обрыв) или бан-статус 403/407/429/503 — повтор через ETL-прокси
+    (HTTP, затем SOCKS), и хост дальше идёт сразу через сработавший хоп. Своих заголовков и повторов не добавляет:
+    их задаёт адаптер. Без настроенных прокси ведёт себя как обычная сессия.
+    """
+    s = ProxyFallbackSession(
+        proxy_url=resolve_etl_proxy_url(), socks_url=resolve_etl_socks_url(), remember_detour=True,
+    )
+    mounted = adapter or _TimeoutAdapter(timeout=timeout, max_retries=0)
+    s.mount("https://", mounted)
+    s.mount("http://", mounted)
+    return s
 
 
 def create_session(

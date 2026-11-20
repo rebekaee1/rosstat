@@ -41,6 +41,8 @@ from typing import Any, AsyncIterator, Mapping, Sequence
 
 import requests
 
+from app.services.http_client import create_source_session
+
 from app.services.world_source_adapter import (
     WorldDatasetVersion,
     WorldObservation,
@@ -283,7 +285,7 @@ class StatCanWdsAdapter:
                 "StatCanWdsAdapter requires at least one curated StatCanCubeSpec"
             )
         self._cubes = tuple(cubes)
-        self._session = session or requests.Session()
+        self._session = session or create_source_session()
         self._timeout = timeout
         self._base_url = base_url.rstrip("/")
         self._latest_n = latest_n

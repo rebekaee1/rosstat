@@ -534,7 +534,17 @@ scheduler `RUSTATS_BANXICO_API_TOKEN`, `RUSTATS_ECOS_API_KEY`, `RUSTATS_ESTAT_AP
 `/opt/rosstat/.env`, ни в его резервных копиях с 27.08 этих строк нет — 18 рядов (MX 7, KR 8, JP 3)
 не заливаются, `world_dataset_state.status='error'`; запись про токен Banxico «задан» от 29.08 выше
 устарела. NBS (Китай), RBA (Австралия) и RBI (Индия) отвечают 403 с IP прода — внешний отказ, не
-ошибка парсера. **Коммит после каждого ряда (28.10.2026):** `ingest_series` читает сеть до SAVEPOINT,
+ошибка парсера. **Сеть сервера закрыта у новых источников (20.11.2026, проверено чтением с прода):**
+StatCan WDS с 17.11 отвечает серверу 403 «Security Check», MoSPI (`api.mospi.gov.in`) с 18.11 не
+принимает соединение, CFETS (`chinamoney.com.cn`) с 19.11 молчит до read timeout; с Mac и через
+ETL-релей (`resolve_etl_proxy_url`, тот же HTTP-хоп, что у ЕМИСС) все три отдают 200, RBI-архив ставки
+тоже 200, RBA и NBS — 403 и через релей, Tor из контейнера не соединяется. Адаптеры StatCan, MoSPI
+(и MoSPI-часть RBI), CFETS и HTML-архив RBI берут `http_client.create_source_session()`: direct →
+релей → SOCKS, сработавший хоп запоминается на хост на 20 минут (без этого MoSPI ждал бы прямой
+таймаут на каждой странице). ABS 19.11 отвечал 504 на всё за ночь — сбой источника, 20.11 прямой
+запрос снова 200. Журнал `world_ingest_runs` с 20.11 считает страной с ошибкой только настоящую
+ошибку (нет ключа и закрытый источник — строка «известно») и пишет причину на страну.
+**Коммит после каждого ряда (28.10.2026):** `ingest_series` читает сеть до SAVEPOINT,
 `run_national_core_ingest` коммитит после ряда (`ingest_country(..., commit_each_series=True)`);
 до этого транзакция страны ждала медленный BCB SGS дольше `idle_in_transaction_session_timeout`
 (120 с), Postgres рвал соединение (`PendingRollbackError`), и данные Бразилии откатывались целиком
