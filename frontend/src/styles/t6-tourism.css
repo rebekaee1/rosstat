@@ -233,3 +233,36 @@
 .t6-countries + .t6-more { margin-top: 14px; }
 
 @media (prefers-reduced-motion: reduce) { .t6-more__icon { transition: none; } }
+
+/* z3 (20.11.2026): свёрнутые группы вместо карточек «топ-3» и плиток стран; один список «Куда ездят россияне». */
+.t6-group > summary { list-style: none; cursor: pointer; margin-bottom: 0; align-items: center; min-height: 44px; }
+.t6-group > summary::-webkit-details-marker { display: none; }
+.t6-group__head .t6-group__title { flex: 1; min-width: 0; }
+.t6-group__chev { flex: none; color: var(--color-text-tertiary); transition: transform 0.25s var(--fe-ease-reveal, ease); }
+.t6-group[open] > summary .t6-group__chev { transform: rotate(180deg); }
+.t6-group[open] > summary { margin-bottom: 6px; }
+.t6-groups--rest { grid-template-columns: 1fr; gap: 10px; }
+.t6-groups--rest > .t6-floor__sub { margin: 0 0 4px; }
+.t6-group { padding: 6px 20px; }
+.t6-group[open] { padding-bottom: 14px; }
+
+.t6-trips__list { list-style: none; margin: 0; padding: 6px 20px; border-radius: 1.5rem; counter-reset: trip; max-width: 36rem; }
+.t6-trip {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: baseline;
+  gap: 4px 14px;
+  min-height: 48px;
+  padding: 12px 0;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text-tertiary) 14%, transparent);
+}
+.t6-trips__list li:last-child .t6-trip { border-bottom: 0; }
+.t6-trip__name { overflow-wrap: anywhere; font-weight: 600; }
+.t6-trip__period { color: var(--color-text-tertiary); font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
+.t6-trip__v { font-variant-numeric: tabular-nums; font-weight: 640; text-align: right; white-space: nowrap; }
+.t6-trip__v small { margin-left: 4px; color: var(--color-text-tertiary); font-size: 0.75rem; font-weight: 500; }
+@media (hover: hover) { .t6-trip:hover .t6-trip__name { color: var(--color-champagne-ink); } }
+.t6-trips__all { margin: 14px 0 0; font-size: 0.9375rem; }
+@media (prefers-reduced-motion: reduce) { .t6-group__chev { transition: none; } }
