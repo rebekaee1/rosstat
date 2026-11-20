@@ -140,7 +140,13 @@ export default function CategoryPage({ fixedSlug }) {
   const allIndicators = (indicators ?? []).filter(
     (i) => (i.category_ru || i.category) === cat.apiCategory,
   );
-  const filtered = allIndicators.filter(isIndicatorListed);
+  const listed = allIndicators.filter(isIndicatorListed);
+  // Раздел с заданным порядком первых карточек (Туризм): флагманы первыми, остальные — как пришли.
+  const lead = cat.leadCodes?.length ? new Map(cat.leadCodes.map((code, i) => [code, i])) : null;
+  const filtered = lead
+    ? listed.map((ind, i) => [ind, lead.has(ind.code) ? lead.get(ind.code) : lead.size + i])
+      .sort((a, b) => a[1] - b[1]).map(([ind]) => ind)
+    : listed;
   const commonPhrase = commonTilePhrase(filtered, t, locale);
   // Короткие списки ежедневных котировок (курсы, крипто) — компактными строками с мини-графиком,
   // а не стопкой больших карточек.

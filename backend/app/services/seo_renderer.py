@@ -2893,6 +2893,11 @@ async def render_category_html(slug: str, db: AsyncSession) -> tuple[int, str]:
         db, category=category.api_category, listed_only=True
     )
     indicators = _sort_indicators_for_seo(indicators, category)
+    if slug == "tourism":
+        from app.services.tourism_showcase import RUSSIA_LEAD_CODES
+
+        lead = {code: i for i, code in enumerate(RUSSIA_LEAD_CODES)}
+        indicators = sorted(indicators, key=lambda ind: lead.get(ind.code, len(lead)))
     links = tuple(
         (paths.russia_indicator(ind.code), public_name(ind.name, ind.name_en))
         for ind in indicators

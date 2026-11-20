@@ -178,3 +178,58 @@
 @media (prefers-reduced-motion: reduce) {
   .t6-jump__link::after, .t6-card__more svg, .t6-row__arrow { transition: none; }
 }
+
+/* Второй заход (по данным стенда): группа карточки, смысловые группы регионов, «Показать все», плитки стран. */
+.t6-card__group {
+  margin: 0 0 -4px;
+  color: var(--color-text-tertiary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.t6-groups {
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  gap: 18px;
+  align-items: start;
+}
+.t6-group { padding: 18px 20px 14px; border-radius: 1.5rem; }
+.t6-group__head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+.t6-group__title { margin: 0; color: var(--color-text-primary); font-size: 1rem; font-weight: 640; letter-spacing: -0.01em; }
+.t6-group__list { list-style: none; margin: 0; padding: 0; }
+.t6-line {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 0;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.t6-line__name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+@media (hover: hover) { .t6-line:hover { color: var(--color-text-primary); } }
+
+.t6-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 6px 0;
+  background: none;
+  border: 0;
+  color: var(--color-champagne-ink);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.t6-more__icon { transition: transform 0.25s var(--fe-ease-reveal, ease); }
+.t6-more__icon.is-open { transform: rotate(180deg); }
+.t6-countries + .t6-more { margin-top: 14px; }
+
+@media (prefers-reduced-motion: reduce) { .t6-more__icon { transition: none; } }

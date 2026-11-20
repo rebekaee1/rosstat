@@ -233,6 +233,9 @@ const CATEGORY_DEFS = [
     apiCategory: 'Туризм',
     status: 'active',
     flagshipCode: 'tour-outbound-trips',
+    // Порядок первых карточек раздела (зеркало backend tourism_showcase.RUSSIA_LEAD_CODES): потоки и деньги раньше ёмкости.
+    leadCodes: ['tour-outbound-trips', 'tour-inbound-trips', 'tour-hotel-nights-monthly', 'tour-travel-imports',
+      'tour-travel-exports', 'tour-gva-share', 'tour-hotel-guests', 'tour-travel-balance'],
     sentiment: 'neutral',
     description: 'Поездки россиян по стране и за границу, въезд иностранцев. Гостиницы, ночёвки, санатории, турфирмы. Траты туристов. Регионы России и страны мира.',
     descriptionEn:

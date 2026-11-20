@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 // Раздел «Туризм» (20.11.2026): этажи «Регионы России» и «Мир», навигация по этажам, пустые этажи не рисуются.
 import { afterEach, expect, it, vi } from 'vitest';
-import { cleanup, render, screen, within } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import TourismFloors, { TourismJump } from './TourismFloors';
 
@@ -18,9 +18,11 @@ const FULL = {
   russia: { count: 3, path: '/russia/category/tourism' },
   regions: {
     count: 2,
+    groups: ['flows', 'stay', 'business'],
     items: [
       {
         code: 'kollektivnye-sredstva', name: 'Коллективные средства размещения', unit: 'единица', year: 2024,
+        group: 'stay', path: '/russia/region-rating/kollektivnye-sredstva',
         period: 2024, rating_path: '/russia/region-rating/kollektivnye-sredstva',
         map_path: '/russia/region/map/kollektivnye-sredstva',
         leaders: [
@@ -28,7 +30,9 @@ const FULL = {
           { slug: 'moskva', name: 'г. Москва', value: 1500.4, path: '/russia/region/moskva/kollektivnye-sredstva' },
         ],
       },
-      { code: 'turfirmy', name: 'Туристские фирмы', unit: 'единица', year: 2023, rating_path: '/russia/region-rating/turfirmy', map_path: '/russia/region/map/turfirmy' },
+      { code: 'turfirmy', name: 'Туристские фирмы', unit: 'единица', year: 2023, group: 'business', path: '/russia/region-rating/turfirmy', rating_path: '/russia/region-rating/turfirmy', map_path: '/russia/region/map/turfirmy' },
+      { code: 'gosti-mes', name: 'Гости гостиниц за месяц', unit: 'тыс.', year: 2026, group: 'flows', path: '/russia/region/russia/gosti-mes', rating_path: null, map_path: null },
+      ...Array.from({ length: 6 }, (_, i) => ({ code: `dest-${i}`, name: `Туристы, отправленные турфирмами: страна ${i}`, year: 2025, group: 'flows', path: `/russia/region-rating/dest-${i}` })),
     ],
   },
   world: {
@@ -54,8 +58,22 @@ it('показывает три первых региона в карточке 
   expect(card.querySelector('.t6-rank__v').textContent.replace(/\s/g, '')).toBe('2600');
   expect(within(card).getByRole('link', { name: 'tourism.regions.map' }).getAttribute('href'))
     .toBe('/russia/region/map/kollektivnye-sredstva');
-  const rest = regions.querySelector('.t6-rows');
-  expect(within(rest).getByRole('link', { name: /Туристские фирмы/ }).getAttribute('href')).toBe('/russia/region-rating/turfirmy');
+  const groups = [...regions.querySelectorAll('.t6-group__title')].map((h) => h.textContent);
+  expect(groups).toEqual(['tourism.group.flows', 'tourism.group.stay', 'tourism.group.business']);
+  expect(within(regions).getByRole('link', { name: /Туристские фирмы/ }).getAttribute('href')).toBe('/russia/region-rating/turfirmy');
+});
+
+it('месячный ряд без страницы рейтинга ведёт на ряд по России, группа из 7 строк свёрнута до 5', () => {
+  state.data = FULL;
+  mount();
+  const regions = document.getElementById('tourism-regions');
+  expect(within(regions).getByRole('link', { name: /Гости гостиниц за месяц/ }).getAttribute('href')).toBe('/russia/region/russia/gosti-mes');
+  const flows = document.getElementById('t6-group-flows');
+  expect(flows.querySelectorAll('li')).toHaveLength(5);
+  const more = within(regions).getByRole('button', { name: /tourism.showAll/ });
+  expect(more.getAttribute('aria-expanded')).toBe('false');
+  fireEvent.click(more);
+  expect(flows.querySelectorAll('li')).toHaveLength(7);
 });
 
 it('мир: рейтинги стран и страны с прямыми ссылками на ряды', () => {
