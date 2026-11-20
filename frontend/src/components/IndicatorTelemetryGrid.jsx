@@ -5,7 +5,7 @@ import { dataModeForPpiUrlMode } from '../lib/ppiViewModeResolve';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { glueDate, periodPhrase, sincePhrase } from '../lib/periodPhrase';
 import {
-  bestGrowth, dataDigitsOf, formatTileValue, growthOverYears, unitKind, windowStats,
+  bestGrowth, dataDigitsOf, formatTileValue, isGrowthBaseReliable, sameYearChange, unitKind, windowStats,
 } from '../lib/indicatorSummary';
 import { pluralRu } from '../lib/worldApi';
 import { visibleRangeStats } from '../lib/rangeStats';
@@ -150,11 +150,6 @@ export default function IndicatorTelemetryGrid({
   const sv = (v) => (scale && v != null && Number.isFinite(Number(v)) ? Number(v) / scale.div : v);
   const cardUnit = scale ? scale.unit : displayUnit;
   const valueDigits = scale ? scale.digits : baseDigits;
-  const previousValue = s?.previousValue ?? indicator?.previous_value;
-  const pctChange = unit === 'индекс' && previousValue && !heroOverride
-    ? +(((s?.currentValue ?? adj(indicator?.current_value)) - previousValue) / previousValue * 100).toFixed(2)
-    : undefined;
-
   const currentDate = s?.currentDate ?? indicator?.current_date;
   const currentMeta = dataMode === 'weekly' && Number(s?.currentValue) === 0
     ? t('w3.tele.flatPrices', { date: formatDate(currentDate, dateFmt, locale) })
@@ -163,12 +158,16 @@ export default function IndicatorTelemetryGrid({
 
   // Среднее и «исторический максимум» у денег, индексов и объёмов ничего не говорят: вместо них рост за год и за десять лет.
   const growthMode = Array.isArray(points) && points.length > 1 && unitKind(unit) !== 'rate';
-  const yearGrowth = growthMode ? growthOverYears(points, 1, { maxGapDays: 120 }) : null;
-  const longGrowth = growthMode ? bestGrowth(points) : null;
-  const yearsWord = (n) => (locale === 'en'
-    ? t(`w2.span.years.${n === 1 ? 'one' : 'many'}`)
-    : pluralRu(n, [t('w2.span.years.one'), t('w2.span.years.few'), t('w2.span.years.many')]));
-
+  // «К году» — тот же период прошлого года (II кв. к II кв.), без допуска в четыре месяца.
+  const yearGrowth = growthMode ? sameYearChange(points, indicator?.frequency) : null;
+  // «Рост за 10 лет» только от надёжной базы: не от почти нуля и не от точки у пропуска в ряду (Турция «1 676 %», Греция «−98,7 %»).
+  const rawLong = growthMode ? bestGrowth(points) : null;
+  const longGrowth = rawLong && isGrowthBaseReliable(points, rawLong, indicator?.frequency) ? rawLong : null;
+  // Подпись называет базовый период: «К II кв. 2016»; у месячных рядов «Рост с августа 2016» (падеж).
+  const baseDate = (fmt) => glueDate(formatDate(longGrowth.from.date, fmt, locale));
+  const longLabel = !longGrowth ? '' : (dateFmt === 'quarterly' || dateFmt === 'annual' || dateFmt === 'day' || dateFmt === 'weekly'
+    ? t('kt1_tile_toBase', { date: baseDate(dateFmt) })
+    : t('kt1_tile_sinceBase', { date: baseDate(dateFmt === 'full' ? 'fullGen' : dateFmt) }));
   // Максимум и среднее за всю историю (в России это 1990-е, «2 508 %») ничего не говорят: у ряда длиннее десяти лет берём последние десять.
   const win = !growthMode && Array.isArray(windowPoints) ? windowStats(windowPoints, 10) : null;
   const tenYears = win && win.years >= 10 ? win : null;
@@ -185,21 +184,24 @@ export default function IndicatorTelemetryGrid({
     return t(`c11f.tele.${kind}.${form}`, { n: chosen.years });
   };
 
+  // «Текущее значение» повторяет число шапки: его убрали. Остаются карточки с названием преобразования («Год к году»), у которых своё число.
+  const showCurrent = heroOverride || currentLabel !== t('indicator.telemetry.current');
+
   return (
     <section className="fe-tele-section">
       <div className="fe-tele-grid">
-        <TelemetryCard
-          label={currentLabel}
-          value={sv(currentValue)}
-          unit={scale ? cardUnit : heroUnit}
-          valueDigits={valueDigits}
-          change={heroOverride ? undefined : sv(s?.change ?? indicator?.change)}
-          pctChange={heroOverride ? undefined : pctChange}
-          meta={currentMeta}
-          delay={0}
-          deltaSuffix={deltaSuffix}
-          polarity={polarity}
-        />
+        {showCurrent && (
+          <TelemetryCard
+            label={currentLabel}
+            value={sv(currentValue)}
+            unit={scale ? cardUnit : heroUnit}
+            valueDigits={valueDigits}
+            meta={currentMeta}
+            delay={0}
+            deltaSuffix={deltaSuffix}
+            polarity={polarity}
+          />
+        )}
         <TelemetryCard
           label={previousLabel}
           value={sv(s?.previousValue ?? adj(indicator?.previous_value))}
@@ -220,11 +222,10 @@ export default function IndicatorTelemetryGrid({
         )}
         {growthMode && longGrowth && (
           <TelemetryCard
-            label={t('w6e.tile.growth', { n: longGrowth.years, word: yearsWord(longGrowth.years) })}
+            label={longLabel}
             value={longGrowth.pct}
             unit="%"
             valueDigits={Math.abs(longGrowth.pct) >= 100 ? 0 : 1}
-            meta={sincePhrase(t, longGrowth.from.date, dateFmt, locale)}
             delay={3}
           />
         )}

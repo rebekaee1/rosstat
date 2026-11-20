@@ -36,24 +36,26 @@ const DATA = (lastYear) => ({
   count: 8,
 });
 
-function renderCard({ lastYear = 2025, renderActions } = {}) {
+function renderCard({ lastYear = 2025, renderActions, description, locale } = {}) {
+  const meta = description ? { ...META, indicator: { ...META.indicator, description } } : META;
   mockApiGet([
     ['/auth/me', { user: null }],
-    [/^\/world\/indicators\/turkey\/tr-gdp$/, META],
+    [/^\/world\/indicators\/turkey\/tr-gdp$/, meta],
     [/^\/world\/indicators\/turkey\/tr-gdp\/data/, DATA(lastYear)],
     [/^\/world\/compare/, { items: [{ country_code: 'TR', value: 1 }], concept: { value_mode: 'level' } }],
     [/^\/world\/countries\/turkey$/, { country: META.country, categories: [], overview: [] }],
   ]);
   return renderPage(<WorldIndicatorPage renderActions={renderActions} />, {
-    path: '/:countrySlug/indicator/:code', route: '/turkey/indicator/tr-gdp',
+    path: '/:countrySlug/indicator/:code', route: '/turkey/indicator/tr-gdp', locale,
   });
 }
 
 describe('WorldIndicatorPage: круг 11 (F)', () => {
   it('рядом с главным числом значок «Данные до …»; устаревший ряд называется устаревшим', async () => {
     const { unmount } = renderCard({ lastYear: 2025 });
+    // Круг наблюдателей: у главного числа строки «Данные до…» больше нет, пометка осталась в строке под названием.
     const badge = await waitFor(() => {
-      const found = document.querySelector('.z4-hv [data-testid="data-freshness"]');
+      const found = document.querySelector('.z4-hero__line [data-testid="data-freshness"]');
       expect(found).toBeTruthy();
       return found;
     });
@@ -62,14 +64,13 @@ describe('WorldIndicatorPage: круг 11 (F)', () => {
     unmount();
     renderCard({ lastYear: 2022 });
     const stale = await waitFor(() => {
-      const found = document.querySelector('.z4-hv [data-testid="data-freshness"]');
+      const found = document.querySelector('.z4-hero__line [data-testid="data-freshness"]');
       expect(found).toBeTruthy();
       return found;
     });
     expect(stale.getAttribute('data-level')).toBe('stale');
     expect(stale.textContent).toContain('Устарело');
-    // Та же пометка стоит в строке под названием (телефон и планшет).
-    expect(document.querySelector('.z4-hero__line [data-testid="data-freshness"]')).toBeTruthy();
+    expect(document.querySelector('.z4-hv [data-testid="data-freshness"]')).toBeNull();
   });
 
   it('под «О показателе» страны с тем же показателем: без текущей, крупные экономики первыми, ссылка ведёт на их страницу', async () => {
@@ -102,5 +103,28 @@ describe('WorldIndicatorPage: круг 11 (F)', () => {
     renderCard();
     await screen.findByTestId('indicator-peers');
     expect(document.querySelector('[data-testid="cabinet-actions"]')).toBeNull();
+  });
+
+  it('пометка принимающей страны выносится в подзаголовок и не повторяется в описании (№41)', async () => {
+    renderCard({ description: 'По данным принимающей страны. Число поездок россиян.' });
+    const note = await screen.findByTestId('host-country-note');
+    expect(note.textContent).toBe('По данным принимающей страны');
+    expect(note.closest('header.z4-hero')).toBeTruthy();
+    const method = document.querySelector('[data-block="methodology"]');
+    expect(method.textContent).toContain('Число поездок россиян.');
+    expect(method.textContent).not.toContain('принимающей страны');
+  });
+
+  it('обычное описание: подзаголовка нет', async () => {
+    renderCard({ description: 'Число поездок россиян.' });
+    await screen.findByTestId('indicator-peers');
+    expect(screen.queryByTestId('host-country-note')).toBeNull();
+  });
+
+  it('английский: «Host-country data» в подзаголовке, без повтора ниже', async () => {
+    renderCard({ locale: 'en', description: 'Host-country data. Trips by Russians.' });
+    const note = await screen.findByTestId('host-country-note');
+    expect(note.textContent).toBe('Host-country data');
+    expect(document.querySelector('[data-block="methodology"]').textContent).not.toContain('Host-country');
   });
 });

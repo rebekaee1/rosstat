@@ -5,7 +5,7 @@ import {
 } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
-  ArrowUpRight, Activity,
+  ArrowUpRight,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { getSiteOrigin } from '../lib/siteOrigin';
@@ -34,7 +34,7 @@ import { formatDate, chartValueDigits, resolveDateFormat } from '../lib/format';
 import { formatOfficialVintage } from '../lib/officialForecast';
 import { indicatorPolarity } from '../lib/deltaTone';
 import {
-  buildIndicatorSummary, isPercentChangeUnit, preferPercentUnit, rankAmongCountries,
+  buildIndicatorSummary, isPercentChangeUnit, preferPercentUnit, rankAmongCountries, splitHostCountryNote,
 } from '../lib/indicatorSummary';
 import { deriveWorldMode } from '../lib/worldDerive';
 import { downloadCSV, downloadExcel } from '../lib/excel';
@@ -438,8 +438,10 @@ export default function WorldIndicatorPage({ renderActions = null } = {}) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indicator?.code, slug, code]);
 
+  // Пометка «По данным принимающей страны» у рядов стран назначения: в подзаголовок под названием, ниже не повторяется.
+  const hostNote = useMemo(() => splitHostCountryNote(indicator?.description), [indicator?.description]);
   const methodologyContent = useMemo(() => {
-    const description = indicator?.description;
+    const description = hostNote.host ? hostNote.rest : indicator?.description;
     const methodology = indicator?.methodology;
     const source = sourceLabel || indicator?.source || (locale === 'en' ? 'the listed source' : 'указанный источник');
     const subject = displayName || indicator?.name_en || (locale === 'en' ? 'This indicator' : 'Показатель');
@@ -463,7 +465,7 @@ export default function WorldIndicatorPage({ renderActions = null } = {}) {
       description: hideRu(description) || fallbackDescription,
       methodology: hideRu(methodology) || fallbackMethodology,
     };
-  }, [indicator?.description, indicator?.methodology, indicator?.source, sourceLabel, displayName, countryName, indicator?.name_en, locale, t]);
+  }, [hostNote, indicator?.description, indicator?.methodology, indicator?.source, sourceLabel, displayName, countryName, indicator?.name_en, locale, t]);
 
   const methodologyIndicator = useMemo(() => {
     if (!indicator) return null;
@@ -573,10 +575,6 @@ export default function WorldIndicatorPage({ renderActions = null } = {}) {
           >
             <div className="z4-hero__main">
               <div className="z4-hero__meta mb-2.5 flex flex-wrap items-center gap-2 sm:gap-3 md:mb-3">
-                <span className="flex items-center gap-2 rounded-full px-3 py-1 text-[13px] font-medium text-text-secondary fe-glass-2">
-                  <Activity className="h-3.5 w-3.5 text-champagne-ink" aria-hidden="true" />
-                  {freqLabel}
-                </span>
                 {countryName && (
                   <Link
                     to={countryPath(slug)}
@@ -599,6 +597,9 @@ export default function WorldIndicatorPage({ renderActions = null } = {}) {
               <h1 className="z4-hero__title text-pretty font-display font-bold tracking-tight text-text-primary">
                 <AccentTitle text={displayName} />
               </h1>
+              {hostNote.host ? (
+                <p className="mt-1 text-sm text-text-secondary" data-testid="host-country-note">{t('kt1_host_note')}</p>
+              ) : null}
               <div className="z4-hero__line">
                 {summary ? (
                   <WorldHeroLine summary={summary} place={countryName} dateFormat={dateFormat} frequency={activeFreq} />

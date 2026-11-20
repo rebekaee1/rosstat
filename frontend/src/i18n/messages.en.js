@@ -4608,4 +4608,11 @@ export default {
   "w6d.search.section.sections": "Sections",
   "tourism.search.section": "Tourism: Russia, regions and the world",
   "tourism.search.sectionHint": "Section: tourist flows, hotels, tourist spending — every indicator",
+  // ===== Tourism observers round, zone z1 =====
+  "kt1_delta_sameYear": "vs the same period last year",
+  "kt1_tile_toBase": "Since {date}",
+  "kt1_tile_sinceBase": "Growth since {date}",
+  "kt1_cite_copy": "Copy",
+  "kt1_cite_copied": "Copied",
+  "kt1_host_note": "Host-country data",
 };

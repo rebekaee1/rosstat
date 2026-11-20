@@ -1,10 +1,13 @@
-import { Info, Database, ExternalLink } from 'lucide-react';
+import { useState } from 'react';
+import { Info, Database, ExternalLink, Copy, Check } from 'lucide-react';
 import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
 import { footerSourceLinks } from '../lib/footerNav';
 import { isExternalHref, pickExternalHref } from '../lib/sourceLink';
 import SourceLink from './SourceLink';
 import { citeText, citeUrl } from '../lib/citeLine';
+import { resolveDateFormat } from '../lib/format';
+import { periodPhrase } from '../lib/periodPhrase';
 import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
 
@@ -35,9 +38,21 @@ export default function IndicatorMethodologyPanel({ indicator, content, sourcePa
     : `Источник: ${sourceName || 'указанный поставщик данных'}. Прогноз, если он доступен, показан отдельно от фактических значений.`);
 
   const pageUrl = citeUrl();
+  // Период данных словами («за II кв. 2026») по частоте ряда и сегодняшняя дата обращения; код периода датой не пишем.
+  const period = periodPhrase(t, indicator?.current_date, resolveDateFormat({ frequency: indicator?.frequency }), locale)?.replace(/\u00A0/g, ' ');
   const cite = indicator?.name && pageUrl
-    ? citeText({ name: indicator.name, source: sourceName, url: pageUrl, asOf: indicator?.current_date, locale })
+    ? citeText({
+      name: indicator.name, source: sourceName, url: pageUrl, asOf: indicator?.current_date, period, accessDate: new Date(), locale,
+    })
     : '';
+  const [copied, setCopied] = useState(false);
+  const copyCite = async () => {
+    try {
+      await navigator.clipboard.writeText(cite);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { /* буфер недоступен: текст виден и выделяется вручную */ }
+  };
 
   return (
     <section data-block="methodology" className="fe-reveal fe-reveal--free fe-info-card" style={{ '--fe-duration': '0.35s', '--fe-rise': '10px' }}>
@@ -74,6 +89,17 @@ export default function IndicatorMethodologyPanel({ indicator, content, sourcePa
       {cite ? (
         <p className="fe-info-card__cite" data-block="cite">
           <span className="fe-info-card__cite-label">{t('indicator.cite')}:</span> {cite}
+          {' '}
+          <button
+            type="button"
+            className="fe-btn fe-btn--secondary fe-press"
+            onClick={copyCite}
+            data-testid="cite-copy"
+            aria-live="polite"
+          >
+            {copied ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
+            <span>{copied ? t('kt1_cite_copied') : t('kt1_cite_copy')}</span>
+          </button>
         </p>
       ) : null}
     </section>

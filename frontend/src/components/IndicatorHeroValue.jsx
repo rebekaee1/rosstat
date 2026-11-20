@@ -6,7 +6,6 @@ import { formatPercentChangeFine } from '../lib/indicatorSummary';
 import { splitUnit } from '../lib/countryFlag';
 import { useLocale, useT } from '../i18n';
 import DeltaBadge from './DeltaBadge';
-import FreshnessBadge from './FreshnessBadge';
 import Sparkline from './Sparkline';
 import { SkeletonBox } from './Skeleton';
 import WorldCountUp from './WorldCountUp';
@@ -70,6 +69,21 @@ export default function IndicatorHeroValue({
         {deltaSuffix ? <span className="z4-hv__since">{deltaSuffix}</span> : null}
       </p>
     );
+  } else if (summary.seasonal && frequency !== 'annual') {
+    // Сезонный ряд (поездки, ночёвки, траты по месяцам и кварталам): одно сравнение, с тем же периодом прошлого года.
+    // «К прошлому кварталу» давало «+38 %» там, где это лето, а не рост. Нет точки год назад: изменения не показываем.
+    const yoy = summary.sameYear;
+    if (yoy) {
+      const pctText = formatPercentChangeFine(yoy.pct, locale);
+      delta = pctText == null ? (
+        <p className="z4-hv__delta"><DeltaBadge delta={0}>{t('w6e.delta.flat')}</DeltaBadge></p>
+      ) : (
+        <p className="z4-hv__delta">
+          <DeltaBadge delta={yoy.pct} polarity={polarity}>{pctText}</DeltaBadge>
+          <span className="z4-hv__since">{t('kt1_delta_sameYear')}</span>
+        </p>
+      );
+    }
   } else if (prev) {
     const useAbs = kind === 'rate';
     const unitText = unitParts.short;
@@ -122,7 +136,6 @@ export default function IndicatorHeroValue({
       </div>
       {plainIndex ? <p className="z4-hv__basis">{unitParts.short}</p> : null}
       {delta}
-      {frequency && last?.date ? <FreshnessBadge lastDate={last.date} frequency={frequency} /> : null}
     </div>
   );
 }

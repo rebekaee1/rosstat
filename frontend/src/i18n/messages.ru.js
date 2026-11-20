@@ -4613,4 +4613,11 @@ export default {
   "w6d.search.section.sections": "Разделы",
   "tourism.search.section": "Туризм: Россия, регионы и мир",
   "tourism.search.sectionHint": "Раздел: турпоток, гостиницы, траты туристов — все показатели",
+  // ===== Круг наблюдателей «Туризм», зона z1 =====
+  "kt1_delta_sameYear": "к тому же периоду прошлого года",
+  "kt1_tile_toBase": "К {date}",
+  "kt1_tile_sinceBase": "Рост с {date}",
+  "kt1_cite_copy": "Скопировать",
+  "kt1_cite_copied": "Скопировано",
+  "kt1_host_note": "По данным принимающей страны",
 };
