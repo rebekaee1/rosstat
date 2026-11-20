@@ -155,6 +155,15 @@ SOURCES: dict[str, dict[str, str]] = {
         "about_en": "Source: Moscow open data portal (data.mos.ru), register of the city's classified "
                     "accommodation. Points are as of the dataset update date (2025: 31 July).",
     },
+    "fns_rsmp": {
+        "ru": "ФНС России, реестр малого и среднего предпринимательства",
+        "en": "Federal Tax Service, SME register",
+        "about_ru": "Источник — единый реестр субъектов малого и среднего предпринимательства ФНС (открытые данные). "
+                    "Считаются организации и предприниматели по основному виду деятельности; крупный бизнес в реестр "
+                    "не входит.",
+        "about_en": "Source: Federal Tax Service unified SME register (open data). Companies and sole proprietors "
+                    "are counted by main activity; large businesses are not in the register.",
+    },
     "sber": {
         "ru": "СберИндекс (приближённая оценка)",
         "en": "SberIndex (approximate estimate)",
@@ -301,16 +310,6 @@ ANNUAL_KSR: tuple[TSeries, ...] = (
             "Номера высшей категории (сюиты, апартаменты, люксы) в гостиницах на конец года.",
             "Top-category rooms (suites, apartments, de luxe) in hotels at year end.",
             "emiss", "6.t9", emiss=Emiss(57731, "единица", seed=False)),
-    TSeries("tour-ksr-nomera-klassificirovannye", "annual",
-            "Номера в средствах размещения, прошедших классификацию",
-            "Rooms in classified accommodation",
-            "номеров", "rooms",
-            "Номера в гостиницах и других средствах размещения, которым присвоена категория (звёзды) или "
-            "«без звёзд» по итогам классификации.",
-            "Rooms in hotels and other accommodation that have been assigned a category (stars or “no stars”) "
-            "through classification.",
-            "emiss", "6.t10", emiss=Emiss(62159, "единица", seed=False,
-                         alt_units=(("тысяча единиц", 1000.0),))),  # стенд 20.11: «тысяча единиц»
 )
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -500,7 +499,9 @@ ANNUAL_FIRMS: tuple[TSeries, ...] = (
 # измерения, которые здесь не названы, загрузчик берёт «итоговым» значением («Всего»).
 
 ANNUAL_PENDING: tuple[TSeries, ...] = (
-    # 62199 на странице — «миллион рублей» (стенд 20.11.2026): это сама валовая добавленная стоимость туриндустрии,
+    # 62159 («номера в классифицированных средствах размещения») — только Россия помесячно, не региональный ряд: снят
+# 21.11.2026 по выгрузке (измерение территорий 3301 с одной строкой РФ).
+# 62199 на странице — «миллион рублей» (стенд 20.11.2026): это сама валовая добавленная стоимость туриндустрии,
     # а доля в ВРП — соседний набор 62197 (каталог ЕМИСС: «ВДС туристской индустрии … и доля в ВРП», 62197/62199).
     # Если у 62197 единица окажется не «процент», загрузчик его пропустит и напишет в лог.
     TSeries("tour-vds-turindustrii", "annual",
@@ -532,14 +533,7 @@ ANNUAL_PENDING: tuple[TSeries, ...] = (
             "sanatorium, tent and school-based camps). Continues the children's camps series closed in 2017.",
             "emiss", "6.t42", first_year=2018, emiss=Emiss(59153, "единица", seed=False),
             keywords="детские лагеря, сколько детских лагерей, летний отдых детей"),
-    TSeries("tour-deti-turpoezdki", "annual",
-            "Доля школьников, совершивших туристские поездки", "Share of schoolchildren who went on tourist trips",
-            "% детей", "% of children",
-            "Доля детей, которые за год хотя бы раз съездили в туристскую или экскурсионную поездку, по данным "
-            "Росстата и Минпросвещения.",
-            "Share of children who went on at least one tourist or excursion trip during the year, Rosstat and "
-            "Ministry of Education data.",
-            "emiss", "6.t41", first_year=2019, emiss=Emiss(60944, "процент", seed=False)),
+    # 60944 «доля детей, совершивших турпоездки» в выгрузке 21.11.2026 — только по России: не региональный ряд, снят.
 )
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -564,7 +558,7 @@ MONTHLY_EMISS: tuple[TSeries, ...] = (
             "тысяч человек", "thousand people",
             _KSR_RU + "Сколько человек остановилось за месяц." + _OPER_RU,
             _KSR_EN + "People who stayed during the month." + _OPER_EN,
-            "emiss", "6.tm2", transform="diff", scale=THOUSAND, first_year=2023,
+            "emiss", "6.tm2", transform="diff", scale=THOUSAND, first_year=2022,
             emiss=Emiss(62073, "человек", periods="ytd", seed=False),
             keywords="сколько туристов в месяц, постояльцы гостиниц"),
     TSeries("tour-ksr-rossiyane-mes", "monthly",
@@ -597,7 +591,7 @@ MONTHLY_EMISS: tuple[TSeries, ...] = (
             "тысяч человек", "thousand people",
             _SAN_RU + "Сколько человек размещено за месяц." + _OPER_RU,
             _SAN_EN + "People accommodated during the month." + _OPER_EN,
-            "emiss", "6.tm6", transform="diff", scale=THOUSAND, first_year=2023,
+            "emiss", "6.tm6", transform="diff", scale=THOUSAND, first_year=2022,
             emiss=Emiss(62074, "человек", periods="ytd", seed=False)),
     TSeries("tour-sanatorii-nochevki-mes", "monthly",
             "Ночёвки в санаториях за месяц", "Nights at sanatoriums per month",
@@ -613,17 +607,12 @@ MONTHLY_EMISS: tuple[TSeries, ...] = (
             _SAN_EN + "Revenue from services excluding VAT during the month." + _OPER_EN,
             "emiss", "6.tm8", transform="diff", scale=THOUSAND, first_year=2023,
             emiss=Emiss(62280, "тысяча рублей", periods="ytd", seed=False)),
-    TSeries("obshchepit-oborot-mes", "monthly",
-            "Оборот общественного питания за месяц", "Food service turnover per month",
-            "миллионов рублей", "RUB million",
-            "Сколько потратили в ресторанах, кафе, столовых и барах региона за месяц, по оценке Росстата. "
-            "Годовой ряд того же показателя — в разделе «Торговля и услуги населению».",
-            "Spending in the region's restaurants, cafés, canteens and bars during the month, Rosstat estimate. "
-            "The annual series is in the Trade and consumer services section.",
-            "emiss", "15.tm1", section=SECTION_TRADE, scale=THOUSAND, first_year=2017,
-            emiss=Emiss(31258, "тысяча рублей", periods="month", seed=False,
-                        alt_units=(("миллион рублей", 1.0), ("миллиард рублей", 1000.0))),
-            keywords="оборот общепита по месяцам, рестораны, кафе"),
+    # 31258: по субъектам — только год («январь-декабрь», с 1970 года), помесячно — только Россия. Продлевает ряд
+    # сборника 15.7 «Оборот общественного питания» (2000–2024; совпадение 2023–2024 до округления) на 2025 год;
+    # годы до 2000 не берутся — до 1998 года старые рубли (21.11.2026, по выгрузке a1).
+    TSeries("oborot-obschestvennogo-pitaniya", "annual", "", "", "", "", "", "", "emiss", "15.7",
+            section=SECTION_TRADE, first_year=2023, min_year=2025, own_metadata=False,
+            emiss=Emiss(31258, "миллион рублей", periods="dec")),
     # Платные услуги населению (57788): гостиницы и специализированные средства размещения (базы отдыха,
     # турбазы, санатории без лечения), миллионы рублей за месяц. У гостиниц Росстат в разные годы называл
     # позицию по-разному — обе подписи, новая первой.
@@ -717,29 +706,93 @@ _CPI_RU = ("Во сколько процентов от цены год наза
 _CPI_EN = "Current price as a percentage of the same month a year earlier: 110 means 10% dearer. Rosstat data."
 
 
-def _cpi(code: str, pattern: str, name_ru: str, name_en: str, table: str, keywords: str) -> TSeries:
+def _cpi(code: str, labels: tuple[str, ...], name_ru: str, name_en: str, table: str, keywords: str = "",
+         first_year: int = 2002) -> TSeries:
+    # Подписи позиций — точно как в наборе 31074 (выгрузка g1 через стенд 20.11.2026); у переименованной позиции —
+    # обе, новая первой. Вид индекса — «к соответствующему периоду предыдущего года».
     return TSeries(code, "monthly", f"Индекс потребительских цен за год: {name_ru}",
                    f"Consumer price index, year on year: {name_en}",
                    "% к тому же месяцу прошлого года", "% of same month a year earlier",
-                   _CPI_RU, _CPI_EN, "emiss", table, section=SECTION_PRICES, first_year=2017,
-                   emiss=Emiss(31074, "процент", periods="month", match=((f"re:{pattern}", _CPI_KIND),), seed=False),
+                   _CPI_RU, _CPI_EN, "emiss", table, section=SECTION_PRICES, first_year=first_year,
+                   emiss=Emiss(31074, "процент", periods="month", seed=False,
+                               match=tuple((label, _CPI_KIND_EXACT) for label in labels)),
                    keywords=keywords)
 
 
+_CPI_KIND_EXACT = "К соответствующему периоду предыдущего года"
+
+# Туристские позиции 31074 (37 в выгрузке): «услуги в сфере зарубежного туризма» уже есть у реестра ИПЦ регионов
+# (ipc-turizm-zarubezhnyy-za-god), «товары для спорта и туризма» — не услуга. Обеды и ужины — общепит (№37): коды без
+# «tour-». Снимка нет: живая загрузка берёт историю с 2002 года целиком (fedstat со стенда отвечает).
 MONTHLY_CPI: tuple[TSeries, ...] = (
-    _cpi("tour-ipc-gostinicy", r"^услуги гостиниц", "гостиницы", "hotels", "20.ct1",
-         "подорожание гостиниц, цены на гостиницы"),
-    _cpi("tour-ipc-gostinica-3", r"^проживание в гостинице 3\*", "гостиница 3*", "3-star hotel", "20.ct2",
-         "цена гостиницы 3 звезды"),
-    _cpi("tour-ipc-sanatorii", r"^санаторно-оздоровительные услуги", "санаторно-оздоровительные услуги",
-         "health resort services", "20.ct3", "подорожание санаториев, цены на санатории"),
-    _cpi("tour-ipc-sanatoriy-den", r"^санаторий", "санаторий", "sanatorium", "20.ct4", "цена санатория"),
-    _cpi("tour-ipc-ekskursii", r"^экскурсионн", "экскурсионные услуги", "excursions", "20.ct5",
+    _cpi("tour-ipc-turizm", ("Услуги в сфере туризма",), "туристские услуги", "tourism services", "20.ct1",
+         "подорожание туров, инфляция в туризме"),
+    _cpi("tour-ipc-vnutrenniy-turizm", ("Услуги в сфере внутреннего туризма",), "внутренний туризм",
+         "domestic tourism", "20.ct2", "подорожание отдыха в России"),
+    _cpi("tour-ipc-gostinicy", ("Услуги гостиниц и прочих мест проживания", "Услуги гостиниц"), "гостиницы",
+         "hotels", "20.ct3", "подорожание гостиниц, цены на гостиницы"),
+    _cpi("tour-ipc-sanatorii", ("Санаторно-оздоровительные услуги",), "санаторно-оздоровительные услуги",
+         "health resort services", "20.ct4", "подорожание санаториев"),
+    _cpi("tour-ipc-sanatoriy-den", ("Санаторий, день",), "санаторий", "sanatorium", "20.ct5", "цена санатория"),
+    _cpi("tour-ipc-dom-otdyha", ("Дом отдыха, пансионат, день",), "дом отдыха, пансионат", "rest home",
+         "20.ct6"),
+    _cpi("tour-ipc-ekskursii", ("Экскурсионные услуги",), "экскурсионные услуги", "excursions", "20.ct7",
          "цены на экскурсии"),
-    _cpi("tour-ipc-chernomore", r"^поездка на черноморское побережье", "поездка на Черноморское побережье",
-         "trip to the Black Sea coast", "20.ct6", "цена поездки на море, отдых на Черном море"),
-    _cpi("tour-ipc-turciya", r"^поездка на отдых в турцию", "поездка в Турцию", "trip to Turkey", "20.ct7",
-         "подорожание туров в Турцию"),
+    _cpi("tour-ipc-ekskursiya-avtobusnaya", ("Экскурсия автобусная, час",), "автобусная экскурсия",
+         "bus excursion", "20.ct8"),
+    _cpi("tour-ipc-gostinica", ("Проживание в гостинице, сутки с человека",), "проживание в гостинице",
+         "hotel stay", "20.ct9"),
+    _cpi("tour-ipc-gostinica-1", ("Проживание в гостинице 1* или в мотеле, сутки с человека",),
+         "гостиница 1* или мотель", "1-star hotel or motel", "20.ct14"),
+    _cpi("tour-ipc-gostinica-2", ("Проживание в гостинице 2*, сутки с человека",), "гостиница 2*",
+         "2-star hotel", "20.ct15"),
+    _cpi("tour-ipc-gostinica-3", ("Проживание в гостинице 3*, сутки с человека",), "гостиница 3*",
+         "3-star hotel", "20.ct16", "цена гостиницы 3 звезды"),
+    _cpi("tour-ipc-gostinica-4-5", ("Проживание в гостинице 4*-5*, сутки с человека",), "гостиница 4–5*",
+         "4–5-star hotel", "20.ct17"),
+    _cpi("tour-ipc-hostel", ("Проживание в хостеле, сутки с человека",), "хостел", "hostel", "20.ct18"),
+    _cpi("tour-ipc-turciya", ("Поездка на отдых в Турцию, поездка",), "поездка в Турцию", "trip to Turkey",
+         "20.ct19", "подорожание туров в Турцию"),
+    _cpi("tour-ipc-egipet", ("Поездка на отдых в Египет, поездка",), "поездка в Египет", "trip to Egypt",
+         "20.ct22", "подорожание туров в Египет"),
+    _cpi("tour-ipc-oae", ("Поездка на отдых в ОАЭ, поездка",), "поездка в ОАЭ", "trip to the UAE", "20.ct23"),
+    _cpi("tour-ipc-tailand", ("Поездка на отдых в Таиланд, поездка",), "поездка в Таиланд", "trip to Thailand",
+         "20.ct24"),
+    _cpi("tour-ipc-ispaniya", ("Поездка на отдых в Испанию, поездка",), "поездка в Испанию", "trip to Spain",
+         "20.ct25"),
+    _cpi("tour-ipc-chernomore", ("Поездка на отдых на Черноморское побережье России, поездка",),
+         "поездка на Черноморское побережье", "trip to the Black Sea coast", "20.ct26",
+         "цена поездки на море, отдых на Черном море"),
+    _cpi("tour-ipc-rechnoy-kruiz", ("Речной круиз на территории России, поездка",), "речной круиз",
+         "river cruise", "20.ct27"),
+    _cpi("tour-ipc-tury-po-rossii", ("Экскурсионные туры по России, поездка",), "экскурсионные туры по России",
+         "sightseeing tours in Russia", "20.ct28"),
+    _cpi("tour-ipc-yugo-vostochnaya-aziya", ("Поездки в отдельные страны Юго-Восточной Азии, поездка",),
+         "поездки в Юго-Восточную Азию", "trips to South-East Asia", "20.ct29"),
+    _cpi("tour-ipc-srednyaya-aziya", ("Поездки в отдельные страны Средней Азии, поездка",),
+         "поездки в Среднюю Азию", "trips to Central Asia", "20.ct30"),
+    _cpi("tour-ipc-zakavkazye", ("Поездки в страны Закавказья, поездка",), "поездки в Закавказье",
+         "trips to the South Caucasus", "20.ct31"),
+    _cpi("tour-ipc-sredizemnomorye", ("Поездки в отдельные страны Средиземноморья, поездка",),
+         "поездки в страны Средиземноморья", "trips to the Mediterranean", "20.ct32"),
+    _cpi("tour-ipc-blizhniy-vostok", ("Поездки в отдельные страны Ближнего Востока, поездка",),
+         "поездки на Ближний Восток", "trips to the Middle East", "20.ct33"),
+    _cpi("tour-ipc-yuzhnaya-aziya", ("Поездки в отдельные страны Южной Азии, поездка",),
+         "поездки в Южную Азию", "trips to South Asia", "20.ct34"),
+    _cpi("tour-ipc-franciya", ("Экскурсионная поездка во Францию, поездка",), "экскурсионная поездка во Францию",
+         "sightseeing trip to France", "20.ct35"),
+    _cpi("tour-ipc-germaniya", ("Экскурсионная поездка в Германию, поездка",),
+         "экскурсионная поездка в Германию", "sightseeing trip to Germany", "20.ct36"),
+    _cpi("tour-ipc-finlyandiya", ("Экскурсионная поездка в Финляндию, поездка",),
+         "экскурсионная поездка в Финляндию", "sightseeing trip to Finland", "20.ct37"),
+    _cpi("tour-ipc-evropa-avtobus", ("Экскурсионная поездка на автобусе по городам Европы, поездка",),
+         "автобусный тур по Европе", "coach tour of Europe", "20.ct38"),
+    _cpi("ipc-obed-v-restorane", ("Обед в ресторане, на 1 человека",), "обед в ресторане",
+         "lunch in a restaurant", "20.ct39"),
+    _cpi("ipc-uzhin-v-restorane", ("Ужин в ресторане, на 1 человека",), "ужин в ресторане",
+         "dinner in a restaurant", "20.ct40"),
+    _cpi("ipc-obed-v-stolovoy", ("Обед в столовой, кафе, закусочной (кроме столовой в организации), на 1 человека",),
+         "обед в столовой, кафе", "lunch in a canteen or café", "20.ct41"),
 )
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -1063,6 +1116,75 @@ PUBLICATIONS: tuple[TSeries, ...] = (
             "rosstat_calc", "6.t93", first_year=2002, keywords="загрузка гостиниц, заполняемость отелей"),
 )
 
+# Добор 21.11.2026 (g1, выгрузка ЕМИСС через стенд и реестр МСП): оборот и работники гостиниц и турагентств помесячно,
+# инвестиции по годам, число малых и средних предприятий по видам деятельности. Общепит — раздел 15 (№37).
+_LARGE_SMALL = "Крупные, средние и малые организации"
+_INVEST_SCOPE = ("Крупные и средние организации и организации с численностью работников до 15 человек, не являющиеся "
+                 "субъектами малого предпринимательства")
+_HOTELS = "Деятельность гостиниц и прочих мест для временного проживания"
+_AGENCIES = "Деятельность туристических агентств и прочих организаций, предоставляющих услуги в сфере туризма"
+_FOOD = "Деятельность по предоставлению продуктов питания и напитков"
+_SANATORIUMS = "Деятельность санаторно-курортных организаций"
+_TURNOVER_RU = ("Выручка организаций за месяц от продажи товаров и услуг, без НДС; крупные, средние и малые "
+                "организации. Данные Росстата.")
+_TURNOVER_EN = "Revenue of organisations from sales of goods and services during the month, excl. VAT. Rosstat data."
+_STAFF_RU = "Среднесписочная численность работников за месяц, все организации. Данные Росстата."
+_STAFF_EN = "Average number of employees during the month, all organisations. Rosstat data."
+_INVEST_RU = ("Инвестиции в основной капитал за год: крупные и средние организации (без малого бизнеса). "
+              "Данные Росстата.")
+_INVEST_EN = "Fixed capital investment during the year by large and medium-sized organisations. Rosstat data."
+
+INDUSTRY: tuple[TSeries, ...] = (
+    TSeries("tour-oborot-gostinicy-mes", "monthly", "Оборот гостиниц за месяц", "Hotel turnover per month",
+            "миллионов рублей", "RUB million", _TURNOVER_RU, _TURNOVER_EN, "emiss", "6.tm40", scale=THOUSAND,
+            first_year=2017, emiss=Emiss(57710, "тысяча рублей", periods="month", match=((_LARGE_SMALL, _HOTELS),)),
+            keywords="выручка гостиниц, оборот гостиничного бизнеса"),
+    TSeries("tour-oborot-turagentstva-mes", "monthly", "Оборот турагентств и туроператоров за месяц",
+            "Travel agency and tour operator turnover per month", "миллионов рублей", "RUB million",
+            _TURNOVER_RU, _TURNOVER_EN, "emiss", "6.tm41", scale=THOUSAND, first_year=2017,
+            emiss=Emiss(57710, "тысяча рублей", periods="month", match=((_LARGE_SMALL, _AGENCIES),)),
+            keywords="выручка турагентств, оборот туроператоров"),
+    TSeries("obshchepit-oborot-organizaciy-mes", "monthly", "Оборот организаций общепита за месяц",
+            "Food service companies' turnover per month", "миллионов рублей", "RUB million",
+            _TURNOVER_RU, _TURNOVER_EN, "emiss", "15.tm2", section=SECTION_TRADE, scale=THOUSAND, first_year=2017,
+            emiss=Emiss(57710, "тысяча рублей", periods="month", match=((_LARGE_SMALL, _FOOD),))),
+    TSeries("tour-rabotniki-gostinicy-mes", "monthly", "Работники гостиниц", "Hotel employees",
+            "тысяч человек", "thousand people", _STAFF_RU, _STAFF_EN, "emiss", "6.tm42", scale=THOUSAND,
+            first_year=2017, emiss=Emiss(57848, "человек", periods="month", match=((_HOTELS,),)),
+            keywords="сколько работает в гостиницах, занятость в туризме"),
+    TSeries("tour-rabotniki-turagentstva-mes", "monthly", "Работники турагентств и туроператоров",
+            "Travel agency and tour operator employees", "тысяч человек", "thousand people", _STAFF_RU, _STAFF_EN,
+            "emiss", "6.tm43", scale=THOUSAND, first_year=2017,
+            emiss=Emiss(57848, "человек", periods="month", match=((_AGENCIES,),))),
+    TSeries("tour-investicii-gostinicy", "annual", "Инвестиции в гостиницы", "Investment in hotels",
+            "миллионов рублей", "RUB million", _INVEST_RU, _INVEST_EN, "emiss", "6.t160", scale=THOUSAND,
+            first_year=2017, emiss=Emiss(59084, "тысяча рублей", match=((_HOTELS, _INVEST_SCOPE),)),
+            keywords="строительство гостиниц, инвестиции в туризм"),
+    TSeries("tour-investicii-sanatorii", "annual", "Инвестиции в санатории", "Investment in health resorts",
+            "миллионов рублей", "RUB million", _INVEST_RU, _INVEST_EN, "emiss", "6.t161", scale=THOUSAND,
+            first_year=2017, emiss=Emiss(59084, "тысяча рублей", match=((_SANATORIUMS, _INVEST_SCOPE),))),
+    TSeries("tour-msp-gostinicy", "annual", "Малые и средние предприятия: гостиницы",
+            "Small and medium-sized businesses: accommodation", "предприятий и предпринимателей",
+            "businesses", _MSP_RU := ("Сколько малых и средних предприятий и предпринимателей с основным видом "
+                                      "деятельности «{}» числится в реестре МСП ФНС на дату снимка в году (до 2020 "
+                                      "года — октябрь, с 2021 — январь; последний — 10 ноября 2026)."
+                                      ).format("гостиницы и прочие места для проживания"),
+            _MSP_EN := ("Small and medium-sized businesses and sole proprietors whose main activity is {} in the "
+                        "Federal Tax Service SME register on the snapshot date of the year (October until 2020, "
+                        "January from 2021; the latest is 10 November 2026).").format("accommodation"),
+            "fns_rsmp", "6.t162", first_year=2016, keywords="малый бизнес в туризме, гостевые дома"),
+    TSeries("tour-msp-turagentstva", "annual", "Малые и средние предприятия: турагентства",
+            "Small and medium-sized businesses: travel agencies", "предприятий и предпринимателей", "businesses",
+            _MSP_RU.replace("гостиницы и прочие места для проживания", "турагентства и туроператоры"),
+            _MSP_EN.replace("accommodation", "travel agencies and tour operators"),
+            "fns_rsmp", "6.t163", first_year=2016),
+    TSeries("obshchepit-msp", "annual", "Малые и средние предприятия: общепит",
+            "Small and medium-sized businesses: food service", "предприятий и предпринимателей", "businesses",
+            _MSP_RU.replace("гостиницы и прочие места для проживания", "общественное питание"),
+            _MSP_EN.replace("accommodation", "food service"),
+            "fns_rsmp", "15.t4", section=SECTION_TRADE, first_year=2016),
+)
+
 # Добор 20.11.2026 (g2): оценки турпотока самих регионов и реестр размещения Москвы. Сравнивать регионы по ним
 # нельзя, поэтому рейтинга регионов у этих рядов нет (NOT_RANKED); методика региона — в tourism_region_methods.json.
 REGIONAL_ESTIMATES: tuple[TSeries, ...] = (
@@ -1097,7 +1219,7 @@ NOT_RANKED = frozenset({*(s.code for s in REGIONAL_ESTIMATES), "tour-ksr-zagruzk
 
 SERIES: tuple[TSeries, ...] = (
     *ANNUAL_KSR, *ANNUAL_SANATORIUMS, *ANNUAL_FIRMS, *ANNUAL_PENDING, *MONTHLY_EMISS, *MONTHLY_TRANSPORT,
-    *MONTHLY_CPI, *TURPOTOK, *QUARTERLY_CBR, *TAX, *REGISTRIES, *PUBLICATIONS, *REGIONAL_ESTIMATES,
+    *MONTHLY_CPI, *TURPOTOK, *QUARTERLY_CBR, *TAX, *REGISTRIES, *PUBLICATIONS, *REGIONAL_ESTIMATES, *INDUSTRY,
 )
 SERIES_BY_CODE: dict[str, TSeries] = {s.code: s for s in SERIES}
 
@@ -1223,6 +1345,7 @@ SOURCE_URLS: dict[str, str] = {
     "rosstat_calc": "https://www.fedstat.ru/indicator/31587",
     "mos": "https://data.mos.ru/opendata/62056",
     "sber": "https://sberindex.ru/ru/dashboards/kolichestvo-vnutrennikh-turistov",
+    "fns_rsmp": "https://www.nalog.gov.ru/opendata/7707329152-rsmp/",
 }
 # Ряды из конкретного файла или сборника — точнее, чем адрес источника в целом.
 _SERIES_URLS: dict[str, str] = {
@@ -1303,3 +1426,8 @@ def is_tourism_sibling(code: str, table_code: str | None) -> bool:
         return True
     t = table_code or ""
     return not (t.startswith(_NON_TOURISM_TABLES) or t == "6.4")
+
+# Сняты 21.11.2026 по выгрузкам: в наборе только Россия (60944, 62159; 31258 помесячно). На стенде метаданные могли
+# появиться — ``ensure_indicators`` скрывает их из каталога (is_listed = false), точки не удаляются.
+RETIRED = frozenset({"tour-deti-turpoezdki", "tour-ksr-nomera-klassificirovannye", "obshchepit-oborot-mes",
+                     "tour-obshchepit-oborot-mes"})

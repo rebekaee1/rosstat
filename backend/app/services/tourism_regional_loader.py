@@ -159,6 +159,8 @@ def period_index(title: str, kind: str) -> int | None:
     t = norm_value(title).rstrip("*0123456789) ")
     if kind == "year":
         return 0 if t == YEAR_TITLE else None
+    if kind == "dec":  # год как нарастающий итог «январь-декабрь» (оборот общепита 31258)
+        return 0 if t == "январь-декабрь" else None
     if kind == "month":
         return MONTHS.index(t) + 1 if t in MONTHS else None
     if kind == "ytd":
@@ -277,7 +279,7 @@ def emiss_points(
             slug, spare = territories.resolve(row.territory)
             if slug is None:
                 continue
-            period = row.year if kind == "year" else row.year * 100 + idx
+            period = row.year if kind in ("year", "dec") else row.year * 100 + idx
             if s.layer == "monthly" and period > today.year * 100 + today.month:
                 continue
             rank = alt_rank * 10 + (russia_rank(row.territory, row.year) if slug == "russia" else 0) + (5 if spare else 0)
@@ -425,6 +427,20 @@ def build_grid_params(
     return params, tdim, periods
 
 
+def series_for_unit(series_list: Sequence[TSeries], page_unit: str) -> list[TSeries]:
+    """Ряды набора, чья единица совпала с единицей страницы/выгрузки (или из ``alt_units`` — с пересчётом масштаба)."""
+    unit = norm_value(page_unit)
+    usable = []
+    for s in series_list:
+        if norm_value(s.emiss.src_unit) == unit or not unit:
+            usable.append(s)
+        else:
+            alt = {norm_value(u): k for u, k in s.emiss.alt_units}
+            if unit in alt:
+                usable.append(replace(s, scale=alt[unit]))
+    return usable
+
+
 def _fetch_page_sync(dataset: int) -> str:
     from app.services.http_client import create_session
 
@@ -448,15 +464,7 @@ async def fetch_emiss_dataset(
 
     page_html = await (fetch_page(dataset) if fetch_page else asyncio.to_thread(_fetch_page_sync, dataset))
     page = parse_indicator_page(page_html)
-    unit = norm_value(page["unit"])
-    usable = []
-    for s in series_list:
-        if norm_value(s.emiss.src_unit) == unit or not unit:
-            usable.append(s)
-        else:
-            alt = {norm_value(u): k for u, k in s.emiss.alt_units}
-            if unit in alt:
-                usable.append(replace(s, scale=alt[unit]))
+    usable = series_for_unit(series_list, page["unit"])
     if not usable:
         raise ValueError(f"ЕМИСС {dataset}: единица набора {page['unit']!r}, ожидалась "
                          f"{series_list[0].emiss.src_unit!r} — масштаб рядов был бы неверен")
@@ -1195,6 +1203,90 @@ def moscow_points(rows: Iterable[dict]) -> list[Point]:
     return points
 
 
+# --- добор g1 (21.11.2026): выгрузки ЕМИСС через стенд в длинном виде и реестр МСП ---------------------------------
+
+_MONTH_RE = re.compile(r"^(\d{4})-(\d{2})$")
+
+
+def g1_points(rows: Iterable[dict], specs: dict[str, str], territories: Territories) -> list[Point]:
+    """Длинная выгрузка ЕМИСС (``country_or_region;period;…;indicator;value``) → точки рядов.
+
+    ``specs``: код ряда → хвост подписи показателя после названия набора (значения измерений через «, », как в
+    выгрузке). Период — «YYYY-MM» у месячных рядов, «YYYY» у годовых (строки «…, январь-июнь» не совпадают с хвостом
+    и не берутся). Россия двумя строками — по году, как у остальной ЕМИСС."""
+    by_suffix = {f", {suffix}": code for code, suffix in specs.items()}
+    cols: dict[str, Collector] = defaultdict(Collector)
+    for r in rows:
+        ind = str(r.get("indicator") or "")
+        code = next((c for suf, c in by_suffix.items() if ind.endswith(suf)), None)
+        if code is None:
+            continue
+        s = SERIES_BY_CODE[code]
+        period, value = str(r.get("period") or ""), parse_ru_float(r.get("value"))
+        if value is None:
+            continue
+        m = _MONTH_RE.match(period)
+        if s.layer == "monthly" and m:
+            year, p = int(m.group(1)), int(m.group(1)) * 100 + int(m.group(2))
+        elif s.layer == "annual" and period.isdigit():
+            year = p = int(period)
+        else:
+            continue
+        name = str(r.get("country_or_region") or "")
+        slug, spare = territories.resolve(name)
+        if slug is None:
+            continue
+        rank = (russia_rank(name, year) if slug == "russia" else 0) + (5 if spare else 0)
+        cols[code].add(code, slug, p, value, rank)
+    points: list[Point] = []
+    for code, col in cols.items():
+        points += to_points(SERIES_BY_CODE[code], {(sl, p): v for (_c, sl, p), v in col.raw().items()})
+    return points
+
+
+_MSP_CODE = re.compile(r"\(код (\d{2})\)")
+_MSP_SERIES = {
+    "55": "tour-msp-gostinicy", "56": "obshchepit-msp", "79": "tour-msp-turagentstva",
+}
+
+
+def msp_points(rows: Iterable[dict], territories: Territories) -> list[Point]:
+    """Снимки реестра МСП ФНС: число субъектов по основному виду деятельности (ОКВЭД 55, 56, 79) → год снимка
+    (последний снимок года). Регион — по коду ФНС в подписи («(код 01)»; старые коды упразднённых округов
+    прибавляются к своему краю), Россия — строкой «Российская Федерация»; код 00 и новые субъекты не берутся."""
+    sums: dict[tuple[str, str, str], float] = defaultdict(float)
+    for r in rows:
+        ind = str(r.get("indicator") or "")
+        m = re.search(r"ОКВЭД (\d{2}) «[^»]*», по основному виду деятельности$", ind)
+        if not m or m.group(1) not in _MSP_SERIES:
+            continue
+        value = parse_ru_float(r.get("value"))
+        date_s = str(r.get("period") or "")
+        if value is None or len(date_s) < 10:
+            continue
+        name = str(r.get("country_or_region") or "")
+        cm = _MSP_CODE.search(name)
+        if cm:
+            slug = INN_REGION.get(cm.group(1))
+        else:
+            slug, spare = territories.resolve(name)
+            slug = slug if slug == "russia" else None
+        if slug:
+            sums[(_MSP_SERIES[m.group(1)], slug, date_s)] += value
+    latest: dict[tuple[str, int], str] = {}
+    for code, _slug, d in sums:
+        key = (code, int(d[:4]))
+        latest[key] = max(latest.get(key, ""), d)
+    raw: dict[str, dict[tuple[str, int], float]] = defaultdict(dict)
+    for (code, slug, d), v in sums.items():
+        if latest[(code, int(d[:4]))] == d:
+            raw[code][(slug, int(d[:4]))] = v
+    points: list[Point] = []
+    for code, vals in raw.items():
+        points += to_points(SERIES_BY_CODE[code], vals)
+    return points
+
+
 _PRICE_URL = "https://rosstat.gov.ru/storage/mediabank/sred_potreb_cen_{mm:02d}-{yyyy}.xlsx"
 
 
@@ -1214,7 +1306,11 @@ async def fetch_prices(territories: Territories, today: date) -> list[Point]:
 
 
 def write_seed(points: Iterable[Point], path: Path = SEED_PATH) -> int:
-    rows = sorted(set(points))
+    """Первая точка (код, регион, период) главнее: набор ЕМИСС реестра идёт в сборке раньше сборников."""
+    first: dict[tuple[str, str, int], float] = {}
+    for code, slug, period, value in points:
+        first.setdefault((code, slug, period), value)
+    rows = sorted((c, s_, p, v) for (c, s_, p), v in first.items())
     with gzip.open(path, "wt", encoding="utf-8", newline="") as f:
         w = csv.writer(f, delimiter=";")
         w.writerow(["code", "slug", "period", "value"])
@@ -1243,6 +1339,10 @@ async def ensure_indicators(db) -> dict[str, int]:
     for old, new in RENAMED.items():  # №37: ряды вне туризма переименованы, точки остаются за ними
         await db.execute(update(RegionIndicator).where(
             RegionIndicator.code == old, ~exists().where(RegionIndicator.code == new)).values(code=new))
+    from app.data.tourism_regional import RETIRED
+
+    await db.execute(update(RegionIndicator).where(RegionIndicator.code.in_(sorted(RETIRED)),
+                                                   RegionIndicator.is_listed.is_(True)).values(is_listed=False))
     for s in SERIES:
         if not s.own_metadata:
             continue
