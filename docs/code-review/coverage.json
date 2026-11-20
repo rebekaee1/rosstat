@@ -21,7 +21,7 @@
   "counts": {
     "files": 2805,
     "code_files": 2265,
-    "current_reviews": 2805,
+    "current_reviews": 2802,
     "statuses": {
       "artifact_schema_reviewed": 87,
       "asset_metadata_reviewed": 174,
@@ -30,9 +30,9 @@
       "data_schema_reviewed": 8,
       "reviewed": 2530
     },
-    "definitions": 18986,
-    "annotated_definitions": 18986,
-    "files_needing_attention": 0
+    "definitions": 18997,
+    "annotated_definitions": 18993,
+    "files_needing_attention": 3
   },
   "orphan_reviews": [],
   "files": [
@@ -4263,9 +4263,9 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "sha256": "987e1cc15f1ee9f5beeeae39df17f7b13feef7a526c0ec70df3d9fd54d72b9f4",
-      "bytes": 18982,
-      "lines": 333,
+      "sha256": "2f809b76fb9fa71147527da1c8a40afed6180862cca2bce0cf177077972a9a28",
+      "bytes": 19269,
+      "lines": 335,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -4276,22 +4276,22 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "sha256": "6822177211f786b06ca9cae1bd545be735ab454973c8bcc52b3b0fdd765b5483",
-      "bytes": 29539,
-      "lines": 557,
+      "sha256": "32cf5565cee1bbf9661ef675242a9a39e058fa7d64628b02baffcca72424047d",
+      "bytes": 32171,
+      "lines": 598,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 14,
-      "annotated_definitions": 14,
+      "definitions": 15,
+      "annotated_definitions": 15,
       "missing_definitions": []
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "sha256": "508c9934b2eab96c273fc41d5bdcc9a9f25379ae187b2c7bf69c627e79a10a7c",
-      "bytes": 13990,
-      "lines": 258,
+      "sha256": "5941fcae12f5d4e52c6d3ba7ff09113959abfead661e64e45f0d7945acd93c01",
+      "bytes": 14249,
+      "lines": 260,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -4796,15 +4796,15 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "sha256": "fd11906c40945eb6b38d534ba1b233fd902263ebdd3efe842d2055cdab3806f4",
-      "bytes": 23165,
-      "lines": 501,
+      "sha256": "5306917b7f6a3483f886ce55638c4ad9612683db4d6cf95c61e420156cfb92a2",
+      "bytes": 26033,
+      "lines": 544,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 30,
-      "annotated_definitions": 30,
+      "definitions": 32,
+      "annotated_definitions": 32,
       "missing_definitions": []
     },
     {
@@ -11153,16 +11153,31 @@
     },
     {
       "path": "backend/tests/test_emiss_regional_cpi.py",
-      "sha256": "b90a52f82cf5d587be25fa592a40a86e0df7e22aefb3eafb28261f3492547572",
-      "bytes": 14635,
-      "lines": 287,
+      "sha256": "ace9ec12c6ea9b20a076592d922d083cef41f8b8a1a8310ca6889c09531b25ef",
+      "bytes": 16831,
+      "lines": 330,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
-      "definitions": 23,
-      "annotated_definitions": 23,
-      "missing_definitions": []
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 27,
+      "annotated_definitions": 25,
+      "missing_definitions": [
+        {
+          "name": "test_year_goes_by_quarters_and_glues_into_the_same_points.post",
+          "line": 301,
+          "end_line": 307,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "test_failed_quarter_fails_the_whole_year.post",
+          "line": 322,
+          "end_line": 326,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/tests/test_emiss_regional_live_c27.py",
@@ -11192,16 +11207,25 @@
     },
     {
       "path": "backend/tests/test_emiss_regional_sets.py",
-      "sha256": "3c6c1e2d1420f06089a2f681acb29f9f66f10b6c21c76e44cd97a46dd90085f2",
-      "bytes": 13226,
-      "lines": 255,
+      "sha256": "e556f17fdd80aae71484d09dacd6858f55c76754524cc23f289f208969859d38",
+      "bytes": 13525,
+      "lines": 259,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
       "definitions": 31,
-      "annotated_definitions": 31,
-      "missing_definitions": []
+      "annotated_definitions": 30,
+      "missing_definitions": [
+        {
+          "name": "regions_client.seed",
+          "line": 214,
+          "end_line": 237,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/tests/test_emiss_regional_social.py",
@@ -11920,16 +11944,25 @@
     },
     {
       "path": "backend/tests/test_http_client.py",
-      "sha256": "31668866da53e188f829f513b4cb0feefe3e686851a42869de25accedc50ebb0",
-      "bytes": 13360,
-      "lines": 358,
+      "sha256": "0ea451f99840106bf18660009a51d33294ecd8db0c69f40ae2bc6599cceccd45",
+      "bytes": 15469,
+      "lines": 401,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
-      "definitions": 38,
-      "annotated_definitions": 38,
-      "missing_definitions": []
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 42,
+      "annotated_definitions": 41,
+      "missing_definitions": [
+        {
+          "name": "test_host_closing_connection_via_relay_keeps_relay_and_is_not_403.fake_request",
+          "line": 378,
+          "end_line": 385,
+          "kind": "FunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/tests/test_http_error_monitor.py",
@@ -17042,9 +17075,9 @@
     },
     {
       "path": "docs/data_sources.md",
-      "sha256": "4809c750a0d30a6b9e767fec78e99afd5ca40edceee15250612d722cb9c0c1b4",
-      "bytes": 242668,
-      "lines": 1298,
+      "sha256": "5e2b01fe6a06d368e474222e63a9bff9ede6b11e7a6316de234eaa0d6af386ca",
+      "bytes": 244588,
+      "lines": 1299,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -17562,7 +17595,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "bc3161ccf5d320e5eb8f88edc200f17f79c86754a653a512d0e2b5c40dc12e72",
+      "sha256": "9befe71bee5b02bb36bc2e81e15e9384ad65d61c6ca9bcf07fcddacb75c72e3f",
       "bytes": 4332670,
       "lines": 154157,
       "code": false,
@@ -17627,9 +17660,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "85fdd03918a01b73600e1108bd3af99a5a37de95d302fe865cab514e21725e50",
-      "bytes": 14989386,
-      "lines": 449385,
+      "sha256": "107f5523ab72cbe2dcd09a3897a33bfb009353f47cccb35ba2cf6542b8e45bdd",
+      "bytes": 14992539,
+      "lines": 449489,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -17640,9 +17673,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "db3f373623e9c74461875fb2e4736649dd9051afdcbc73d5e0f7388b04fed0b6",
-      "bytes": 768250,
-      "lines": 4324,
+      "sha256": "9482698b5c09998c2d140cf9fca8dbcfc084a3396b10a476200b6a6c21c02b2e",
+      "bytes": 768444,
+      "lines": 4325,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -36503,9 +36536,13 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "b2a0e36773292c3deb2b7f1d215d19815238978d742d803b6f4bf8efba3e1a56",
+  "ledger_sha256": "b24d16d8ce966017beb0b77d49e6fa51ba712e3836dbc0dc2516282077a1333d",
   "javascript_inventory_sha256": "425dea827fc71b6d8559e33d9e9ceac5378562b40c9c07928ca069a54a99de76",
-  "baseline_commit": "0e7e9818544decbf539ee908e3fc75c55b10eff7",
+  "baseline_commit": "a6c595114a8a549fbad73bc2548fab065f12dfb3",
   "branch": "int/2026-11-20-pulse",
-  "unstaged_at_capture": []
+  "unstaged_at_capture": [
+    "docs/indicator-index.json",
+    "docs/mechanism-inventory.json",
+    "docs/mechanism-inventory.md"
+  ]
 }

@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `0e7e9818544decbf539ee908e3fc75c55b10eff7`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `a6c595114a8a549fbad73bc2548fab065f12dfb3`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -14,9 +14,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 |---|---:|
 | Файлы в явно определённом scope | 2805 |
 | Код, шаблоны и стили | 2265 |
-| Актуальные рецензии без пропусков guard | 2805 |
-| Именованные определения Python/JS: с аннотацией / всего | 18986 / 18986 |
-| Файлы, требующие внимания | 0 |
+| Актуальные рецензии без пропусков guard | 2802 |
+| Именованные определения Python/JS: с аннотацией / всего | 18993 / 18997 |
+| Файлы, требующие внимания | 3 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
 
@@ -364,7 +364,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/emiss_producer_prices_parser.py](../backend/app/services/emiss_producer_prices_parser.py) | reviewed | 8/8 | актуально |
 | [backend/app/services/emiss_quarterly_parser.py](../backend/app/services/emiss_quarterly_parser.py) | reviewed | 13/13 | актуально |
 | [backend/app/services/emiss_regional_cpi_parser.py](../backend/app/services/emiss_regional_cpi_parser.py) | reviewed | 13/13 | актуально |
-| [backend/app/services/emiss_regional_parser.py](../backend/app/services/emiss_regional_parser.py) | reviewed | 14/14 | актуально |
+| [backend/app/services/emiss_regional_parser.py](../backend/app/services/emiss_regional_parser.py) | reviewed | 15/15 | актуально |
 | [backend/app/services/emiss_regional_sets_parser.py](../backend/app/services/emiss_regional_sets_parser.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/emiss_regional_social.py](../backend/app/services/emiss_regional_social.py) | reviewed | 8/8 | актуально |
 | [backend/app/services/emiss_steel_parser.py](../backend/app/services/emiss_steel_parser.py) | reviewed | 4/4 | актуально |
@@ -404,7 +404,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/goal_taxonomy.py](../backend/app/services/goal_taxonomy.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/gsc_client.py](../backend/app/services/gsc_client.py) | reviewed | 16/16 | актуально |
 | [backend/app/services/host_pressure.py](../backend/app/services/host_pressure.py) | reviewed | 14/14 | актуально |
-| [backend/app/services/http_client.py](../backend/app/services/http_client.py) | reviewed | 30/30 | актуально |
+| [backend/app/services/http_client.py](../backend/app/services/http_client.py) | reviewed | 32/32 | актуально |
 | [backend/app/services/http_error_monitor.py](../backend/app/services/http_error_monitor.py) | reviewed | 11/11 | актуально |
 | [backend/app/services/hypotheses_triage.py](../backend/app/services/hypotheses_triage.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/i18n_display.py](../backend/app/services/i18n_display.py) | reviewed | 1/1 | актуально |
@@ -893,10 +893,10 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_emiss_price_goods.py](../backend/tests/test_emiss_price_goods.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_emiss_producer_prices.py](../backend/tests/test_emiss_producer_prices.py) | reviewed | 16/16 | актуально |
 | [backend/tests/test_emiss_quarterly.py](../backend/tests/test_emiss_quarterly.py) | reviewed | 13/13 | актуально |
-| [backend/tests/test_emiss_regional_cpi.py](../backend/tests/test_emiss_regional_cpi.py) | reviewed | 23/23 | актуально |
+| [backend/tests/test_emiss_regional_cpi.py](../backend/tests/test_emiss_regional_cpi.py) | reviewed | 25/27 | definitions_without_annotation |
 | [backend/tests/test_emiss_regional_live_c27.py](../backend/tests/test_emiss_regional_live_c27.py) | reviewed | 39/39 | актуально |
 | [backend/tests/test_emiss_regional_parser.py](../backend/tests/test_emiss_regional_parser.py) | reviewed | 20/20 | актуально |
-| [backend/tests/test_emiss_regional_sets.py](../backend/tests/test_emiss_regional_sets.py) | reviewed | 31/31 | актуально |
+| [backend/tests/test_emiss_regional_sets.py](../backend/tests/test_emiss_regional_sets.py) | reviewed | 30/31 | definitions_without_annotation |
 | [backend/tests/test_emiss_regional_social.py](../backend/tests/test_emiss_regional_social.py) | reviewed | 27/27 | актуально |
 | [backend/tests/test_emiss_steel_parser.py](../backend/tests/test_emiss_steel_parser.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_emiss_weekly_fuel.py](../backend/tests/test_emiss_weekly_fuel.py) | reviewed | 35/35 | актуально |
@@ -952,7 +952,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_home_popular_block.py](../backend/tests/test_home_popular_block.py) | reviewed | 11/11 | актуально |
 | [backend/tests/test_household_finance_seo.py](../backend/tests/test_household_finance_seo.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_housing_historical_backfill.py](../backend/tests/test_housing_historical_backfill.py) | reviewed | 8/8 | актуально |
-| [backend/tests/test_http_client.py](../backend/tests/test_http_client.py) | reviewed | 38/38 | актуально |
+| [backend/tests/test_http_client.py](../backend/tests/test_http_client.py) | reviewed | 41/42 | definitions_without_annotation |
 | [backend/tests/test_http_error_monitor.py](../backend/tests/test_http_error_monitor.py) | reviewed | 24/24 | актуально |
 | [backend/tests/test_human_evidence_2026_11_18.py](../backend/tests/test_human_evidence_2026_11_18.py) | reviewed | 12/12 | актуально |
 | [backend/tests/test_hypotheses_triage.py](../backend/tests/test_hypotheses_triage.py) | reviewed | 14/14 | актуально |

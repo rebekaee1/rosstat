@@ -1335,18 +1335,18 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "sha256": "987e1cc15f1ee9f5beeeae39df17f7b13feef7a526c0ec70df3d9fd54d72b9f4",
-      "lines": 333
+      "sha256": "2f809b76fb9fa71147527da1c8a40afed6180862cca2bce0cf177077972a9a28",
+      "lines": 335
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "sha256": "6822177211f786b06ca9cae1bd545be735ab454973c8bcc52b3b0fdd765b5483",
-      "lines": 557
+      "sha256": "32cf5565cee1bbf9661ef675242a9a39e058fa7d64628b02baffcca72424047d",
+      "lines": 598
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "sha256": "508c9934b2eab96c273fc41d5bdcc9a9f25379ae187b2c7bf69c627e79a10a7c",
-      "lines": 258
+      "sha256": "5941fcae12f5d4e52c6d3ba7ff09113959abfead661e64e45f0d7945acd93c01",
+      "lines": 260
     },
     {
       "path": "backend/app/services/emiss_regional_social.py",
@@ -1540,8 +1540,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "sha256": "fd11906c40945eb6b38d534ba1b233fd902263ebdd3efe842d2055cdab3806f4",
-      "lines": 501
+      "sha256": "5306917b7f6a3483f886ce55638c4ad9612683db4d6cf95c61e420156cfb92a2",
+      "lines": 544
     },
     {
       "path": "backend/app/services/http_error_monitor.py",
@@ -43512,8 +43512,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 221,
-      "end_line": 221,
+      "line": 251,
+      "end_line": 251,
       "owner": "resolve_etl_proxy_url",
       "conditions": [],
       "name": "etl_http_proxy_url",
@@ -43521,8 +43521,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 226,
-      "end_line": 226,
+      "line": 256,
+      "end_line": 256,
       "owner": "resolve_etl_proxy_url",
       "conditions": [],
       "name": "openrouter_proxy_url",
@@ -43530,8 +43530,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 234,
-      "end_line": 234,
+      "line": 264,
+      "end_line": 264,
       "owner": "resolve_etl_socks_url",
       "conditions": [],
       "name": "etl_socks_proxy_url",
@@ -113249,8 +113249,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 58,
-      "end_line": 62,
+      "line": 60,
+      "end_line": 64,
       "owner": "<module>",
       "conditions": [],
       "name": "_KIND_LABELS",
@@ -113292,8 +113292,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 89,
-      "end_line": 89,
+      "line": 91,
+      "end_line": 91,
       "owner": "<module>",
       "conditions": [],
       "name": "_HEADLINE_CODES",
@@ -113309,8 +113309,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 90,
-      "end_line": 99,
+      "line": 92,
+      "end_line": 101,
       "owner": "<module>",
       "conditions": [],
       "name": "REQUESTS",
@@ -113552,9 +113552,26 @@
       "runtime_expansion": true
     },
     {
+      "path": "backend/app/services/emiss_regional_parser.py",
+      "line": 309,
+      "end_line": 309,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "QUARTERS",
+      "symbol": "app.services.emiss_regional_parser.QUARTERS",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "((1, 2, 3), (4, 5, 6), (7, 8, 9), (10, 11, 12))",
+      "expression_truncated": false,
+      "expression_chars": 47,
+      "ast_sha256": "783fde795d7513c4daae97a1c4583737f1e777999ffae405d6afcadf61ef887e",
+      "runtime_expansion": false
+    },
+    {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 50,
-      "end_line": 50,
+      "line": 52,
+      "end_line": 52,
       "owner": "<module>",
       "conditions": [],
       "name": "_FALLBACK_TERRITORIES",
@@ -113580,8 +113597,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 51,
-      "end_line": 51,
+      "line": 53,
+      "end_line": 53,
       "owner": "<module>",
       "conditions": [],
       "name": "_FALLBACK_NAMES",
@@ -113607,8 +113624,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 52,
-      "end_line": 52,
+      "line": 54,
+      "end_line": 54,
       "owner": "<module>",
       "conditions": [],
       "name": "_SPACES",
@@ -116718,8 +116735,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 46,
-      "end_line": 52,
+      "line": 47,
+      "end_line": 53,
       "owner": "<module>",
       "conditions": [],
       "name": "_RETRY_STRATEGY",
@@ -116735,8 +116752,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 54,
-      "end_line": 54,
+      "line": 55,
+      "end_line": 55,
       "owner": "<module>",
       "conditions": [],
       "name": "_PROXY_FALLBACK_STATUSES",
@@ -116752,8 +116769,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 55,
-      "end_line": 59,
+      "line": 56,
+      "end_line": 60,
       "owner": "<module>",
       "conditions": [],
       "name": "_PROXY_FALLBACK_EXC",
@@ -116769,8 +116786,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 63,
-      "end_line": 63,
+      "line": 64,
+      "end_line": 64,
       "owner": "<module>",
       "conditions": [],
       "name": "_MAINTENANCE_HOSTS",
@@ -116786,8 +116803,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 64,
-      "end_line": 64,
+      "line": 65,
+      "end_line": 65,
       "owner": "<module>",
       "conditions": [],
       "name": "_MAINTENANCE_MARKERS",
@@ -172644,8 +172661,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 194,
-      "end_line": 197,
+      "line": 196,
+      "end_line": 199,
       "owner": "_loaded_years",
       "conditions": [],
       "operation": "execute",
@@ -172658,8 +172675,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 273,
-      "end_line": 273,
+      "line": 275,
+      "end_line": 275,
       "owner": "run_emiss_regional_cpi_update",
       "conditions": [],
       "operation": "commit",
@@ -172672,8 +172689,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 220,
-      "end_line": 222,
+      "line": 222,
+      "end_line": 224,
       "owner": "run_emiss_regional_cpi_update",
       "conditions": [],
       "operation": "execute",
@@ -172686,8 +172703,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 224,
-      "end_line": 224,
+      "line": 226,
+      "end_line": 226,
       "owner": "run_emiss_regional_cpi_update",
       "conditions": [],
       "operation": "execute",
@@ -172700,8 +172717,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 275,
-      "end_line": 275,
+      "line": 277,
+      "end_line": 277,
       "owner": "run_emiss_regional_cpi_update",
       "conditions": [],
       "operation": "rollback",
@@ -172728,8 +172745,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 396,
-      "end_line": 396,
+      "line": 437,
+      "end_line": 437,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "operation": "set",
@@ -172742,8 +172759,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 429,
-      "end_line": 429,
+      "line": 470,
+      "end_line": 470,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "operation": "set",
@@ -172756,8 +172773,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 499,
-      "end_line": 499,
+      "line": 540,
+      "end_line": 540,
       "owner": "_upsert_monthly_points",
       "conditions": [],
       "operation": "flush",
@@ -172784,8 +172801,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 403,
-      "end_line": 403,
+      "line": 444,
+      "end_line": 444,
       "owner": "run_emiss_regional_update",
       "conditions": [
         "rf is not None"
@@ -172800,8 +172817,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 405,
-      "end_line": 405,
+      "line": 446,
+      "end_line": 446,
       "owner": "run_emiss_regional_update",
       "conditions": [
         "rf is not None"
@@ -172816,8 +172833,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 406,
-      "end_line": 406,
+      "line": 447,
+      "end_line": 447,
       "owner": "run_emiss_regional_update",
       "conditions": [
         "rf is not None"
@@ -172832,8 +172849,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 488,
-      "end_line": 494,
+      "line": 529,
+      "end_line": 535,
       "owner": "_upsert_monthly_points",
       "conditions": [],
       "operation": "execute",
@@ -172846,8 +172863,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 444,
-      "end_line": 444,
+      "line": 485,
+      "end_line": 485,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "operation": "add",
@@ -172860,8 +172877,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 446,
-      "end_line": 446,
+      "line": 487,
+      "end_line": 487,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "operation": "commit",
@@ -172874,8 +172891,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 398,
-      "end_line": 402,
+      "line": 439,
+      "end_line": 443,
       "owner": "run_emiss_regional_update",
       "conditions": [
         "rf is not None"
@@ -172890,8 +172907,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 448,
-      "end_line": 448,
+      "line": 489,
+      "end_line": 489,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "operation": "rollback",
@@ -172904,8 +172921,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 371,
-      "end_line": 373,
+      "line": 412,
+      "end_line": 414,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "operation": "execute",
@@ -172918,8 +172935,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 429,
+      "end_line": 429,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "operation": "execute",
@@ -172932,8 +172949,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 185,
-      "end_line": 185,
+      "line": 187,
+      "end_line": 187,
       "owner": "run_set_update",
       "conditions": [],
       "operation": "update",
@@ -172946,8 +172963,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 201,
-      "end_line": 201,
+      "line": 203,
+      "end_line": 203,
       "owner": "run_set_update",
       "conditions": [],
       "operation": "set",
@@ -172960,8 +172977,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 178,
-      "end_line": 182,
+      "line": 180,
+      "end_line": 184,
       "owner": "run_set_update",
       "conditions": [],
       "operation": "execute",
@@ -172974,8 +172991,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 207,
-      "end_line": 207,
+      "line": 209,
+      "end_line": 209,
       "owner": "run_set_update",
       "conditions": [],
       "operation": "update",
@@ -172988,8 +173005,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 210,
-      "end_line": 210,
+      "line": 212,
+      "end_line": 212,
       "owner": "run_set_update",
       "conditions": [],
       "operation": "commit",
@@ -173002,8 +173019,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 212,
-      "end_line": 212,
+      "line": 214,
+      "end_line": 214,
       "owner": "run_set_update",
       "conditions": [],
       "operation": "rollback",
@@ -173016,8 +173033,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 171,
-      "end_line": 173,
+      "line": 173,
+      "end_line": 175,
       "owner": "run_set_update",
       "conditions": [],
       "operation": "execute",
@@ -173030,8 +173047,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 179,
+      "end_line": 179,
       "owner": "run_set_update",
       "conditions": [],
       "operation": "execute",
@@ -175050,8 +175067,22 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 116,
-      "end_line": 116,
+      "line": 88,
+      "end_line": 88,
+      "owner": "_host_dropped",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.http_client.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 146,
+      "end_line": 146,
       "owner": "begin_fetch_issues",
       "conditions": [],
       "operation": "set",
@@ -175064,8 +175095,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 496,
-      "end_line": 500,
+      "line": 539,
+      "end_line": 543,
       "owner": "create_session",
       "conditions": [],
       "operation": "update",
@@ -175075,6 +175106,20 @@
       "expression_truncated": false,
       "expression_chars": 234,
       "ast_sha256": "d2867c320d9d78bb3ae9ea8b8977cb6bc545656b21d47d846199ac8745ec4dd9"
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 94,
+      "end_line": 94,
+      "owner": "_host_dropped",
+      "conditions": [],
+      "operation": "add",
+      "receiver": "seen",
+      "symbol": "app.services.http_client.seen.add",
+      "expression": "seen.add(id(cur))",
+      "expression_truncated": false,
+      "expression_chars": 17,
+      "ast_sha256": "a4197b1df350fa95951d6a0f53398bf7f8ae1e81dfe2a3a1077308d866a13619"
     },
     {
       "path": "backend/app/services/http_error_monitor.py",
@@ -262056,8 +262101,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 196,
-      "end_line": 196,
+      "line": 198,
+      "end_line": 198,
       "owner": "_loaded_years",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.indicator_id.in_",
@@ -262065,8 +262110,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 196,
-      "end_line": 196,
+      "line": 198,
+      "end_line": 198,
       "owner": "_loaded_years",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.region_id",
@@ -262074,8 +262119,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 195,
-      "end_line": 195,
+      "line": 197,
+      "end_line": 197,
       "owner": "_loaded_years",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.indicator_id",
@@ -262083,8 +262128,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 195,
-      "end_line": 195,
+      "line": 197,
+      "end_line": 197,
       "owner": "_loaded_years",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.month",
@@ -262092,8 +262137,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 196,
-      "end_line": 196,
+      "line": 198,
+      "end_line": 198,
       "owner": "_loaded_years",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.indicator_id",
@@ -262101,8 +262146,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 196,
-      "end_line": 196,
+      "line": 198,
+      "end_line": 198,
       "owner": "_loaded_years",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -262110,8 +262155,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 224,
-      "end_line": 224,
+      "line": 226,
+      "end_line": 226,
       "owner": "run_emiss_regional_cpi_update",
       "conditions": [],
       "symbol": "app.models.Region.slug",
@@ -262119,8 +262164,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 224,
-      "end_line": 224,
+      "line": 226,
+      "end_line": 226,
       "owner": "run_emiss_regional_cpi_update",
       "conditions": [],
       "symbol": "app.models.Region.id",
@@ -262128,8 +262173,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 195,
-      "end_line": 195,
+      "line": 197,
+      "end_line": 197,
       "owner": "_loaded_years",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -262137,8 +262182,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 195,
-      "end_line": 195,
+      "line": 197,
+      "end_line": 197,
       "owner": "_loaded_years",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -262146,8 +262191,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 196,
-      "end_line": 196,
+      "line": 198,
+      "end_line": 198,
       "owner": "_loaded_years",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -262155,8 +262200,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 221,
-      "end_line": 221,
+      "line": 223,
+      "end_line": 223,
       "owner": "run_emiss_regional_cpi_update",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code.in_",
@@ -262164,8 +262209,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 224,
-      "end_line": 224,
+      "line": 226,
+      "end_line": 226,
       "owner": "run_emiss_regional_cpi_update",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -262173,8 +262218,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 224,
-      "end_line": 224,
+      "line": 226,
+      "end_line": 226,
       "owner": "run_emiss_regional_cpi_update",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -262182,8 +262227,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 221,
-      "end_line": 221,
+      "line": 223,
+      "end_line": 223,
       "owner": "run_emiss_regional_cpi_update",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -262191,8 +262236,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 221,
-      "end_line": 221,
+      "line": 223,
+      "end_line": 223,
       "owner": "run_emiss_regional_cpi_update",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -262200,8 +262245,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 221,
-      "end_line": 221,
+      "line": 223,
+      "end_line": 223,
       "owner": "run_emiss_regional_cpi_update",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -262209,8 +262254,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 395,
-      "end_line": 395,
+      "line": 436,
+      "end_line": 436,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -262218,8 +262263,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 479,
-      "end_line": 479,
+      "line": 520,
+      "end_line": 520,
       "owner": "_upsert_monthly_points",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -262227,8 +262272,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 429,
+      "end_line": 429,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "symbol": "app.models.Region.slug",
@@ -262236,8 +262281,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 429,
+      "end_line": 429,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "symbol": "app.models.Region.id",
@@ -262245,8 +262290,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 400,
-      "end_line": 400,
+      "line": 441,
+      "end_line": 441,
       "owner": "run_emiss_regional_update",
       "conditions": [
         "rf is not None"
@@ -262256,8 +262301,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 401,
-      "end_line": 401,
+      "line": 442,
+      "end_line": 442,
       "owner": "run_emiss_regional_update",
       "conditions": [
         "rf is not None"
@@ -262267,8 +262312,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 372,
-      "end_line": 372,
+      "line": 413,
+      "end_line": 413,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code.in_",
@@ -262276,8 +262321,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 429,
+      "end_line": 429,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -262285,8 +262330,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 429,
+      "end_line": 429,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -262294,8 +262339,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 399,
-      "end_line": 399,
+      "line": 440,
+      "end_line": 440,
       "owner": "run_emiss_regional_update",
       "conditions": [
         "rf is not None"
@@ -262305,8 +262350,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 399,
-      "end_line": 399,
+      "line": 440,
+      "end_line": 440,
       "owner": "run_emiss_regional_update",
       "conditions": [
         "rf is not None"
@@ -262316,8 +262361,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 400,
-      "end_line": 400,
+      "line": 441,
+      "end_line": 441,
       "owner": "run_emiss_regional_update",
       "conditions": [
         "rf is not None"
@@ -262327,8 +262372,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 401,
-      "end_line": 401,
+      "line": 442,
+      "end_line": 442,
       "owner": "run_emiss_regional_update",
       "conditions": [
         "rf is not None"
@@ -262338,8 +262383,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 492,
-      "end_line": 492,
+      "line": 533,
+      "end_line": 533,
       "owner": "_upsert_monthly_points",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.__table__.c.value",
@@ -262347,8 +262392,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 372,
-      "end_line": 372,
+      "line": 413,
+      "end_line": 413,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -262356,8 +262401,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 372,
-      "end_line": 372,
+      "line": 413,
+      "end_line": 413,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -262365,8 +262410,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 399,
-      "end_line": 399,
+      "line": 440,
+      "end_line": 440,
       "owner": "run_emiss_regional_update",
       "conditions": [
         "rf is not None"
@@ -262376,8 +262421,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 399,
-      "end_line": 399,
+      "line": 440,
+      "end_line": 440,
       "owner": "run_emiss_regional_update",
       "conditions": [
         "rf is not None"
@@ -262387,8 +262432,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 400,
-      "end_line": 400,
+      "line": 441,
+      "end_line": 441,
       "owner": "run_emiss_regional_update",
       "conditions": [
         "rf is not None"
@@ -262398,8 +262443,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 492,
-      "end_line": 492,
+      "line": 533,
+      "end_line": 533,
       "owner": "_upsert_monthly_points",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.__table__.c",
@@ -262407,8 +262452,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 372,
-      "end_line": 372,
+      "line": 413,
+      "end_line": 413,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -262416,8 +262461,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 492,
-      "end_line": 492,
+      "line": 533,
+      "end_line": 533,
       "owner": "_upsert_monthly_points",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.__table__",
@@ -262425,8 +262470,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 492,
-      "end_line": 492,
+      "line": 533,
+      "end_line": 533,
       "owner": "_upsert_monthly_points",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -262434,8 +262479,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 181,
-      "end_line": 181,
+      "line": 183,
+      "end_line": 183,
       "owner": "run_set_update",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.indicator_id",
@@ -262443,8 +262488,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 181,
-      "end_line": 181,
+      "line": 183,
+      "end_line": 183,
       "owner": "run_set_update",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -262452,8 +262497,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 179,
+      "end_line": 179,
       "owner": "run_set_update",
       "conditions": [],
       "symbol": "app.models.Region.slug",
@@ -262461,8 +262506,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 179,
+      "end_line": 179,
       "owner": "run_set_update",
       "conditions": [],
       "symbol": "app.models.Region.id",
@@ -262470,8 +262515,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 172,
-      "end_line": 172,
+      "line": 174,
+      "end_line": 174,
       "owner": "run_set_update",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code.in_",
@@ -262479,8 +262524,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 179,
+      "end_line": 179,
       "owner": "run_set_update",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -262488,8 +262533,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 179,
+      "end_line": 179,
       "owner": "run_set_update",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -262497,8 +262542,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 180,
-      "end_line": 180,
+      "line": 182,
+      "end_line": 182,
       "owner": "run_set_update",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.indicator_id.in_",
@@ -262506,8 +262551,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 172,
-      "end_line": 172,
+      "line": 174,
+      "end_line": 174,
       "owner": "run_set_update",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -262515,8 +262560,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 172,
-      "end_line": 172,
+      "line": 174,
+      "end_line": 174,
       "owner": "run_set_update",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -262524,8 +262569,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 179,
-      "end_line": 179,
+      "line": 181,
+      "end_line": 181,
       "owner": "run_set_update",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.indicator_id",
@@ -262533,8 +262578,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 180,
-      "end_line": 180,
+      "line": 182,
+      "end_line": 182,
       "owner": "run_set_update",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.indicator_id",
@@ -262542,8 +262587,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 172,
-      "end_line": 172,
+      "line": 174,
+      "end_line": 174,
       "owner": "run_set_update",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -262551,8 +262596,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 179,
-      "end_line": 179,
+      "line": 181,
+      "end_line": 181,
       "owner": "run_set_update",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -262560,8 +262605,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 179,
-      "end_line": 179,
+      "line": 181,
+      "end_line": 181,
       "owner": "run_set_update",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.month",
@@ -262569,8 +262614,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 180,
-      "end_line": 180,
+      "line": 182,
+      "end_line": 182,
       "owner": "run_set_update",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -262578,8 +262623,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 179,
-      "end_line": 179,
+      "line": 181,
+      "end_line": 181,
       "owner": "run_set_update",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -362406,8 +362451,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 67,
-      "end_line": 81,
+      "line": 69,
+      "end_line": 83,
       "owner": "<module>",
       "conditions": [],
       "name": "GridRequest",
@@ -362415,8 +362460,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 84,
-      "end_line": 85,
+      "line": 86,
+      "end_line": 87,
       "owner": "<module>",
       "conditions": [],
       "name": "_by_dataset",
@@ -362424,8 +362469,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 102,
-      "end_line": 103,
+      "line": 104,
+      "end_line": 105,
       "owner": "<module>",
       "conditions": [],
       "name": "EmissCpiFormatError",
@@ -362433,8 +362478,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 106,
-      "end_line": 119,
+      "line": 108,
+      "end_line": 121,
       "owner": "<module>",
       "conditions": [],
       "name": "build_params",
@@ -362442,8 +362487,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 122,
-      "end_line": 131,
+      "line": 124,
+      "end_line": 133,
       "owner": "<module>",
       "conditions": [],
       "name": "_series_key",
@@ -362451,8 +362496,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 134,
-      "end_line": 163,
+      "line": 136,
+      "end_line": 165,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_year",
@@ -362460,8 +362505,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 166,
-      "end_line": 169,
+      "line": 168,
+      "end_line": 171,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_year",
@@ -362469,8 +362514,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 172,
-      "end_line": 183,
+      "line": 174,
+      "end_line": 185,
       "owner": "<module>",
       "conditions": [],
       "name": "years_to_fetch",
@@ -362478,8 +362523,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 186,
-      "end_line": 204,
+      "line": 188,
+      "end_line": 206,
       "owner": "<module>",
       "conditions": [],
       "name": "_loaded_years",
@@ -362487,8 +362532,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 207,
-      "end_line": 287,
+      "line": 209,
+      "end_line": 289,
       "owner": "<module>",
       "conditions": [],
       "name": "run_emiss_regional_cpi_update",
@@ -362496,8 +362541,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 293,
-      "end_line": 333,
+      "line": 295,
+      "end_line": 335,
       "owner": "<module>",
       "conditions": [],
       "name": "emiss_regional_cpi_job",
@@ -362505,8 +362550,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 76,
-      "end_line": 77,
+      "line": 78,
+      "end_line": 79,
       "owner": "GridRequest",
       "conditions": [],
       "name": "items",
@@ -362514,8 +362559,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 80,
-      "end_line": 81,
+      "line": 82,
+      "end_line": 83,
       "owner": "GridRequest",
       "conditions": [],
       "name": "kinds",
@@ -362604,8 +362649,17 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 305,
-      "end_line": 345,
+      "line": 313,
+      "end_line": 343,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "post_grid_by_quarters",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/emiss_regional_parser.py",
+      "line": 346,
+      "end_line": 386,
       "owner": "<module>",
       "conditions": [],
       "name": "months_to_fetch",
@@ -362613,8 +362667,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 348,
-      "end_line": 463,
+      "line": 389,
+      "end_line": 504,
       "owner": "<module>",
       "conditions": [],
       "name": "run_emiss_regional_update",
@@ -362622,8 +362676,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 471,
-      "end_line": 500,
+      "line": 512,
+      "end_line": 541,
       "owner": "<module>",
       "conditions": [],
       "name": "_upsert_monthly_points",
@@ -362631,8 +362685,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 503,
-      "end_line": 506,
+      "line": 544,
+      "end_line": 547,
       "owner": "<module>",
       "conditions": [],
       "name": "literal_inserted",
@@ -362640,8 +362694,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 512,
-      "end_line": 557,
+      "line": 553,
+      "end_line": 598,
       "owner": "<module>",
       "conditions": [],
       "name": "emiss_regional_job",
@@ -362649,8 +362703,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 56,
-      "end_line": 57,
+      "line": 58,
+      "end_line": 59,
       "owner": "<module>",
       "conditions": [],
       "name": "_norm",
@@ -362658,8 +362712,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 60,
-      "end_line": 64,
+      "line": 62,
+      "end_line": 66,
       "owner": "<module>",
       "conditions": [],
       "name": "_month",
@@ -362667,8 +362721,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 67,
-      "end_line": 71,
+      "line": 69,
+      "end_line": 73,
       "owner": "<module>",
       "conditions": [],
       "name": "set_territory_ids",
@@ -362676,8 +362730,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 74,
-      "end_line": 89,
+      "line": 76,
+      "end_line": 91,
       "owner": "<module>",
       "conditions": [],
       "name": "build_params",
@@ -362685,8 +362739,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 92,
-      "end_line": 140,
+      "line": 94,
+      "end_line": 142,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_year",
@@ -362694,8 +362748,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 143,
-      "end_line": 148,
+      "line": 145,
+      "end_line": 150,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_year",
@@ -362703,8 +362757,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 151,
-      "end_line": 159,
+      "line": 153,
+      "end_line": 161,
       "owner": "<module>",
       "conditions": [],
       "name": "years_to_fetch",
@@ -362712,8 +362766,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 162,
-      "end_line": 221,
+      "line": 164,
+      "end_line": 223,
       "owner": "<module>",
       "conditions": [],
       "name": "run_set_update",
@@ -362721,8 +362775,8 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 227,
-      "end_line": 258,
+      "line": 229,
+      "end_line": 260,
       "owner": "<module>",
       "conditions": [],
       "name": "emiss_regional_sets_job",
@@ -365610,8 +365664,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 68,
-      "end_line": 69,
+      "line": 69,
+      "end_line": 70,
       "owner": "<module>",
       "conditions": [],
       "name": "SourceMaintenance",
@@ -365619,8 +365673,26 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 72,
-      "end_line": 82,
+      "line": 73,
+      "end_line": 78,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "HostDisconnected",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 81,
+      "end_line": 98,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_host_dropped",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 101,
+      "end_line": 111,
       "owner": "<module>",
       "conditions": [],
       "name": "_is_maintenance_stub",
@@ -365628,8 +365700,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 114,
-      "end_line": 116,
+      "line": 144,
+      "end_line": 146,
       "owner": "<module>",
       "conditions": [],
       "name": "begin_fetch_issues",
@@ -365637,8 +365709,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 119,
-      "end_line": 120,
+      "line": 149,
+      "end_line": 150,
       "owner": "<module>",
       "conditions": [],
       "name": "current_fetch_issues",
@@ -365646,8 +365718,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 123,
-      "end_line": 124,
+      "line": 153,
+      "end_line": 154,
       "owner": "<module>",
       "conditions": [],
       "name": "end_fetch_issues",
@@ -365655,8 +365727,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 127,
-      "end_line": 130,
+      "line": 157,
+      "end_line": 160,
       "owner": "<module>",
       "conditions": [],
       "name": "record_fetch_issue",
@@ -365664,8 +365736,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 133,
-      "end_line": 134,
+      "line": 163,
+      "end_line": 164,
       "owner": "<module>",
       "conditions": [],
       "name": "_host",
@@ -365673,8 +365745,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 137,
-      "end_line": 146,
+      "line": 167,
+      "end_line": 176,
       "owner": "<module>",
       "conditions": [],
       "name": "_host_down_remaining",
@@ -365682,8 +365754,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 149,
-      "end_line": 151,
+      "line": 179,
+      "end_line": 181,
       "owner": "<module>",
       "conditions": [],
       "name": "_mark_host_down",
@@ -365691,8 +365763,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 154,
-      "end_line": 163,
+      "line": 184,
+      "end_line": 193,
       "owner": "<module>",
       "conditions": [],
       "name": "_hop_down_remaining",
@@ -365700,8 +365772,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 166,
-      "end_line": 168,
+      "line": 196,
+      "end_line": 198,
       "owner": "<module>",
       "conditions": [],
       "name": "_mark_hop_down",
@@ -365709,8 +365781,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 171,
-      "end_line": 175,
+      "line": 201,
+      "end_line": 205,
       "owner": "<module>",
       "conditions": [],
       "name": "host_down_max_remaining",
@@ -365718,8 +365790,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 178,
-      "end_line": 180,
+      "line": 208,
+      "end_line": 210,
       "owner": "<module>",
       "conditions": [],
       "name": "_mark_host_up",
@@ -365727,8 +365799,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 183,
-      "end_line": 187,
+      "line": 213,
+      "end_line": 217,
       "owner": "<module>",
       "conditions": [],
       "name": "_reset_host_breaker",
@@ -365736,8 +365808,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 190,
-      "end_line": 210,
+      "line": 220,
+      "end_line": 240,
       "owner": "<module>",
       "conditions": [],
       "name": "_TimeoutAdapter",
@@ -365745,8 +365817,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 213,
-      "end_line": 227,
+      "line": 243,
+      "end_line": 257,
       "owner": "<module>",
       "conditions": [],
       "name": "resolve_etl_proxy_url",
@@ -365754,8 +365826,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 230,
-      "end_line": 235,
+      "line": 260,
+      "end_line": 265,
       "owner": "<module>",
       "conditions": [],
       "name": "resolve_etl_socks_url",
@@ -365763,8 +365835,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 238,
-      "end_line": 239,
+      "line": 268,
+      "end_line": 269,
       "owner": "<module>",
       "conditions": [],
       "name": "_proxy_dict",
@@ -365772,8 +365844,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 242,
-      "end_line": 441,
+      "line": 272,
+      "end_line": 484,
       "owner": "<module>",
       "conditions": [],
       "name": "ProxyFallbackSession",
@@ -365781,8 +365853,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 444,
-      "end_line": 461,
+      "line": 487,
+      "end_line": 504,
       "owner": "<module>",
       "conditions": [],
       "name": "create_source_session",
@@ -365790,8 +365862,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 464,
-      "end_line": 501,
+      "line": 507,
+      "end_line": 544,
       "owner": "<module>",
       "conditions": [],
       "name": "create_session",
@@ -365799,8 +365871,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 198,
-      "end_line": 200,
+      "line": 228,
+      "end_line": 230,
       "owner": "_TimeoutAdapter",
       "conditions": [],
       "name": "__init__",
@@ -365808,8 +365880,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 202,
-      "end_line": 210,
+      "line": 232,
+      "end_line": 240,
       "owner": "_TimeoutAdapter",
       "conditions": [],
       "name": "send",
@@ -365817,8 +365889,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 245,
-      "end_line": 258,
+      "line": 275,
+      "end_line": 288,
       "owner": "ProxyFallbackSession",
       "conditions": [],
       "name": "__init__",
@@ -365826,8 +365898,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 260,
-      "end_line": 265,
+      "line": 290,
+      "end_line": 295,
       "owner": "ProxyFallbackSession",
       "conditions": [],
       "name": "_fallback_urls",
@@ -365835,8 +365907,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 267,
-      "end_line": 312,
+      "line": 297,
+      "end_line": 346,
       "owner": "ProxyFallbackSession",
       "conditions": [],
       "name": "request",
@@ -365844,8 +365916,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 314,
-      "end_line": 336,
+      "line": 348,
+      "end_line": 370,
       "owner": "ProxyFallbackSession",
       "conditions": [],
       "name": "_try_detour",
@@ -365853,8 +365925,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 338,
-      "end_line": 342,
+      "line": 372,
+      "end_line": 376,
       "owner": "ProxyFallbackSession",
       "conditions": [],
       "name": "_remember",
@@ -365862,8 +365934,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 344,
-      "end_line": 403,
+      "line": 378,
+      "end_line": 437,
       "owner": "ProxyFallbackSession",
       "conditions": [],
       "name": "_request_hop",
@@ -365871,8 +365943,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 405,
-      "end_line": 441,
+      "line": 439,
+      "end_line": 484,
       "owner": "ProxyFallbackSession",
       "conditions": [],
       "name": "_via_next_hop",
@@ -419503,48 +419575,48 @@
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 232,
-      "end_line": 232,
+      "line": 234,
+      "end_line": 234,
       "owner": "run_emiss_regional_cpi_update",
       "conditions": [],
       "symbol": "app.services.emiss_regional_cpi_parser.REQUESTS"
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 112,
-      "end_line": 112,
+      "line": 114,
+      "end_line": 114,
       "owner": "build_params",
       "conditions": [],
       "symbol": "app.services.emiss_regional_parser.MONTH_OIDS"
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 126,
-      "end_line": 126,
+      "line": 128,
+      "end_line": 128,
       "owner": "_series_key",
       "conditions": [],
       "symbol": "app.services.emiss_regional_cpi_parser._KIND_LABELS"
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 156,
-      "end_line": 156,
+      "line": 158,
+      "end_line": 158,
       "owner": "parse_year",
       "conditions": [],
       "symbol": "app.services.emiss_regional_parser.MONTH_OIDS"
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 92,
-      "end_line": 92,
+      "line": 94,
+      "end_line": 94,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.emiss_regional_cpi_parser._HEADLINE_CODES"
     },
     {
       "path": "backend/app/services/emiss_regional_cpi_parser.py",
-      "line": 94,
-      "end_line": 94,
+      "line": 96,
+      "end_line": 96,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.emiss_regional_cpi_parser._HEADLINE_CODES"
@@ -419575,6 +419647,14 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
+      "line": 330,
+      "end_line": 330,
+      "owner": "post_grid_by_quarters",
+      "conditions": [],
+      "symbol": "app.services.emiss_regional_parser.QUARTERS"
+    },
+    {
+      "path": "backend/app/services/emiss_regional_parser.py",
       "line": 244,
       "end_line": 244,
       "owner": "fetch_month_points",
@@ -419593,8 +419673,16 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 367,
-      "end_line": 367,
+      "line": 323,
+      "end_line": 323,
+      "owner": "post_grid_by_quarters",
+      "conditions": [],
+      "symbol": "app.services.emiss_regional_parser.MONTH_OIDS"
+    },
+    {
+      "path": "backend/app/services/emiss_regional_parser.py",
+      "line": 408,
+      "end_line": 408,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "symbol": "app.services.emiss_regional_parser.PRICE_SERIES"
@@ -419609,16 +419697,32 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 378,
-      "end_line": 378,
+      "line": 322,
+      "end_line": 322,
+      "owner": "post_grid_by_quarters",
+      "conditions": [],
+      "symbol": "app.services.emiss_regional_parser.MONTH_OIDS"
+    },
+    {
+      "path": "backend/app/services/emiss_regional_parser.py",
+      "line": 324,
+      "end_line": 324,
+      "owner": "post_grid_by_quarters",
+      "conditions": [],
+      "symbol": "app.services.emiss_regional_parser.MONTH_OIDS"
+    },
+    {
+      "path": "backend/app/services/emiss_regional_parser.py",
+      "line": 419,
+      "end_line": 419,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "symbol": "app.services.emiss_regional_parser.PRICE_FUELS"
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "line": 384,
-      "end_line": 384,
+      "line": 425,
+      "end_line": 425,
       "owner": "run_emiss_regional_update",
       "conditions": [],
       "symbol": "app.services.emiss_regional_parser.PRICE_SERIES"
@@ -419633,32 +419737,32 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 234,
-      "end_line": 234,
+      "line": 236,
+      "end_line": 236,
       "owner": "emiss_regional_sets_job",
       "conditions": [],
       "symbol": "app.data.emiss_regional_sets.SETS"
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 64,
-      "end_line": 64,
+      "line": 66,
+      "end_line": 66,
       "owner": "_month",
       "conditions": [],
       "symbol": "app.services.emiss_regional_parser.MONTH_OIDS"
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 81,
-      "end_line": 81,
+      "line": 83,
+      "end_line": 83,
       "owner": "build_params",
       "conditions": [],
       "symbol": "app.services.emiss_regional_parser.MONTH_OIDS"
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 85,
-      "end_line": 85,
+      "line": 87,
+      "end_line": 87,
       "owner": "build_params",
       "conditions": [
         "dim == TERRITORY_DIM"
@@ -419667,16 +419771,16 @@
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 57,
-      "end_line": 57,
+      "line": 59,
+      "end_line": 59,
       "owner": "_norm",
       "conditions": [],
       "symbol": "app.services.emiss_regional_sets_parser._SPACES"
     },
     {
       "path": "backend/app/services/emiss_regional_sets_parser.py",
-      "line": 108,
-      "end_line": 108,
+      "line": 110,
+      "end_line": 110,
       "owner": "parse_year",
       "conditions": [],
       "symbol": "app.services.emiss_regional_sets_parser._FALLBACK_NAMES"
@@ -420719,88 +420823,88 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 364,
+      "end_line": 364,
       "owner": "ProxyFallbackSession._try_detour",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_EXC"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 333,
-      "end_line": 333,
+      "line": 367,
+      "end_line": 367,
       "owner": "ProxyFallbackSession._try_detour",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_STATUSES"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 352,
-      "end_line": 352,
+      "line": 386,
+      "end_line": 386,
       "owner": "ProxyFallbackSession._request_hop",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_EXC"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 433,
-      "end_line": 433,
+      "line": 470,
+      "end_line": 470,
       "owner": "ProxyFallbackSession._via_next_hop",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_EXC"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 82,
-      "end_line": 82,
+      "line": 111,
+      "end_line": 111,
       "owner": "_is_maintenance_stub",
       "conditions": [],
       "symbol": "app.services.http_client._MAINTENANCE_MARKERS"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 310,
-      "end_line": 310,
+      "line": 344,
+      "end_line": 344,
       "owner": "ProxyFallbackSession.request",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_STATUSES"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 339,
-      "end_line": 339,
+      "line": 373,
+      "end_line": 373,
       "owner": "ProxyFallbackSession._remember",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_STATUSES"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 371,
-      "end_line": 371,
+      "line": 405,
+      "end_line": 405,
       "owner": "ProxyFallbackSession._request_hop",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_STATUSES"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 392,
-      "end_line": 392,
+      "line": 426,
+      "end_line": 426,
       "owner": "ProxyFallbackSession._request_hop",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_STATUSES"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 493,
-      "end_line": 493,
+      "line": 536,
+      "end_line": 536,
       "owner": "create_session",
       "conditions": [],
       "symbol": "app.services.http_client._RETRY_STRATEGY"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 74,
-      "end_line": 74,
+      "line": 103,
+      "end_line": 103,
       "owner": "_is_maintenance_stub",
       "conditions": [],
       "symbol": "app.services.http_client._MAINTENANCE_HOSTS"

@@ -13,10 +13,10 @@
 - Direct environment reads: **36**
 - Jobs: **82**
 - Middleware: **6**
-- Registry declarations: **1745**
-- Registry references: **3279**
+- Registry declarations: **1746**
+- Registry references: **3283**
 - Migration operations: **574**
-- Candidate effects: **3534**
+- Candidate effects: **3536**
 - Unresolved syntax: **6**
 - MCP tools: **7**
 
@@ -3243,17 +3243,18 @@ Relationships: `[]`
 | app.services.emiss_labor_parser._TERRITORIES | Dict | '1688487', '1849012' | [backend/app/services/emiss_labor_parser.py:26](../backend/app/services/emiss_labor_parser.py#L26) |
 | app.services.emiss_producer_prices_parser._INDEX_RANGE | Tuple | sequence/source expression | [backend/app/services/emiss_producer_prices_parser.py:31](../backend/app/services/emiss_producer_prices_parser.py#L31) |
 | app.services.emiss_producer_prices_parser._PRICE_RANGE | Tuple | sequence/source expression | [backend/app/services/emiss_producer_prices_parser.py:32](../backend/app/services/emiss_producer_prices_parser.py#L32) |
-| app.services.emiss_regional_cpi_parser._KIND_LABELS | Dict | 'К предыдущему месяцу', 'К декабрю предыдущего года', 'К соответствующему периоду предыдущего года' | [backend/app/services/emiss_regional_cpi_parser.py:58](../backend/app/services/emiss_regional_cpi_parser.py#L58) |
-| app.services.emiss_regional_cpi_parser._HEADLINE_CODES | SetComp | computed source expression | [backend/app/services/emiss_regional_cpi_parser.py:89](../backend/app/services/emiss_regional_cpi_parser.py#L89) |
-| app.services.emiss_regional_cpi_parser.REQUESTS | Tuple | sequence/source expression | [backend/app/services/emiss_regional_cpi_parser.py:90](../backend/app/services/emiss_regional_cpi_parser.py#L90) |
+| app.services.emiss_regional_cpi_parser._KIND_LABELS | Dict | 'К предыдущему месяцу', 'К декабрю предыдущего года', 'К соответствующему периоду предыдущего года' | [backend/app/services/emiss_regional_cpi_parser.py:60](../backend/app/services/emiss_regional_cpi_parser.py#L60) |
+| app.services.emiss_regional_cpi_parser._HEADLINE_CODES | SetComp | computed source expression | [backend/app/services/emiss_regional_cpi_parser.py:91](../backend/app/services/emiss_regional_cpi_parser.py#L91) |
+| app.services.emiss_regional_cpi_parser.REQUESTS | Tuple | sequence/source expression | [backend/app/services/emiss_regional_cpi_parser.py:92](../backend/app/services/emiss_regional_cpi_parser.py#L92) |
 | app.services.emiss_regional_parser.PRICE_FUELS | Dict | '1709730', '1709750', '1755196' | [backend/app/services/emiss_regional_parser.py:98](../backend/app/services/emiss_regional_parser.py#L98) |
 | app.services.emiss_regional_parser.PRICE_SERIES | Dict | **unpack, **unpack | [backend/app/services/emiss_regional_parser.py:106](../backend/app/services/emiss_regional_parser.py#L106) |
 | app.services.emiss_regional_parser.MONTH_OIDS | Dict | '1540283', '1540282', '1540236', '1540229', '1540235', '1540234', '1540233', '1540228', '1540276', '1540273', '1540272', '1540230' | [backend/app/services/emiss_regional_parser.py:112](../backend/app/services/emiss_regional_parser.py#L112) |
 | app.services.emiss_regional_parser._NO_RETRY_STATUSES | Call | computed source expression | [backend/app/services/emiss_regional_parser.py:132](../backend/app/services/emiss_regional_parser.py#L132) |
 | app.services.emiss_regional_parser._GRID_RETRY | Call | computed source expression | [backend/app/services/emiss_regional_parser.py:134](../backend/app/services/emiss_regional_parser.py#L134) |
-| app.services.emiss_regional_sets_parser._FALLBACK_TERRITORIES | Dict | '1856621' | [backend/app/services/emiss_regional_sets_parser.py:50](../backend/app/services/emiss_regional_sets_parser.py#L50) |
-| app.services.emiss_regional_sets_parser._FALLBACK_NAMES | Dict | 'краснодарский край (с учетом фт «сириус»)' | [backend/app/services/emiss_regional_sets_parser.py:51](../backend/app/services/emiss_regional_sets_parser.py#L51) |
-| app.services.emiss_regional_sets_parser._SPACES | Call | computed source expression | [backend/app/services/emiss_regional_sets_parser.py:52](../backend/app/services/emiss_regional_sets_parser.py#L52) |
+| app.services.emiss_regional_parser.QUARTERS | Tuple | sequence/source expression | [backend/app/services/emiss_regional_parser.py:309](../backend/app/services/emiss_regional_parser.py#L309) |
+| app.services.emiss_regional_sets_parser._FALLBACK_TERRITORIES | Dict | '1856621' | [backend/app/services/emiss_regional_sets_parser.py:52](../backend/app/services/emiss_regional_sets_parser.py#L52) |
+| app.services.emiss_regional_sets_parser._FALLBACK_NAMES | Dict | 'краснодарский край (с учетом фт «сириус»)' | [backend/app/services/emiss_regional_sets_parser.py:53](../backend/app/services/emiss_regional_sets_parser.py#L53) |
+| app.services.emiss_regional_sets_parser._SPACES | Call | computed source expression | [backend/app/services/emiss_regional_sets_parser.py:54](../backend/app/services/emiss_regional_sets_parser.py#L54) |
 | app.services.emiss_weekly_fuel.WEEKLY_FUELS | Dict | '1709730', '1709750', '1755184', '1755196' | [backend/app/services/emiss_weekly_fuel.py:74](../backend/app/services/emiss_weekly_fuel.py#L74) |
 | app.services.emiss_weekly_fuel._FUEL_LABELS | Dict | 'Бензин автомобильный марки АИ-92, л', 'Бензин автомобильный марки АИ-95, л', 'Бензин автомобильный марки АИ-98 и выше, л', 'Дизельное топливо, л' | [backend/app/services/emiss_weekly_fuel.py:81](../backend/app/services/emiss_weekly_fuel.py#L81) |
 | app.services.emiss_weekly_fuel.NATIONAL_BY_REGIONAL | Dict | 'ceni-ai92', 'ceni-ai95', 'ceni-dt' | [backend/app/services/emiss_weekly_fuel.py:88](../backend/app/services/emiss_weekly_fuel.py#L88) |
@@ -3324,11 +3325,11 @@ Relationships: `[]`
 | app.services.goal_taxonomy.EVENT_GROUPS | Dict | GROUP_DOWNLOAD, GROUP_WALL, GROUP_COMPARE, GROUP_CALC, GROUP_SHARE, GROUP_FAVORITE, GROUP_SUBSCRIBE, GROUP_LANGUAGE, GROUP_FRONT_ERROR, GROUP_AUTH_ERROR | [backend/app/services/goal_taxonomy.py:264](../backend/app/services/goal_taxonomy.py#L264) |
 | app.services.goal_taxonomy.GROUP_LABELS_RU | Dict | GROUP_DOWNLOAD, GROUP_WALL, GROUP_COMPARE, GROUP_CALC, GROUP_SHARE, GROUP_FAVORITE, GROUP_SUBSCRIBE, GROUP_LANGUAGE, GROUP_FRONT_ERROR, GROUP_AUTH_ERROR | [backend/app/services/goal_taxonomy.py:294](../backend/app/services/goal_taxonomy.py#L294) |
 | app.services.goal_taxonomy.REPORT_GROUPS | Tuple | sequence/source expression | [backend/app/services/goal_taxonomy.py:308](../backend/app/services/goal_taxonomy.py#L308) |
-| app.services.http_client._RETRY_STRATEGY | Call | computed source expression | [backend/app/services/http_client.py:46](../backend/app/services/http_client.py#L46) |
-| app.services.http_client._PROXY_FALLBACK_STATUSES | Call | computed source expression | [backend/app/services/http_client.py:54](../backend/app/services/http_client.py#L54) |
-| app.services.http_client._PROXY_FALLBACK_EXC | Tuple | sequence/source expression | [backend/app/services/http_client.py:55](../backend/app/services/http_client.py#L55) |
-| app.services.http_client._MAINTENANCE_HOSTS | Tuple | sequence/source expression | [backend/app/services/http_client.py:63](../backend/app/services/http_client.py#L63) |
-| app.services.http_client._MAINTENANCE_MARKERS | Tuple | sequence/source expression | [backend/app/services/http_client.py:64](../backend/app/services/http_client.py#L64) |
+| app.services.http_client._RETRY_STRATEGY | Call | computed source expression | [backend/app/services/http_client.py:47](../backend/app/services/http_client.py#L47) |
+| app.services.http_client._PROXY_FALLBACK_STATUSES | Call | computed source expression | [backend/app/services/http_client.py:55](../backend/app/services/http_client.py#L55) |
+| app.services.http_client._PROXY_FALLBACK_EXC | Tuple | sequence/source expression | [backend/app/services/http_client.py:56](../backend/app/services/http_client.py#L56) |
+| app.services.http_client._MAINTENANCE_HOSTS | Tuple | sequence/source expression | [backend/app/services/http_client.py:64](../backend/app/services/http_client.py#L64) |
+| app.services.http_client._MAINTENANCE_MARKERS | Tuple | sequence/source expression | [backend/app/services/http_client.py:65](../backend/app/services/http_client.py#L65) |
 | app.services.http_error_monitor._RULES | Dict | KIND_ERROR, KIND_SHED | [backend/app/services/http_error_monitor.py:80](../backend/app/services/http_error_monitor.py#L80) |
 | app.services.hypotheses_triage.ACTIONS | Tuple | sequence/source expression | [backend/app/services/hypotheses_triage.py:34](../backend/app/services/hypotheses_triage.py#L34) |
 | app.services.hypotheses_triage._PLAN_ACTIONS | Dict | 'close_duplicate' | [backend/app/services/hypotheses_triage.py:35](../backend/app/services/hypotheses_triage.py#L35) |
