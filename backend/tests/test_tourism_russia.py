@@ -294,3 +294,29 @@ def test_destination_country_series_keep_their_own_source_and_drop_the_mislabell
     for slug, *_rest in reg.DESTINATIONS:
         s = reg.SERIES[f"tour-dest-{slug}"]
         assert s.source != reg.SRC_FSB and "ФСБ" in s.methodology  # подпись: данные страны, не российские
+
+
+# ── Вторая волна: ИПЦ туристских позиций, налоги с туристов, сборник «Туризм в России» ──
+
+def test_cpi_items_are_found_by_code_including_the_misnamed_september_2025_sheet():
+    content = (SNAP / rt.CPI_SNAPSHOT).read_bytes()
+    tourism = {p.date: p.value for p in rt.parse_cpi_item(content, "9530")}
+    assert len(tourism) == 21 and date(2025, 9, 1) in tourism  # лист «0922025»
+    assert tourism[date(2026, 9, 1)] == 9.29  # индекс 109,29 → +9,29 % за год
+    assert rt.parse_cpi_item(content, "9536")[-1].value == -10.15  # Черноморское побережье подешевело
+    # Позиции, введённые в 2025 году, получают изменение к прошлому году только с 2026 года.
+    assert rt.parse_cpi_item(content, "9464")[0].date == date(2026, 1, 1)
+
+
+def test_static_series_tax_resort_fee_and_redenominated_prices():
+    text = (SNAP / rt.STATIC_FILE).read_text(encoding="utf-8")
+    get = lambda code: {p.date: p.value for p in rt.parse_static(text, code)}
+    tax = get("tour-tax")
+    assert tax[date(2025, 3, 1)] == 0  # налог за I квартал платят в апреле
+    assert sum(v for d, v in tax.items() if d.year == 2025) == pytest.approx(5635.253)  # Казначейство: 5 636,5
+    fee = get("tour-resort-fee")
+    assert min(fee) == date(2018, 1, 1) and max(fee) == date(2024, 1, 1)  # остаток 2025 года не берётся
+    assert fee[date(2024, 1, 1)] == pytest.approx(2468.05, abs=0.01)
+    sanatorium = get("tour-price-sanatorium")
+    assert sanatorium[date(1997, 1, 1)] == pytest.approx(168.016) and sanatorium[date(1998, 1, 1)] == 201.84
+    assert get("tour-package-price")[date(2023, 1, 1)] == pytest.approx(111.75, abs=0.01)
