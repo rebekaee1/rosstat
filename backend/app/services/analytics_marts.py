@@ -390,10 +390,21 @@ async def human_portrait_conditions(
     в сутки против 7-13 в Метрике: ферма (Chrome 157 Linux, 640 ядер, пояс Нью-Йорка)
     подставляла Referer https://www.google.com/. Правило то же, что у событий: посетитель
     с бот- или внутренней сессией за окно исключается; плюс явный webdriver.
+
+    20.11.2026: плюс правило «человек — только с признаком живого посетителя» (people-need-evidence,
+    `server_sessions.is_human`). Посетитель, у которого за окно есть сессии «не подтверждено» и нет ни одной
+    подтверждённой, исключается. 19.11 ферма Chrome 158 Linux (48 ядер, America/New_York, Referer google.com)
+    не набрала счёт робота: 75 из 87 «переходов из Google» были «не подтверждено», людей 12 при 15 в Метрике.
+    Сессии без оценки (is_human NULL) и портреты без server_sessions остаются, как раньше.
     """
     conds = await _human_conditions(
         db, BehaviorSession.visitor_id_hash, BehaviorSession.user_id, start_date, end_date)
     conds.append(or_(BehaviorSession.is_webdriver.is_(None), BehaviorSession.is_webdriver.is_(False)))
+    window = (ServerSession.day >= start_date, ServerSession.day <= end_date)
+    confirmed = select(ServerSession.visitor_id_hash).where(*window, ServerSession.is_human.is_(True))
+    unconfirmed = select(ServerSession.visitor_id_hash).where(*window, ServerSession.is_human.is_(False))
+    visitor = BehaviorSession.visitor_id_hash
+    conds.append(or_(visitor.is_(None), visitor.in_(confirmed), visitor.notin_(unconfirmed)))
     return conds
 
 
