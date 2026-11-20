@@ -56,11 +56,33 @@ function ImageCredit({ t }) {
  * Группа ссылок подвала. На телефоне — аккордеон (заголовок-кнопка раскрывает список), чтобы подвал не занимал
  * три экрана; от 640 px — обычная колонка с заголовком. Все заголовки одного стиля, регистр обычный.
  */
-function FooterGroup({ title, hubTo, hubLabel, desktop, chips = false, span = 1, mdSpan, cols = 1, children }) {
+function FooterGroup({ title, hubTo, hubLabel, desktop, chips = false, fold = false, span = 1, mdSpan, cols = 1, children }) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const expanded = desktop || open;
   // Чипы: на телефоне группа раскрыта сразу и показана плитками-ссылками (входы в каталог не прячем за стрелкой).
+  // Правка 36: каталог категорий на телефоне свёрнут в закрытый блок (<details>), ссылки остаются в разметке для перелинковки.
+  if (chips && fold && !desktop) {
+    return (
+      <details className="fe-foot-group fe-foot-group--chips fe-foot-fold" data-testid="footer-catalog-fold">
+        <summary className={cn(FOCUS_RING, 'fe-foot-fold__summary')}>
+          <h3 className="fe-foot-title fe-foot-title--static">
+            <FacetMark size={6} tone="light" />
+            {title}
+          </h3>
+          <ChevronDown size={18} aria-hidden="true" className="fe-foot-fold__chevron" />
+        </summary>
+        <ul className="fe-foot-chips">
+          {hubTo && hubLabel ? (
+            <li>
+              <Link to={hubTo} className={cn(FOCUS_RING, 'fe-foot-chip fe-foot-chip--all fe-press')}>{hubLabel}</Link>
+            </li>
+          ) : null}
+          {children}
+        </ul>
+      </details>
+    );
+  }
   if (chips && !desktop) {
     return (
       <section className="fe-foot-group fe-foot-group--chips">
@@ -196,6 +218,7 @@ export default function Footer() {
               hubTo={catalog.headingTo}
               desktop={desktop}
               chips
+              fold
               span={2}
               mdSpan={2}
               cols={2}
@@ -215,6 +238,7 @@ export default function Footer() {
               hubLabel={t('shell.footer.allCategories')}
               desktop={desktop}
               chips
+              fold
               span={2}
               mdSpan={2}
               cols={2}

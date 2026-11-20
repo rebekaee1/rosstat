@@ -96,7 +96,7 @@ describe('MobileDock: нижняя док-панель телефона', () => 
     expect(dock.getAttribute('data-visible')).toBe('true');
   });
 
-  it('круг 9, S1: над подвалом долгая пауза панель не возвращает (она закрывала бы ссылки), движение вверх возвращает', async () => {
+  it('круг 9, S1 / правка 32: над подвалом панель спрятана и после долгой паузы, и при движении вверх (она закрывала бы ссылки)', async () => {
     const footer = document.createElement('footer');
     footer.className = 'fe-footer';
     footer.getBoundingClientRect = () => ({ top: window.innerHeight - 200, bottom: window.innerHeight + 900 });
@@ -107,7 +107,12 @@ describe('MobileDock: нижняя док-панель телефона', () => 
     await act(async () => { await new Promise((resolve) => { setTimeout(resolve, 2700); }); });
     expect(dock.getAttribute('data-visible')).toBe('false');
     await scrollTo(300);
-    expect(dock.getAttribute('data-visible')).toBe('true');
+    expect(dock.getAttribute('data-visible')).toBe('false');
+  });
+
+  it('правка 43: на страницах туризма панель не подсвечивает «Цены» (адрес региона начинается с /russia/region)', () => {
+    renderDock('/russia/region/moskva/tour-hotel-guests');
+    expect(screen.getByRole('link', { name: 'Цены' }).getAttribute('aria-current')).toBeNull();
   });
 
   it('круг 9, S1: пока на экране плашка «Результат», панель спрятана и не держит место внизу', async () => {

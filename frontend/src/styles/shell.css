@@ -770,3 +770,21 @@ body:has(main .fe-route-skel) .fe-nudge-root { display: none !important; }
   .fe-foot-list { gap: 0; }
   .fe-foot-list > li > a, .fe-foot-list > li > button { display: inline-flex; align-items: center; min-height: 44px; }
 }
+
+/* ===== z4, круг наблюдателей «Туризм» (20.11.2026) ===== */
+/* Правка 36: каталог категорий в подвале телефона закрыт по умолчанию (<details>, ссылки в разметке остаются). */
+.fe-foot-fold > summary { display: flex; align-items: center; gap: 8px; cursor: pointer; list-style: none; min-height: 44px; }
+.fe-foot-fold > summary::-webkit-details-marker { display: none; }
+.fe-foot-fold__summary > .fe-foot-title { flex: 1; margin-bottom: 0 !important; }
+.fe-foot-fold__chevron { flex: none; color: var(--color-text-tertiary); transition: transform 0.2s var(--fe-ease-out); }
+.fe-foot-fold[open] > summary { margin-bottom: 6px; }
+.fe-foot-fold[open] .fe-foot-fold__chevron { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) { .fe-foot-fold__chevron { transition: none; } }
+
+/* Правка 32: кружок «RU» в шапке над тёмным подвалом: светлая подпись на светлом полупрозрачном кружке (был графит на тёмном). */
+nav.fe-navbar[data-tone='dark'] [aria-haspopup='menu'] > .fe-locale-flag { background: rgba(255, 255, 255, 0.2); color: #F2F5FA; }
+nav.fe-navbar[data-tone='dark'] [aria-haspopup='menu'] > .fe-locale-flag + svg { color: #D3D9E8; }
+
+/* Правка 44: «К основному содержанию» невидима, пока нет фокуса с клавиатуры (на iPhone она выглядывала над строкой состояния). */
+.fe-skip-link:not(:focus-visible),
+html[data-fe-pointer] .fe-skip-link { opacity: 0; pointer-events: none; }

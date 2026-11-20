@@ -27,14 +27,17 @@ describe('Footer', () => {
     const toggles = within(footer).getAllByRole('button', { expanded: false });
     const names = toggles.map((b) => b.textContent);
     expect(names).toEqual(expect.arrayContaining(['Источники', 'Россия', 'Инструменты', 'Информация']));
-    // «Категории» и «Мир» раскрыты сразу и показаны чипами-ссылками, а не спрятаны за стрелкой.
-    expect(names).not.toContain('Категории');
+    // «Мир» раскрыт сразу и показан чипами-ссылками, а не спрятан за стрелкой.
     expect(names).not.toContain('Мир');
-    for (const title of ['Категории', 'Мир']) {
-      const group = within(footer).getByRole('heading', { name: title }).closest('section');
-      expect(group.className).toContain('fe-foot-group--chips');
-      expect(group.querySelectorAll('.fe-foot-chip').length).toBeGreaterThanOrEqual(3);
-    }
+    const world = within(footer).getByRole('heading', { name: 'Мир' }).closest('section');
+    expect(world.className).toContain('fe-foot-group--chips');
+    expect(world.querySelectorAll('.fe-foot-chip').length).toBeGreaterThanOrEqual(3);
+    // Правка 36: каталог категорий на телефоне — закрытый по умолчанию блок, ссылки остаются в разметке (перелинковка).
+    const fold = within(footer).getByTestId('footer-catalog-fold');
+    expect(fold.tagName).toBe('DETAILS');
+    expect(fold.open).toBe(false);
+    expect(within(fold).getByRole('heading', { name: 'Категории' })).toBeTruthy();
+    expect(fold.querySelectorAll('.fe-foot-chip').length).toBeGreaterThanOrEqual(3);
 
     const sources = within(footer).getByRole('button', { name: 'Источники' });
     const panel = document.getElementById(sources.getAttribute('aria-controls'));
