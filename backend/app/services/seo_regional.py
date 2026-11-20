@@ -108,6 +108,31 @@ def _icopy(ind: RegionIndicator) -> dict[str, str | None]:
     )
 
 
+def _tour_source(code: str) -> tuple[str, str] | None:
+    """Туризм по регионам (20.11.2026): (подпись источника, «откуда данные») на языке хоста — у части годовых рядов
+    источник не сборник «Регионы России», а ЕМИСС, ЦБ, ФНС или реестры."""
+    from app.data.tourism_regional import source_of
+    from app.services.locale import get_locale
+
+    src = source_of(code)
+    if src is None:
+        return None
+    en = get_locale() == "en"
+    return src["en" if en else "ru"], src["about_en" if en else "about_ru"]
+
+
+def _tour_source_p(code: str, unit: str, period: str) -> str | None:
+    """Абзац «Источник данных» годового ряда туризма (20.11.2026) — вместо подписи сборника «Регионы России»."""
+    from app.services.locale import get_locale
+
+    ts = _tour_source(code)
+    if ts is None:
+        return None
+    if get_locale() == "en":
+        return f"{ts[0]}. Values in {unit or 'source units'}. Period: {period}."
+    return f"{ts[0]}. Значения приведены в единицах: {unit or 'единицы источника'}. Период: {period}."
+
+
 def _rt(key: str, **kwargs) -> str | None:
     tpl = regional_template(key)
     if not tpl:
@@ -738,6 +763,8 @@ async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, s
         f"Данные за {last_year} год из сборника Росстата "
         f"«Регионы России. Социально-экономические показатели»."
     )
+    if (_ts := _tour_source(code)) is not None:
+        faq_year_a = f"{last_year}. {_ts[1]}"
     faq = [
         (f"{copy['faq_best_q']} «{ind_name}»?", faq_best_a),
         (copy["faq_worst_q"],
@@ -913,6 +940,7 @@ async def render_region_rating_html(code: str, db: AsyncSession) -> tuple[int, s
         f"Значения за {last_year} год, единицы: {unit or 'единицы источника'}. "
         f"По каждому региону доступна страница с полной динамикой показателя с 1990 года."
     )
+    source_p = _tour_source_p(code, unit, str(last_year)) or source_p
 
     body = f"""<div class="seo-page">
 {_breadcrumbs_nav(rating_trail)}
@@ -1505,7 +1533,12 @@ async def _render_region_indicator_monthly(
 
     from app.data.fns_msp import is_msp_code
 
-    mt = partial(_mt, social="msp" if is_msp_code(code) else is_social_code(code), sets=code in EMISS_SETS, texts=_credit_texts(code, get_locale()))
+    from app.data.tourism_regional import is_tourism_code, monthly_texts as _tour_texts
+
+    # Туризм по регионам (20.11.2026): тексты «не цены» как у наборов ЕМИСС, источник — свой (ЦБ, ФНС, реестры).
+    mt = partial(_mt, social="msp" if is_msp_code(code) else is_social_code(code),
+                 sets=code in EMISS_SETS or is_tourism_code(code),
+                 texts=_credit_texts(code, get_locale()) or _tour_texts(code, get_locale()))
     series = [(int(m), float(v)) for m, v in rows]
     first_period, first_value = series[0]
     last_period, last_value = series[-1]
@@ -2072,7 +2105,7 @@ async def render_region_indicator_html(
         _rt("region_indicator.faq_source_q") or (
             "Откуда взяты данные и как часто они обновляются?"
         ),
-        _rt("region_indicator.faq_source_a") or (
+        (_tour_source(code) or (None, None))[1] or _rt("region_indicator.faq_source_a") or (
             "Источник — официальный сборник Росстата «Регионы России. Социально-экономические "
             "показатели». Данные годовые, обновляются после выхода нового выпуска сборника."
         ),
@@ -2286,6 +2319,7 @@ async def render_region_indicator_html(
         f"Значения приведены в единицах: {unit or 'единицы источника'}. "
         f"Период наблюдений: {first_year}–{last_year}."
     )
+    source_p = _tour_source_p(code, unit, f"{first_year}–{last_year}") or source_p
     body = f"""<div class="seo-page">
 {_breadcrumbs_nav(crumbs.region_indicator_trail(
     region_name, paths.region(slug), ind_name,

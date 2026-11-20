@@ -3000,3 +3000,9 @@ from app.data.fns_msp import SERIES as _MSP_SERIES, copy_en as _msp_copy_en  # n
 
 for _series in _MSP_SERIES:
     REGION_INDICATORS_EN.setdefault(_series.code, _msp_copy_en(_series))
+
+# Regional tourism: accommodation, sanatoriums, tour companies, tourist flow, travel spending, tourist tax (2026-11-20).
+from app.data.tourism_regional import copy_en as _tour_copy_en  # noqa: E402
+
+for _code, _copy in _tour_copy_en().items():
+    REGION_INDICATORS_EN.setdefault(_code, _copy)

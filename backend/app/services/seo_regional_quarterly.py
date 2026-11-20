@@ -81,6 +81,37 @@ def _t(key: str, **kw) -> str:
     return tpl.format(**kw) if kw else tpl
 
 
+_SOURCE_KEYS = {
+    "ru": {
+        "faq_value_a": "За {period} — {value}{unit}. Источник — {source}.",
+        "description": "{indicator} в регионе {region}: {value}{unit} в {period}. Ряд по кварталам с {first}, "
+                       "сравнение с Россией и другими регионами. Источник — {source}.",
+        "source_p": "{source}. Период наблюдений: {first} — {last}.",
+    },
+    "en": {
+        "faq_value_a": "In {period}: {value}{unit}. Source: {source}.",
+        "description": "{indicator} in {region}: {value}{unit} in {period}. Quarterly series since {first}, "
+                       "comparison with Russia and other regions. Source: {source}.",
+        "source_p": "{source}. Observation period: {first} to {last}.",
+    },
+}
+
+
+def _ts(code: str, key: str, **kw) -> str:
+    """Фраза с источником ряда: у туризма по регионам (20.11.2026) это не всегда Росстат (ЦБ — «Поездки»)."""
+    from app.data.tourism_regional import source_of
+
+    src = source_of(code)
+    lang = "en" if get_locale() == "en" else "ru"
+    if src is None:
+        return ("Rosstat" if lang == "en" else "Росстат") if key == "creator" else _t(key, **kw)
+    if key == "faq_source_a":
+        return src[f"about_{lang}"]
+    if key == "creator":
+        return src[lang]
+    return _SOURCE_KEYS[lang][key].format(source=src[lang], **kw)
+
+
 def _change(cur: float, base: float | None, fmt) -> str | None:
     if base is None or base == 0:
         return None
@@ -149,8 +180,8 @@ async def render_region_indicator_quarterly(
 
     faq = [
         (_t("faq_value_q", indicator=ind_name, region=region_name),
-         _t("faq_value_a", period=period, value=fmt(last_value), unit=unit_sfx)),
-        (_t("faq_source_q"), _t("faq_source_a")),
+         _ts(code, "faq_value_a", period=period, value=fmt(last_value), unit=unit_sfx)),
+        (_t("faq_source_q"), _ts(code, "faq_source_a")),
     ]
     faq_html = (
         f'<section class="seo-section"><h2>{escape(_t("faq_h2"))}</h2>'
@@ -189,7 +220,7 @@ async def render_region_indicator_quarterly(
                          f"<ul>{items}</ul></section>")
 
     title = _t("title", indicator=ind_name, region=region_name, value=fmt(last_value), unit=unit_sfx, period=period)
-    desc = _t("description", indicator=ind_name, region=region_name, value=fmt(last_value), unit=unit_sfx,
+    desc = _ts(code, "description", indicator=ind_name, region=region_name, value=fmt(last_value), unit=unit_sfx,
               period=period, first=quarter_label(first_q))
     trail = crumbs.region_indicator_trail(region_name, paths.region(slug), ind_name, paths.region_indicator(slug, code))
     json_ld = [
@@ -199,7 +230,7 @@ async def render_region_indicator_quarterly(
         {"@context": "https://schema.org", "@type": "Dataset", "name": f"{ind_name} — {region_name}",
          "description": desc, "url": _absolute(paths.region_indicator(slug, code)),
          "temporalCoverage": f"{first_q // 10}/{last_q // 10}", "spatialCoverage": region_name,
-         "creator": {"@type": "Organization", "name": "Rosstat" if get_locale() == "en" else "Росстат"}},
+         "creator": {"@type": "Organization", "name": _ts(code, "creator")}},
     ]
     body = f"""<div class="seo-page">
 {_breadcrumbs_nav(trail)}
@@ -211,7 +242,7 @@ async def render_region_indicator_quarterly(
 {district_html}
 {siblings_html}
 <section class="seo-section"><h2>{escape(_t("source_h2"))}</h2>
-<p>{escape(_t("source_p", first=quarter_label(first_q), last=period))}</p></section>
+<p>{escape(_ts(code, "source_p", first=quarter_label(first_q), last=period))}</p></section>
 </div>"""
     html = await build_document(
         title=title, description=desc, canonical_path=paths.region_indicator(slug, code), body=body,
