@@ -39,6 +39,9 @@ describe('DataTable: переход к периоду (Пульс 17.11.2026)', 
     fireEvent.click(screen.getByRole('button', { name: 'Раньше' }));
     expect(pageNo()).toBe(2);
     expect(screen.queryByRole('button', { name: 'Вперёд' })).toBeNull();
+    // 20.11.2026: кнопки листания — шаги: быстрая серия нажатий не пишется трекером как «злые клики».
+    expect(screen.getByRole('button', { name: 'Раньше' }).dataset.feStep).toBe('next');
+    expect(screen.getByRole('button', { name: 'Позже' }).dataset.feStep).toBe('prev');
     fireEvent.click(screen.getByRole('button', { name: /Дата/ }));
     expect(screen.getByRole('button', { name: 'Раньше' }).disabled).toBe(true);
     expect(screen.getByRole('button', { name: 'Позже' }).disabled).toBe(false);
