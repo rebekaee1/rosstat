@@ -336,3 +336,9 @@ def test_c5_destination_series_drop_sri_lanka_annual_total_and_label_dubai_as_a_
     # Ряды с пропусками месяцев без шаблона «сумма за год».
     for code in ("tour-dest-vietnam", "tour-dest-sri-lanka", "tour-dest-zanzibar", "tour-dest-dominican-republic"):
         assert reg.SERIES[code].family is None
+
+
+def test_page_labels_mix_cyrillic_and_unicode_escapes_without_mojibake():
+    assert emiss._unescape(r"Пассажиры \u0430виа \'x\'") == "Пассажиры авиа 'x'"
+    assert emiss._unescape("Российская Федерация") == "Российская Федерация"
+    assert reg.SERIES["tour-packages"].unit == "тыс. турпакетов"  # шапка «6,4 млн турпакетов», а не «6,4 млн»
