@@ -4,8 +4,10 @@
 (прямой ход → HTTP-прокси → SOCKS; адресу прода fedstat отвечает 403), upsert с guard ``value <> excluded.value``
 (ADR-0002), advisory-блокировка регионального контура, границы истории в метаданных, публикация кэша после commit.
 
-Один запрос — один год одного набора: строки — позиция × территория, столбцы — 12 месяцев (ключ ячейки несёт oid
-месяца, поэтому месяцы в одном ответе не схлопываются). Территории — тот же справочник ОКАТО, что у 31448
+Один год одного набора — четыре квартальных запроса (``post_grid_by_quarters``, 20.11.2026: сетку 57806 за год
+fedstat обрывал через 70 с, квартал — 7 с), ответы склеиваются: строки — позиция × территория, столбцы — месяцы
+(ключ ячейки несёт oid месяца, поэтому месяцы не схлопываются). Сбой квартала роняет год целиком.
+Территории — тот же справочник ОКАТО, что у 31448
 (85 субъектов, округа и Россия); в ответе территория приходит названием.
 
 Россия: до 2022 года — строка «Российская Федерация», с 2023 года — «без учета новых субъектов»; если за месяц
@@ -36,8 +38,8 @@ from app.core.cache import publish_committed_regional_changes
 from app.data.emiss_regional_sets import SETS, TERRITORY_DIM, RegionalSet
 from app.models import Region, RegionIndicator, RegionMonthlyPoint
 from app.services.emiss_regional_parser import (
-    _PAUSE_BETWEEN_REQUESTS, _RUSSIA_LEGACY, MONTH_OIDS, _post_grid, _upsert_monthly_points,
-    load_dimnames, load_territory_ids, parse_ru_float,
+    _PAUSE_BETWEEN_REQUESTS, _RUSSIA_LEGACY, MONTH_OIDS, _upsert_monthly_points,
+    load_dimnames, load_territory_ids, parse_ru_float, post_grid_by_quarters,
 )
 from app.services.regional_storage import acquire_regional_write_lock, update_regional_year_bounds
 
@@ -144,7 +146,7 @@ async def fetch_year(
     rset: RegionalSet, year: int, territory_ids: Sequence[str], dimnames: dict[str, str],
     *, post_grid: Callable | None = None,
 ) -> tuple[list[tuple[str, str, int, float]], int]:
-    payload = await (post_grid or _post_grid)(rset.dataset, build_params(rset, year, territory_ids))
+    payload = await post_grid_by_quarters(rset.dataset, build_params(rset, year, territory_ids), post_grid=post_grid)
     return parse_year(rset, payload, year, dimnames)
 
 

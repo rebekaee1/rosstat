@@ -302,6 +302,47 @@ async def _post_grid(indicator_id: int, params: list[tuple[str, str]]) -> dict:
     return await asyncio.to_thread(_post_grid_sync, indicator_id, encoded, headers)
 
 
+# Сетка «год × 12 месяцев» тяжёлых наборов (ИПЦ 31074, промышленность 57806) fedstat не досчитывает: соединение
+# закрывается без ответа через 30–70 с (проверка 20.11.2026 через релей прода: ИПЦ 2022 за год — обрыв, за I квартал
+# 3,7 с, за III — 11 с; 57806 за 2016 год — обрыв на 70 с, за I квартал 6,9 с). Поэтому год идёт четырьмя запросами
+# по кварталу, ответы склеиваются в один: месяц несёт ключ ячейки, разбор не меняется.
+QUARTERS: tuple[tuple[int, ...], ...] = ((1, 2, 3), (4, 5, 6), (7, 8, 9), (10, 11, 12))
+_MONTH_FILTER = "33560_"
+
+
+async def post_grid_by_quarters(
+    indicator_id: int, params: Sequence[tuple[str, str]], *, post_grid: Callable | None = None,
+) -> dict:
+    """Запрос «год × 12 месяцев» четырьмя квартальными запросами; ``results`` склеиваются по порядку.
+
+    Параметры без месячного фильтра уходят одним запросом. Сбой любого квартала — исключение: год не сохраняется
+    наполовину, план прогона повторит его целиком.
+    """
+    post_grid = post_grid or _post_grid
+    oid_by_month = {m: oid for oid, m in MONTH_OIDS.items()}
+    chosen = {MONTH_OIDS[v[len(_MONTH_FILTER):]] for k, v in params
+              if k == "selectedFilterIds" and v.startswith(_MONTH_FILTER) and v[len(_MONTH_FILTER):] in MONTH_OIDS}
+    if not chosen:
+        return await post_grid(indicator_id, list(params))
+    base = [kv for kv in params if not (kv[0] == "selectedFilterIds" and kv[1].startswith(_MONTH_FILTER))]
+    results: list = []
+    first = True
+    for quarter in QUARTERS:
+        months = [m for m in quarter if m in chosen]
+        if not months:
+            continue
+        if not first:
+            await asyncio.sleep(_PAUSE_BETWEEN_REQUESTS)
+        first = False
+        payload = await post_grid(indicator_id, base + [("selectedFilterIds", f"{_MONTH_FILTER}{oid_by_month[m]}")
+                                                        for m in months])
+        rows = payload.get("results")
+        if not isinstance(rows, list):
+            return payload  # формат сменился — разбор вызывающего скажет об этом
+        results.extend(rows)
+    return {"results": results}
+
+
 def months_to_fetch(
     existing: set[int],
     *,

@@ -285,3 +285,46 @@ def test_three_failures_in_row_stop_the_run(tmp_path, monkeypatch):
         asyncio.run(scenario())
     assert asked[-3:] == [("cpi-headline", 2013), ("cpi-headline", 2014), ("cpi-headline", 2015)]
     assert len(asked) == 11 + 3
+
+
+def test_year_goes_by_quarters_and_glues_into_the_same_points(monkeypatch):
+    """20.11.2026: сетку 2022 года за 12 месяцев fedstat обрывал без ответа, квартал считает за 4–21 с.
+
+    Год идёт четырьмя запросами по три месяца; склеенный ответ даёт те же точки, что ответ за год целиком.
+    """
+    from app.services import emiss_regional_parser as transport
+
+    monkeypatch.setattr(transport, "_PAUSE_BETWEEN_REQUESTS", 0)
+    whole = live("cpi-headline_2022")
+    asked: list[list[int]] = []
+
+    async def post(dataset, params):
+        assert dataset == 31074
+        months = {v[6:] for k, v in params if k == "selectedFilterIds" and v.startswith("33560_")}
+        asked.append(sorted(transport.MONTH_OIDS[m] for m in months))
+        rows = [{k: v for k, v in row.items() if not k.startswith("dim2022_") or k.split("_")[1] in months}
+                for row in whole["results"]]
+        return {"results": rows}
+
+    got = asyncio.run(parser.fetch_year(REQ["cpi-headline"], 2022, load_territory_ids(), load_dimnames(),
+                                        post_grid=post))
+    assert asked == [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]]
+    assert sorted(got) == sorted(parser.parse_year(whole, REQ["cpi-headline"], 2022, load_dimnames()))
+
+
+def test_failed_quarter_fails_the_whole_year(monkeypatch):
+    """Год не сохраняется наполовину: иначе план прогона счёл бы его загруженным и не вернулся к пропуску."""
+    from app.services import emiss_regional_parser as transport
+
+    monkeypatch.setattr(transport, "_PAUSE_BETWEEN_REQUESTS", 0)
+    calls = []
+
+    async def post(dataset, params):
+        calls.append(1)
+        if len(calls) == 3:
+            raise RuntimeError("dataGrid.do?id=31074: HostDisconnected")
+        return {"results": []}
+
+    with pytest.raises(RuntimeError, match="HostDisconnected"):
+        asyncio.run(parser.fetch_year(REQ["cpi-groups"], 2023, load_territory_ids(), load_dimnames(), post_grid=post))
+    assert len(calls) == 3
