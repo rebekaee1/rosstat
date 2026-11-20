@@ -23,12 +23,12 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 CATEGORY = "Туризм"
 CATEGORY_EN = "Tourism"
 
-CBR_TRAVEL_URL = "https://www.cbr.ru/statistics/macro_itm/svs/"
+CBR_TRAVEL_URL = "https://www.cbr.ru/statistics/macro_itm/external_sector/ets/"  # прежний /svs/ отвечает 404 (21.11.2026)
 CBR_MONTHLY_URL = "https://www.cbr.ru/statistics/macro_itm/external_sector/ets/"
 ROSSTAT_TOURISM_URL = "https://rosstat.gov.ru/statistics/turizm"
 FEDSTAT = "https://www.fedstat.ru/indicator/{}"
@@ -260,7 +260,7 @@ def _cbr_series() -> list[TourSeries]:
             code, name, name_en, "млн $", "USD mn", "quarterly", SRC_CBR, CBR_TRAVEL_URL, "cbr_bop_xlsx",
             {"bop_target": q_target, "alternate_frequencies": {"monthly": monthly}},
             desc + " Квартальные данные с 1994 года.", desc_en + " Quarterly data since 1994.",
-            _M_CBR + " На карточке — квартал, сумма за год и месяц (переключатель частоты).",
+            _M_CBR,
             _M_CBR_EN, kws, "Банка России по кварталам с 1994 года и по месяцам с 2018 года",
             family=fam, yoy_unit="млн $" if signed else None, forecast=fc,
             min_value=None if signed else 0.0,
@@ -316,6 +316,14 @@ class Country:
     name_en: str
 
 
+# Особые оговорки по странам выезда (круг наблюдателей: правка 10, расхождения 5 и 6).
+_COUNTRY_NOTE = {
+    "egypt": (" В 2016–2018 годах Росстат строку Египта не публиковал — авиасообщение с Египтом было закрыто с ноября "
+              "2015 года, поэтому за эти годы точек нет, а сравнение 2019 года с 2015 годом идёт через разрыв. Египет "
+              "считает прибывших россиян по-своему: ряд «Прибытия россиян: Египет (данные страны)» за 2025 год даёт "
+              "2 224,7 тыс. против 1 947,8 тыс. здесь — это два разных счёта, оба верны для своего источника."),
+}
+
 INBOUND_COUNTRIES: tuple[Country, ...] = (
     Country("kazakhstan", ("Казахстан",), "Казахстан", "из Казахстана", "Kazakhstan"),
     Country("china", ("Китай",), "Китай", "из Китая", "China"),
@@ -346,6 +354,19 @@ OUTBOUND_COUNTRIES: tuple[Country, ...] = (
 )
 
 
+# Одно определение для русского и английского текста (круг наблюдателей, расхождение 15): формулировка Росстата.
+TRIP_RU = ("Туристская поездка — пересечение границы с поездкой на срок меньше года с деловой, личной целью или для "
+           "отдыха, кроме работы по найму; считаются поездки, а не люди и не ночёвки")
+TRIP_EN = ("A tourist trip is a border crossing for a stay of less than a year for business, personal reasons or "
+           "leisure, excluding work under contract; trips are counted, not people or nights")
+# Чем ряд отличается от соседних (правка 25).
+TRIP_VS_RU = (" Поэтому число въездных поездок не совпадает с иностранными гостями гостиниц: туда не входят те, кто жил "
+              "у знакомых или в частном секторе, и входят повторные заселения.")
+OUTBOUND_GAP_RU = (" С 2022 года данные о выезде неполные (пометка Росстата), поэтому сравнение с годами до 2022 "
+                   "занижает выезд.")
+OUTBOUND_GAP_EN = " From 2022 outbound data are incomplete, as noted by Rosstat."
+
+
 def _fsb_series() -> list[TourSeries]:
     out: list[TourSeries] = []
     kw_in = "въездной туризм, иностранные туристы, иностранцы в России, въезд иностранцев, туристские поездки"
@@ -355,10 +376,9 @@ def _fsb_series() -> list[TourSeries]:
         "Inbound tourist trips to Russia", "тыс. поездок", "thousand trips", "quarterly", SRC_FSB,
         ROSSTAT_TOURISM_URL, "rosstat_tourism_trips",
         {"trips_direction": "inbound", "alternate_frequencies": {"monthly": "tour-inbound-trips-monthly"}},
-        "Сколько раз иностранцы въезжали в Россию с туристскими целями — отдых, деловые и частные поездки, "
-        "тысяч поездок за квартал. Данные с 2015 года.",
-        "Trips to Russia by foreign citizens for tourism, business and private purposes, thousand trips per "
-        "quarter. Data since 2015.", _M_FSB, _M_FSB_EN, kw_in, "по кварталам с 2015 года и по месяцам с 2022 года",
+        "Сколько туристских поездок в Россию совершили иностранцы за квартал, тысяч. " + TRIP_RU + "." + TRIP_VS_RU
+        + " Данные с 2015 года.",
+        "Tourist trips to Russia by foreign citizens per quarter, thousand. " + TRIP_EN + ". Data since 2015.", _M_FSB, _M_FSB_EN, kw_in, "по кварталам с 2015 года и по месяцам с 2022 года",
         family="T9", forecast="generic_quarterly",
     ))
     out.append(_s(
@@ -366,30 +386,31 @@ def _fsb_series() -> list[TourSeries]:
         "Inbound tourist trips to Russia (monthly)", "тыс. поездок", "thousand trips", "monthly", SRC_FSB,
         ROSSTAT_TOURISM_URL, "rosstat_tourism_trips",
         {"trips_direction": "inbound", "trips_monthly": True, "primary_indicator_code": "tour-inbound-trips"},
-        "Сколько раз иностранцы въезжали в Россию с туристскими целями, тысяч поездок за месяц. Данные с 2022 года.",
-        "Trips to Russia by foreign citizens for tourism, business and private purposes, thousand trips per "
-        "month. Data since 2022.", _M_FSB_MONTHLY, _M_FSB_MONTHLY_EN, kw_in, "по месяцам с 2022 года",
+        "Сколько туристских поездок в Россию совершили иностранцы за месяц, тысяч. " + TRIP_RU + ". Месяц — "
+        "разность итогов с начала года, с 2023 года итог округлён до 10 тыс. Данные с 2022 года.",
+        "Tourist trips to Russia by foreign citizens per month, thousand. " + TRIP_EN + ". Data since 2022.", _M_FSB_MONTHLY, _M_FSB_MONTHLY_EN, kw_in, "по месяцам с 2022 года",
         family="T6", listed=False,
     ))
     out.append(_s(
         "tour-outbound-trips", "Выездные туристские поездки россиян за рубеж",
         "Outbound tourist trips by Russian citizens", "тыс. поездок", "thousand trips", "quarterly", SRC_FSB,
         ROSSTAT_TOURISM_URL, "rosstat_tourism_trips", {"trips_direction": "outbound"},
-        "Сколько раз россияне выезжали за границу с туристскими целями — отдых, деловые и частные поездки, "
-        "тысяч поездок за квартал. Данные с 2015 года.",
-        "Trips abroad by Russian citizens for tourism, business and private purposes, thousand trips per "
-        "quarter. Data since 2015.", _M_FSB, _M_FSB_EN, kw_out, "по кварталам с 2015 года",
-        family="T9", forecast="generic_quarterly",
+        "Сколько туристских поездок за границу совершили россияне за квартал, тысяч. " + TRIP_RU + "."
+        + OUTBOUND_GAP_RU + " Данные с 2015 года.",
+        "Tourist trips abroad by Russian citizens per quarter, thousand. " + TRIP_EN + "." + OUTBOUND_GAP_EN
+        + " Data since 2015.", _M_FSB, _M_FSB_EN, kw_out, "по кварталам с 2015 года",
+        # Прогноз снят (расхождение 10): с 2022 года ряд неполный, модель училась бы на смене полноты, а не на спросе.
+        family="T9",
     ))
     for direction, countries in (("inbound", INBOUND_COUNTRIES), ("outbound", OUTBOUND_COUNTRIES)):
         for c in countries:
             if direction == "inbound":
                 name = f"Въездные туристские поездки в Россию: {c.name}"
                 name_en = f"Inbound tourist trips to Russia: {c.name_en}"
-                desc = (f"Сколько туристских поездок в Россию совершили гости {c.loc} — отдых, деловые и частные "
-                        "поездки, тысяч поездок за квартал. Данные с 2015 года.")
-                desc_en = (f"Trips to Russia by citizens of {c.name_en} for tourism, business and private "
-                           "purposes, thousand trips per quarter. Data since 2015.")
+                desc = (f"Сколько туристских поездок в Россию совершили гости {c.loc} за квартал, тысяч. "
+                        f"{TRIP_RU}. Данные с 2015 года.")
+                desc_en = (f"Tourist trips to Russia by citizens of {c.name_en} per quarter, thousand. {TRIP_EN}. "
+                           "Data since 2015.")
                 kws = f"туристы {c.loc}, {c.name}, {kw_in}"
                 seo = (f"Туристы {c.loc} в России — число поездок по кварталам и годам",
                        f"Сколько туристских поездок в Россию совершили гости {c.loc}: данные "
@@ -397,10 +418,10 @@ def _fsb_series() -> list[TourSeries]:
             else:
                 name = f"Выездные туристские поездки россиян: {c.name}"
                 name_en = f"Outbound tourist trips by Russians: {c.name_en}"
-                desc = (f"Сколько раз россияне ездили {c.loc} с туристскими целями, тысяч поездок за квартал. "
-                        "Данные с 2015 года.")
-                desc_en = (f"Trips by Russian citizens to {c.name_en} for tourism, business and private "
-                           "purposes, thousand trips per quarter. Data since 2015.")
+                desc = (f"Сколько туристских поездок {c.loc} совершили россияне за квартал, тысяч. {TRIP_RU}."
+                        f"{OUTBOUND_GAP_RU} Данные с 2015 года.{_COUNTRY_NOTE.get(c.slug, '')}")
+                desc_en = (f"Tourist trips by Russian citizens to {c.name_en} per quarter, thousand. {TRIP_EN}."
+                           f"{OUTBOUND_GAP_EN} Data since 2015.")
                 kws = f"россияне {c.loc}, поездки {c.loc}, туристы {c.loc}, {c.name}, {kw_out}"
                 seo = (f"Сколько россиян ездят {c.loc} — поездки по кварталам и годам",
                        f"Сколько раз россияне ездили {c.loc}: данные Росстата по сведениям ФСБ России по кварталам "
@@ -571,14 +592,17 @@ def _emiss_series() -> list[TourSeries]:
         ("tour-hotel-guests", 31560, "Размещённые в гостиницах и других средствах размещения",
          "Guests in hotels and other accommodation", "млн чел.", "million people", 1e-6, True, "annual_auto",
          "Сколько человек за год заселилось в гостиницы, хостелы, базы отдыха, санатории и другие коллективные "
-         "средства размещения России, миллионов. С 2002 года.",
+         "средства размещения России, миллионов. Считается заселение, а не человек и не поездка: при двух заездах "
+         "гость учтён дважды; сюда входят и россияне, а туристы в частном секторе — нет. Поэтому число не совпадает "
+         "ни с въездом через границу, ни с турпотоком. С 2002 года.",
          "Check-ins in hotels, hostels, holiday centres, health resorts and other collective accommodation in "
          "Russia during the year, million people. Since 2002.", "размещённые лица, гости гостиниц"),
         ("tour-hotel-nights", 31587, "Ночёвки в гостиницах и других средствах размещения",
          "Nights spent in hotels and other accommodation", "млн ночёвок", "million nights", 1e-6, False,
          "annual_auto",
          "Сколько ночей за год провели гости в гостиницах и других коллективных средствах размещения России, "
-         "миллионов ночёвок. С 2002 года.",
+         "миллионов ночёвок. Ночёвка — одна ночь одного гостя; это полный годовой итог, он больше суммы оперативных "
+         "месячных данных. С 2002 года.",
          "Nights spent by guests in hotels and other collective accommodation in Russia during the year, million "
          "nights. Since 2002.", "ночёвки, гостиничные ночи"),
         ("tour-hotel-count", 31579, "Число гостиниц и других средств размещения",
@@ -615,7 +639,9 @@ def _emiss_series() -> list[TourSeries]:
         "млн ночёвок", "million nights", "monthly", SRC_ROSSTAT, FEDSTAT.format(62301), "rosstat_emiss_tourism",
         _emiss(62301, "ytd_monthly", scale=1e-6),
         "Сколько ночей за месяц провели гости в гостиницах и других коллективных средствах размещения России, "
-        "миллионов ночёвок, по оперативным данным. С 2023 года.",
+        "миллионов ночёвок, по оперативным данным. Месяц — разность итогов с начала года; охват оперативного "
+        "наблюдения уже годового, поэтому сумма месяцев меньше годового числа ночёвок (за 2025 год 352,6 млн против "
+        "395,4 млн). С 2023 года.",
         "Nights spent by guests in hotels and other collective accommodation in Russia per month, million nights, "
         "preliminary data. Since 2023.", _M_KSR_MONTHLY, _M_KSR_MONTHLY_EN,
         f"ночёвки по месяцам, загрузка гостиниц, сезон, {kw_hotel}", "Росстата по месяцам с 2023 года",
@@ -803,6 +829,10 @@ def _dest_series() -> list[TourSeries]:
         if slug == "dubai":
             name = "Дубай: гости из СНГ и Восточной Европы, включая Россию"
             name_en = "Dubai: visitors from the CIS and Eastern Europe, including Russia"
+        if slug == "egypt":
+            meth = meth + (" Россия считает выезд в Египет по данным пограничной службы (ряд «Выездные туристские "
+                           "поездки россиян: Египет»): за 2025 год 1 947,8 тыс. против 2 224,7 тыс. у Египта — это "
+                           "два разных счёта.")
         if slug == "abkhazia":
             name = "Абхазия: размещённые в гостиницах и санаториях"
             name_en = "Abkhazia: guests in hotels and health resorts"
@@ -835,7 +865,7 @@ def _dest_series() -> list[TourSeries]:
 # ── Вторая волна (c4, 20.11.2026): цены, налоги с туристов, сборник «Туризм в России» ─
 
 PRICE_PAGE = "https://rosstat.gov.ru/statistics/price"
-TREASURY_URL = "https://roskazna.gov.ru/ispolnenie-byudzhetov/konsolidirovannye-byudzhety-subektov/"
+TREASURY_URL = "https://roskazna.gov.ru/ispolnenie-byudzhetov/konsolidirovannye-byudzhety-subektov-rossijskoj-federacii/"
 FNS_1NM_URL = "https://www.nalog.gov.ru/rn77/related_activities/statistics_and_analytics/forms/"
 BOOK_URL = "https://rosstat.gov.ru/statistics/turizm"
 
@@ -972,7 +1002,9 @@ def _static_series() -> list[TourSeries]:
            "Отчёт ФНС России о начислении и поступлении налогов (форма 1-НМ). Гостиницы платят налог раз в квартал — "
            "до 28-го числа месяца после квартала, поэтому в первом квартале 2025 года поступлений ещё не было, а "
            "квартал на сайте — это деньги, поступившие в этом квартале. Итог 2025 года (5,64 млрд руб.) совпадает с "
-           "отчётом Федерального казначейства об исполнении бюджетов. В Москве налог не введён. " + _M_STATIC,
+           "отчётом Федерального казначейства об исполнении бюджетов. В Москве налог не введён. Сумма по регионам в "
+           "отчёте ФНС может быть меньше строки «Россия» на несколько миллионов рублей. Курортный сбор 2018–2024 "
+           "годов — другой платёж (отдельный ряд), складывать их нельзя. " + _M_STATIC,
            "Federal Tax Service report on tax accruals and receipts (form 1-NM). Hotels pay quarterly, by the 28th "
            "of the month after the quarter, so no receipts arrived in Q1 2025; a quarter on this site is the money "
            "received in it. The 2025 total matches the Federal Treasury budget execution report. Moscow has not "
@@ -1151,6 +1183,40 @@ SERIES: dict[str, TourSeries] = {s.code: s for s in (*_cbr_series(), *_fsb_serie
                                                      *_static_series())}
 
 
+# ── Адрес источника на карточке: конкретная публикация (круг наблюдателей, правки 3 и 4, 21.11.2026) ──
+# Раздел rosstat.gov.ru/statistics/turizm не ведёт к ряду, а сертификат сайта Росстата (Минцифры) Safari не принимает.
+# Где ряд есть в ЕМИСС (сертификат Let's Encrypt), ссылка ведёт на витрину; таблицы сборника «Туризм в России» — на
+# архивную копию файла. Проверено запросом 21.11.2026: ЦБ, ЕМИСС, ФНС — 200.
+_ARCHIVE_BOOK = "https://web.archive.org/web/20250201063454/https://rosstat.gov.ru/storage/mediabank/{}-tur.xlsx"
+
+
+def _source_url_override(code: str, s: "TourSeries") -> str | None:
+    if s.parser_type == "rosstat_tourism_trips":
+        return FEDSTAT.format(59466 if "-inbound-" in f"{code}-" else 59467)
+    if code in ("tour-gva", "tour-gva-volume"):
+        return FEDSTAT.format(59212)
+    if code.startswith("tour-gva-share"):
+        return FEDSTAT.format(59213)
+    if s.parser_type == "rosstat_tourism_cpi":
+        return FEDSTAT.format(31074)
+    if code in ("tour-price-sanatorium", "tour-price-rest-house"):
+        return FEDSTAT.format(31448)
+    if code.startswith(("tour-packages", "tour-package-price", "tour-firm-tourists")):
+        return _ARCHIVE_BOOK.format("R3")
+    if code in ("tour-household-spending", "tour-household-spending-share", "tour-new-hotel-beds"):
+        return _ARCHIVE_BOOK.format("R4")
+    if code == "tour-hotel-workers":
+        return _ARCHIVE_BOOK.format("R2")
+    if code.startswith("tour-hist-"):
+        # «Российский статистический ежегодник» 2003–2014: страница выпусков в архивной копии (сайт Росстата — сертификат
+        # Минцифры).
+        return "https://web.archive.org/web/2025/https://rosstat.gov.ru/folder/210/document/12994"
+    return None
+
+
+SERIES = {code: (replace(s, source_url=url) if (url := _source_url_override(code, s)) else s)
+          for code, s in SERIES.items()}
+
 # ── Группы срезов (frontend indicatorVariants.js повторяет их; тест сверяет) ──
 
 VARIANT_GROUPS: tuple[tuple[str, str, tuple[tuple[str, str, str], ...]], ...] = (
@@ -1259,6 +1325,14 @@ VARIANT_GROUPS: tuple[tuple[str, str, tuple[tuple[str, str, str], ...]], ...] = 
 )
 
 
+def is_seasonal(s: TourSeries) -> bool:
+    """Сезонный ряд: месяц или квартал туризма (поездки, траты, перевозки, ночёвки, загрузка кресел, налог). Сравнение
+    с прошлым периодом здесь — сезон, а не рост. Не сезонные: годовые ряды и ряды, уже выраженные к году (ИПЦ позиций,
+    реальный рост туриндустрии)."""
+    return (s.frequency in ("monthly", "quarterly") and s.parser_type != "rosstat_tourism_cpi"
+            and s.code != "tour-gva-volume")
+
+
 def hidden_codes() -> set[str]:
     return {code for code, s in SERIES.items() if not s.listed}
 
@@ -1284,6 +1358,8 @@ def seed_indicators():
         cfg.update(fc or {"forecast_steps": 0})
         if s.min_value is not None:
             cfg["validation"] = {"min": s.min_value}
+        if is_seasonal(s):
+            cfg["seasonal"] = True
         yield {
             "code": s.code,
             "name": s.name,
