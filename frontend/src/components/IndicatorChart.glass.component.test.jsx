@@ -41,7 +41,7 @@ const FORECAST = {
 };
 
 function renderChart(props = {}) {
-  return render(
+  const result = render(
     <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
       <LocaleProvider>
         <AuthProvider>
@@ -61,6 +61,9 @@ function renderChart(props = {}) {
       </LocaleProvider>
     </QueryClientProvider>,
   );
+  // Тип графика и «События» лежат за кнопкой «Изменить вид» (правка 20): открываем панель.
+  fireEvent.click(screen.getByTestId('chart-view-toggle'));
+  return result;
 }
 
 describe('IndicatorChart: стеклянная лента (K4.1, K4.4)', () => {

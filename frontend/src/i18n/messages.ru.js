@@ -4613,4 +4613,11 @@ export default {
   "w6d.search.section.sections": "Разделы",
   "tourism.search.section": "Туризм: Россия, регионы и мир",
   "tourism.search.sectionHint": "Раздел: турпоток, гостиницы, траты туристов — все показатели",
+  // ===== Зона z2: график, таблица истории, прогноз =====
+  "kt2_table_yoy": "К году",
+  "kt2_table_yoyUnit": "К году, {unit}",
+  "kt2_table_yoyNote": "к тому же периоду прошлого года",
+  "kt2_table_yoyNoteAnnual": "к предыдущему году",
+  "kt2_table_maxAll": "максимум за всё время",
+  "kt2_table_minAll": "минимум за всё время",
 };

@@ -4608,4 +4608,11 @@ export default {
   "w6d.search.section.sections": "Sections",
   "tourism.search.section": "Tourism: Russia, regions and the world",
   "tourism.search.sectionHint": "Section: tourist flows, hotels, tourist spending — every indicator",
+  // ===== Zone z2: chart, history table, forecast =====
+  "kt2_table_yoy": "Year over year",
+  "kt2_table_yoyUnit": "Year over year, {unit}",
+  "kt2_table_yoyNote": "vs the same period last year",
+  "kt2_table_yoyNoteAnnual": "vs the previous year",
+  "kt2_table_maxAll": "all-time high",
+  "kt2_table_minAll": "all-time low",
 };
