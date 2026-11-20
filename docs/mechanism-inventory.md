@@ -13,10 +13,10 @@
 - Direct environment reads: **36**
 - Jobs: **84**
 - Middleware: **6**
-- Registry declarations: **1870**
-- Registry references: **3523**
-- Migration operations: **576**
-- Candidate effects: **3606**
+- Registry declarations: **1899**
+- Registry references: **3593**
+- Migration operations: **579**
+- Candidate effects: **3626**
 - Unresolved syntax: **6**
 - MCP tools: **7**
 
@@ -25,9 +25,9 @@
 | Methods | Path | Handler | Source |
 | --- | --- | --- | --- |
 | GET | /api/v1/indicators | app.api.indicators.list_indicators | [backend/app/api/indicators.py:279](../backend/app/api/indicators.py#L279) |
-| GET | /api/v1/indicators/{code} | app.api.indicators.get_indicator | [backend/app/api/indicators.py:426](../backend/app/api/indicators.py#L426) |
-| GET | /api/v1/indicators/{code}/data | app.api.indicators.get_indicator_data | [backend/app/api/indicators.py:536](../backend/app/api/indicators.py#L536) |
-| GET | /api/v1/indicators/{code}/stats | app.api.indicators.get_indicator_stats | [backend/app/api/indicators.py:583](../backend/app/api/indicators.py#L583) |
+| GET | /api/v1/indicators/{code} | app.api.indicators.get_indicator | [backend/app/api/indicators.py:427](../backend/app/api/indicators.py#L427) |
+| GET | /api/v1/indicators/{code}/data | app.api.indicators.get_indicator_data | [backend/app/api/indicators.py:538](../backend/app/api/indicators.py#L538) |
+| GET | /api/v1/indicators/{code}/stats | app.api.indicators.get_indicator_stats | [backend/app/api/indicators.py:585](../backend/app/api/indicators.py#L585) |
 | GET | /api/v1/indicators/{code}/forecast | app.api.forecasts.get_forecast | [backend/app/api/forecasts.py:62](../backend/app/api/forecasts.py#L62) |
 | GET | /api/v1/indicators/{code}/inflation | app.api.forecasts.get_inflation | [backend/app/api/forecasts.py:133](../backend/app/api/forecasts.py#L133) |
 | GET | /api/v1/forecasts/showcase | app.api.forecast_showcase.get_forecast_showcase | [backend/app/api/forecast_showcase.py:93](../backend/app/api/forecast_showcase.py#L93) |
@@ -88,14 +88,14 @@
 | POST | /api/v1/export/grid | app.api.export.export_grid_file | [backend/app/api/export.py:570](../backend/app/api/export.py#L570) |
 | GET | /api/v1/regions | app.api.regions.regions_landing | [backend/app/api/regions.py:165](../backend/app/api/regions.py#L165) |
 | GET | /api/v1/regions/catalog | app.api.regions.regions_catalog | [backend/app/api/regions.py:241](../backend/app/api/regions.py#L241) |
-| GET | /api/v1/regions/heatmap/{code} | app.api.regions.regions_heatmap | [backend/app/api/regions.py:280](../backend/app/api/regions.py#L280) |
-| GET | /api/v1/regions/heatmap-series/{code} | app.api.regions.regions_heatmap_series | [backend/app/api/regions.py:414](../backend/app/api/regions.py#L414) |
-| GET | /api/v1/regions/vs/{slug_a}/{slug_b} | app.api.regions.regions_compare | [backend/app/api/regions.py:467](../backend/app/api/regions.py#L467) |
-| GET | /api/v1/regions/vs/{slug_a}/{slug_b}/prices | app.api.regions.regions_compare_prices | [backend/app/api/regions.py:548](../backend/app/api/regions.py#L548) |
-| GET | /api/v1/regions/russia/prices-summary | app.api.regions.russia_prices_summary | [backend/app/api/regions.py:598](../backend/app/api/regions.py#L598) |
-| GET | /api/v1/regions/{slug} | app.api.regions.region_profile | [backend/app/api/regions.py:767](../backend/app/api/regions.py#L767) |
-| GET | /api/v1/regions/{slug}/i/{code} | app.api.regions.region_indicator_detail | [backend/app/api/regions.py:999](../backend/app/api/regions.py#L999) |
-| GET | /api/v1/regions/{slug}/i/{code}/monthly | app.api.regions.region_indicator_monthly | [backend/app/api/regions.py:1198](../backend/app/api/regions.py#L1198) |
+| GET | /api/v1/regions/heatmap/{code} | app.api.regions.regions_heatmap | [backend/app/api/regions.py:291](../backend/app/api/regions.py#L291) |
+| GET | /api/v1/regions/heatmap-series/{code} | app.api.regions.regions_heatmap_series | [backend/app/api/regions.py:435](../backend/app/api/regions.py#L435) |
+| GET | /api/v1/regions/vs/{slug_a}/{slug_b} | app.api.regions.regions_compare | [backend/app/api/regions.py:488](../backend/app/api/regions.py#L488) |
+| GET | /api/v1/regions/vs/{slug_a}/{slug_b}/prices | app.api.regions.regions_compare_prices | [backend/app/api/regions.py:569](../backend/app/api/regions.py#L569) |
+| GET | /api/v1/regions/russia/prices-summary | app.api.regions.russia_prices_summary | [backend/app/api/regions.py:619](../backend/app/api/regions.py#L619) |
+| GET | /api/v1/regions/{slug} | app.api.regions.region_profile | [backend/app/api/regions.py:788](../backend/app/api/regions.py#L788) |
+| GET | /api/v1/regions/{slug}/i/{code} | app.api.regions.region_indicator_detail | [backend/app/api/regions.py:1028](../backend/app/api/regions.py#L1028) |
+| GET | /api/v1/regions/{slug}/i/{code}/monthly | app.api.regions.region_indicator_monthly | [backend/app/api/regions.py:1233](../backend/app/api/regions.py#L1233) |
 | GET | /api/v1/admin/bi/dashboard | app.api.admin_bi.bi_dashboard | [backend/app/api/admin_bi.py:216](../backend/app/api/admin_bi.py#L216) |
 | GET | /api/v1/admin/bi/mail | app.api.admin_bi.bi_mail | [backend/app/api/admin_bi.py:275](../backend/app/api/admin_bi.py#L275) |
 | GET | /api/v1/admin/bi/slices/meta | app.api.admin_bi.slices_meta | [backend/app/api/admin_bi.py:288](../backend/app/api/admin_bi.py#L288) |
@@ -124,7 +124,7 @@
 | GET | /api/v1/world/{country_slug}/regions/region/{slug} | app.api.world_subnational.region_profile | [backend/app/api/world_subnational.py:368](../backend/app/api/world_subnational.py#L368) |
 | GET | /api/v1/world/{country_slug}/regions/region/{slug}/{code} | app.api.world_subnational.region_indicator | [backend/app/api/world_subnational.py:481](../backend/app/api/world_subnational.py#L481) |
 | GET | /api/v1/world/{country_slug}/regions/region/{slug}/{code}/forecast | app.api.world_subnational.region_indicator_forecast | [backend/app/api/world_subnational.py:618](../backend/app/api/world_subnational.py#L618) |
-| GET | /api/v1/search | app.api.search.search | [backend/app/api/search.py:55](../backend/app/api/search.py#L55) |
+| GET | /api/v1/search | app.api.search.search | [backend/app/api/search.py:58](../backend/app/api/search.py#L58) |
 | GET | /api/v1/api-interest/config | app.api.api_interest.api_interest_config | [backend/app/api/api_interest.py:102](../backend/app/api/api_interest.py#L102) |
 | POST | /api/v1/api-interest | app.api.api_interest.submit_api_interest | [backend/app/api/api_interest.py:109](../backend/app/api/api_interest.py#L109) |
 | GET | /api/v1/site-acq/config | app.api.site_acq.site_acq_config | [backend/app/api/site_acq.py:34](../backend/app/api/site_acq.py#L34) |
@@ -343,36 +343,37 @@ Relationships: `[{'path': 'backend/app/models.py', 'line': 117, 'end_line': 119,
 | year_min / year_min | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:134](../backend/app/models.py#L134) |
 | year_max / year_max | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:135](../backend/app/models.py#L135) |
 | is_listed / is_listed | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'True', 'server_default': "'true'"} | [backend/app/models.py:136](../backend/app/models.py#L136) |
+| data_updated_at / data_updated_at | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:138](../backend/app/models.py#L138) |
 
 Constraints: `[]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 138, 'end_line': 140, 'owner': 'RegionIndicator', 'conditions': [], 'attribute': 'data_points', 'annotation': "Mapped[list['RegionDataPoint']]", 'definition': "relationship(back_populates='indicator', cascade='all, delete-orphan', passive_deletes=True)"}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 140, 'end_line': 142, 'owner': 'RegionIndicator', 'conditions': [], 'attribute': 'data_points', 'annotation': "Mapped[list['RegionDataPoint']]", 'definition': "relationship(back_populates='indicator', cascade='all, delete-orphan', passive_deletes=True)"}]`
 
 ## Table `region_data`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:154](../backend/app/models.py#L154) |
-| indicator_id / indicator_id | Mapped[int] | False | ["ForeignKey('region_indicators.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:155](../backend/app/models.py#L155) |
-| region_id / region_id | Mapped[int] | False | ["ForeignKey('regions.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:158](../backend/app/models.py#L158) |
-| year / year | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:161](../backend/app/models.py#L161) |
-| value / value | Mapped[float] | False | ['Numeric(18, 4)'] {'nullable': 'False'} | [backend/app/models.py:162](../backend/app/models.py#L162) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:156](../backend/app/models.py#L156) |
+| indicator_id / indicator_id | Mapped[int] | False | ["ForeignKey('region_indicators.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:157](../backend/app/models.py#L157) |
+| region_id / region_id | Mapped[int] | False | ["ForeignKey('regions.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:160](../backend/app/models.py#L160) |
+| year / year | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:163](../backend/app/models.py#L163) |
+| value / value | Mapped[float] | False | ['Numeric(18, 4)'] {'nullable': 'False'} | [backend/app/models.py:164](../backend/app/models.py#L164) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 145, 'end_line': 152, 'owner': 'RegionDataPoint', 'conditions': [], 'definition': "(UniqueConstraint('indicator_id', 'region_id', 'year', name='uq_region_data_point'), Index('ix_region_data_indicator_year', 'indicator_id', 'year'), Index('ix_region_data_region', 'region_id'), Index('ix_region_data_region_indicator_year', 'region_id', 'indicator_id', 'year'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 147, 'end_line': 154, 'owner': 'RegionDataPoint', 'conditions': [], 'definition': "(UniqueConstraint('indicator_id', 'region_id', 'year', name='uq_region_data_point'), Index('ix_region_data_indicator_year', 'indicator_id', 'year'), Index('ix_region_data_region', 'region_id'), Index('ix_region_data_region_indicator_year', 'region_id', 'indicator_id', 'year'))"}]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 164, 'end_line': 164, 'owner': 'RegionDataPoint', 'conditions': [], 'attribute': 'indicator', 'annotation': "Mapped['RegionIndicator']", 'definition': "relationship(back_populates='data_points')"}, {'path': 'backend/app/models.py', 'line': 165, 'end_line': 165, 'owner': 'RegionDataPoint', 'conditions': [], 'attribute': 'region', 'annotation': "Mapped['Region']", 'definition': "relationship(back_populates='data_points')"}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 166, 'end_line': 166, 'owner': 'RegionDataPoint', 'conditions': [], 'attribute': 'indicator', 'annotation': "Mapped['RegionIndicator']", 'definition': "relationship(back_populates='data_points')"}, {'path': 'backend/app/models.py', 'line': 167, 'end_line': 167, 'owner': 'RegionDataPoint', 'conditions': [], 'attribute': 'region', 'annotation': "Mapped['Region']", 'definition': "relationship(back_populates='data_points')"}]`
 
 ## Table `region_monthly_data`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:184](../backend/app/models.py#L184) |
-| indicator_id / indicator_id | Mapped[int] | False | ["ForeignKey('region_indicators.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:185](../backend/app/models.py#L185) |
-| region_id / region_id | Mapped[int] | False | ["ForeignKey('regions.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:188](../backend/app/models.py#L188) |
-| month / month | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:191](../backend/app/models.py#L191) |
-| value / value | Mapped[float] | False | ['Numeric(18, 4)'] {'nullable': 'False'} | [backend/app/models.py:192](../backend/app/models.py#L192) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:186](../backend/app/models.py#L186) |
+| indicator_id / indicator_id | Mapped[int] | False | ["ForeignKey('region_indicators.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:187](../backend/app/models.py#L187) |
+| region_id / region_id | Mapped[int] | False | ["ForeignKey('regions.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:190](../backend/app/models.py#L190) |
+| month / month | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:193](../backend/app/models.py#L193) |
+| value / value | Mapped[float] | False | ['Numeric(18, 4)'] {'nullable': 'False'} | [backend/app/models.py:194](../backend/app/models.py#L194) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 178, 'end_line': 182, 'owner': 'RegionMonthlyPoint', 'conditions': [], 'definition': "(UniqueConstraint('indicator_id', 'region_id', 'month', name='uq_region_monthly_point'), Index('ix_region_monthly_indicator_month', 'indicator_id', 'month'), Index('ix_region_monthly_region_indicator_month', 'region_id', 'indicator_id', 'month'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 180, 'end_line': 184, 'owner': 'RegionMonthlyPoint', 'conditions': [], 'definition': "(UniqueConstraint('indicator_id', 'region_id', 'month', name='uq_region_monthly_point'), Index('ix_region_monthly_indicator_month', 'indicator_id', 'month'), Index('ix_region_monthly_region_indicator_month', 'region_id', 'indicator_id', 'month'))"}]`
 
 Relationships: `[]`
 
@@ -380,27 +381,27 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:210](../backend/app/models.py#L210) |
-| indicator_id / indicator_id | Mapped[int] | False | ["ForeignKey('region_indicators.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:211](../backend/app/models.py#L211) |
-| region_id / region_id | Mapped[int] | False | ["ForeignKey('regions.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:214](../backend/app/models.py#L214) |
-| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:217](../backend/app/models.py#L217) |
-| value / value | Mapped[float] | False | ['Numeric(18, 4)'] {'nullable': 'False'} | [backend/app/models.py:218](../backend/app/models.py#L218) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:212](../backend/app/models.py#L212) |
+| indicator_id / indicator_id | Mapped[int] | False | ["ForeignKey('region_indicators.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:213](../backend/app/models.py#L213) |
+| region_id / region_id | Mapped[int] | False | ["ForeignKey('regions.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:216](../backend/app/models.py#L216) |
+| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:219](../backend/app/models.py#L219) |
+| value / value | Mapped[float] | False | ['Numeric(18, 4)'] {'nullable': 'False'} | [backend/app/models.py:220](../backend/app/models.py#L220) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 205, 'end_line': 208, 'owner': 'RegionWeeklyPoint', 'conditions': [], 'definition': "(UniqueConstraint('indicator_id', 'region_id', 'date', name='uq_region_weekly_point'), Index('ix_region_weekly_region_indicator_date', 'region_id', 'indicator_id', 'date'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 207, 'end_line': 210, 'owner': 'RegionWeeklyPoint', 'conditions': [], 'definition': "(UniqueConstraint('indicator_id', 'region_id', 'date', name='uq_region_weekly_point'), Index('ix_region_weekly_region_indicator_date', 'region_id', 'indicator_id', 'date'))"}]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 220, 'end_line': 220, 'owner': 'RegionWeeklyPoint', 'conditions': [], 'attribute': 'indicator', 'annotation': "Mapped['RegionIndicator']", 'definition': 'relationship()'}, {'path': 'backend/app/models.py', 'line': 221, 'end_line': 221, 'owner': 'RegionWeeklyPoint', 'conditions': [], 'attribute': 'region', 'annotation': "Mapped['Region']", 'definition': 'relationship()'}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 222, 'end_line': 222, 'owner': 'RegionWeeklyPoint', 'conditions': [], 'attribute': 'indicator', 'annotation': "Mapped['RegionIndicator']", 'definition': 'relationship()'}, {'path': 'backend/app/models.py', 'line': 223, 'end_line': 223, 'owner': 'RegionWeeklyPoint', 'conditions': [], 'attribute': 'region', 'annotation': "Mapped['Region']", 'definition': 'relationship()'}]`
 
 ## Table `region_quarterly_data`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:239](../backend/app/models.py#L239) |
-| indicator_id / indicator_id | Mapped[int] | False | ["ForeignKey('region_indicators.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:240](../backend/app/models.py#L240) |
-| region_id / region_id | Mapped[int] | False | ["ForeignKey('regions.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:243](../backend/app/models.py#L243) |
-| quarter / quarter | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:246](../backend/app/models.py#L246) |
-| value / value | Mapped[float] | False | ['Numeric(18, 4)'] {'nullable': 'False'} | [backend/app/models.py:247](../backend/app/models.py#L247) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:241](../backend/app/models.py#L241) |
+| indicator_id / indicator_id | Mapped[int] | False | ["ForeignKey('region_indicators.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:242](../backend/app/models.py#L242) |
+| region_id / region_id | Mapped[int] | False | ["ForeignKey('regions.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:245](../backend/app/models.py#L245) |
+| quarter / quarter | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:248](../backend/app/models.py#L248) |
+| value / value | Mapped[float] | False | ['Numeric(18, 4)'] {'nullable': 'False'} | [backend/app/models.py:249](../backend/app/models.py#L249) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 234, 'end_line': 237, 'owner': 'RegionQuarterlyPoint', 'conditions': [], 'definition': "(UniqueConstraint('indicator_id', 'region_id', 'quarter', name='uq_region_quarterly_point'), Index('ix_region_quarterly_indicator_quarter', 'indicator_id', 'quarter'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 236, 'end_line': 239, 'owner': 'RegionQuarterlyPoint', 'conditions': [], 'definition': "(UniqueConstraint('indicator_id', 'region_id', 'quarter', name='uq_region_quarterly_point'), Index('ix_region_quarterly_indicator_quarter', 'indicator_id', 'quarter'))"}]`
 
 Relationships: `[]`
 
@@ -408,26 +409,26 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:256](../backend/app/models.py#L256) |
-| code / code | Mapped[str] | False | ['String(8)'] {'unique': 'True', 'nullable': 'False', 'index': 'True'} | [backend/app/models.py:257](../backend/app/models.py#L257) |
-| slug / slug | Mapped[str] | False | ['String(80)'] {'unique': 'True', 'nullable': 'False', 'index': 'True'} | [backend/app/models.py:258](../backend/app/models.py#L258) |
-| name_ru / name_ru | Mapped[str] | False | ['String(150)'] {'nullable': 'False'} | [backend/app/models.py:259](../backend/app/models.py#L259) |
-| name_en / name_en | Mapped[str] | False | ['String(150)'] {'nullable': 'False'} | [backend/app/models.py:260](../backend/app/models.py#L260) |
-| region_ru / region_ru | Mapped[str] | False | ['String(80)'] {'nullable': 'False', 'default': "'Европа'"} | [backend/app/models.py:261](../backend/app/models.py#L261) |
-| is_active / is_active | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'True', 'server_default': "'true'"} | [backend/app/models.py:262](../backend/app/models.py#L262) |
-| sort_order / sort_order | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:263](../backend/app/models.py#L263) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:258](../backend/app/models.py#L258) |
+| code / code | Mapped[str] | False | ['String(8)'] {'unique': 'True', 'nullable': 'False', 'index': 'True'} | [backend/app/models.py:259](../backend/app/models.py#L259) |
+| slug / slug | Mapped[str] | False | ['String(80)'] {'unique': 'True', 'nullable': 'False', 'index': 'True'} | [backend/app/models.py:260](../backend/app/models.py#L260) |
+| name_ru / name_ru | Mapped[str] | False | ['String(150)'] {'nullable': 'False'} | [backend/app/models.py:261](../backend/app/models.py#L261) |
+| name_en / name_en | Mapped[str] | False | ['String(150)'] {'nullable': 'False'} | [backend/app/models.py:262](../backend/app/models.py#L262) |
+| region_ru / region_ru | Mapped[str] | False | ['String(80)'] {'nullable': 'False', 'default': "'Европа'"} | [backend/app/models.py:263](../backend/app/models.py#L263) |
+| is_active / is_active | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'True', 'server_default': "'true'"} | [backend/app/models.py:264](../backend/app/models.py#L264) |
+| sort_order / sort_order | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:265](../backend/app/models.py#L265) |
 
 Constraints: `[]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 265, 'end_line': 267, 'owner': 'WorldCountry', 'conditions': [], 'attribute': 'indicators', 'annotation': "Mapped[list['WorldIndicator']]", 'definition': "relationship(back_populates='country', cascade='all, delete-orphan', passive_deletes=True)"}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 267, 'end_line': 269, 'owner': 'WorldCountry', 'conditions': [], 'attribute': 'indicators', 'annotation': "Mapped[list['WorldIndicator']]", 'definition': "relationship(back_populates='country', cascade='all, delete-orphan', passive_deletes=True)"}]`
 
 ## Table `world_country_listed_counts`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| country_id / country_id | Mapped[int] | False | ["ForeignKey('world_countries.id', ondelete='CASCADE')"] {'primary_key': 'True'} | [backend/app/models.py:280](../backend/app/models.py#L280) |
-| listed_count / listed_count | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:283](../backend/app/models.py#L283) |
-| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:284](../backend/app/models.py#L284) |
+| country_id / country_id | Mapped[int] | False | ["ForeignKey('world_countries.id', ondelete='CASCADE')"] {'primary_key': 'True'} | [backend/app/models.py:282](../backend/app/models.py#L282) |
+| listed_count / listed_count | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:285](../backend/app/models.py#L285) |
+| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:286](../backend/app/models.py#L286) |
 
 Constraints: `[]`
 
@@ -437,61 +438,61 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:335](../backend/app/models.py#L335) |
-| country_id / country_id | Mapped[int] | False | ["ForeignKey('world_countries.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:336](../backend/app/models.py#L336) |
-| provider / provider | Mapped[str] | False | ['String(50)'] {'nullable': 'False', 'default': "'eurostat'", 'server_default': "'eurostat'"} | [backend/app/models.py:341](../backend/app/models.py#L341) |
-| code / code | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:344](../backend/app/models.py#L344) |
-| dataset_id / dataset_id | Mapped[str] | False | ['String(160)'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:345](../backend/app/models.py#L345) |
-| slice_json / slice_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:346](../backend/app/models.py#L346) |
-| slice_hash / slice_hash | Mapped[str] | False | ['String(64)'] {'nullable': 'False'} | [backend/app/models.py:347](../backend/app/models.py#L347) |
-| name_ru / name_ru | Mapped[str] | False | ['String(400)'] {'nullable': 'False'} | [backend/app/models.py:348](../backend/app/models.py#L348) |
-| name_en / name_en | Mapped[str \| None] | True | ['String(400)'] {} | [backend/app/models.py:349](../backend/app/models.py#L349) |
-| name_quality / name_quality | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'raw'", 'server_default': "'raw'"} | [backend/app/models.py:351](../backend/app/models.py#L351) |
-| unit / unit | Mapped[str] | False | ['String(80)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:354](../backend/app/models.py#L354) |
-| unit_ru / unit_ru | Mapped[str] | False | ['String(80)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:355](../backend/app/models.py#L355) |
-| frequency / frequency | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:356](../backend/app/models.py#L356) |
-| category_ru / category_ru | Mapped[str] | False | ['String(80)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:357](../backend/app/models.py#L357) |
-| source / source | Mapped[str] | False | ['String(100)'] {'nullable': 'False', 'default': "'Eurostat'"} | [backend/app/models.py:358](../backend/app/models.py#L358) |
-| source_url / source_url | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:359](../backend/app/models.py#L359) |
-| description / description | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:360](../backend/app/models.py#L360) |
-| methodology / methodology | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:361](../backend/app/models.py#L361) |
-| history_start / history_start | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:362](../backend/app/models.py#L362) |
-| history_end / history_end | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:363](../backend/app/models.py#L363) |
-| points_count / points_count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:364](../backend/app/models.py#L364) |
-| is_listed / is_listed | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False', 'server_default': "'false'"} | [backend/app/models.py:365](../backend/app/models.py#L365) |
-| seo_title / seo_title | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:366](../backend/app/models.py#L366) |
-| seo_description / seo_description | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:367](../backend/app/models.py#L367) |
-| seo_keywords / seo_keywords | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:368](../backend/app/models.py#L368) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:337](../backend/app/models.py#L337) |
+| country_id / country_id | Mapped[int] | False | ["ForeignKey('world_countries.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:338](../backend/app/models.py#L338) |
+| provider / provider | Mapped[str] | False | ['String(50)'] {'nullable': 'False', 'default': "'eurostat'", 'server_default': "'eurostat'"} | [backend/app/models.py:343](../backend/app/models.py#L343) |
+| code / code | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:346](../backend/app/models.py#L346) |
+| dataset_id / dataset_id | Mapped[str] | False | ['String(160)'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:347](../backend/app/models.py#L347) |
+| slice_json / slice_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:348](../backend/app/models.py#L348) |
+| slice_hash / slice_hash | Mapped[str] | False | ['String(64)'] {'nullable': 'False'} | [backend/app/models.py:349](../backend/app/models.py#L349) |
+| name_ru / name_ru | Mapped[str] | False | ['String(400)'] {'nullable': 'False'} | [backend/app/models.py:350](../backend/app/models.py#L350) |
+| name_en / name_en | Mapped[str \| None] | True | ['String(400)'] {} | [backend/app/models.py:351](../backend/app/models.py#L351) |
+| name_quality / name_quality | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'raw'", 'server_default': "'raw'"} | [backend/app/models.py:353](../backend/app/models.py#L353) |
+| unit / unit | Mapped[str] | False | ['String(80)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:356](../backend/app/models.py#L356) |
+| unit_ru / unit_ru | Mapped[str] | False | ['String(80)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:357](../backend/app/models.py#L357) |
+| frequency / frequency | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:358](../backend/app/models.py#L358) |
+| category_ru / category_ru | Mapped[str] | False | ['String(80)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:359](../backend/app/models.py#L359) |
+| source / source | Mapped[str] | False | ['String(100)'] {'nullable': 'False', 'default': "'Eurostat'"} | [backend/app/models.py:360](../backend/app/models.py#L360) |
+| source_url / source_url | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:361](../backend/app/models.py#L361) |
+| description / description | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:362](../backend/app/models.py#L362) |
+| methodology / methodology | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:363](../backend/app/models.py#L363) |
+| history_start / history_start | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:364](../backend/app/models.py#L364) |
+| history_end / history_end | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:365](../backend/app/models.py#L365) |
+| points_count / points_count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:366](../backend/app/models.py#L366) |
+| is_listed / is_listed | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False', 'server_default': "'false'"} | [backend/app/models.py:367](../backend/app/models.py#L367) |
+| seo_title / seo_title | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:368](../backend/app/models.py#L368) |
+| seo_description / seo_description | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:369](../backend/app/models.py#L369) |
+| seo_keywords / seo_keywords | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:370](../backend/app/models.py#L370) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 289, 'end_line': 333, 'owner': 'WorldIndicator', 'conditions': [], 'definition': "(UniqueConstraint('provider', 'country_id', 'dataset_id', 'slice_hash', name='uq_world_ind_provider_slice'), Index('ix_world_indicators_country_category', 'country_id', 'category_ru'), Index('ix_world_indicators_provider_dataset', 'provider', 'dataset_id'), Index('ix_world_indicators_code', 'code', unique=True), Index('ix_world_indicators_listed_signal', 'country_id', postgresql_include=('id', 'code', 'name_ru'), postgresql_where=text('is_listed')), Index('ix_world_indicators_listed_country', 'country_id', postgresql_where=text('is_listed')), Index('ix_world_indicators_card_lookup', 'country_id', 'provider', 'dataset_id', postgresql_ops={'dataset_id': 'varchar_pattern_ops'}), Index('ix_world_indicators_search_text_trgm', 'code', 'name_ru', 'name_en', 'seo_keywords', postgresql_using='gin', postgresql_ops={'code': 'gin_trgm_ops', 'name_ru': 'gin_trgm_ops', 'name_en': 'gin_trgm_ops', 'seo_keywords': 'gin_trgm_ops'}))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 291, 'end_line': 335, 'owner': 'WorldIndicator', 'conditions': [], 'definition': "(UniqueConstraint('provider', 'country_id', 'dataset_id', 'slice_hash', name='uq_world_ind_provider_slice'), Index('ix_world_indicators_country_category', 'country_id', 'category_ru'), Index('ix_world_indicators_provider_dataset', 'provider', 'dataset_id'), Index('ix_world_indicators_code', 'code', unique=True), Index('ix_world_indicators_listed_signal', 'country_id', postgresql_include=('id', 'code', 'name_ru'), postgresql_where=text('is_listed')), Index('ix_world_indicators_listed_country', 'country_id', postgresql_where=text('is_listed')), Index('ix_world_indicators_card_lookup', 'country_id', 'provider', 'dataset_id', postgresql_ops={'dataset_id': 'varchar_pattern_ops'}), Index('ix_world_indicators_search_text_trgm', 'code', 'name_ru', 'name_en', 'seo_keywords', postgresql_using='gin', postgresql_ops={'code': 'gin_trgm_ops', 'name_ru': 'gin_trgm_ops', 'name_en': 'gin_trgm_ops', 'seo_keywords': 'gin_trgm_ops'}))"}]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 370, 'end_line': 370, 'owner': 'WorldIndicator', 'conditions': [], 'attribute': 'country', 'annotation': "Mapped['WorldCountry']", 'definition': "relationship(back_populates='indicators')"}, {'path': 'backend/app/models.py', 'line': 371, 'end_line': 373, 'owner': 'WorldIndicator', 'conditions': [], 'attribute': 'data_points', 'annotation': "Mapped[list['WorldDataPoint']]", 'definition': "relationship(back_populates='indicator', cascade='all, delete-orphan', passive_deletes=True)"}, {'path': 'backend/app/models.py', 'line': 374, 'end_line': 376, 'owner': 'WorldIndicator', 'conditions': [], 'attribute': 'forecasts', 'annotation': "Mapped[list['WorldForecast']]", 'definition': "relationship(back_populates='indicator', cascade='all, delete-orphan', passive_deletes=True)"}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 372, 'end_line': 372, 'owner': 'WorldIndicator', 'conditions': [], 'attribute': 'country', 'annotation': "Mapped['WorldCountry']", 'definition': "relationship(back_populates='indicators')"}, {'path': 'backend/app/models.py', 'line': 373, 'end_line': 375, 'owner': 'WorldIndicator', 'conditions': [], 'attribute': 'data_points', 'annotation': "Mapped[list['WorldDataPoint']]", 'definition': "relationship(back_populates='indicator', cascade='all, delete-orphan', passive_deletes=True)"}, {'path': 'backend/app/models.py', 'line': 376, 'end_line': 378, 'owner': 'WorldIndicator', 'conditions': [], 'attribute': 'forecasts', 'annotation': "Mapped[list['WorldForecast']]", 'definition': "relationship(back_populates='indicator', cascade='all, delete-orphan', passive_deletes=True)"}]`
 
 ## Table `world_data_points`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:397](../backend/app/models.py#L397) |
-| indicator_id / indicator_id | Mapped[int] | False | ["ForeignKey('world_indicators.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:398](../backend/app/models.py#L398) |
-| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:401](../backend/app/models.py#L401) |
-| value / value | Mapped[float] | False | ['Numeric(20, 6)'] {'nullable': 'False'} | [backend/app/models.py:402](../backend/app/models.py#L402) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:399](../backend/app/models.py#L399) |
+| indicator_id / indicator_id | Mapped[int] | False | ["ForeignKey('world_indicators.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:400](../backend/app/models.py#L400) |
+| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:403](../backend/app/models.py#L403) |
+| value / value | Mapped[float] | False | ['Numeric(20, 6)'] {'nullable': 'False'} | [backend/app/models.py:404](../backend/app/models.py#L404) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 381, 'end_line': 395, 'owner': 'WorldDataPoint', 'conditions': [], 'definition': "(UniqueConstraint('indicator_id', 'date', name='uq_world_data_point'), Index('ix_world_data_points_nonzero_indicator', 'indicator_id', postgresql_where=text('value <> 0')))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 383, 'end_line': 397, 'owner': 'WorldDataPoint', 'conditions': [], 'definition': "(UniqueConstraint('indicator_id', 'date', name='uq_world_data_point'), Index('ix_world_data_points_nonzero_indicator', 'indicator_id', postgresql_where=text('value <> 0')))"}]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 404, 'end_line': 404, 'owner': 'WorldDataPoint', 'conditions': [], 'attribute': 'indicator', 'annotation': "Mapped['WorldIndicator']", 'definition': "relationship(back_populates='data_points')"}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 406, 'end_line': 406, 'owner': 'WorldDataPoint', 'conditions': [], 'attribute': 'indicator', 'annotation': "Mapped['WorldIndicator']", 'definition': "relationship(back_populates='data_points')"}]`
 
 ## Table `world_dataset_state`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| provider / provider | Mapped[str] | False | ['String(50)'] {'primary_key': 'True', 'default': "'eurostat'", 'server_default': "'eurostat'"} | [backend/app/models.py:416](../backend/app/models.py#L416) |
-| dataset_id / dataset_id | Mapped[str] | False | ['String(160)'] {'primary_key': 'True'} | [backend/app/models.py:419](../backend/app/models.py#L419) |
-| last_update_of_data / last_update_of_data | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:420](../backend/app/models.py#L420) |
-| last_structure_change / last_structure_change | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:421](../backend/app/models.py#L421) |
-| last_slice_hash / last_slice_hash | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:422](../backend/app/models.py#L422) |
-| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'ok'"} | [backend/app/models.py:423](../backend/app/models.py#L423) |
-| last_success_at / last_success_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:424](../backend/app/models.py#L424) |
-| last_error / last_error | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:425](../backend/app/models.py#L425) |
+| provider / provider | Mapped[str] | False | ['String(50)'] {'primary_key': 'True', 'default': "'eurostat'", 'server_default': "'eurostat'"} | [backend/app/models.py:418](../backend/app/models.py#L418) |
+| dataset_id / dataset_id | Mapped[str] | False | ['String(160)'] {'primary_key': 'True'} | [backend/app/models.py:421](../backend/app/models.py#L421) |
+| last_update_of_data / last_update_of_data | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:422](../backend/app/models.py#L422) |
+| last_structure_change / last_structure_change | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:423](../backend/app/models.py#L423) |
+| last_slice_hash / last_slice_hash | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:424](../backend/app/models.py#L424) |
+| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'ok'"} | [backend/app/models.py:425](../backend/app/models.py#L425) |
+| last_success_at / last_success_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:426](../backend/app/models.py#L426) |
+| last_error / last_error | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:427](../backend/app/models.py#L427) |
 
 Constraints: `[]`
 
@@ -501,18 +502,18 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:434](../backend/app/models.py#L434) |
-| source / source | Mapped[str] | False | ['String(50)'] {'nullable': 'False', 'default': "'eurostat'"} | [backend/app/models.py:435](../backend/app/models.py#L435) |
-| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'running'"} | [backend/app/models.py:436](../backend/app/models.py#L436) |
-| is_shadow / is_shadow | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'True'} | [backend/app/models.py:437](../backend/app/models.py#L437) |
-| datasets_selected / datasets_selected | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:438](../backend/app/models.py#L438) |
-| datasets_succeeded / datasets_succeeded | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:439](../backend/app/models.py#L439) |
-| datasets_failed / datasets_failed | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:440](../backend/app/models.py#L440) |
-| started_at / started_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:441](../backend/app/models.py#L441) |
-| completed_at / completed_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:442](../backend/app/models.py#L442) |
-| error_message / error_message | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:443](../backend/app/models.py#L443) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:436](../backend/app/models.py#L436) |
+| source / source | Mapped[str] | False | ['String(50)'] {'nullable': 'False', 'default': "'eurostat'"} | [backend/app/models.py:437](../backend/app/models.py#L437) |
+| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'running'"} | [backend/app/models.py:438](../backend/app/models.py#L438) |
+| is_shadow / is_shadow | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'True'} | [backend/app/models.py:439](../backend/app/models.py#L439) |
+| datasets_selected / datasets_selected | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:440](../backend/app/models.py#L440) |
+| datasets_succeeded / datasets_succeeded | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:441](../backend/app/models.py#L441) |
+| datasets_failed / datasets_failed | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:442](../backend/app/models.py#L442) |
+| started_at / started_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:443](../backend/app/models.py#L443) |
+| completed_at / completed_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:444](../backend/app/models.py#L444) |
+| error_message / error_message | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:445](../backend/app/models.py#L445) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 432, 'end_line': 432, 'owner': 'WorldIngestRun', 'conditions': [], 'definition': "(Index('ix_world_ingest_runs_started', 'started_at'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 434, 'end_line': 434, 'owner': 'WorldIngestRun', 'conditions': [], 'definition': "(Index('ix_world_ingest_runs_started', 'started_at'),)"}]`
 
 Relationships: `[]`
 
@@ -520,230 +521,230 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:461](../backend/app/models.py#L461) |
-| run_id / run_id | Mapped[int] | False | ["ForeignKey('world_ingest_runs.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:462](../backend/app/models.py#L462) |
-| provider / provider | Mapped[str] | False | ['String(50)'] {'nullable': 'False', 'default': "'eurostat'", 'server_default': "'eurostat'"} | [backend/app/models.py:465](../backend/app/models.py#L465) |
-| dataset_id / dataset_id | Mapped[str] | False | ['String(160)'] {'nullable': 'False'} | [backend/app/models.py:468](../backend/app/models.py#L468) |
-| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:469](../backend/app/models.py#L469) |
-| source_updated_at / source_updated_at | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:470](../backend/app/models.py#L470) |
-| structure_changed_at / structure_changed_at | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:471](../backend/app/models.py#L471) |
-| slice_hash / slice_hash | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:472](../backend/app/models.py#L472) |
-| rows_fetched / rows_fetched | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:473](../backend/app/models.py#L473) |
-| rows_inserted / rows_inserted | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:474](../backend/app/models.py#L474) |
-| rows_updated / rows_updated | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:475](../backend/app/models.py#L475) |
-| rows_removed / rows_removed | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:476](../backend/app/models.py#L476) |
-| error_message / error_message | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:477](../backend/app/models.py#L477) |
-| note / note | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:479](../backend/app/models.py#L479) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:463](../backend/app/models.py#L463) |
+| run_id / run_id | Mapped[int] | False | ["ForeignKey('world_ingest_runs.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:464](../backend/app/models.py#L464) |
+| provider / provider | Mapped[str] | False | ['String(50)'] {'nullable': 'False', 'default': "'eurostat'", 'server_default': "'eurostat'"} | [backend/app/models.py:467](../backend/app/models.py#L467) |
+| dataset_id / dataset_id | Mapped[str] | False | ['String(160)'] {'nullable': 'False'} | [backend/app/models.py:470](../backend/app/models.py#L470) |
+| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:471](../backend/app/models.py#L471) |
+| source_updated_at / source_updated_at | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:472](../backend/app/models.py#L472) |
+| structure_changed_at / structure_changed_at | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:473](../backend/app/models.py#L473) |
+| slice_hash / slice_hash | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:474](../backend/app/models.py#L474) |
+| rows_fetched / rows_fetched | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:475](../backend/app/models.py#L475) |
+| rows_inserted / rows_inserted | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:476](../backend/app/models.py#L476) |
+| rows_updated / rows_updated | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:477](../backend/app/models.py#L477) |
+| rows_removed / rows_removed | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:478](../backend/app/models.py#L478) |
+| error_message / error_message | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:479](../backend/app/models.py#L479) |
+| note / note | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:481](../backend/app/models.py#L481) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 450, 'end_line': 459, 'owner': 'WorldIngestDatasetLog', 'conditions': [], 'definition': "(UniqueConstraint('run_id', 'provider', 'dataset_id', name='uq_world_ingest_run_provider_dataset'), Index('ix_world_ingest_dataset_log_provider_dataset', 'provider', 'dataset_id', 'status'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 452, 'end_line': 461, 'owner': 'WorldIngestDatasetLog', 'conditions': [], 'definition': "(UniqueConstraint('run_id', 'provider', 'dataset_id', name='uq_world_ingest_run_provider_dataset'), Index('ix_world_ingest_dataset_log_provider_dataset', 'provider', 'dataset_id', 'status'))"}]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 481, 'end_line': 481, 'owner': 'WorldIngestDatasetLog', 'conditions': [], 'attribute': 'run', 'annotation': "Mapped['WorldIngestRun']", 'definition': 'relationship()'}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 483, 'end_line': 483, 'owner': 'WorldIngestDatasetLog', 'conditions': [], 'attribute': 'run', 'annotation': "Mapped['WorldIngestRun']", 'definition': 'relationship()'}]`
 
 ## Table `world_forecasts`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:497](../backend/app/models.py#L497) |
-| world_indicator_id / world_indicator_id | Mapped[int] | False | ["ForeignKey('world_indicators.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:498](../backend/app/models.py#L498) |
-| strategy / strategy | Mapped[str] | False | ['String(50)'] {'nullable': 'False'} | [backend/app/models.py:501](../backend/app/models.py#L501) |
-| model_name / model_name | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:502](../backend/app/models.py#L502) |
-| model_params / model_params | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:503](../backend/app/models.py#L503) |
-| gate_status / gate_status | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:504](../backend/app/models.py#L504) |
-| gate_reason / gate_reason | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:505](../backend/app/models.py#L505) |
-| mase / mase | Mapped[float \| None] | True | ['Numeric(12, 6)'] {} | [backend/app/models.py:506](../backend/app/models.py#L506) |
-| baseline_mase / baseline_mase | Mapped[float \| None] | True | ['Numeric(12, 6)'] {} | [backend/app/models.py:507](../backend/app/models.py#L507) |
-| origins / origins | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:508](../backend/app/models.py#L508) |
-| horizon / horizon | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:509](../backend/app/models.py#L509) |
-| is_current / is_current | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False', 'server_default': "'false'"} | [backend/app/models.py:510](../backend/app/models.py#L510) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:513](../backend/app/models.py#L513) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:499](../backend/app/models.py#L499) |
+| world_indicator_id / world_indicator_id | Mapped[int] | False | ["ForeignKey('world_indicators.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:500](../backend/app/models.py#L500) |
+| strategy / strategy | Mapped[str] | False | ['String(50)'] {'nullable': 'False'} | [backend/app/models.py:503](../backend/app/models.py#L503) |
+| model_name / model_name | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:504](../backend/app/models.py#L504) |
+| model_params / model_params | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:505](../backend/app/models.py#L505) |
+| gate_status / gate_status | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:506](../backend/app/models.py#L506) |
+| gate_reason / gate_reason | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:507](../backend/app/models.py#L507) |
+| mase / mase | Mapped[float \| None] | True | ['Numeric(12, 6)'] {} | [backend/app/models.py:508](../backend/app/models.py#L508) |
+| baseline_mase / baseline_mase | Mapped[float \| None] | True | ['Numeric(12, 6)'] {} | [backend/app/models.py:509](../backend/app/models.py#L509) |
+| origins / origins | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:510](../backend/app/models.py#L510) |
+| horizon / horizon | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:511](../backend/app/models.py#L511) |
+| is_current / is_current | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False', 'server_default': "'false'"} | [backend/app/models.py:512](../backend/app/models.py#L512) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:515](../backend/app/models.py#L515) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 488, 'end_line': 495, 'owner': 'WorldForecast', 'conditions': [], 'definition': "(Index('ix_world_forecasts_indicator_current', 'world_indicator_id', postgresql_where=text('is_current = true')), Index('ix_world_forecasts_gate_created', 'gate_status', 'created_at'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 490, 'end_line': 497, 'owner': 'WorldForecast', 'conditions': [], 'definition': "(Index('ix_world_forecasts_indicator_current', 'world_indicator_id', postgresql_where=text('is_current = true')), Index('ix_world_forecasts_gate_created', 'gate_status', 'created_at'))"}]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 515, 'end_line': 515, 'owner': 'WorldForecast', 'conditions': [], 'attribute': 'indicator', 'annotation': "Mapped['WorldIndicator']", 'definition': "relationship(back_populates='forecasts')"}, {'path': 'backend/app/models.py', 'line': 516, 'end_line': 518, 'owner': 'WorldForecast', 'conditions': [], 'attribute': 'values', 'annotation': "Mapped[list['WorldForecastValue']]", 'definition': "relationship(back_populates='forecast', cascade='all, delete-orphan', passive_deletes=True)"}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 517, 'end_line': 517, 'owner': 'WorldForecast', 'conditions': [], 'attribute': 'indicator', 'annotation': "Mapped['WorldIndicator']", 'definition': "relationship(back_populates='forecasts')"}, {'path': 'backend/app/models.py', 'line': 518, 'end_line': 520, 'owner': 'WorldForecast', 'conditions': [], 'attribute': 'values', 'annotation': "Mapped[list['WorldForecastValue']]", 'definition': "relationship(back_populates='forecast', cascade='all, delete-orphan', passive_deletes=True)"}]`
 
 ## Table `world_forecast_values`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:528](../backend/app/models.py#L528) |
-| forecast_id / forecast_id | Mapped[int] | False | ["ForeignKey('world_forecasts.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:529](../backend/app/models.py#L529) |
-| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:532](../backend/app/models.py#L532) |
-| value / value | Mapped[float] | False | ['Numeric(20, 6)'] {'nullable': 'False'} | [backend/app/models.py:533](../backend/app/models.py#L533) |
-| lower_bound / lower_bound | Mapped[float \| None] | True | ['Numeric(20, 6)'] {} | [backend/app/models.py:534](../backend/app/models.py#L534) |
-| upper_bound / upper_bound | Mapped[float \| None] | True | ['Numeric(20, 6)'] {} | [backend/app/models.py:535](../backend/app/models.py#L535) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:530](../backend/app/models.py#L530) |
+| forecast_id / forecast_id | Mapped[int] | False | ["ForeignKey('world_forecasts.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:531](../backend/app/models.py#L531) |
+| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:534](../backend/app/models.py#L534) |
+| value / value | Mapped[float] | False | ['Numeric(20, 6)'] {'nullable': 'False'} | [backend/app/models.py:535](../backend/app/models.py#L535) |
+| lower_bound / lower_bound | Mapped[float \| None] | True | ['Numeric(20, 6)'] {} | [backend/app/models.py:536](../backend/app/models.py#L536) |
+| upper_bound / upper_bound | Mapped[float \| None] | True | ['Numeric(20, 6)'] {} | [backend/app/models.py:537](../backend/app/models.py#L537) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 523, 'end_line': 526, 'owner': 'WorldForecastValue', 'conditions': [], 'definition': "(UniqueConstraint('forecast_id', 'date', name='uq_world_forecast_value'), Index('ix_world_forecast_values_forecast_date', 'forecast_id', 'date'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 525, 'end_line': 528, 'owner': 'WorldForecastValue', 'conditions': [], 'definition': "(UniqueConstraint('forecast_id', 'date', name='uq_world_forecast_value'), Index('ix_world_forecast_values_forecast_date', 'forecast_id', 'date'))"}]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 537, 'end_line': 537, 'owner': 'WorldForecastValue', 'conditions': [], 'attribute': 'forecast', 'annotation': "Mapped['WorldForecast']", 'definition': "relationship(back_populates='values')"}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 539, 'end_line': 539, 'owner': 'WorldForecastValue', 'conditions': [], 'attribute': 'forecast', 'annotation': "Mapped['WorldForecast']", 'definition': "relationship(back_populates='values')"}]`
 
 ## Table `subnational_regions`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:554](../backend/app/models.py#L554) |
-| country_code / country_code | Mapped[str] | False | ['String(8)'] {'nullable': 'False'} | [backend/app/models.py:555](../backend/app/models.py#L555) |
-| slug / slug | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:556](../backend/app/models.py#L556) |
-| name_en / name_en | Mapped[str] | False | ['String(150)'] {'nullable': 'False'} | [backend/app/models.py:557](../backend/app/models.py#L557) |
-| name_ru / name_ru | Mapped[str] | False | ['String(150)'] {'nullable': 'False'} | [backend/app/models.py:558](../backend/app/models.py#L558) |
-| kind / kind | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'state'"} | [backend/app/models.py:560](../backend/app/models.py#L560) |
-| geo_code / geo_code | Mapped[str] | False | ['String(16)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:561](../backend/app/models.py#L561) |
-| fips / fips | Mapped[str \| None] | True | ['String(8)'] {} | [backend/app/models.py:562](../backend/app/models.py#L562) |
-| sort_order / sort_order | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:563](../backend/app/models.py#L563) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:556](../backend/app/models.py#L556) |
+| country_code / country_code | Mapped[str] | False | ['String(8)'] {'nullable': 'False'} | [backend/app/models.py:557](../backend/app/models.py#L557) |
+| slug / slug | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:558](../backend/app/models.py#L558) |
+| name_en / name_en | Mapped[str] | False | ['String(150)'] {'nullable': 'False'} | [backend/app/models.py:559](../backend/app/models.py#L559) |
+| name_ru / name_ru | Mapped[str] | False | ['String(150)'] {'nullable': 'False'} | [backend/app/models.py:560](../backend/app/models.py#L560) |
+| kind / kind | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'state'"} | [backend/app/models.py:562](../backend/app/models.py#L562) |
+| geo_code / geo_code | Mapped[str] | False | ['String(16)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:563](../backend/app/models.py#L563) |
+| fips / fips | Mapped[str \| None] | True | ['String(8)'] {} | [backend/app/models.py:564](../backend/app/models.py#L564) |
+| sort_order / sort_order | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:565](../backend/app/models.py#L565) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 549, 'end_line': 552, 'owner': 'SubnationalRegion', 'conditions': [], 'definition': "(UniqueConstraint('country_code', 'slug', name='uq_subnational_region_country_slug'), Index('ix_subnational_regions_country', 'country_code'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 551, 'end_line': 554, 'owner': 'SubnationalRegion', 'conditions': [], 'definition': "(UniqueConstraint('country_code', 'slug', name='uq_subnational_region_country_slug'), Index('ix_subnational_regions_country', 'country_code'))"}]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 565, 'end_line': 567, 'owner': 'SubnationalRegion', 'conditions': [], 'attribute': 'data_points', 'annotation': "Mapped[list['SubnationalDataPoint']]", 'definition': "relationship(back_populates='region', cascade='all, delete-orphan', passive_deletes=True)"}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 567, 'end_line': 569, 'owner': 'SubnationalRegion', 'conditions': [], 'attribute': 'data_points', 'annotation': "Mapped[list['SubnationalDataPoint']]", 'definition': "relationship(back_populates='region', cascade='all, delete-orphan', passive_deletes=True)"}]`
 
 ## Table `subnational_indicators`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:577](../backend/app/models.py#L577) |
-| country_code / country_code | Mapped[str] | False | ['String(8)'] {'nullable': 'False'} | [backend/app/models.py:578](../backend/app/models.py#L578) |
-| code / code | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:579](../backend/app/models.py#L579) |
-| name_en / name_en | Mapped[str] | False | ['String(400)'] {'nullable': 'False'} | [backend/app/models.py:580](../backend/app/models.py#L580) |
-| name_ru / name_ru | Mapped[str] | False | ['String(400)'] {'nullable': 'False'} | [backend/app/models.py:581](../backend/app/models.py#L581) |
-| unit / unit | Mapped[str] | False | ['String(80)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:582](../backend/app/models.py#L582) |
-| unit_ru / unit_ru | Mapped[str] | False | ['String(80)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:583](../backend/app/models.py#L583) |
-| unit_en / unit_en | Mapped[str] | False | ['String(80)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:584](../backend/app/models.py#L584) |
-| frequency / frequency | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'annual'"} | [backend/app/models.py:585](../backend/app/models.py#L585) |
-| section_en / section_en | Mapped[str] | False | ['String(80)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:586](../backend/app/models.py#L586) |
-| section_ru / section_ru | Mapped[str] | False | ['String(80)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:587](../backend/app/models.py#L587) |
-| provider / provider | Mapped[str] | False | ['String(50)'] {'nullable': 'False', 'default': "'fred'"} | [backend/app/models.py:588](../backend/app/models.py#L588) |
-| series_template / series_template | Mapped[str] | False | ['String(160)'] {'nullable': 'False'} | [backend/app/models.py:589](../backend/app/models.py#L589) |
-| aggregation / aggregation | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'last'"} | [backend/app/models.py:590](../backend/app/models.py#L590) |
-| description_en / description_en | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:591](../backend/app/models.py#L591) |
-| description_ru / description_ru | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:592](../backend/app/models.py#L592) |
-| methodology_en / methodology_en | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:593](../backend/app/models.py#L593) |
-| methodology_ru / methodology_ru | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:594](../backend/app/models.py#L594) |
-| source_en / source_en | Mapped[str] | False | ['String(120)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:595](../backend/app/models.py#L595) |
-| source_ru / source_ru | Mapped[str] | False | ['String(120)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:596](../backend/app/models.py#L596) |
-| source_url_template / source_url_template | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:597](../backend/app/models.py#L597) |
-| is_listed / is_listed | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'True', 'server_default': "'true'"} | [backend/app/models.py:598](../backend/app/models.py#L598) |
-| national_code / national_code | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:599](../backend/app/models.py#L599) |
-| better_is_low / better_is_low | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False', 'server_default': "'false'"} | [backend/app/models.py:600](../backend/app/models.py#L600) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:579](../backend/app/models.py#L579) |
+| country_code / country_code | Mapped[str] | False | ['String(8)'] {'nullable': 'False'} | [backend/app/models.py:580](../backend/app/models.py#L580) |
+| code / code | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:581](../backend/app/models.py#L581) |
+| name_en / name_en | Mapped[str] | False | ['String(400)'] {'nullable': 'False'} | [backend/app/models.py:582](../backend/app/models.py#L582) |
+| name_ru / name_ru | Mapped[str] | False | ['String(400)'] {'nullable': 'False'} | [backend/app/models.py:583](../backend/app/models.py#L583) |
+| unit / unit | Mapped[str] | False | ['String(80)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:584](../backend/app/models.py#L584) |
+| unit_ru / unit_ru | Mapped[str] | False | ['String(80)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:585](../backend/app/models.py#L585) |
+| unit_en / unit_en | Mapped[str] | False | ['String(80)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:586](../backend/app/models.py#L586) |
+| frequency / frequency | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'annual'"} | [backend/app/models.py:587](../backend/app/models.py#L587) |
+| section_en / section_en | Mapped[str] | False | ['String(80)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:588](../backend/app/models.py#L588) |
+| section_ru / section_ru | Mapped[str] | False | ['String(80)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:589](../backend/app/models.py#L589) |
+| provider / provider | Mapped[str] | False | ['String(50)'] {'nullable': 'False', 'default': "'fred'"} | [backend/app/models.py:590](../backend/app/models.py#L590) |
+| series_template / series_template | Mapped[str] | False | ['String(160)'] {'nullable': 'False'} | [backend/app/models.py:591](../backend/app/models.py#L591) |
+| aggregation / aggregation | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'last'"} | [backend/app/models.py:592](../backend/app/models.py#L592) |
+| description_en / description_en | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:593](../backend/app/models.py#L593) |
+| description_ru / description_ru | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:594](../backend/app/models.py#L594) |
+| methodology_en / methodology_en | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:595](../backend/app/models.py#L595) |
+| methodology_ru / methodology_ru | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:596](../backend/app/models.py#L596) |
+| source_en / source_en | Mapped[str] | False | ['String(120)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:597](../backend/app/models.py#L597) |
+| source_ru / source_ru | Mapped[str] | False | ['String(120)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:598](../backend/app/models.py#L598) |
+| source_url_template / source_url_template | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:599](../backend/app/models.py#L599) |
+| is_listed / is_listed | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'True', 'server_default': "'true'"} | [backend/app/models.py:600](../backend/app/models.py#L600) |
+| national_code / national_code | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:601](../backend/app/models.py#L601) |
+| better_is_low / better_is_low | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False', 'server_default': "'false'"} | [backend/app/models.py:602](../backend/app/models.py#L602) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 572, 'end_line': 575, 'owner': 'SubnationalIndicator', 'conditions': [], 'definition': "(UniqueConstraint('country_code', 'code', name='uq_subnational_indicator_country_code'), Index('ix_subnational_indicators_country', 'country_code'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 574, 'end_line': 577, 'owner': 'SubnationalIndicator', 'conditions': [], 'definition': "(UniqueConstraint('country_code', 'code', name='uq_subnational_indicator_country_code'), Index('ix_subnational_indicators_country', 'country_code'))"}]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 602, 'end_line': 604, 'owner': 'SubnationalIndicator', 'conditions': [], 'attribute': 'data_points', 'annotation': "Mapped[list['SubnationalDataPoint']]", 'definition': "relationship(back_populates='indicator', cascade='all, delete-orphan', passive_deletes=True)"}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 604, 'end_line': 606, 'owner': 'SubnationalIndicator', 'conditions': [], 'attribute': 'data_points', 'annotation': "Mapped[list['SubnationalDataPoint']]", 'definition': "relationship(back_populates='indicator', cascade='all, delete-orphan', passive_deletes=True)"}]`
 
 ## Table `subnational_data_points`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:622](../backend/app/models.py#L622) |
-| indicator_id / indicator_id | Mapped[int] | False | ["ForeignKey('subnational_indicators.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:623](../backend/app/models.py#L623) |
-| region_id / region_id | Mapped[int] | False | ["ForeignKey('subnational_regions.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:626](../backend/app/models.py#L626) |
-| period / period | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:629](../backend/app/models.py#L629) |
-| value / value | Mapped[float] | False | ['Numeric(20, 6)'] {'nullable': 'False'} | [backend/app/models.py:630](../backend/app/models.py#L630) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:624](../backend/app/models.py#L624) |
+| indicator_id / indicator_id | Mapped[int] | False | ["ForeignKey('subnational_indicators.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:625](../backend/app/models.py#L625) |
+| region_id / region_id | Mapped[int] | False | ["ForeignKey('subnational_regions.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:628](../backend/app/models.py#L628) |
+| period / period | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:631](../backend/app/models.py#L631) |
+| value / value | Mapped[float] | False | ['Numeric(20, 6)'] {'nullable': 'False'} | [backend/app/models.py:632](../backend/app/models.py#L632) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 609, 'end_line': 620, 'owner': 'SubnationalDataPoint', 'conditions': [], 'definition': "(UniqueConstraint('indicator_id', 'region_id', 'period', name='uq_subnational_data_point'), Index('ix_subnational_data_indicator_period', 'indicator_id', 'period'), Index('ix_subnational_data_region', 'region_id'), Index('ix_subnational_data_region_indicator_period', 'region_id', 'indicator_id', 'period'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 611, 'end_line': 622, 'owner': 'SubnationalDataPoint', 'conditions': [], 'definition': "(UniqueConstraint('indicator_id', 'region_id', 'period', name='uq_subnational_data_point'), Index('ix_subnational_data_indicator_period', 'indicator_id', 'period'), Index('ix_subnational_data_region', 'region_id'), Index('ix_subnational_data_region_indicator_period', 'region_id', 'indicator_id', 'period'))"}]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 632, 'end_line': 632, 'owner': 'SubnationalDataPoint', 'conditions': [], 'attribute': 'indicator', 'annotation': "Mapped['SubnationalIndicator']", 'definition': "relationship(back_populates='data_points')"}, {'path': 'backend/app/models.py', 'line': 633, 'end_line': 633, 'owner': 'SubnationalDataPoint', 'conditions': [], 'attribute': 'region', 'annotation': "Mapped['SubnationalRegion']", 'definition': "relationship(back_populates='data_points')"}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 634, 'end_line': 634, 'owner': 'SubnationalDataPoint', 'conditions': [], 'attribute': 'indicator', 'annotation': "Mapped['SubnationalIndicator']", 'definition': "relationship(back_populates='data_points')"}, {'path': 'backend/app/models.py', 'line': 635, 'end_line': 635, 'owner': 'SubnationalDataPoint', 'conditions': [], 'attribute': 'region', 'annotation': "Mapped['SubnationalRegion']", 'definition': "relationship(back_populates='data_points')"}]`
 
 ## Table `forecasts`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:647](../backend/app/models.py#L647) |
-| indicator_id / indicator_id | Mapped[int] | False | ["ForeignKey('indicators.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:648](../backend/app/models.py#L648) |
-| model_name / model_name | Mapped[str] | False | ['String(100)'] {'nullable': 'False'} | [backend/app/models.py:649](../backend/app/models.py#L649) |
-| model_params / model_params | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:650](../backend/app/models.py#L650) |
-| aic / aic | Mapped[float \| None] | True | ['Numeric(10, 2)'] {} | [backend/app/models.py:651](../backend/app/models.py#L651) |
-| bic / bic | Mapped[float \| None] | True | ['Numeric(10, 2)'] {} | [backend/app/models.py:652](../backend/app/models.py#L652) |
-| is_current / is_current | Mapped[bool] | False | ['Boolean'] {'default': 'True'} | [backend/app/models.py:653](../backend/app/models.py#L653) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:654](../backend/app/models.py#L654) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:649](../backend/app/models.py#L649) |
+| indicator_id / indicator_id | Mapped[int] | False | ["ForeignKey('indicators.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:650](../backend/app/models.py#L650) |
+| model_name / model_name | Mapped[str] | False | ['String(100)'] {'nullable': 'False'} | [backend/app/models.py:651](../backend/app/models.py#L651) |
+| model_params / model_params | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:652](../backend/app/models.py#L652) |
+| aic / aic | Mapped[float \| None] | True | ['Numeric(10, 2)'] {} | [backend/app/models.py:653](../backend/app/models.py#L653) |
+| bic / bic | Mapped[float \| None] | True | ['Numeric(10, 2)'] {} | [backend/app/models.py:654](../backend/app/models.py#L654) |
+| is_current / is_current | Mapped[bool] | False | ['Boolean'] {'default': 'True'} | [backend/app/models.py:655](../backend/app/models.py#L655) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:656](../backend/app/models.py#L656) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 639, 'end_line': 645, 'owner': 'Forecast', 'conditions': [], 'definition': "(Index('ix_forecasts_indicator_current', 'indicator_id', postgresql_where=text('is_current = true')),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 641, 'end_line': 647, 'owner': 'Forecast', 'conditions': [], 'definition': "(Index('ix_forecasts_indicator_current', 'indicator_id', postgresql_where=text('is_current = true')),)"}]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 656, 'end_line': 656, 'owner': 'Forecast', 'conditions': [], 'attribute': 'indicator', 'annotation': "Mapped['Indicator']", 'definition': "relationship(back_populates='forecasts')"}, {'path': 'backend/app/models.py', 'line': 657, 'end_line': 657, 'owner': 'Forecast', 'conditions': [], 'attribute': 'values', 'annotation': "Mapped[list['ForecastValue']]", 'definition': "relationship(back_populates='forecast', cascade='all, delete-orphan')"}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 658, 'end_line': 658, 'owner': 'Forecast', 'conditions': [], 'attribute': 'indicator', 'annotation': "Mapped['Indicator']", 'definition': "relationship(back_populates='forecasts')"}, {'path': 'backend/app/models.py', 'line': 659, 'end_line': 659, 'owner': 'Forecast', 'conditions': [], 'attribute': 'values', 'annotation': "Mapped[list['ForecastValue']]", 'definition': "relationship(back_populates='forecast', cascade='all, delete-orphan')"}]`
 
 ## Table `forecast_values`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:663](../backend/app/models.py#L663) |
-| forecast_id / forecast_id | Mapped[int] | False | ["ForeignKey('forecasts.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:664](../backend/app/models.py#L664) |
-| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:665](../backend/app/models.py#L665) |
-| value / value | Mapped[float] | False | ['Numeric(12, 4)'] {'nullable': 'False'} | [backend/app/models.py:666](../backend/app/models.py#L666) |
-| lower_bound / lower_bound | Mapped[float \| None] | True | ['Numeric(12, 4)'] {} | [backend/app/models.py:667](../backend/app/models.py#L667) |
-| upper_bound / upper_bound | Mapped[float \| None] | True | ['Numeric(12, 4)'] {} | [backend/app/models.py:668](../backend/app/models.py#L668) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:665](../backend/app/models.py#L665) |
+| forecast_id / forecast_id | Mapped[int] | False | ["ForeignKey('forecasts.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:666](../backend/app/models.py#L666) |
+| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:667](../backend/app/models.py#L667) |
+| value / value | Mapped[float] | False | ['Numeric(12, 4)'] {'nullable': 'False'} | [backend/app/models.py:668](../backend/app/models.py#L668) |
+| lower_bound / lower_bound | Mapped[float \| None] | True | ['Numeric(12, 4)'] {} | [backend/app/models.py:669](../backend/app/models.py#L669) |
+| upper_bound / upper_bound | Mapped[float \| None] | True | ['Numeric(12, 4)'] {} | [backend/app/models.py:670](../backend/app/models.py#L670) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 672, 'end_line': 674, 'owner': 'ForecastValue', 'conditions': [], 'definition': "(Index('ix_forecast_values_forecast_date', 'forecast_id', 'date'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 674, 'end_line': 676, 'owner': 'ForecastValue', 'conditions': [], 'definition': "(Index('ix_forecast_values_forecast_date', 'forecast_id', 'date'),)"}]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 670, 'end_line': 670, 'owner': 'ForecastValue', 'conditions': [], 'attribute': 'forecast', 'annotation': "Mapped['Forecast']", 'definition': "relationship(back_populates='values')"}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 672, 'end_line': 672, 'owner': 'ForecastValue', 'conditions': [], 'attribute': 'forecast', 'annotation': "Mapped['Forecast']", 'definition': "relationship(back_populates='values')"}]`
 
 ## Table `economic_events`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:690](../backend/app/models.py#L690) |
-| title / title | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:691](../backend/app/models.py#L691) |
-| title_en / title_en | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:692](../backend/app/models.py#L692) |
-| event_type / event_type | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:693](../backend/app/models.py#L693) |
-| source / source | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:694](../backend/app/models.py#L694) |
-| indicator_id / indicator_id | Mapped[int \| None] | True | ["ForeignKey('indicators.id', ondelete='SET NULL')"] {'nullable': 'True'} | [backend/app/models.py:695](../backend/app/models.py#L695) |
-| scheduled_date / scheduled_date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:698](../backend/app/models.py#L698) |
-| scheduled_time / scheduled_time | Mapped[str \| None] | True | ['String(5)'] {} | [backend/app/models.py:699](../backend/app/models.py#L699) |
-| is_estimated / is_estimated | Mapped[bool] | False | ['Boolean'] {'default': 'False'} | [backend/app/models.py:700](../backend/app/models.py#L700) |
-| actual_date / actual_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:701](../backend/app/models.py#L701) |
-| reference_period / reference_period | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:702](../backend/app/models.py#L702) |
-| importance / importance | Mapped[int] | False | ['Integer'] {'default': '2'} | [backend/app/models.py:703](../backend/app/models.py#L703) |
-| previous_value / previous_value | Mapped[str \| None] | True | ['String(50)'] {} | [backend/app/models.py:704](../backend/app/models.py#L704) |
-| forecast_value / forecast_value | Mapped[str \| None] | True | ['String(50)'] {} | [backend/app/models.py:705](../backend/app/models.py#L705) |
-| actual_value / actual_value | Mapped[str \| None] | True | ['String(50)'] {} | [backend/app/models.py:706](../backend/app/models.py#L706) |
-| status / status | Mapped[str] | False | ['String(20)'] {'default': "'scheduled'"} | [backend/app/models.py:707](../backend/app/models.py#L707) |
-| description / description | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:708](../backend/app/models.py#L708) |
-| source_url / source_url | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:709](../backend/app/models.py#L709) |
-| event_key / event_key | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:710](../backend/app/models.py#L710) |
-| date_confidence / date_confidence | Mapped[str] | False | ['String(30)'] {'default': "'estimated'"} | [backend/app/models.py:711](../backend/app/models.py#L711) |
-| source_event_uid / source_event_uid | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:712](../backend/app/models.py#L712) |
-| source_hash / source_hash | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:713](../backend/app/models.py#L713) |
-| last_seen_at / last_seen_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:714](../backend/app/models.py#L714) |
-| metadata_json / metadata_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:715](../backend/app/models.py#L715) |
-| created_at / created_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:716](../backend/app/models.py#L716) |
-| updated_at / updated_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:717](../backend/app/models.py#L717) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:692](../backend/app/models.py#L692) |
+| title / title | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:693](../backend/app/models.py#L693) |
+| title_en / title_en | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:694](../backend/app/models.py#L694) |
+| event_type / event_type | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:695](../backend/app/models.py#L695) |
+| source / source | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:696](../backend/app/models.py#L696) |
+| indicator_id / indicator_id | Mapped[int \| None] | True | ["ForeignKey('indicators.id', ondelete='SET NULL')"] {'nullable': 'True'} | [backend/app/models.py:697](../backend/app/models.py#L697) |
+| scheduled_date / scheduled_date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:700](../backend/app/models.py#L700) |
+| scheduled_time / scheduled_time | Mapped[str \| None] | True | ['String(5)'] {} | [backend/app/models.py:701](../backend/app/models.py#L701) |
+| is_estimated / is_estimated | Mapped[bool] | False | ['Boolean'] {'default': 'False'} | [backend/app/models.py:702](../backend/app/models.py#L702) |
+| actual_date / actual_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:703](../backend/app/models.py#L703) |
+| reference_period / reference_period | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:704](../backend/app/models.py#L704) |
+| importance / importance | Mapped[int] | False | ['Integer'] {'default': '2'} | [backend/app/models.py:705](../backend/app/models.py#L705) |
+| previous_value / previous_value | Mapped[str \| None] | True | ['String(50)'] {} | [backend/app/models.py:706](../backend/app/models.py#L706) |
+| forecast_value / forecast_value | Mapped[str \| None] | True | ['String(50)'] {} | [backend/app/models.py:707](../backend/app/models.py#L707) |
+| actual_value / actual_value | Mapped[str \| None] | True | ['String(50)'] {} | [backend/app/models.py:708](../backend/app/models.py#L708) |
+| status / status | Mapped[str] | False | ['String(20)'] {'default': "'scheduled'"} | [backend/app/models.py:709](../backend/app/models.py#L709) |
+| description / description | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:710](../backend/app/models.py#L710) |
+| source_url / source_url | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:711](../backend/app/models.py#L711) |
+| event_key / event_key | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:712](../backend/app/models.py#L712) |
+| date_confidence / date_confidence | Mapped[str] | False | ['String(30)'] {'default': "'estimated'"} | [backend/app/models.py:713](../backend/app/models.py#L713) |
+| source_event_uid / source_event_uid | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:714](../backend/app/models.py#L714) |
+| source_hash / source_hash | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:715](../backend/app/models.py#L715) |
+| last_seen_at / last_seen_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:716](../backend/app/models.py#L716) |
+| metadata_json / metadata_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:717](../backend/app/models.py#L717) |
+| created_at / created_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:718](../backend/app/models.py#L718) |
+| updated_at / updated_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:719](../backend/app/models.py#L719) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 679, 'end_line': 688, 'owner': 'EconomicEvent', 'conditions': [], 'definition': "(UniqueConstraint('source', 'event_type', 'scheduled_date', 'indicator_id', name='uq_event_natural_key'), UniqueConstraint('source', 'event_type', 'event_key', name='uq_event_stable_key'), Index('ix_event_scheduled', 'scheduled_date'), Index('ix_event_source', 'source'), Index('ix_event_upcoming', 'scheduled_date', 'importance'), Index('ix_event_confidence', 'date_confidence'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 681, 'end_line': 690, 'owner': 'EconomicEvent', 'conditions': [], 'definition': "(UniqueConstraint('source', 'event_type', 'scheduled_date', 'indicator_id', name='uq_event_natural_key'), UniqueConstraint('source', 'event_type', 'event_key', name='uq_event_stable_key'), Index('ix_event_scheduled', 'scheduled_date'), Index('ix_event_source', 'source'), Index('ix_event_upcoming', 'scheduled_date', 'importance'), Index('ix_event_confidence', 'date_confidence'))"}]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 719, 'end_line': 719, 'owner': 'EconomicEvent', 'conditions': [], 'attribute': 'indicator', 'annotation': "Mapped['Indicator \| None']", 'definition': 'relationship()'}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 721, 'end_line': 721, 'owner': 'EconomicEvent', 'conditions': [], 'attribute': 'indicator', 'annotation': "Mapped['Indicator \| None']", 'definition': 'relationship()'}]`
 
 ## Table `fetch_log`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:725](../backend/app/models.py#L725) |
-| indicator_id / indicator_id | Mapped[int] | False | ["ForeignKey('indicators.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:726](../backend/app/models.py#L726) |
-| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:727](../backend/app/models.py#L727) |
-| source_url / source_url | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:728](../backend/app/models.py#L728) |
-| records_added / records_added | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:729](../backend/app/models.py#L729) |
-| records_updated / records_updated | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:732](../backend/app/models.py#L732) |
-| error_message / error_message | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:733](../backend/app/models.py#L733) |
-| started_at / started_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:734](../backend/app/models.py#L734) |
-| completed_at / completed_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:735](../backend/app/models.py#L735) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:727](../backend/app/models.py#L727) |
+| indicator_id / indicator_id | Mapped[int] | False | ["ForeignKey('indicators.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:728](../backend/app/models.py#L728) |
+| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:729](../backend/app/models.py#L729) |
+| source_url / source_url | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:730](../backend/app/models.py#L730) |
+| records_added / records_added | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:731](../backend/app/models.py#L731) |
+| records_updated / records_updated | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:734](../backend/app/models.py#L734) |
+| error_message / error_message | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:735](../backend/app/models.py#L735) |
+| started_at / started_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:736](../backend/app/models.py#L736) |
+| completed_at / completed_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:737](../backend/app/models.py#L737) |
 
 Constraints: `[]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 737, 'end_line': 737, 'owner': 'FetchLog', 'conditions': [], 'attribute': 'indicator', 'annotation': "Mapped['Indicator']", 'definition': "relationship(back_populates='fetch_logs')"}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 739, 'end_line': 739, 'owner': 'FetchLog', 'conditions': [], 'attribute': 'indicator', 'annotation': "Mapped['Indicator']", 'definition': "relationship(back_populates='fetch_logs')"}]`
 
 ## Table `analytics_sync_runs`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:747](../backend/app/models.py#L747) |
-| source / source | Mapped[str] | False | ['String(50)'] {'nullable': 'False'} | [backend/app/models.py:748](../backend/app/models.py#L748) |
-| job_type / job_type | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:749](../backend/app/models.py#L749) |
-| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'running'"} | [backend/app/models.py:750](../backend/app/models.py#L750) |
-| date_from / date_from | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:751](../backend/app/models.py#L751) |
-| date_to / date_to | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:752](../backend/app/models.py#L752) |
-| request_hash / request_hash | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:753](../backend/app/models.py#L753) |
-| records_processed / records_processed | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:754](../backend/app/models.py#L754) |
-| error_message / error_message | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:755](../backend/app/models.py#L755) |
-| metadata_json / metadata_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:756](../backend/app/models.py#L756) |
-| started_at / started_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:757](../backend/app/models.py#L757) |
-| completed_at / completed_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:758](../backend/app/models.py#L758) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:749](../backend/app/models.py#L749) |
+| source / source | Mapped[str] | False | ['String(50)'] {'nullable': 'False'} | [backend/app/models.py:750](../backend/app/models.py#L750) |
+| job_type / job_type | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:751](../backend/app/models.py#L751) |
+| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'running'"} | [backend/app/models.py:752](../backend/app/models.py#L752) |
+| date_from / date_from | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:753](../backend/app/models.py#L753) |
+| date_to / date_to | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:754](../backend/app/models.py#L754) |
+| request_hash / request_hash | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:755](../backend/app/models.py#L755) |
+| records_processed / records_processed | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:756](../backend/app/models.py#L756) |
+| error_message / error_message | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:757](../backend/app/models.py#L757) |
+| metadata_json / metadata_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:758](../backend/app/models.py#L758) |
+| started_at / started_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:759](../backend/app/models.py#L759) |
+| completed_at / completed_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:760](../backend/app/models.py#L760) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 742, 'end_line': 745, 'owner': 'AnalyticsSyncRun', 'conditions': [], 'definition': "(Index('ix_analytics_sync_runs_source', 'source', 'status'), Index('ix_analytics_sync_runs_started', 'started_at'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 744, 'end_line': 747, 'owner': 'AnalyticsSyncRun', 'conditions': [], 'definition': "(Index('ix_analytics_sync_runs_source', 'source', 'status'), Index('ix_analytics_sync_runs_started', 'started_at'))"}]`
 
 Relationships: `[]`
 
@@ -751,15 +752,15 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:767](../backend/app/models.py#L767) |
-| source / source | Mapped[str] | False | ['String(50)'] {'nullable': 'False'} | [backend/app/models.py:768](../backend/app/models.py#L768) |
-| resource_key / resource_key | Mapped[str] | False | ['String(150)'] {'nullable': 'False'} | [backend/app/models.py:769](../backend/app/models.py#L769) |
-| last_success_date / last_success_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:770](../backend/app/models.py#L770) |
-| last_success_at / last_success_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:771](../backend/app/models.py#L771) |
-| metadata_json / metadata_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:772](../backend/app/models.py#L772) |
-| updated_at / updated_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)', 'onupdate': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:773](../backend/app/models.py#L773) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:769](../backend/app/models.py#L769) |
+| source / source | Mapped[str] | False | ['String(50)'] {'nullable': 'False'} | [backend/app/models.py:770](../backend/app/models.py#L770) |
+| resource_key / resource_key | Mapped[str] | False | ['String(150)'] {'nullable': 'False'} | [backend/app/models.py:771](../backend/app/models.py#L771) |
+| last_success_date / last_success_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:772](../backend/app/models.py#L772) |
+| last_success_at / last_success_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:773](../backend/app/models.py#L773) |
+| metadata_json / metadata_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:774](../backend/app/models.py#L774) |
+| updated_at / updated_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)', 'onupdate': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:775](../backend/app/models.py#L775) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 763, 'end_line': 765, 'owner': 'AnalyticsWatermark', 'conditions': [], 'definition': "(UniqueConstraint('source', 'resource_key', name='uq_analytics_watermark'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 765, 'end_line': 767, 'owner': 'AnalyticsWatermark', 'conditions': [], 'definition': "(UniqueConstraint('source', 'resource_key', name='uq_analytics_watermark'),)"}]`
 
 Relationships: `[]`
 
@@ -767,19 +768,19 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:782](../backend/app/models.py#L782) |
-| counter_id / counter_id | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:783](../backend/app/models.py#L783) |
-| name / name | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:784](../backend/app/models.py#L784) |
-| site / site | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:785](../backend/app/models.py#L785) |
-| status / status | Mapped[str \| None] | True | ['String(50)'] {} | [backend/app/models.py:786](../backend/app/models.py#L786) |
-| permission / permission | Mapped[str \| None] | True | ['String(50)'] {} | [backend/app/models.py:787](../backend/app/models.py#L787) |
-| webvisor_enabled / webvisor_enabled | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:788](../backend/app/models.py#L788) |
-| ecommerce_enabled / ecommerce_enabled | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:789](../backend/app/models.py#L789) |
-| clickmap_enabled / clickmap_enabled | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:790](../backend/app/models.py#L790) |
-| raw_json / raw_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:791](../backend/app/models.py#L791) |
-| captured_at / captured_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:792](../backend/app/models.py#L792) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:784](../backend/app/models.py#L784) |
+| counter_id / counter_id | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:785](../backend/app/models.py#L785) |
+| name / name | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:786](../backend/app/models.py#L786) |
+| site / site | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:787](../backend/app/models.py#L787) |
+| status / status | Mapped[str \| None] | True | ['String(50)'] {} | [backend/app/models.py:788](../backend/app/models.py#L788) |
+| permission / permission | Mapped[str \| None] | True | ['String(50)'] {} | [backend/app/models.py:789](../backend/app/models.py#L789) |
+| webvisor_enabled / webvisor_enabled | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:790](../backend/app/models.py#L790) |
+| ecommerce_enabled / ecommerce_enabled | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:791](../backend/app/models.py#L791) |
+| clickmap_enabled / clickmap_enabled | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:792](../backend/app/models.py#L792) |
+| raw_json / raw_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:793](../backend/app/models.py#L793) |
+| captured_at / captured_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:794](../backend/app/models.py#L794) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 778, 'end_line': 780, 'owner': 'MetrikaCounterSnapshot', 'conditions': [], 'definition': "(Index('ix_metrika_counter_snapshots_counter', 'counter_id', 'captured_at'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 780, 'end_line': 782, 'owner': 'MetrikaCounterSnapshot', 'conditions': [], 'definition': "(Index('ix_metrika_counter_snapshots_counter', 'counter_id', 'captured_at'),)"}]`
 
 Relationships: `[]`
 
@@ -787,16 +788,16 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:802](../backend/app/models.py#L802) |
-| counter_id / counter_id | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:803](../backend/app/models.py#L803) |
-| goal_id / goal_id | Mapped[str] | False | ['String(50)'] {'nullable': 'False'} | [backend/app/models.py:804](../backend/app/models.py#L804) |
-| name / name | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:805](../backend/app/models.py#L805) |
-| goal_type / goal_type | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:806](../backend/app/models.py#L806) |
-| is_favorite / is_favorite | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:807](../backend/app/models.py#L807) |
-| raw_json / raw_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:808](../backend/app/models.py#L808) |
-| captured_at / captured_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:809](../backend/app/models.py#L809) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:804](../backend/app/models.py#L804) |
+| counter_id / counter_id | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:805](../backend/app/models.py#L805) |
+| goal_id / goal_id | Mapped[str] | False | ['String(50)'] {'nullable': 'False'} | [backend/app/models.py:806](../backend/app/models.py#L806) |
+| name / name | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:807](../backend/app/models.py#L807) |
+| goal_type / goal_type | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:808](../backend/app/models.py#L808) |
+| is_favorite / is_favorite | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:809](../backend/app/models.py#L809) |
+| raw_json / raw_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:810](../backend/app/models.py#L810) |
+| captured_at / captured_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:811](../backend/app/models.py#L811) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 797, 'end_line': 800, 'owner': 'MetrikaGoalSnapshot', 'conditions': [], 'definition': "(UniqueConstraint('counter_id', 'goal_id', 'captured_at', name='uq_metrika_goal_snapshot'), Index('ix_metrika_goal_counter', 'counter_id', 'goal_id'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 799, 'end_line': 802, 'owner': 'MetrikaGoalSnapshot', 'conditions': [], 'definition': "(UniqueConstraint('counter_id', 'goal_id', 'captured_at', name='uq_metrika_goal_snapshot'), Index('ix_metrika_goal_counter', 'counter_id', 'goal_id'))"}]`
 
 Relationships: `[]`
 
@@ -804,20 +805,20 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:819](../backend/app/models.py#L819) |
-| counter_id / counter_id | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:820](../backend/app/models.py#L820) |
-| report_type / report_type | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:821](../backend/app/models.py#L821) |
-| query_hash / query_hash | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:822](../backend/app/models.py#L822) |
-| date_from / date_from | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:823](../backend/app/models.py#L823) |
-| date_to / date_to | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:824](../backend/app/models.py#L824) |
-| sampled / sampled | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:825](../backend/app/models.py#L825) |
-| sample_share / sample_share | Mapped[float \| None] | True | ['Numeric(10, 6)'] {} | [backend/app/models.py:826](../backend/app/models.py#L826) |
-| contains_sensitive_data / contains_sensitive_data | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:827](../backend/app/models.py#L827) |
-| query_json / query_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:828](../backend/app/models.py#L828) |
-| response_json / response_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:829](../backend/app/models.py#L829) |
-| captured_at / captured_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:830](../backend/app/models.py#L830) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:821](../backend/app/models.py#L821) |
+| counter_id / counter_id | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:822](../backend/app/models.py#L822) |
+| report_type / report_type | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:823](../backend/app/models.py#L823) |
+| query_hash / query_hash | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:824](../backend/app/models.py#L824) |
+| date_from / date_from | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:825](../backend/app/models.py#L825) |
+| date_to / date_to | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:826](../backend/app/models.py#L826) |
+| sampled / sampled | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:827](../backend/app/models.py#L827) |
+| sample_share / sample_share | Mapped[float \| None] | True | ['Numeric(10, 6)'] {} | [backend/app/models.py:828](../backend/app/models.py#L828) |
+| contains_sensitive_data / contains_sensitive_data | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:829](../backend/app/models.py#L829) |
+| query_json / query_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:830](../backend/app/models.py#L830) |
+| response_json / response_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:831](../backend/app/models.py#L831) |
+| captured_at / captured_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:832](../backend/app/models.py#L832) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 814, 'end_line': 817, 'owner': 'MetrikaReportSnapshot', 'conditions': [], 'definition': "(UniqueConstraint('counter_id', 'report_type', 'query_hash', 'date_from', 'date_to', name='uq_metrika_report_snapshot'), Index('ix_metrika_report_counter_dates', 'counter_id', 'date_from', 'date_to'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 816, 'end_line': 819, 'owner': 'MetrikaReportSnapshot', 'conditions': [], 'definition': "(UniqueConstraint('counter_id', 'report_type', 'query_hash', 'date_from', 'date_to', name='uq_metrika_report_snapshot'), Index('ix_metrika_report_counter_dates', 'counter_id', 'date_from', 'date_to'))"}]`
 
 Relationships: `[]`
 
@@ -825,21 +826,21 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:840](../backend/app/models.py#L840) |
-| counter_id / counter_id | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:841](../backend/app/models.py#L841) |
-| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:842](../backend/app/models.py#L842) |
-| url / url | Mapped[str] | False | ['String(1000)'] {'nullable': 'False'} | [backend/app/models.py:843](../backend/app/models.py#L843) |
-| source / source | Mapped[str \| None] | True | ['String(100)'] {} | [backend/app/models.py:844](../backend/app/models.py#L844) |
-| visits / visits | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:845](../backend/app/models.py#L845) |
-| users / users | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:846](../backend/app/models.py#L846) |
-| pageviews / pageviews | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:847](../backend/app/models.py#L847) |
-| bounce_rate / bounce_rate | Mapped[float \| None] | True | ['Numeric(8, 4)'] {} | [backend/app/models.py:848](../backend/app/models.py#L848) |
-| depth / depth | Mapped[float \| None] | True | ['Numeric(8, 4)'] {} | [backend/app/models.py:849](../backend/app/models.py#L849) |
-| avg_duration_seconds / avg_duration_seconds | Mapped[float \| None] | True | ['Numeric(12, 2)'] {} | [backend/app/models.py:850](../backend/app/models.py#L850) |
-| metadata_json / metadata_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:851](../backend/app/models.py#L851) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:852](../backend/app/models.py#L852) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:842](../backend/app/models.py#L842) |
+| counter_id / counter_id | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:843](../backend/app/models.py#L843) |
+| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:844](../backend/app/models.py#L844) |
+| url / url | Mapped[str] | False | ['String(1000)'] {'nullable': 'False'} | [backend/app/models.py:845](../backend/app/models.py#L845) |
+| source / source | Mapped[str \| None] | True | ['String(100)'] {} | [backend/app/models.py:846](../backend/app/models.py#L846) |
+| visits / visits | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:847](../backend/app/models.py#L847) |
+| users / users | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:848](../backend/app/models.py#L848) |
+| pageviews / pageviews | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:849](../backend/app/models.py#L849) |
+| bounce_rate / bounce_rate | Mapped[float \| None] | True | ['Numeric(8, 4)'] {} | [backend/app/models.py:850](../backend/app/models.py#L850) |
+| depth / depth | Mapped[float \| None] | True | ['Numeric(8, 4)'] {} | [backend/app/models.py:851](../backend/app/models.py#L851) |
+| avg_duration_seconds / avg_duration_seconds | Mapped[float \| None] | True | ['Numeric(12, 2)'] {} | [backend/app/models.py:852](../backend/app/models.py#L852) |
+| metadata_json / metadata_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:853](../backend/app/models.py#L853) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:854](../backend/app/models.py#L854) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 835, 'end_line': 838, 'owner': 'MetrikaDailyPageMetric', 'conditions': [], 'definition': "(UniqueConstraint('counter_id', 'date', 'url', 'source', name='uq_metrika_daily_page_metric'), Index('ix_metrika_daily_page_date', 'date', 'url'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 837, 'end_line': 840, 'owner': 'MetrikaDailyPageMetric', 'conditions': [], 'definition': "(UniqueConstraint('counter_id', 'date', 'url', 'source', name='uq_metrika_daily_page_metric'), Index('ix_metrika_daily_page_date', 'date', 'url'))"}]`
 
 Relationships: `[]`
 
@@ -847,19 +848,19 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:862](../backend/app/models.py#L862) |
-| counter_id / counter_id | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:863](../backend/app/models.py#L863) |
-| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:864](../backend/app/models.py#L864) |
-| phrase / phrase | Mapped[str] | False | ['String(500)'] {'nullable': 'False'} | [backend/app/models.py:865](../backend/app/models.py#L865) |
-| landing_url / landing_url | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:866](../backend/app/models.py#L866) |
-| search_engine / search_engine | Mapped[str \| None] | True | ['String(100)'] {} | [backend/app/models.py:867](../backend/app/models.py#L867) |
-| visits / visits | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:868](../backend/app/models.py#L868) |
-| users / users | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:869](../backend/app/models.py#L869) |
-| bounce_rate / bounce_rate | Mapped[float \| None] | True | ['Numeric(8, 4)'] {} | [backend/app/models.py:870](../backend/app/models.py#L870) |
-| metadata_json / metadata_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:871](../backend/app/models.py#L871) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:872](../backend/app/models.py#L872) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:864](../backend/app/models.py#L864) |
+| counter_id / counter_id | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:865](../backend/app/models.py#L865) |
+| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:866](../backend/app/models.py#L866) |
+| phrase / phrase | Mapped[str] | False | ['String(500)'] {'nullable': 'False'} | [backend/app/models.py:867](../backend/app/models.py#L867) |
+| landing_url / landing_url | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:868](../backend/app/models.py#L868) |
+| search_engine / search_engine | Mapped[str \| None] | True | ['String(100)'] {} | [backend/app/models.py:869](../backend/app/models.py#L869) |
+| visits / visits | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:870](../backend/app/models.py#L870) |
+| users / users | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:871](../backend/app/models.py#L871) |
+| bounce_rate / bounce_rate | Mapped[float \| None] | True | ['Numeric(8, 4)'] {} | [backend/app/models.py:872](../backend/app/models.py#L872) |
+| metadata_json / metadata_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:873](../backend/app/models.py#L873) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:874](../backend/app/models.py#L874) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 857, 'end_line': 860, 'owner': 'MetrikaSearchPhrase', 'conditions': [], 'definition': "(UniqueConstraint('counter_id', 'date', 'phrase', 'landing_url', 'search_engine', name='uq_metrika_search_phrase'), Index('ix_metrika_search_phrase_date', 'date', 'phrase'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 859, 'end_line': 862, 'owner': 'MetrikaSearchPhrase', 'conditions': [], 'definition': "(UniqueConstraint('counter_id', 'date', 'phrase', 'landing_url', 'search_engine', name='uq_metrika_search_phrase'), Index('ix_metrika_search_phrase_date', 'date', 'phrase'))"}]`
 
 Relationships: `[]`
 
@@ -867,24 +868,24 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:883](../backend/app/models.py#L883) |
-| counter_id / counter_id | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:884](../backend/app/models.py#L884) |
-| visit_id / visit_id | Mapped[str] | False | ['String(100)'] {'nullable': 'False'} | [backend/app/models.py:885](../backend/app/models.py#L885) |
-| client_id_hash / client_id_hash | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:886](../backend/app/models.py#L886) |
-| visit_date / visit_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:887](../backend/app/models.py#L887) |
-| start_time / start_time | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:888](../backend/app/models.py#L888) |
-| start_url / start_url | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:889](../backend/app/models.py#L889) |
-| referer / referer | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:890](../backend/app/models.py#L890) |
-| traffic_source / traffic_source | Mapped[str \| None] | True | ['String(100)'] {} | [backend/app/models.py:891](../backend/app/models.py#L891) |
-| search_engine / search_engine | Mapped[str \| None] | True | ['String(100)'] {} | [backend/app/models.py:892](../backend/app/models.py#L892) |
-| search_phrase / search_phrase | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:893](../backend/app/models.py#L893) |
-| duration_seconds / duration_seconds | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:894](../backend/app/models.py#L894) |
-| goals_json / goals_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:895](../backend/app/models.py#L895) |
-| raw_json / raw_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:896](../backend/app/models.py#L896) |
-| row_hash / row_hash | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:897](../backend/app/models.py#L897) |
-| ingested_at / ingested_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:898](../backend/app/models.py#L898) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:885](../backend/app/models.py#L885) |
+| counter_id / counter_id | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:886](../backend/app/models.py#L886) |
+| visit_id / visit_id | Mapped[str] | False | ['String(100)'] {'nullable': 'False'} | [backend/app/models.py:887](../backend/app/models.py#L887) |
+| client_id_hash / client_id_hash | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:888](../backend/app/models.py#L888) |
+| visit_date / visit_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:889](../backend/app/models.py#L889) |
+| start_time / start_time | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:890](../backend/app/models.py#L890) |
+| start_url / start_url | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:891](../backend/app/models.py#L891) |
+| referer / referer | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:892](../backend/app/models.py#L892) |
+| traffic_source / traffic_source | Mapped[str \| None] | True | ['String(100)'] {} | [backend/app/models.py:893](../backend/app/models.py#L893) |
+| search_engine / search_engine | Mapped[str \| None] | True | ['String(100)'] {} | [backend/app/models.py:894](../backend/app/models.py#L894) |
+| search_phrase / search_phrase | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:895](../backend/app/models.py#L895) |
+| duration_seconds / duration_seconds | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:896](../backend/app/models.py#L896) |
+| goals_json / goals_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:897](../backend/app/models.py#L897) |
+| raw_json / raw_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:898](../backend/app/models.py#L898) |
+| row_hash / row_hash | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:899](../backend/app/models.py#L899) |
+| ingested_at / ingested_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:900](../backend/app/models.py#L900) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 877, 'end_line': 881, 'owner': 'RawMetrikaVisit', 'conditions': [], 'definition': "(UniqueConstraint('counter_id', 'visit_id', name='uq_raw_metrika_visit'), Index('ix_raw_metrika_visit_date', 'visit_date'), Index('ix_raw_metrika_visit_client', 'client_id_hash'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 879, 'end_line': 883, 'owner': 'RawMetrikaVisit', 'conditions': [], 'definition': "(UniqueConstraint('counter_id', 'visit_id', name='uq_raw_metrika_visit'), Index('ix_raw_metrika_visit_date', 'visit_date'), Index('ix_raw_metrika_visit_client', 'client_id_hash'))"}]`
 
 Relationships: `[]`
 
@@ -892,22 +893,22 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:909](../backend/app/models.py#L909) |
-| counter_id / counter_id | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:910](../backend/app/models.py#L910) |
-| hit_id / hit_id | Mapped[str \| None] | True | ['String(100)'] {} | [backend/app/models.py:911](../backend/app/models.py#L911) |
-| visit_id / visit_id | Mapped[str \| None] | True | ['String(100)'] {} | [backend/app/models.py:912](../backend/app/models.py#L912) |
-| page_view_id / page_view_id | Mapped[str \| None] | True | ['String(100)'] {} | [backend/app/models.py:913](../backend/app/models.py#L913) |
-| hit_date / hit_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:914](../backend/app/models.py#L914) |
-| event_time / event_time | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:915](../backend/app/models.py#L915) |
-| url / url | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:916](../backend/app/models.py#L916) |
-| referer / referer | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:917](../backend/app/models.py#L917) |
-| title / title | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:918](../backend/app/models.py#L918) |
-| event_name / event_name | Mapped[str \| None] | True | ['String(150)'] {} | [backend/app/models.py:919](../backend/app/models.py#L919) |
-| raw_json / raw_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:920](../backend/app/models.py#L920) |
-| row_hash / row_hash | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:921](../backend/app/models.py#L921) |
-| ingested_at / ingested_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:922](../backend/app/models.py#L922) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:911](../backend/app/models.py#L911) |
+| counter_id / counter_id | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:912](../backend/app/models.py#L912) |
+| hit_id / hit_id | Mapped[str \| None] | True | ['String(100)'] {} | [backend/app/models.py:913](../backend/app/models.py#L913) |
+| visit_id / visit_id | Mapped[str \| None] | True | ['String(100)'] {} | [backend/app/models.py:914](../backend/app/models.py#L914) |
+| page_view_id / page_view_id | Mapped[str \| None] | True | ['String(100)'] {} | [backend/app/models.py:915](../backend/app/models.py#L915) |
+| hit_date / hit_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:916](../backend/app/models.py#L916) |
+| event_time / event_time | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:917](../backend/app/models.py#L917) |
+| url / url | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:918](../backend/app/models.py#L918) |
+| referer / referer | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:919](../backend/app/models.py#L919) |
+| title / title | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:920](../backend/app/models.py#L920) |
+| event_name / event_name | Mapped[str \| None] | True | ['String(150)'] {} | [backend/app/models.py:921](../backend/app/models.py#L921) |
+| raw_json / raw_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:922](../backend/app/models.py#L922) |
+| row_hash / row_hash | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:923](../backend/app/models.py#L923) |
+| ingested_at / ingested_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:924](../backend/app/models.py#L924) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 903, 'end_line': 907, 'owner': 'RawMetrikaHit', 'conditions': [], 'definition': "(UniqueConstraint('counter_id', 'hit_id', 'row_hash', name='uq_raw_metrika_hit'), Index('ix_raw_metrika_hit_date', 'hit_date'), Index('ix_raw_metrika_hit_url', 'url'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 905, 'end_line': 909, 'owner': 'RawMetrikaHit', 'conditions': [], 'definition': "(UniqueConstraint('counter_id', 'hit_id', 'row_hash', name='uq_raw_metrika_hit'), Index('ix_raw_metrika_hit_date', 'hit_date'), Index('ix_raw_metrika_hit_url', 'url'))"}]`
 
 Relationships: `[]`
 
@@ -915,18 +916,18 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:932](../backend/app/models.py#L932) |
-| host / host | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:933](../backend/app/models.py#L933) |
-| problem_code / problem_code | Mapped[str] | False | ['String(150)'] {'nullable': 'False'} | [backend/app/models.py:934](../backend/app/models.py#L934) |
-| severity / severity | Mapped[str \| None] | True | ['String(50)'] {} | [backend/app/models.py:935](../backend/app/models.py#L935) |
-| url / url | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:936](../backend/app/models.py#L936) |
-| status / status | Mapped[str \| None] | True | ['String(50)'] {} | [backend/app/models.py:937](../backend/app/models.py#L937) |
-| raw_json / raw_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:938](../backend/app/models.py#L938) |
-| first_seen_at / first_seen_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:939](../backend/app/models.py#L939) |
-| last_seen_at / last_seen_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:940](../backend/app/models.py#L940) |
-| resolved_at / resolved_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:941](../backend/app/models.py#L941) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:934](../backend/app/models.py#L934) |
+| host / host | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:935](../backend/app/models.py#L935) |
+| problem_code / problem_code | Mapped[str] | False | ['String(150)'] {'nullable': 'False'} | [backend/app/models.py:936](../backend/app/models.py#L936) |
+| severity / severity | Mapped[str \| None] | True | ['String(50)'] {} | [backend/app/models.py:937](../backend/app/models.py#L937) |
+| url / url | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:938](../backend/app/models.py#L938) |
+| status / status | Mapped[str \| None] | True | ['String(50)'] {} | [backend/app/models.py:939](../backend/app/models.py#L939) |
+| raw_json / raw_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:940](../backend/app/models.py#L940) |
+| first_seen_at / first_seen_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:941](../backend/app/models.py#L941) |
+| last_seen_at / last_seen_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:942](../backend/app/models.py#L942) |
+| resolved_at / resolved_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:943](../backend/app/models.py#L943) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 927, 'end_line': 930, 'owner': 'WebmasterDiagnostic', 'conditions': [], 'definition': "(UniqueConstraint('host', 'problem_code', 'url', 'first_seen_at', name='uq_webmaster_diagnostic'), Index('ix_webmaster_diagnostic_host', 'host', 'severity'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 929, 'end_line': 932, 'owner': 'WebmasterDiagnostic', 'conditions': [], 'definition': "(UniqueConstraint('host', 'problem_code', 'url', 'first_seen_at', name='uq_webmaster_diagnostic'), Index('ix_webmaster_diagnostic_host', 'host', 'severity'))"}]`
 
 Relationships: `[]`
 
@@ -934,19 +935,19 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:951](../backend/app/models.py#L951) |
-| host / host | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:952](../backend/app/models.py#L952) |
-| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:953](../backend/app/models.py#L953) |
-| query / query | Mapped[str] | False | ['String(500)'] {'nullable': 'False'} | [backend/app/models.py:954](../backend/app/models.py#L954) |
-| url / url | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:955](../backend/app/models.py#L955) |
-| impressions / impressions | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:956](../backend/app/models.py#L956) |
-| clicks / clicks | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:957](../backend/app/models.py#L957) |
-| ctr / ctr | Mapped[float \| None] | True | ['Numeric(8, 4)'] {} | [backend/app/models.py:958](../backend/app/models.py#L958) |
-| position / position | Mapped[float \| None] | True | ['Numeric(8, 2)'] {} | [backend/app/models.py:959](../backend/app/models.py#L959) |
-| raw_json / raw_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:960](../backend/app/models.py#L960) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:961](../backend/app/models.py#L961) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:953](../backend/app/models.py#L953) |
+| host / host | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:954](../backend/app/models.py#L954) |
+| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:955](../backend/app/models.py#L955) |
+| query / query | Mapped[str] | False | ['String(500)'] {'nullable': 'False'} | [backend/app/models.py:956](../backend/app/models.py#L956) |
+| url / url | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:957](../backend/app/models.py#L957) |
+| impressions / impressions | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:958](../backend/app/models.py#L958) |
+| clicks / clicks | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:959](../backend/app/models.py#L959) |
+| ctr / ctr | Mapped[float \| None] | True | ['Numeric(8, 4)'] {} | [backend/app/models.py:960](../backend/app/models.py#L960) |
+| position / position | Mapped[float \| None] | True | ['Numeric(8, 2)'] {} | [backend/app/models.py:961](../backend/app/models.py#L961) |
+| raw_json / raw_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:962](../backend/app/models.py#L962) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:963](../backend/app/models.py#L963) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 946, 'end_line': 949, 'owner': 'WebmasterSearchQuery', 'conditions': [], 'definition': "(UniqueConstraint('host', 'date', 'query', 'url', name='uq_webmaster_search_query'), Index('ix_webmaster_query_date', 'date', 'query'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 948, 'end_line': 951, 'owner': 'WebmasterSearchQuery', 'conditions': [], 'definition': "(UniqueConstraint('host', 'date', 'query', 'url', name='uq_webmaster_search_query'), Index('ix_webmaster_query_date', 'date', 'query'))"}]`
 
 Relationships: `[]`
 
@@ -954,21 +955,21 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:972](../backend/app/models.py#L972) |
-| host / host | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:973](../backend/app/models.py#L973) |
-| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:974](../backend/app/models.py#L974) |
-| in_search / in_search | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:975](../backend/app/models.py#L975) |
-| crawled_2xx / crawled_2xx | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:976](../backend/app/models.py#L976) |
-| crawled_3xx / crawled_3xx | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:977](../backend/app/models.py#L977) |
-| crawled_4xx / crawled_4xx | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:978](../backend/app/models.py#L978) |
-| crawled_5xx / crawled_5xx | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:979](../backend/app/models.py#L979) |
-| appeared / appeared | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:980](../backend/app/models.py#L980) |
-| excluded / excluded | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:981](../backend/app/models.py#L981) |
-| sitemap_errors / sitemap_errors | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:982](../backend/app/models.py#L982) |
-| raw_json / raw_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:983](../backend/app/models.py#L983) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:984](../backend/app/models.py#L984) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:974](../backend/app/models.py#L974) |
+| host / host | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:975](../backend/app/models.py#L975) |
+| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:976](../backend/app/models.py#L976) |
+| in_search / in_search | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:977](../backend/app/models.py#L977) |
+| crawled_2xx / crawled_2xx | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:978](../backend/app/models.py#L978) |
+| crawled_3xx / crawled_3xx | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:979](../backend/app/models.py#L979) |
+| crawled_4xx / crawled_4xx | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:980](../backend/app/models.py#L980) |
+| crawled_5xx / crawled_5xx | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:981](../backend/app/models.py#L981) |
+| appeared / appeared | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:982](../backend/app/models.py#L982) |
+| excluded / excluded | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:983](../backend/app/models.py#L983) |
+| sitemap_errors / sitemap_errors | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:984](../backend/app/models.py#L984) |
+| raw_json / raw_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:985](../backend/app/models.py#L985) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:986](../backend/app/models.py#L986) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 967, 'end_line': 970, 'owner': 'WebmasterIndexingDaily', 'conditions': [], 'definition': "(UniqueConstraint('host', 'day', name='uq_webmaster_indexing_daily'), Index('ix_webmaster_indexing_daily_day', 'day'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 969, 'end_line': 972, 'owner': 'WebmasterIndexingDaily', 'conditions': [], 'definition': "(UniqueConstraint('host', 'day', name='uq_webmaster_indexing_daily'), Index('ix_webmaster_indexing_daily_day', 'day'))"}]`
 
 Relationships: `[]`
 
@@ -976,18 +977,18 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:995](../backend/app/models.py#L995) |
-| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:996](../backend/app/models.py#L996) |
-| query / query | Mapped[str] | False | ['String(500)'] {'nullable': 'False'} | [backend/app/models.py:997](../backend/app/models.py#L997) |
-| page / page | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:998](../backend/app/models.py#L998) |
-| impressions / impressions | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:999](../backend/app/models.py#L999) |
-| clicks / clicks | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1000](../backend/app/models.py#L1000) |
-| ctr / ctr | Mapped[float \| None] | True | ['Numeric(8, 4)'] {} | [backend/app/models.py:1001](../backend/app/models.py#L1001) |
-| position / position | Mapped[float \| None] | True | ['Numeric(8, 2)'] {} | [backend/app/models.py:1002](../backend/app/models.py#L1002) |
-| raw_json / raw_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1003](../backend/app/models.py#L1003) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1004](../backend/app/models.py#L1004) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:997](../backend/app/models.py#L997) |
+| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:998](../backend/app/models.py#L998) |
+| query / query | Mapped[str] | False | ['String(500)'] {'nullable': 'False'} | [backend/app/models.py:999](../backend/app/models.py#L999) |
+| page / page | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:1000](../backend/app/models.py#L1000) |
+| impressions / impressions | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1001](../backend/app/models.py#L1001) |
+| clicks / clicks | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1002](../backend/app/models.py#L1002) |
+| ctr / ctr | Mapped[float \| None] | True | ['Numeric(8, 4)'] {} | [backend/app/models.py:1003](../backend/app/models.py#L1003) |
+| position / position | Mapped[float \| None] | True | ['Numeric(8, 2)'] {} | [backend/app/models.py:1004](../backend/app/models.py#L1004) |
+| raw_json / raw_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1005](../backend/app/models.py#L1005) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1006](../backend/app/models.py#L1006) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 990, 'end_line': 993, 'owner': 'GscSearchQuery', 'conditions': [], 'definition': "(UniqueConstraint('date', 'query', 'page', name='uq_gsc_search_query'), Index('ix_gsc_query_date', 'date', 'query'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 992, 'end_line': 995, 'owner': 'GscSearchQuery', 'conditions': [], 'definition': "(UniqueConstraint('date', 'query', 'page', name='uq_gsc_search_query'), Index('ix_gsc_query_date', 'date', 'query'))"}]`
 
 Relationships: `[]`
 
@@ -995,16 +996,16 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1019](../backend/app/models.py#L1019) |
-| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:1020](../backend/app/models.py#L1020) |
-| page / page | Mapped[str] | False | ['String(1000)'] {'nullable': 'False'} | [backend/app/models.py:1021](../backend/app/models.py#L1021) |
-| impressions / impressions | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1022](../backend/app/models.py#L1022) |
-| clicks / clicks | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1023](../backend/app/models.py#L1023) |
-| ctr / ctr | Mapped[float \| None] | True | ['Numeric(8, 4)'] {} | [backend/app/models.py:1024](../backend/app/models.py#L1024) |
-| position / position | Mapped[float \| None] | True | ['Numeric(8, 2)'] {} | [backend/app/models.py:1025](../backend/app/models.py#L1025) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1026](../backend/app/models.py#L1026) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1021](../backend/app/models.py#L1021) |
+| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:1022](../backend/app/models.py#L1022) |
+| page / page | Mapped[str] | False | ['String(1000)'] {'nullable': 'False'} | [backend/app/models.py:1023](../backend/app/models.py#L1023) |
+| impressions / impressions | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1024](../backend/app/models.py#L1024) |
+| clicks / clicks | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1025](../backend/app/models.py#L1025) |
+| ctr / ctr | Mapped[float \| None] | True | ['Numeric(8, 4)'] {} | [backend/app/models.py:1026](../backend/app/models.py#L1026) |
+| position / position | Mapped[float \| None] | True | ['Numeric(8, 2)'] {} | [backend/app/models.py:1027](../backend/app/models.py#L1027) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1028](../backend/app/models.py#L1028) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1014, 'end_line': 1017, 'owner': 'GscPageDaily', 'conditions': [], 'definition': "(UniqueConstraint('date', 'page', name='uq_gsc_page_daily'), Index('ix_gsc_page_daily_date', 'date'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1016, 'end_line': 1019, 'owner': 'GscPageDaily', 'conditions': [], 'definition': "(UniqueConstraint('date', 'page', name='uq_gsc_page_daily'), Index('ix_gsc_page_daily_date', 'date'))"}]`
 
 Relationships: `[]`
 
@@ -1012,20 +1013,20 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1036](../backend/app/models.py#L1036) |
-| url / url | Mapped[str] | False | ['String(1000)'] {'nullable': 'False'} | [backend/app/models.py:1037](../backend/app/models.py#L1037) |
-| status_code / status_code | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1038](../backend/app/models.py#L1038) |
-| title / title | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1039](../backend/app/models.py#L1039) |
-| description / description | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:1040](../backend/app/models.py#L1040) |
-| canonical / canonical | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:1041](../backend/app/models.py#L1041) |
-| h1_count / h1_count | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1042](../backend/app/models.py#L1042) |
-| json_ld_count / json_ld_count | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1043](../backend/app/models.py#L1043) |
-| internal_links_count / internal_links_count | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1044](../backend/app/models.py#L1044) |
-| content_hash / content_hash | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:1045](../backend/app/models.py#L1045) |
-| facts_json / facts_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1046](../backend/app/models.py#L1046) |
-| captured_at / captured_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1047](../backend/app/models.py#L1047) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1038](../backend/app/models.py#L1038) |
+| url / url | Mapped[str] | False | ['String(1000)'] {'nullable': 'False'} | [backend/app/models.py:1039](../backend/app/models.py#L1039) |
+| status_code / status_code | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1040](../backend/app/models.py#L1040) |
+| title / title | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1041](../backend/app/models.py#L1041) |
+| description / description | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:1042](../backend/app/models.py#L1042) |
+| canonical / canonical | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:1043](../backend/app/models.py#L1043) |
+| h1_count / h1_count | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1044](../backend/app/models.py#L1044) |
+| json_ld_count / json_ld_count | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1045](../backend/app/models.py#L1045) |
+| internal_links_count / internal_links_count | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1046](../backend/app/models.py#L1046) |
+| content_hash / content_hash | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:1047](../backend/app/models.py#L1047) |
+| facts_json / facts_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1048](../backend/app/models.py#L1048) |
+| captured_at / captured_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1049](../backend/app/models.py#L1049) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1031, 'end_line': 1034, 'owner': 'SeoPageSnapshot', 'conditions': [], 'definition': "(UniqueConstraint('url', 'content_hash', name='uq_seo_page_snapshot'), Index('ix_seo_page_snapshot_url', 'url', 'captured_at'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1033, 'end_line': 1036, 'owner': 'SeoPageSnapshot', 'conditions': [], 'definition': "(UniqueConstraint('url', 'content_hash', name='uq_seo_page_snapshot'), Index('ix_seo_page_snapshot_url', 'url', 'captured_at'))"}]`
 
 Relationships: `[]`
 
@@ -1033,19 +1034,19 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1057](../backend/app/models.py#L1057) |
-| finding_type / finding_type | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:1058](../backend/app/models.py#L1058) |
-| title / title | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:1059](../backend/app/models.py#L1059) |
-| summary / summary | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:1060](../backend/app/models.py#L1060) |
-| evidence_json / evidence_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1061](../backend/app/models.py#L1061) |
-| affected_urls_json / affected_urls_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1062](../backend/app/models.py#L1062) |
-| confidence / confidence | Mapped[float \| None] | True | ['Numeric(5, 4)'] {} | [backend/app/models.py:1063](../backend/app/models.py#L1063) |
-| priority / priority | Mapped[int] | False | ['Integer'] {'default': '3'} | [backend/app/models.py:1064](../backend/app/models.py#L1064) |
-| status / status | Mapped[str] | False | ['String(30)'] {'default': "'open'"} | [backend/app/models.py:1065](../backend/app/models.py#L1065) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1066](../backend/app/models.py#L1066) |
-| resolved_at / resolved_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1067](../backend/app/models.py#L1067) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1059](../backend/app/models.py#L1059) |
+| finding_type / finding_type | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:1060](../backend/app/models.py#L1060) |
+| title / title | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:1061](../backend/app/models.py#L1061) |
+| summary / summary | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:1062](../backend/app/models.py#L1062) |
+| evidence_json / evidence_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1063](../backend/app/models.py#L1063) |
+| affected_urls_json / affected_urls_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1064](../backend/app/models.py#L1064) |
+| confidence / confidence | Mapped[float \| None] | True | ['Numeric(5, 4)'] {} | [backend/app/models.py:1065](../backend/app/models.py#L1065) |
+| priority / priority | Mapped[int] | False | ['Integer'] {'default': '3'} | [backend/app/models.py:1066](../backend/app/models.py#L1066) |
+| status / status | Mapped[str] | False | ['String(30)'] {'default': "'open'"} | [backend/app/models.py:1067](../backend/app/models.py#L1067) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1068](../backend/app/models.py#L1068) |
+| resolved_at / resolved_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1069](../backend/app/models.py#L1069) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1052, 'end_line': 1055, 'owner': 'AgentFinding', 'conditions': [], 'definition': "(Index('ix_agent_finding_status', 'status', 'priority'), Index('ix_agent_finding_created', 'created_at'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1054, 'end_line': 1057, 'owner': 'AgentFinding', 'conditions': [], 'definition': "(Index('ix_agent_finding_status', 'status', 'priority'), Index('ix_agent_finding_created', 'created_at'))"}]`
 
 Relationships: `[]`
 
@@ -1053,21 +1054,21 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1077](../backend/app/models.py#L1077) |
-| action_type / action_type | Mapped[str] | False | ['String(100)'] {'nullable': 'False'} | [backend/app/models.py:1078](../backend/app/models.py#L1078) |
-| safety_class / safety_class | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:1079](../backend/app/models.py#L1079) |
-| status / status | Mapped[str] | False | ['String(30)'] {'nullable': 'False', 'default': "'proposed'"} | [backend/app/models.py:1080](../backend/app/models.py#L1080) |
-| target_json / target_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1081](../backend/app/models.py#L1081) |
-| payload_json / payload_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1082](../backend/app/models.py#L1082) |
-| diff_json / diff_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1083](../backend/app/models.py#L1083) |
-| reason / reason | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:1084](../backend/app/models.py#L1084) |
-| approval_token_hash / approval_token_hash | Mapped[str \| None] | True | ['String(100)'] {} | [backend/app/models.py:1085](../backend/app/models.py#L1085) |
-| response_json / response_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1086](../backend/app/models.py#L1086) |
-| error_message / error_message | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:1087](../backend/app/models.py#L1087) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1088](../backend/app/models.py#L1088) |
-| applied_at / applied_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1089](../backend/app/models.py#L1089) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1079](../backend/app/models.py#L1079) |
+| action_type / action_type | Mapped[str] | False | ['String(100)'] {'nullable': 'False'} | [backend/app/models.py:1080](../backend/app/models.py#L1080) |
+| safety_class / safety_class | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:1081](../backend/app/models.py#L1081) |
+| status / status | Mapped[str] | False | ['String(30)'] {'nullable': 'False', 'default': "'proposed'"} | [backend/app/models.py:1082](../backend/app/models.py#L1082) |
+| target_json / target_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1083](../backend/app/models.py#L1083) |
+| payload_json / payload_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1084](../backend/app/models.py#L1084) |
+| diff_json / diff_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1085](../backend/app/models.py#L1085) |
+| reason / reason | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:1086](../backend/app/models.py#L1086) |
+| approval_token_hash / approval_token_hash | Mapped[str \| None] | True | ['String(100)'] {} | [backend/app/models.py:1087](../backend/app/models.py#L1087) |
+| response_json / response_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1088](../backend/app/models.py#L1088) |
+| error_message / error_message | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:1089](../backend/app/models.py#L1089) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1090](../backend/app/models.py#L1090) |
+| applied_at / applied_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1091](../backend/app/models.py#L1091) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1072, 'end_line': 1075, 'owner': 'AgentActionAudit', 'conditions': [], 'definition': "(Index('ix_agent_action_status', 'status', 'safety_class'), Index('ix_agent_action_created', 'created_at'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1074, 'end_line': 1077, 'owner': 'AgentActionAudit', 'conditions': [], 'definition': "(Index('ix_agent_action_status', 'status', 'safety_class'), Index('ix_agent_action_created', 'created_at'))"}]`
 
 Relationships: `[]`
 
@@ -1075,19 +1076,19 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1101](../backend/app/models.py#L1101) |
-| event_name / event_name | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:1102](../backend/app/models.py#L1102) |
-| session_id_hash / session_id_hash | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:1103](../backend/app/models.py#L1103) |
-| visitor_id_hash / visitor_id_hash | Mapped[str \| None] | True | ['String(80)'] {'index': 'True'} | [backend/app/models.py:1106](../backend/app/models.py#L1106) |
-| user_id / user_id | Mapped[str \| None] | True | ['String(36)'] {'index': 'True'} | [backend/app/models.py:1110](../backend/app/models.py#L1110) |
-| authed / authed | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1111](../backend/app/models.py#L1111) |
-| url / url | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:1112](../backend/app/models.py#L1112) |
-| referrer / referrer | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:1113](../backend/app/models.py#L1113) |
-| params_json / params_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1114](../backend/app/models.py#L1114) |
-| occurred_at / occurred_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1115](../backend/app/models.py#L1115) |
-| ingested_at / ingested_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1116](../backend/app/models.py#L1116) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1103](../backend/app/models.py#L1103) |
+| event_name / event_name | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:1104](../backend/app/models.py#L1104) |
+| session_id_hash / session_id_hash | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:1105](../backend/app/models.py#L1105) |
+| visitor_id_hash / visitor_id_hash | Mapped[str \| None] | True | ['String(80)'] {'index': 'True'} | [backend/app/models.py:1108](../backend/app/models.py#L1108) |
+| user_id / user_id | Mapped[str \| None] | True | ['String(36)'] {'index': 'True'} | [backend/app/models.py:1112](../backend/app/models.py#L1112) |
+| authed / authed | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1113](../backend/app/models.py#L1113) |
+| url / url | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:1114](../backend/app/models.py#L1114) |
+| referrer / referrer | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:1115](../backend/app/models.py#L1115) |
+| params_json / params_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1116](../backend/app/models.py#L1116) |
+| occurred_at / occurred_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1117](../backend/app/models.py#L1117) |
+| ingested_at / ingested_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1118](../backend/app/models.py#L1118) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1094, 'end_line': 1099, 'owner': 'FrontendEvent', 'conditions': [], 'definition': "(Index('ix_frontend_event_name_time', 'event_name', 'occurred_at'), Index('ix_frontend_event_url', 'url'), Index('ix_frontend_session_event', 'session_id_hash', 'id'), Index('ix_frontend_occurred', 'occurred_at'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1096, 'end_line': 1101, 'owner': 'FrontendEvent', 'conditions': [], 'definition': "(Index('ix_frontend_event_name_time', 'event_name', 'occurred_at'), Index('ix_frontend_event_url', 'url'), Index('ix_frontend_session_event', 'session_id_hash', 'id'), Index('ix_frontend_occurred', 'occurred_at'))"}]`
 
 Relationships: `[]`
 
@@ -1095,25 +1096,25 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:1132](../backend/app/models.py#L1132) |
-| event_type / event_type | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:1135](../backend/app/models.py#L1135) |
-| session_id_hash / session_id_hash | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:1136](../backend/app/models.py#L1136) |
-| visitor_id_hash / visitor_id_hash | Mapped[str \| None] | True | ['String(80)'] {'index': 'True'} | [backend/app/models.py:1137](../backend/app/models.py#L1137) |
-| page_load_id / page_load_id | Mapped[str \| None] | True | ['String(40)'] {} | [backend/app/models.py:1138](../backend/app/models.py#L1138) |
-| user_id / user_id | Mapped[str \| None] | True | ['String(36)'] {} | [backend/app/models.py:1139](../backend/app/models.py#L1139) |
-| authed / authed | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1140](../backend/app/models.py#L1140) |
-| page / page | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1141](../backend/app/models.py#L1141) |
-| element_path / element_path | Mapped[str \| None] | True | ['String(400)'] {} | [backend/app/models.py:1142](../backend/app/models.py#L1142) |
-| element_text / element_text | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1143](../backend/app/models.py#L1143) |
-| x / x | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1144](../backend/app/models.py#L1144) |
-| y / y | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1145](../backend/app/models.py#L1145) |
-| is_dead / is_dead | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1146](../backend/app/models.py#L1146) |
-| is_rage / is_rage | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1147](../backend/app/models.py#L1147) |
-| params_json / params_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1148](../backend/app/models.py#L1148) |
-| occurred_at / occurred_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1149](../backend/app/models.py#L1149) |
-| ingested_at / ingested_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1150](../backend/app/models.py#L1150) |
+| id / id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:1134](../backend/app/models.py#L1134) |
+| event_type / event_type | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:1137](../backend/app/models.py#L1137) |
+| session_id_hash / session_id_hash | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:1138](../backend/app/models.py#L1138) |
+| visitor_id_hash / visitor_id_hash | Mapped[str \| None] | True | ['String(80)'] {'index': 'True'} | [backend/app/models.py:1139](../backend/app/models.py#L1139) |
+| page_load_id / page_load_id | Mapped[str \| None] | True | ['String(40)'] {} | [backend/app/models.py:1140](../backend/app/models.py#L1140) |
+| user_id / user_id | Mapped[str \| None] | True | ['String(36)'] {} | [backend/app/models.py:1141](../backend/app/models.py#L1141) |
+| authed / authed | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1142](../backend/app/models.py#L1142) |
+| page / page | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1143](../backend/app/models.py#L1143) |
+| element_path / element_path | Mapped[str \| None] | True | ['String(400)'] {} | [backend/app/models.py:1144](../backend/app/models.py#L1144) |
+| element_text / element_text | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1145](../backend/app/models.py#L1145) |
+| x / x | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1146](../backend/app/models.py#L1146) |
+| y / y | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1147](../backend/app/models.py#L1147) |
+| is_dead / is_dead | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1148](../backend/app/models.py#L1148) |
+| is_rage / is_rage | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1149](../backend/app/models.py#L1149) |
+| params_json / params_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1150](../backend/app/models.py#L1150) |
+| occurred_at / occurred_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1151](../backend/app/models.py#L1151) |
+| ingested_at / ingested_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1152](../backend/app/models.py#L1152) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1152, 'end_line': 1161, 'owner': 'BehaviorEvent', 'conditions': [], 'definition': "(Index('ix_behavior_type_time', 'event_type', 'occurred_at'), Index('ix_behavior_page_time', 'page', 'occurred_at'), Index('ix_behavior_session_event', 'session_id_hash', 'id'), Index('ix_behavior_occurred', 'occurred_at'), Index('ix_behavior_logical_session_cover', func.coalesce(func.nullif(visitor_id_hash, ''), func.nullif(session_id_hash, '')), occurred_at, id, postgresql_include=['event_type', 'session_id_hash', 'visitor_id_hash'], postgresql_where=event_type.in_(('pageview', 'dwell', 'click', 'move'))))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1154, 'end_line': 1163, 'owner': 'BehaviorEvent', 'conditions': [], 'definition': "(Index('ix_behavior_type_time', 'event_type', 'occurred_at'), Index('ix_behavior_page_time', 'page', 'occurred_at'), Index('ix_behavior_session_event', 'session_id_hash', 'id'), Index('ix_behavior_occurred', 'occurred_at'), Index('ix_behavior_logical_session_cover', func.coalesce(func.nullif(visitor_id_hash, ''), func.nullif(session_id_hash, '')), occurred_at, id, postgresql_include=['event_type', 'session_id_hash', 'visitor_id_hash'], postgresql_where=event_type.in_(('pageview', 'dwell', 'click', 'move'))))"}]`
 
 Relationships: `[]`
 
@@ -1121,50 +1122,50 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| session_id_hash / session_id_hash | Mapped[str] | False | ['String(80)'] {'primary_key': 'True'} | [backend/app/models.py:1176](../backend/app/models.py#L1176) |
-| visitor_id_hash / visitor_id_hash | Mapped[str \| None] | True | ['String(80)'] {'index': 'True'} | [backend/app/models.py:1177](../backend/app/models.py#L1177) |
-| ym_client_id / ym_client_id | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:1182](../backend/app/models.py#L1182) |
-| user_id / user_id | Mapped[str \| None] | True | ['String(36)'] {} | [backend/app/models.py:1183](../backend/app/models.py#L1183) |
-| authed / authed | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1184](../backend/app/models.py#L1184) |
-| started_at / started_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:1185](../backend/app/models.py#L1185) |
-| entry_page / entry_page | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1186](../backend/app/models.py#L1186) |
-| referrer / referrer | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:1187](../backend/app/models.py#L1187) |
-| referrer_host / referrer_host | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1188](../backend/app/models.py#L1188) |
-| channel / channel | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1191](../backend/app/models.py#L1191) |
-| utm_source / utm_source | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1192](../backend/app/models.py#L1192) |
-| utm_medium / utm_medium | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1193](../backend/app/models.py#L1193) |
-| utm_campaign / utm_campaign | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1194](../backend/app/models.py#L1194) |
-| utm_term / utm_term | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1195](../backend/app/models.py#L1195) |
-| utm_content / utm_content | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1196](../backend/app/models.py#L1196) |
-| yclid / yclid | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:1197](../backend/app/models.py#L1197) |
-| country / country | Mapped[str \| None] | True | ['String(60)'] {} | [backend/app/models.py:1199](../backend/app/models.py#L1199) |
-| geo_region / geo_region | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1200](../backend/app/models.py#L1200) |
-| city / city | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1201](../backend/app/models.py#L1201) |
-| ua_raw / ua_raw | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1202](../backend/app/models.py#L1202) |
-| browser / browser | Mapped[str \| None] | True | ['String(40)'] {} | [backend/app/models.py:1203](../backend/app/models.py#L1203) |
-| browser_version / browser_version | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1204](../backend/app/models.py#L1204) |
-| os / os | Mapped[str \| None] | True | ['String(30)'] {} | [backend/app/models.py:1205](../backend/app/models.py#L1205) |
-| os_version / os_version | Mapped[str \| None] | True | ['String(30)'] {} | [backend/app/models.py:1206](../backend/app/models.py#L1206) |
-| device_type / device_type | Mapped[str \| None] | True | ['String(12)'] {} | [backend/app/models.py:1207](../backend/app/models.py#L1207) |
-| screen_w / screen_w | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1208](../backend/app/models.py#L1208) |
-| screen_h / screen_h | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1209](../backend/app/models.py#L1209) |
-| viewport_w / viewport_w | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1210](../backend/app/models.py#L1210) |
-| viewport_h / viewport_h | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1211](../backend/app/models.py#L1211) |
-| dpr / dpr | Mapped[float \| None] | True | ['Numeric(4, 2)'] {} | [backend/app/models.py:1212](../backend/app/models.py#L1212) |
-| language / language | Mapped[str \| None] | True | ['String(16)'] {} | [backend/app/models.py:1213](../backend/app/models.py#L1213) |
-| site_locale / site_locale | Mapped[str \| None] | True | ['String(2)'] {} | [backend/app/models.py:1216](../backend/app/models.py#L1216) |
-| timezone / timezone | Mapped[str \| None] | True | ['String(60)'] {} | [backend/app/models.py:1217](../backend/app/models.py#L1217) |
-| touch / touch | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:1218](../backend/app/models.py#L1218) |
-| conn_type / conn_type | Mapped[str \| None] | True | ['String(16)'] {} | [backend/app/models.py:1220](../backend/app/models.py#L1220) |
-| downlink / downlink | Mapped[float \| None] | True | ['Numeric(6, 2)'] {} | [backend/app/models.py:1221](../backend/app/models.py#L1221) |
-| device_memory / device_memory | Mapped[float \| None] | True | ['Numeric(5, 1)'] {} | [backend/app/models.py:1222](../backend/app/models.py#L1222) |
-| cpu_cores / cpu_cores | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1223](../backend/app/models.py#L1223) |
-| color_scheme / color_scheme | Mapped[str \| None] | True | ['String(10)'] {} | [backend/app/models.py:1224](../backend/app/models.py#L1224) |
-| orientation / orientation | Mapped[str \| None] | True | ['String(12)'] {} | [backend/app/models.py:1225](../backend/app/models.py#L1225) |
-| is_webdriver / is_webdriver | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:1226](../backend/app/models.py#L1226) |
-| is_synthetic / is_synthetic | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1230](../backend/app/models.py#L1230) |
+| session_id_hash / session_id_hash | Mapped[str] | False | ['String(80)'] {'primary_key': 'True'} | [backend/app/models.py:1178](../backend/app/models.py#L1178) |
+| visitor_id_hash / visitor_id_hash | Mapped[str \| None] | True | ['String(80)'] {'index': 'True'} | [backend/app/models.py:1179](../backend/app/models.py#L1179) |
+| ym_client_id / ym_client_id | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:1184](../backend/app/models.py#L1184) |
+| user_id / user_id | Mapped[str \| None] | True | ['String(36)'] {} | [backend/app/models.py:1185](../backend/app/models.py#L1185) |
+| authed / authed | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1186](../backend/app/models.py#L1186) |
+| started_at / started_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:1187](../backend/app/models.py#L1187) |
+| entry_page / entry_page | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1188](../backend/app/models.py#L1188) |
+| referrer / referrer | Mapped[str \| None] | True | ['String(1000)'] {} | [backend/app/models.py:1189](../backend/app/models.py#L1189) |
+| referrer_host / referrer_host | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1190](../backend/app/models.py#L1190) |
+| channel / channel | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1193](../backend/app/models.py#L1193) |
+| utm_source / utm_source | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1194](../backend/app/models.py#L1194) |
+| utm_medium / utm_medium | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1195](../backend/app/models.py#L1195) |
+| utm_campaign / utm_campaign | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1196](../backend/app/models.py#L1196) |
+| utm_term / utm_term | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1197](../backend/app/models.py#L1197) |
+| utm_content / utm_content | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1198](../backend/app/models.py#L1198) |
+| yclid / yclid | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:1199](../backend/app/models.py#L1199) |
+| country / country | Mapped[str \| None] | True | ['String(60)'] {} | [backend/app/models.py:1201](../backend/app/models.py#L1201) |
+| geo_region / geo_region | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1202](../backend/app/models.py#L1202) |
+| city / city | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1203](../backend/app/models.py#L1203) |
+| ua_raw / ua_raw | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1204](../backend/app/models.py#L1204) |
+| browser / browser | Mapped[str \| None] | True | ['String(40)'] {} | [backend/app/models.py:1205](../backend/app/models.py#L1205) |
+| browser_version / browser_version | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1206](../backend/app/models.py#L1206) |
+| os / os | Mapped[str \| None] | True | ['String(30)'] {} | [backend/app/models.py:1207](../backend/app/models.py#L1207) |
+| os_version / os_version | Mapped[str \| None] | True | ['String(30)'] {} | [backend/app/models.py:1208](../backend/app/models.py#L1208) |
+| device_type / device_type | Mapped[str \| None] | True | ['String(12)'] {} | [backend/app/models.py:1209](../backend/app/models.py#L1209) |
+| screen_w / screen_w | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1210](../backend/app/models.py#L1210) |
+| screen_h / screen_h | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1211](../backend/app/models.py#L1211) |
+| viewport_w / viewport_w | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1212](../backend/app/models.py#L1212) |
+| viewport_h / viewport_h | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1213](../backend/app/models.py#L1213) |
+| dpr / dpr | Mapped[float \| None] | True | ['Numeric(4, 2)'] {} | [backend/app/models.py:1214](../backend/app/models.py#L1214) |
+| language / language | Mapped[str \| None] | True | ['String(16)'] {} | [backend/app/models.py:1215](../backend/app/models.py#L1215) |
+| site_locale / site_locale | Mapped[str \| None] | True | ['String(2)'] {} | [backend/app/models.py:1218](../backend/app/models.py#L1218) |
+| timezone / timezone | Mapped[str \| None] | True | ['String(60)'] {} | [backend/app/models.py:1219](../backend/app/models.py#L1219) |
+| touch / touch | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:1220](../backend/app/models.py#L1220) |
+| conn_type / conn_type | Mapped[str \| None] | True | ['String(16)'] {} | [backend/app/models.py:1222](../backend/app/models.py#L1222) |
+| downlink / downlink | Mapped[float \| None] | True | ['Numeric(6, 2)'] {} | [backend/app/models.py:1223](../backend/app/models.py#L1223) |
+| device_memory / device_memory | Mapped[float \| None] | True | ['Numeric(5, 1)'] {} | [backend/app/models.py:1224](../backend/app/models.py#L1224) |
+| cpu_cores / cpu_cores | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1225](../backend/app/models.py#L1225) |
+| color_scheme / color_scheme | Mapped[str \| None] | True | ['String(10)'] {} | [backend/app/models.py:1226](../backend/app/models.py#L1226) |
+| orientation / orientation | Mapped[str \| None] | True | ['String(12)'] {} | [backend/app/models.py:1227](../backend/app/models.py#L1227) |
+| is_webdriver / is_webdriver | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:1228](../backend/app/models.py#L1228) |
+| is_synthetic / is_synthetic | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1232](../backend/app/models.py#L1232) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1232, 'end_line': 1236, 'owner': 'BehaviorSession', 'conditions': [], 'definition': "(Index('ix_behavior_sessions_started', 'started_at'), Index('ix_behavior_sessions_visitor_started', visitor_id_hash, started_at.desc(), session_id_hash))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1234, 'end_line': 1238, 'owner': 'BehaviorSession', 'conditions': [], 'definition': "(Index('ix_behavior_sessions_started', 'started_at'), Index('ix_behavior_sessions_visitor_started', visitor_id_hash, started_at.desc(), session_id_hash))"}]`
 
 Relationships: `[]`
 
@@ -1172,13 +1173,13 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1252](../backend/app/models.py#L1252) |
-| user_id / user_id | Mapped[str] | False | ['String(36)'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:1253](../backend/app/models.py#L1253) |
-| visitor_id_hash / visitor_id_hash | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:1254](../backend/app/models.py#L1254) |
-| first_seen / first_seen | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1255](../backend/app/models.py#L1255) |
-| last_seen / last_seen | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1256](../backend/app/models.py#L1256) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1254](../backend/app/models.py#L1254) |
+| user_id / user_id | Mapped[str] | False | ['String(36)'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:1255](../backend/app/models.py#L1255) |
+| visitor_id_hash / visitor_id_hash | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:1256](../backend/app/models.py#L1256) |
+| first_seen / first_seen | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1257](../backend/app/models.py#L1257) |
+| last_seen / last_seen | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1258](../backend/app/models.py#L1258) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1247, 'end_line': 1250, 'owner': 'IdentityLink', 'conditions': [], 'definition': "(UniqueConstraint('user_id', 'visitor_id_hash', name='uq_identity_user_visitor'), Index('ix_identity_visitor', 'visitor_id_hash'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1249, 'end_line': 1252, 'owner': 'IdentityLink', 'conditions': [], 'definition': "(UniqueConstraint('user_id', 'visitor_id_hash', name='uq_identity_user_visitor'), Index('ix_identity_visitor', 'visitor_id_hash'))"}]`
 
 Relationships: `[]`
 
@@ -1186,12 +1187,12 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| goal_id / goal_id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:1268](../backend/app/models.py#L1268) |
-| name / name | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:1269](../backend/app/models.py#L1269) |
-| event_name / event_name | Mapped[str \| None] | True | ['String(120)'] {'index': 'True'} | [backend/app/models.py:1270](../backend/app/models.py#L1270) |
-| tier / tier | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1271](../backend/app/models.py#L1271) |
-| deleted / deleted | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'server_default': "'false'", 'nullable': 'False'} | [backend/app/models.py:1274](../backend/app/models.py#L1274) |
-| synced_at / synced_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1275](../backend/app/models.py#L1275) |
+| goal_id / goal_id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:1270](../backend/app/models.py#L1270) |
+| name / name | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:1271](../backend/app/models.py#L1271) |
+| event_name / event_name | Mapped[str \| None] | True | ['String(120)'] {'index': 'True'} | [backend/app/models.py:1272](../backend/app/models.py#L1272) |
+| tier / tier | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1273](../backend/app/models.py#L1273) |
+| deleted / deleted | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'server_default': "'false'", 'nullable': 'False'} | [backend/app/models.py:1276](../backend/app/models.py#L1276) |
+| synced_at / synced_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1277](../backend/app/models.py#L1277) |
 
 Constraints: `[]`
 
@@ -1201,14 +1202,14 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1290](../backend/app/models.py#L1290) |
-| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:1291](../backend/app/models.py#L1291) |
-| campaign / campaign | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:1292](../backend/app/models.py#L1292) |
-| cost_rub / cost_rub | Mapped[float] | False | ['Numeric(12, 2)'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1293](../backend/app/models.py#L1293) |
-| clicks / clicks | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1294](../backend/app/models.py#L1294) |
-| synced_at / synced_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1295](../backend/app/models.py#L1295) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1292](../backend/app/models.py#L1292) |
+| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:1293](../backend/app/models.py#L1293) |
+| campaign / campaign | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:1294](../backend/app/models.py#L1294) |
+| cost_rub / cost_rub | Mapped[float] | False | ['Numeric(12, 2)'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1295](../backend/app/models.py#L1295) |
+| clicks / clicks | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1296](../backend/app/models.py#L1296) |
+| synced_at / synced_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1297](../backend/app/models.py#L1297) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1286, 'end_line': 1288, 'owner': 'DirectCost', 'conditions': [], 'definition': "(UniqueConstraint('day', 'campaign', name='uq_direct_cost_day_campaign'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1288, 'end_line': 1290, 'owner': 'DirectCost', 'conditions': [], 'definition': "(UniqueConstraint('day', 'campaign', name='uq_direct_cost_day_campaign'),)"}]`
 
 Relationships: `[]`
 
@@ -1216,14 +1217,14 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1310](../backend/app/models.py#L1310) |
-| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:1311](../backend/app/models.py#L1311) |
-| shows / shows | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1312](../backend/app/models.py#L1312) |
-| hits / hits | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1313](../backend/app/models.py#L1313) |
-| revenue_rub / revenue_rub | Mapped[float] | False | ['Numeric(12, 2)'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1314](../backend/app/models.py#L1314) |
-| synced_at / synced_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1315](../backend/app/models.py#L1315) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1312](../backend/app/models.py#L1312) |
+| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:1313](../backend/app/models.py#L1313) |
+| shows / shows | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1314](../backend/app/models.py#L1314) |
+| hits / hits | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1315](../backend/app/models.py#L1315) |
+| revenue_rub / revenue_rub | Mapped[float] | False | ['Numeric(12, 2)'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1316](../backend/app/models.py#L1316) |
+| synced_at / synced_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1317](../backend/app/models.py#L1317) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1306, 'end_line': 1308, 'owner': 'PartnerRevenue', 'conditions': [], 'definition': "(UniqueConstraint('day', name='uq_partner_revenue_day'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1308, 'end_line': 1310, 'owner': 'PartnerRevenue', 'conditions': [], 'definition': "(UniqueConstraint('day', name='uq_partner_revenue_day'),)"}]`
 
 Relationships: `[]`
 
@@ -1231,33 +1232,33 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:1332](../backend/app/models.py#L1332) |
-| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:1333](../backend/app/models.py#L1333) |
-| visitor_id_hash / visitor_id_hash | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:1334](../backend/app/models.py#L1334) |
-| user_id / user_id | Mapped[str \| None] | True | ['String(36)'] {} | [backend/app/models.py:1335](../backend/app/models.py#L1335) |
-| started_at / started_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:1336](../backend/app/models.py#L1336) |
-| ended_at / ended_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:1337](../backend/app/models.py#L1337) |
-| duration_ms / duration_ms | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'default': '0'} | [backend/app/models.py:1338](../backend/app/models.py#L1338) |
-| active_ms / active_ms | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'default': '0'} | [backend/app/models.py:1339](../backend/app/models.py#L1339) |
-| pageviews / pageviews | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1340](../backend/app/models.py#L1340) |
-| clicks / clicks | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1341](../backend/app/models.py#L1341) |
-| max_scroll_pct / max_scroll_pct | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1342](../backend/app/models.py#L1342) |
-| entry_page / entry_page | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1343](../backend/app/models.py#L1343) |
-| exit_page / exit_page | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1344](../backend/app/models.py#L1344) |
-| channel / channel | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1345](../backend/app/models.py#L1345) |
-| device / device | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1346](../backend/app/models.py#L1346) |
-| site_locale / site_locale | Mapped[str \| None] | True | ['String(2)'] {} | [backend/app/models.py:1348](../backend/app/models.py#L1348) |
-| is_new_visitor / is_new_visitor | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1349](../backend/app/models.py#L1349) |
-| is_engaged / is_engaged | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1350](../backend/app/models.py#L1350) |
-| micro_goals / micro_goals | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1351](../backend/app/models.py#L1351) |
-| macro_goals / macro_goals | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1352](../backend/app/models.py#L1352) |
-| is_bot / is_bot | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1353](../backend/app/models.py#L1353) |
-| bot_score / bot_score | Mapped[int] | False | ['Integer'] {'default': '0', 'nullable': 'False', 'server_default': "'0'"} | [backend/app/models.py:1355](../backend/app/models.py#L1355) |
-| is_human / is_human | Mapped[bool \| None] | True | ['Boolean'] {'nullable': 'True'} | [backend/app/models.py:1358](../backend/app/models.py#L1358) |
-| is_internal / is_internal | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1361](../backend/app/models.py#L1361) |
-| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1362](../backend/app/models.py#L1362) |
+| id / id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:1334](../backend/app/models.py#L1334) |
+| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:1335](../backend/app/models.py#L1335) |
+| visitor_id_hash / visitor_id_hash | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:1336](../backend/app/models.py#L1336) |
+| user_id / user_id | Mapped[str \| None] | True | ['String(36)'] {} | [backend/app/models.py:1337](../backend/app/models.py#L1337) |
+| started_at / started_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:1338](../backend/app/models.py#L1338) |
+| ended_at / ended_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:1339](../backend/app/models.py#L1339) |
+| duration_ms / duration_ms | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'default': '0'} | [backend/app/models.py:1340](../backend/app/models.py#L1340) |
+| active_ms / active_ms | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'default': '0'} | [backend/app/models.py:1341](../backend/app/models.py#L1341) |
+| pageviews / pageviews | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1342](../backend/app/models.py#L1342) |
+| clicks / clicks | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1343](../backend/app/models.py#L1343) |
+| max_scroll_pct / max_scroll_pct | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1344](../backend/app/models.py#L1344) |
+| entry_page / entry_page | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1345](../backend/app/models.py#L1345) |
+| exit_page / exit_page | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1346](../backend/app/models.py#L1346) |
+| channel / channel | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1347](../backend/app/models.py#L1347) |
+| device / device | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1348](../backend/app/models.py#L1348) |
+| site_locale / site_locale | Mapped[str \| None] | True | ['String(2)'] {} | [backend/app/models.py:1350](../backend/app/models.py#L1350) |
+| is_new_visitor / is_new_visitor | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1351](../backend/app/models.py#L1351) |
+| is_engaged / is_engaged | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1352](../backend/app/models.py#L1352) |
+| micro_goals / micro_goals | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1353](../backend/app/models.py#L1353) |
+| macro_goals / macro_goals | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1354](../backend/app/models.py#L1354) |
+| is_bot / is_bot | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1355](../backend/app/models.py#L1355) |
+| bot_score / bot_score | Mapped[int] | False | ['Integer'] {'default': '0', 'nullable': 'False', 'server_default': "'0'"} | [backend/app/models.py:1357](../backend/app/models.py#L1357) |
+| is_human / is_human | Mapped[bool \| None] | True | ['Boolean'] {'nullable': 'True'} | [backend/app/models.py:1360](../backend/app/models.py#L1360) |
+| is_internal / is_internal | Mapped[bool] | False | ['Boolean'] {'default': 'False', 'nullable': 'False', 'server_default': "'false'"} | [backend/app/models.py:1363](../backend/app/models.py#L1363) |
+| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1364](../backend/app/models.py#L1364) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1327, 'end_line': 1330, 'owner': 'ServerSession', 'conditions': [], 'definition': "(UniqueConstraint('visitor_id_hash', 'started_at', name='uq_server_session_visitor_start'), Index('ix_server_session_day', 'day'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1329, 'end_line': 1332, 'owner': 'ServerSession', 'conditions': [], 'definition': "(UniqueConstraint('visitor_id_hash', 'started_at', name='uq_server_session_visitor_start'), Index('ix_server_session_day', 'day'))"}]`
 
 Relationships: `[]`
 
@@ -1265,12 +1266,12 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| visitor_id_hash / visitor_id_hash | Mapped[str] | False | ['String(80)'] {'primary_key': 'True'} | [backend/app/models.py:1382](../backend/app/models.py#L1382) |
-| started_at / started_at | Mapped[datetime] | False | ['DateTime'] {'primary_key': 'True'} | [backend/app/models.py:1383](../backend/app/models.py#L1383) |
-| rev / rev | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '1', 'server_default': "'1'"} | [backend/app/models.py:1384](../backend/app/models.py#L1384) |
-| changed_at / changed_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:1385](../backend/app/models.py#L1385) |
+| visitor_id_hash / visitor_id_hash | Mapped[str] | False | ['String(80)'] {'primary_key': 'True'} | [backend/app/models.py:1384](../backend/app/models.py#L1384) |
+| started_at / started_at | Mapped[datetime] | False | ['DateTime'] {'primary_key': 'True'} | [backend/app/models.py:1385](../backend/app/models.py#L1385) |
+| rev / rev | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '1', 'server_default': "'1'"} | [backend/app/models.py:1386](../backend/app/models.py#L1386) |
+| changed_at / changed_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:1387](../backend/app/models.py#L1387) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1378, 'end_line': 1380, 'owner': 'ServerSessionChange', 'conditions': [], 'definition': "(Index('ix_server_session_changes_changed', 'changed_at'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1380, 'end_line': 1382, 'owner': 'ServerSessionChange', 'conditions': [], 'definition': "(Index('ix_server_session_changes_changed', 'changed_at'),)"}]`
 
 Relationships: `[]`
 
@@ -1278,20 +1279,20 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1396](../backend/app/models.py#L1396) |
-| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:1397](../backend/app/models.py#L1397) |
-| channel / channel | Mapped[str] | False | ['String(40)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:1398](../backend/app/models.py#L1398) |
-| device / device | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:1399](../backend/app/models.py#L1399) |
-| is_new / is_new | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False'} | [backend/app/models.py:1400](../backend/app/models.py#L1400) |
-| visits / visits | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1401](../backend/app/models.py#L1401) |
-| visitors / visitors | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1402](../backend/app/models.py#L1402) |
-| pageviews / pageviews | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1403](../backend/app/models.py#L1403) |
-| goal_visits / goal_visits | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1404](../backend/app/models.py#L1404) |
-| total_duration_sec / total_duration_sec | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'default': '0'} | [backend/app/models.py:1405](../backend/app/models.py#L1405) |
-| bounces / bounces | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1406](../backend/app/models.py#L1406) |
-| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1407](../backend/app/models.py#L1407) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1398](../backend/app/models.py#L1398) |
+| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:1399](../backend/app/models.py#L1399) |
+| channel / channel | Mapped[str] | False | ['String(40)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:1400](../backend/app/models.py#L1400) |
+| device / device | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "''"} | [backend/app/models.py:1401](../backend/app/models.py#L1401) |
+| is_new / is_new | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False'} | [backend/app/models.py:1402](../backend/app/models.py#L1402) |
+| visits / visits | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1403](../backend/app/models.py#L1403) |
+| visitors / visitors | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1404](../backend/app/models.py#L1404) |
+| pageviews / pageviews | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1405](../backend/app/models.py#L1405) |
+| goal_visits / goal_visits | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1406](../backend/app/models.py#L1406) |
+| total_duration_sec / total_duration_sec | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'default': '0'} | [backend/app/models.py:1407](../backend/app/models.py#L1407) |
+| bounces / bounces | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1408](../backend/app/models.py#L1408) |
+| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1409](../backend/app/models.py#L1409) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1392, 'end_line': 1394, 'owner': 'DailyTraffic', 'conditions': [], 'definition': "(UniqueConstraint('day', 'channel', 'device', 'is_new', name='uq_daily_traffic_key'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1394, 'end_line': 1396, 'owner': 'DailyTraffic', 'conditions': [], 'definition': "(UniqueConstraint('day', 'channel', 'device', 'is_new', name='uq_daily_traffic_key'),)"}]`
 
 Relationships: `[]`
 
@@ -1299,16 +1300,16 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1417](../backend/app/models.py#L1417) |
-| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:1418](../backend/app/models.py#L1418) |
-| event_name / event_name | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:1419](../backend/app/models.py#L1419) |
-| tier / tier | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'engagement'"} | [backend/app/models.py:1420](../backend/app/models.py#L1420) |
-| count / count | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1421](../backend/app/models.py#L1421) |
-| sessions / sessions | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1422](../backend/app/models.py#L1422) |
-| authed_count / authed_count | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1423](../backend/app/models.py#L1423) |
-| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1424](../backend/app/models.py#L1424) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1419](../backend/app/models.py#L1419) |
+| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:1420](../backend/app/models.py#L1420) |
+| event_name / event_name | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:1421](../backend/app/models.py#L1421) |
+| tier / tier | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'engagement'"} | [backend/app/models.py:1422](../backend/app/models.py#L1422) |
+| count / count | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1423](../backend/app/models.py#L1423) |
+| sessions / sessions | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1424](../backend/app/models.py#L1424) |
+| authed_count / authed_count | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1425](../backend/app/models.py#L1425) |
+| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1426](../backend/app/models.py#L1426) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1413, 'end_line': 1415, 'owner': 'DailyGoal', 'conditions': [], 'definition': "(UniqueConstraint('day', 'event_name', name='uq_daily_goal_key'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1415, 'end_line': 1417, 'owner': 'DailyGoal', 'conditions': [], 'definition': "(UniqueConstraint('day', 'event_name', name='uq_daily_goal_key'),)"}]`
 
 Relationships: `[]`
 
@@ -1316,18 +1317,18 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1434](../backend/app/models.py#L1434) |
-| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:1435](../backend/app/models.py#L1435) |
-| page / page | Mapped[str] | False | ['String(500)'] {'nullable': 'False'} | [backend/app/models.py:1436](../backend/app/models.py#L1436) |
-| views / views | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1437](../backend/app/models.py#L1437) |
-| visitors / visitors | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1438](../backend/app/models.py#L1438) |
-| total_dwell_ms / total_dwell_ms | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'default': '0'} | [backend/app/models.py:1439](../backend/app/models.py#L1439) |
-| total_active_ms / total_active_ms | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'default': '0'} | [backend/app/models.py:1440](../backend/app/models.py#L1440) |
-| avg_scroll_pct / avg_scroll_pct | Mapped[float \| None] | True | ['Numeric(5, 1)'] {} | [backend/app/models.py:1441](../backend/app/models.py#L1441) |
-| dead_clicks / dead_clicks | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1442](../backend/app/models.py#L1442) |
-| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1443](../backend/app/models.py#L1443) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1436](../backend/app/models.py#L1436) |
+| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:1437](../backend/app/models.py#L1437) |
+| page / page | Mapped[str] | False | ['String(500)'] {'nullable': 'False'} | [backend/app/models.py:1438](../backend/app/models.py#L1438) |
+| views / views | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1439](../backend/app/models.py#L1439) |
+| visitors / visitors | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1440](../backend/app/models.py#L1440) |
+| total_dwell_ms / total_dwell_ms | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'default': '0'} | [backend/app/models.py:1441](../backend/app/models.py#L1441) |
+| total_active_ms / total_active_ms | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'default': '0'} | [backend/app/models.py:1442](../backend/app/models.py#L1442) |
+| avg_scroll_pct / avg_scroll_pct | Mapped[float \| None] | True | ['Numeric(5, 1)'] {} | [backend/app/models.py:1443](../backend/app/models.py#L1443) |
+| dead_clicks / dead_clicks | Mapped[int] | False | ['Integer'] {'default': '0'} | [backend/app/models.py:1444](../backend/app/models.py#L1444) |
+| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1445](../backend/app/models.py#L1445) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1430, 'end_line': 1432, 'owner': 'DailyPage', 'conditions': [], 'definition': "(UniqueConstraint('day', 'page', name='uq_daily_page_key'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1432, 'end_line': 1434, 'owner': 'DailyPage', 'conditions': [], 'definition': "(UniqueConstraint('day', 'page', name='uq_daily_page_key'),)"}]`
 
 Relationships: `[]`
 
@@ -1335,17 +1336,17 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1461](../backend/app/models.py#L1461) |
-| statement / statement | Mapped[str] | False | ['String(500)'] {'nullable': 'False'} | [backend/app/models.py:1462](../backend/app/models.py#L1462) |
-| rationale / rationale | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:1463](../backend/app/models.py#L1463) |
-| verdict / verdict | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:1464](../backend/app/models.py#L1464) |
-| confidence / confidence | Mapped[float \| None] | True | ['Numeric(4, 3)'] {} | [backend/app/models.py:1465](../backend/app/models.py#L1465) |
-| source / source | Mapped[str] | False | ['String(40)'] {'nullable': 'False', 'default': "'pulse_llm'"} | [backend/app/models.py:1466](../backend/app/models.py#L1466) |
-| evidence_json / evidence_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1467](../backend/app/models.py#L1467) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1468](../backend/app/models.py#L1468) |
-| updated_at / updated_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)', 'onupdate': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1469](../backend/app/models.py#L1469) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1463](../backend/app/models.py#L1463) |
+| statement / statement | Mapped[str] | False | ['String(500)'] {'nullable': 'False'} | [backend/app/models.py:1464](../backend/app/models.py#L1464) |
+| rationale / rationale | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:1465](../backend/app/models.py#L1465) |
+| verdict / verdict | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:1466](../backend/app/models.py#L1466) |
+| confidence / confidence | Mapped[float \| None] | True | ['Numeric(4, 3)'] {} | [backend/app/models.py:1467](../backend/app/models.py#L1467) |
+| source / source | Mapped[str] | False | ['String(40)'] {'nullable': 'False', 'default': "'pulse_llm'"} | [backend/app/models.py:1468](../backend/app/models.py#L1468) |
+| evidence_json / evidence_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1469](../backend/app/models.py#L1469) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1470](../backend/app/models.py#L1470) |
+| updated_at / updated_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)', 'onupdate': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1471](../backend/app/models.py#L1471) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1457, 'end_line': 1459, 'owner': 'Hypothesis', 'conditions': [], 'definition': "(Index('ix_hypothesis_verdict', 'verdict', 'updated_at'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1459, 'end_line': 1461, 'owner': 'Hypothesis', 'conditions': [], 'definition': "(Index('ix_hypothesis_verdict', 'verdict', 'updated_at'),)"}]`
 
 Relationships: `[]`
 
@@ -1353,20 +1354,20 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:1492](../backend/app/models.py#L1492) |
-| sent_at / sent_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1495](../backend/app/models.py#L1495) |
-| chat_id / chat_id | Mapped[str] | False | ['String(32)'] {'nullable': 'False'} | [backend/app/models.py:1499](../backend/app/models.py#L1499) |
-| method / method | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:1500](../backend/app/models.py#L1500) |
-| kind / kind | Mapped[str] | False | ['String(40)'] {'nullable': 'False', 'default': "'generic'"} | [backend/app/models.py:1501](../backend/app/models.py#L1501) |
-| text / text | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:1502](../backend/app/models.py#L1502) |
-| payload_json / payload_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1503](../backend/app/models.py#L1503) |
-| file_name / file_name | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1504](../backend/app/models.py#L1504) |
-| file_content / file_content | Mapped[bytes \| None] | True | ['LargeBinary'] {} | [backend/app/models.py:1505](../backend/app/models.py#L1505) |
-| ok / ok | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False'} | [backend/app/models.py:1506](../backend/app/models.py#L1506) |
-| telegram_message_id / telegram_message_id | Mapped[int \| None] | True | ['BigInteger'] {} | [backend/app/models.py:1507](../backend/app/models.py#L1507) |
-| error / error | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:1508](../backend/app/models.py#L1508) |
+| id / id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:1494](../backend/app/models.py#L1494) |
+| sent_at / sent_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1497](../backend/app/models.py#L1497) |
+| chat_id / chat_id | Mapped[str] | False | ['String(32)'] {'nullable': 'False'} | [backend/app/models.py:1501](../backend/app/models.py#L1501) |
+| method / method | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:1502](../backend/app/models.py#L1502) |
+| kind / kind | Mapped[str] | False | ['String(40)'] {'nullable': 'False', 'default': "'generic'"} | [backend/app/models.py:1503](../backend/app/models.py#L1503) |
+| text / text | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:1504](../backend/app/models.py#L1504) |
+| payload_json / payload_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1505](../backend/app/models.py#L1505) |
+| file_name / file_name | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1506](../backend/app/models.py#L1506) |
+| file_content / file_content | Mapped[bytes \| None] | True | ['LargeBinary'] {} | [backend/app/models.py:1507](../backend/app/models.py#L1507) |
+| ok / ok | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False'} | [backend/app/models.py:1508](../backend/app/models.py#L1508) |
+| telegram_message_id / telegram_message_id | Mapped[int \| None] | True | ['BigInteger'] {} | [backend/app/models.py:1509](../backend/app/models.py#L1509) |
+| error / error | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:1510](../backend/app/models.py#L1510) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1487, 'end_line': 1490, 'owner': 'TelegramOutbox', 'conditions': [], 'definition': "(Index('ix_tg_outbox_ts', 'sent_at'), Index('ix_tg_outbox_kind', 'kind', 'sent_at'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1489, 'end_line': 1492, 'owner': 'TelegramOutbox', 'conditions': [], 'definition': "(Index('ix_tg_outbox_ts', 'sent_at'), Index('ix_tg_outbox_kind', 'kind', 'sent_at'))"}]`
 
 Relationships: `[]`
 
@@ -1374,21 +1375,21 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[uuid.UUID] | False | ['Uuid()'] {'primary_key': 'True', 'default': 'uuid.uuid4'} | [backend/app/models.py:1528](../backend/app/models.py#L1528) |
-| endpoint_hash / endpoint_hash | Mapped[str] | False | ['String(64)'] {'nullable': 'False'} | [backend/app/models.py:1529](../backend/app/models.py#L1529) |
-| endpoint / endpoint | Mapped[str] | False | ['Text'] {'nullable': 'False'} | [backend/app/models.py:1530](../backend/app/models.py#L1530) |
-| p256dh / p256dh | Mapped[str] | False | ['String(255)'] {'nullable': 'False'} | [backend/app/models.py:1531](../backend/app/models.py#L1531) |
-| auth / auth | Mapped[str] | False | ['String(255)'] {'nullable': 'False'} | [backend/app/models.py:1532](../backend/app/models.py#L1532) |
-| user_id / user_id | Mapped[uuid.UUID \| None] | True | ["ForeignKey('users.id', ondelete='CASCADE')"] {} | [backend/app/models.py:1533](../backend/app/models.py#L1533) |
-| locale / locale | Mapped[str \| None] | True | ['String(5)'] {} | [backend/app/models.py:1534](../backend/app/models.py#L1534) |
-| user_agent / user_agent | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:1535](../backend/app/models.py#L1535) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1536](../backend/app/models.py#L1536) |
-| updated_at / updated_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1537](../backend/app/models.py#L1537) |
-| last_success_at / last_success_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1538](../backend/app/models.py#L1538) |
-| failure_count / failure_count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1539](../backend/app/models.py#L1539) |
-| revoked_at / revoked_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1540](../backend/app/models.py#L1540) |
+| id / id | Mapped[uuid.UUID] | False | ['Uuid()'] {'primary_key': 'True', 'default': 'uuid.uuid4'} | [backend/app/models.py:1530](../backend/app/models.py#L1530) |
+| endpoint_hash / endpoint_hash | Mapped[str] | False | ['String(64)'] {'nullable': 'False'} | [backend/app/models.py:1531](../backend/app/models.py#L1531) |
+| endpoint / endpoint | Mapped[str] | False | ['Text'] {'nullable': 'False'} | [backend/app/models.py:1532](../backend/app/models.py#L1532) |
+| p256dh / p256dh | Mapped[str] | False | ['String(255)'] {'nullable': 'False'} | [backend/app/models.py:1533](../backend/app/models.py#L1533) |
+| auth / auth | Mapped[str] | False | ['String(255)'] {'nullable': 'False'} | [backend/app/models.py:1534](../backend/app/models.py#L1534) |
+| user_id / user_id | Mapped[uuid.UUID \| None] | True | ["ForeignKey('users.id', ondelete='CASCADE')"] {} | [backend/app/models.py:1535](../backend/app/models.py#L1535) |
+| locale / locale | Mapped[str \| None] | True | ['String(5)'] {} | [backend/app/models.py:1536](../backend/app/models.py#L1536) |
+| user_agent / user_agent | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:1537](../backend/app/models.py#L1537) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1538](../backend/app/models.py#L1538) |
+| updated_at / updated_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1539](../backend/app/models.py#L1539) |
+| last_success_at / last_success_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1540](../backend/app/models.py#L1540) |
+| failure_count / failure_count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1541](../backend/app/models.py#L1541) |
+| revoked_at / revoked_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1542](../backend/app/models.py#L1542) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1522, 'end_line': 1526, 'owner': 'PushSubscription', 'conditions': [], 'definition': "(UniqueConstraint('endpoint_hash', name='uq_push_endpoint_hash'), Index('ix_push_subscriptions_user', 'user_id'), Index('ix_push_subscriptions_active', 'revoked_at'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1524, 'end_line': 1528, 'owner': 'PushSubscription', 'conditions': [], 'definition': "(UniqueConstraint('endpoint_hash', name='uq_push_endpoint_hash'), Index('ix_push_subscriptions_user', 'user_id'), Index('ix_push_subscriptions_active', 'revoked_at'))"}]`
 
 Relationships: `[]`
 
@@ -1396,9 +1397,9 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| key / key | Mapped[str] | False | ['String(64)'] {'primary_key': 'True'} | [backend/app/models.py:1553](../backend/app/models.py#L1553) |
-| value / value | Mapped[str] | False | ['Text'] {'nullable': 'False'} | [backend/app/models.py:1554](../backend/app/models.py#L1554) |
-| updated_at / updated_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1555](../backend/app/models.py#L1555) |
+| key / key | Mapped[str] | False | ['String(64)'] {'primary_key': 'True'} | [backend/app/models.py:1555](../backend/app/models.py#L1555) |
+| value / value | Mapped[str] | False | ['Text'] {'nullable': 'False'} | [backend/app/models.py:1556](../backend/app/models.py#L1556) |
+| updated_at / updated_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1557](../backend/app/models.py#L1557) |
 
 Constraints: `[]`
 
@@ -1408,16 +1409,16 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1567](../backend/app/models.py#L1567) |
-| key / key | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:1568](../backend/app/models.py#L1568) |
-| status / status | Mapped[str] | False | ['String(30)'] {'default': "'draft'"} | [backend/app/models.py:1569](../backend/app/models.py#L1569) |
-| variants_json / variants_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1570](../backend/app/models.py#L1570) |
-| traffic_split_json / traffic_split_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1571](../backend/app/models.py#L1571) |
-| started_at / started_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1572](../backend/app/models.py#L1572) |
-| ended_at / ended_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1573](../backend/app/models.py#L1573) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1574](../backend/app/models.py#L1574) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1569](../backend/app/models.py#L1569) |
+| key / key | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:1570](../backend/app/models.py#L1570) |
+| status / status | Mapped[str] | False | ['String(30)'] {'default': "'draft'"} | [backend/app/models.py:1571](../backend/app/models.py#L1571) |
+| variants_json / variants_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1572](../backend/app/models.py#L1572) |
+| traffic_split_json / traffic_split_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1573](../backend/app/models.py#L1573) |
+| started_at / started_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1574](../backend/app/models.py#L1574) |
+| ended_at / ended_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1575](../backend/app/models.py#L1575) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'default': 'lambda: datetime.now(timezone.utc).replace(tzinfo=None)'} | [backend/app/models.py:1576](../backend/app/models.py#L1576) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1563, 'end_line': 1565, 'owner': 'Experiment', 'conditions': [], 'definition': "(UniqueConstraint('key', name='uq_experiment_key'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1565, 'end_line': 1567, 'owner': 'Experiment', 'conditions': [], 'definition': "(UniqueConstraint('key', name='uq_experiment_key'),)"}]`
 
 Relationships: `[]`
 
@@ -1425,97 +1426,97 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[uuid.UUID] | False | ['Uuid()'] {'primary_key': 'True', 'default': 'uuid.uuid4'} | [backend/app/models.py:1586](../backend/app/models.py#L1586) |
-| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'active'", 'server_default': "'active'"} | [backend/app/models.py:1587](../backend/app/models.py#L1587) |
-| display_name / display_name | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1588](../backend/app/models.py#L1588) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1589](../backend/app/models.py#L1589) |
+| id / id | Mapped[uuid.UUID] | False | ['Uuid()'] {'primary_key': 'True', 'default': 'uuid.uuid4'} | [backend/app/models.py:1588](../backend/app/models.py#L1588) |
+| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'active'", 'server_default': "'active'"} | [backend/app/models.py:1589](../backend/app/models.py#L1589) |
+| display_name / display_name | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1590](../backend/app/models.py#L1590) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1591](../backend/app/models.py#L1591) |
 
 Constraints: `[]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 1591, 'end_line': 1593, 'owner': 'User', 'conditions': [], 'attribute': 'oauth_identities', 'annotation': "Mapped[list['OAuthIdentity']]", 'definition': "relationship(back_populates='user', cascade='all, delete-orphan')"}, {'path': 'backend/app/models.py', 'line': 1594, 'end_line': 1596, 'owner': 'User', 'conditions': [], 'attribute': 'email_credential', 'annotation': "Mapped['EmailCredential \| None']", 'definition': "relationship(back_populates='user', cascade='all, delete-orphan', uselist=False)"}, {'path': 'backend/app/models.py', 'line': 1597, 'end_line': 1599, 'owner': 'User', 'conditions': [], 'attribute': 'consents', 'annotation': "Mapped[list['Consent']]", 'definition': "relationship(back_populates='user', cascade='all, delete-orphan')"}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 1593, 'end_line': 1595, 'owner': 'User', 'conditions': [], 'attribute': 'oauth_identities', 'annotation': "Mapped[list['OAuthIdentity']]", 'definition': "relationship(back_populates='user', cascade='all, delete-orphan')"}, {'path': 'backend/app/models.py', 'line': 1596, 'end_line': 1598, 'owner': 'User', 'conditions': [], 'attribute': 'email_credential', 'annotation': "Mapped['EmailCredential \| None']", 'definition': "relationship(back_populates='user', cascade='all, delete-orphan', uselist=False)"}, {'path': 'backend/app/models.py', 'line': 1599, 'end_line': 1601, 'owner': 'User', 'conditions': [], 'attribute': 'consents', 'annotation': "Mapped[list['Consent']]", 'definition': "relationship(back_populates='user', cascade='all, delete-orphan')"}]`
 
 ## Table `oauth_identities`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1609](../backend/app/models.py#L1609) |
-| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1610](../backend/app/models.py#L1610) |
-| provider / provider | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:1613](../backend/app/models.py#L1613) |
-| provider_user_id / provider_user_id | Mapped[str] | False | ['String(200)'] {'nullable': 'False'} | [backend/app/models.py:1614](../backend/app/models.py#L1614) |
-| email / email | Mapped[str \| None] | True | ['String(320)'] {} | [backend/app/models.py:1615](../backend/app/models.py#L1615) |
-| email_verified / email_verified | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'True'} | [backend/app/models.py:1616](../backend/app/models.py#L1616) |
-| phone / phone | Mapped[str \| None] | True | ['String(32)'] {} | [backend/app/models.py:1619](../backend/app/models.py#L1619) |
-| display_name / display_name | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1620](../backend/app/models.py#L1620) |
-| avatar_url / avatar_url | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1621](../backend/app/models.py#L1621) |
-| locale / locale | Mapped[str \| None] | True | ['String(35)'] {} | [backend/app/models.py:1622](../backend/app/models.py#L1622) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1623](../backend/app/models.py#L1623) |
-| last_login_at / last_login_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1624](../backend/app/models.py#L1624) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1611](../backend/app/models.py#L1611) |
+| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1612](../backend/app/models.py#L1612) |
+| provider / provider | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:1615](../backend/app/models.py#L1615) |
+| provider_user_id / provider_user_id | Mapped[str] | False | ['String(200)'] {'nullable': 'False'} | [backend/app/models.py:1616](../backend/app/models.py#L1616) |
+| email / email | Mapped[str \| None] | True | ['String(320)'] {} | [backend/app/models.py:1617](../backend/app/models.py#L1617) |
+| email_verified / email_verified | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'True'} | [backend/app/models.py:1618](../backend/app/models.py#L1618) |
+| phone / phone | Mapped[str \| None] | True | ['String(32)'] {} | [backend/app/models.py:1621](../backend/app/models.py#L1621) |
+| display_name / display_name | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1622](../backend/app/models.py#L1622) |
+| avatar_url / avatar_url | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1623](../backend/app/models.py#L1623) |
+| locale / locale | Mapped[str \| None] | True | ['String(35)'] {} | [backend/app/models.py:1624](../backend/app/models.py#L1624) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1625](../backend/app/models.py#L1625) |
+| last_login_at / last_login_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1626](../backend/app/models.py#L1626) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1604, 'end_line': 1607, 'owner': 'OAuthIdentity', 'conditions': [], 'definition': "(UniqueConstraint('provider', 'provider_user_id', name='uq_oauth_provider_subject'), Index('ix_oauth_identity_user', 'user_id'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1606, 'end_line': 1609, 'owner': 'OAuthIdentity', 'conditions': [], 'definition': "(UniqueConstraint('provider', 'provider_user_id', name='uq_oauth_provider_subject'), Index('ix_oauth_identity_user', 'user_id'))"}]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 1626, 'end_line': 1626, 'owner': 'OAuthIdentity', 'conditions': [], 'attribute': 'user', 'annotation': "Mapped['User']", 'definition': "relationship(back_populates='oauth_identities')"}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 1628, 'end_line': 1628, 'owner': 'OAuthIdentity', 'conditions': [], 'attribute': 'user', 'annotation': "Mapped['User']", 'definition': "relationship(back_populates='oauth_identities')"}]`
 
 ## Table `email_credentials`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1635](../backend/app/models.py#L1635) |
-| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False', 'unique': 'True'} | [backend/app/models.py:1636](../backend/app/models.py#L1636) |
-| email / email | Mapped[str] | False | ['String(320)'] {'nullable': 'False'} | [backend/app/models.py:1639](../backend/app/models.py#L1639) |
-| password_hash / password_hash | Mapped[str] | False | ['String(255)'] {'nullable': 'False'} | [backend/app/models.py:1640](../backend/app/models.py#L1640) |
-| email_verified / email_verified | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False'} | [backend/app/models.py:1641](../backend/app/models.py#L1641) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1642](../backend/app/models.py#L1642) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1637](../backend/app/models.py#L1637) |
+| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False', 'unique': 'True'} | [backend/app/models.py:1638](../backend/app/models.py#L1638) |
+| email / email | Mapped[str] | False | ['String(320)'] {'nullable': 'False'} | [backend/app/models.py:1641](../backend/app/models.py#L1641) |
+| password_hash / password_hash | Mapped[str] | False | ['String(255)'] {'nullable': 'False'} | [backend/app/models.py:1642](../backend/app/models.py#L1642) |
+| email_verified / email_verified | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False'} | [backend/app/models.py:1643](../backend/app/models.py#L1643) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1644](../backend/app/models.py#L1644) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1631, 'end_line': 1633, 'owner': 'EmailCredential', 'conditions': [], 'definition': "(UniqueConstraint('email', name='uq_email_credential_email'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1633, 'end_line': 1635, 'owner': 'EmailCredential', 'conditions': [], 'definition': "(UniqueConstraint('email', name='uq_email_credential_email'),)"}]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 1644, 'end_line': 1644, 'owner': 'EmailCredential', 'conditions': [], 'attribute': 'user', 'annotation': "Mapped['User']", 'definition': "relationship(back_populates='email_credential')"}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 1646, 'end_line': 1646, 'owner': 'EmailCredential', 'conditions': [], 'attribute': 'user', 'annotation': "Mapped['User']", 'definition': "relationship(back_populates='email_credential')"}]`
 
 ## Table `consents`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1653](../backend/app/models.py#L1653) |
-| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1654](../backend/app/models.py#L1654) |
-| kind / kind | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:1657](../backend/app/models.py#L1657) |
-| version / version | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:1658](../backend/app/models.py#L1658) |
-| granted_at / granted_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1659](../backend/app/models.py#L1659) |
-| ip / ip | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:1660](../backend/app/models.py#L1660) |
-| user_agent / user_agent | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1661](../backend/app/models.py#L1661) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1655](../backend/app/models.py#L1655) |
+| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1656](../backend/app/models.py#L1656) |
+| kind / kind | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:1659](../backend/app/models.py#L1659) |
+| version / version | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:1660](../backend/app/models.py#L1660) |
+| granted_at / granted_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1661](../backend/app/models.py#L1661) |
+| ip / ip | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:1662](../backend/app/models.py#L1662) |
+| user_agent / user_agent | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1663](../backend/app/models.py#L1663) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1649, 'end_line': 1651, 'owner': 'Consent', 'conditions': [], 'definition': "(Index('ix_consent_user', 'user_id'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1651, 'end_line': 1653, 'owner': 'Consent', 'conditions': [], 'definition': "(Index('ix_consent_user', 'user_id'),)"}]`
 
-Relationships: `[{'path': 'backend/app/models.py', 'line': 1663, 'end_line': 1663, 'owner': 'Consent', 'conditions': [], 'attribute': 'user', 'annotation': "Mapped['User']", 'definition': "relationship(back_populates='consents')"}]`
+Relationships: `[{'path': 'backend/app/models.py', 'line': 1665, 'end_line': 1665, 'owner': 'Consent', 'conditions': [], 'attribute': 'user', 'annotation': "Mapped['User']", 'definition': "relationship(back_populates='consents')"}]`
 
 ## Table `mail_outbox`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1681](../backend/app/models.py#L1681) |
-| kind / kind | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:1683](../backend/app/models.py#L1683) |
-| campaign / campaign | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:1685](../backend/app/models.py#L1685) |
-| user_id / user_id | Mapped[uuid.UUID \| None] | True | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'True'} | [backend/app/models.py:1686](../backend/app/models.py#L1686) |
-| to_email / to_email | Mapped[str] | False | ['String(320)'] {'nullable': 'False'} | [backend/app/models.py:1689](../backend/app/models.py#L1689) |
-| locale / locale | Mapped[str] | False | ['String(5)'] {'nullable': 'False', 'default': "'ru'"} | [backend/app/models.py:1690](../backend/app/models.py#L1690) |
-| subject / subject | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:1691](../backend/app/models.py#L1691) |
-| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'queued'"} | [backend/app/models.py:1694](../backend/app/models.py#L1694) |
-| attempts / attempts | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1695](../backend/app/models.py#L1695) |
-| error / error | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1697](../backend/app/models.py#L1697) |
-| message_id / message_id | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1698](../backend/app/models.py#L1698) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1699](../backend/app/models.py#L1699) |
-| sent_at / sent_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1700](../backend/app/models.py#L1700) |
-| variant / variant | Mapped[str \| None] | True | ['String(12)'] {} | [backend/app/models.py:1703](../backend/app/models.py#L1703) |
-| addr_verified / addr_verified | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:1704](../backend/app/models.py#L1704) |
-| provider / provider | Mapped[str \| None] | True | ['String(12)'] {} | [backend/app/models.py:1706](../backend/app/models.py#L1706) |
-| tracked / tracked | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:1708](../backend/app/models.py#L1708) |
-| opened_at / opened_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1710](../backend/app/models.py#L1710) |
-| opens / opens | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1711](../backend/app/models.py#L1711) |
-| machine_opened_at / machine_opened_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1712](../backend/app/models.py#L1712) |
-| open_client / open_client | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1713](../backend/app/models.py#L1713) |
-| clicked_at / clicked_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1714](../backend/app/models.py#L1714) |
-| clicks / clicks | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1715](../backend/app/models.py#L1715) |
-| bounced_at / bounced_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1716](../backend/app/models.py#L1716) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1683](../backend/app/models.py#L1683) |
+| kind / kind | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:1685](../backend/app/models.py#L1685) |
+| campaign / campaign | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:1687](../backend/app/models.py#L1687) |
+| user_id / user_id | Mapped[uuid.UUID \| None] | True | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'True'} | [backend/app/models.py:1688](../backend/app/models.py#L1688) |
+| to_email / to_email | Mapped[str] | False | ['String(320)'] {'nullable': 'False'} | [backend/app/models.py:1691](../backend/app/models.py#L1691) |
+| locale / locale | Mapped[str] | False | ['String(5)'] {'nullable': 'False', 'default': "'ru'"} | [backend/app/models.py:1692](../backend/app/models.py#L1692) |
+| subject / subject | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:1693](../backend/app/models.py#L1693) |
+| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'queued'"} | [backend/app/models.py:1696](../backend/app/models.py#L1696) |
+| attempts / attempts | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:1697](../backend/app/models.py#L1697) |
+| error / error | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1699](../backend/app/models.py#L1699) |
+| message_id / message_id | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1700](../backend/app/models.py#L1700) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1701](../backend/app/models.py#L1701) |
+| sent_at / sent_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1702](../backend/app/models.py#L1702) |
+| variant / variant | Mapped[str \| None] | True | ['String(12)'] {} | [backend/app/models.py:1705](../backend/app/models.py#L1705) |
+| addr_verified / addr_verified | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:1706](../backend/app/models.py#L1706) |
+| provider / provider | Mapped[str \| None] | True | ['String(12)'] {} | [backend/app/models.py:1708](../backend/app/models.py#L1708) |
+| tracked / tracked | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:1710](../backend/app/models.py#L1710) |
+| opened_at / opened_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1712](../backend/app/models.py#L1712) |
+| opens / opens | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1713](../backend/app/models.py#L1713) |
+| machine_opened_at / machine_opened_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1714](../backend/app/models.py#L1714) |
+| open_client / open_client | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1715](../backend/app/models.py#L1715) |
+| clicked_at / clicked_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1716](../backend/app/models.py#L1716) |
+| clicks / clicks | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1717](../backend/app/models.py#L1717) |
+| bounced_at / bounced_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1718](../backend/app/models.py#L1718) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1675, 'end_line': 1679, 'owner': 'MailMessage', 'conditions': [], 'definition': "(UniqueConstraint('campaign', 'user_id', name='uq_mail_outbox_campaign_user'), Index('ix_mail_outbox_user', 'user_id'), Index('ix_mail_outbox_status_created', 'status', 'created_at'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1677, 'end_line': 1681, 'owner': 'MailMessage', 'conditions': [], 'definition': "(UniqueConstraint('campaign', 'user_id', name='uq_mail_outbox_campaign_user'), Index('ix_mail_outbox_user', 'user_id'), Index('ix_mail_outbox_status_created', 'status', 'created_at'))"}]`
 
 Relationships: `[]`
 
@@ -1523,18 +1524,18 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1733](../backend/app/models.py#L1733) |
-| mail_id / mail_id | Mapped[int] | False | ["ForeignKey('mail_outbox.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1734](../backend/app/models.py#L1734) |
-| user_id / user_id | Mapped[uuid.UUID \| None] | True | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'True'} | [backend/app/models.py:1735](../backend/app/models.py#L1735) |
-| campaign / campaign | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:1736](../backend/app/models.py#L1736) |
-| kind / kind | Mapped[str] | False | ['String(12)'] {'nullable': 'False'} | [backend/app/models.py:1737](../backend/app/models.py#L1737) |
-| machine / machine | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False', 'server_default': "'false'"} | [backend/app/models.py:1738](../backend/app/models.py#L1738) |
-| client / client | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1740](../backend/app/models.py#L1740) |
-| block / block | Mapped[str \| None] | True | ['String(40)'] {} | [backend/app/models.py:1741](../backend/app/models.py#L1741) |
-| session_id_hash / session_id_hash | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:1742](../backend/app/models.py#L1742) |
-| occurred_at / occurred_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1743](../backend/app/models.py#L1743) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1735](../backend/app/models.py#L1735) |
+| mail_id / mail_id | Mapped[int] | False | ["ForeignKey('mail_outbox.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1736](../backend/app/models.py#L1736) |
+| user_id / user_id | Mapped[uuid.UUID \| None] | True | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'True'} | [backend/app/models.py:1737](../backend/app/models.py#L1737) |
+| campaign / campaign | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:1738](../backend/app/models.py#L1738) |
+| kind / kind | Mapped[str] | False | ['String(12)'] {'nullable': 'False'} | [backend/app/models.py:1739](../backend/app/models.py#L1739) |
+| machine / machine | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False', 'server_default': "'false'"} | [backend/app/models.py:1740](../backend/app/models.py#L1740) |
+| client / client | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1742](../backend/app/models.py#L1742) |
+| block / block | Mapped[str \| None] | True | ['String(40)'] {} | [backend/app/models.py:1743](../backend/app/models.py#L1743) |
+| session_id_hash / session_id_hash | Mapped[str \| None] | True | ['String(80)'] {} | [backend/app/models.py:1744](../backend/app/models.py#L1744) |
+| occurred_at / occurred_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1745](../backend/app/models.py#L1745) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1727, 'end_line': 1731, 'owner': 'MailEvent', 'conditions': [], 'definition': "(Index('ix_mail_events_mail', 'mail_id', 'kind'), Index('ix_mail_events_campaign', 'campaign', 'kind', 'occurred_at'), UniqueConstraint('kind', 'session_id_hash', name='uq_mail_events_kind_session'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1729, 'end_line': 1733, 'owner': 'MailEvent', 'conditions': [], 'definition': "(Index('ix_mail_events_mail', 'mail_id', 'kind'), Index('ix_mail_events_campaign', 'campaign', 'kind', 'occurred_at'), UniqueConstraint('kind', 'session_id_hash', name='uq_mail_events_kind_session'))"}]`
 
 Relationships: `[]`
 
@@ -1542,14 +1543,14 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1758](../backend/app/models.py#L1758) |
-| email / email | Mapped[str] | False | ['String(320)'] {'nullable': 'False'} | [backend/app/models.py:1759](../backend/app/models.py#L1759) |
-| user_id / user_id | Mapped[uuid.UUID \| None] | True | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'True'} | [backend/app/models.py:1760](../backend/app/models.py#L1760) |
-| reason / reason | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'bounce'"} | [backend/app/models.py:1764](../backend/app/models.py#L1764) |
-| status_code / status_code | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1766](../backend/app/models.py#L1766) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1767](../backend/app/models.py#L1767) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1760](../backend/app/models.py#L1760) |
+| email / email | Mapped[str] | False | ['String(320)'] {'nullable': 'False'} | [backend/app/models.py:1761](../backend/app/models.py#L1761) |
+| user_id / user_id | Mapped[uuid.UUID \| None] | True | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'True'} | [backend/app/models.py:1762](../backend/app/models.py#L1762) |
+| reason / reason | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'bounce'"} | [backend/app/models.py:1766](../backend/app/models.py#L1766) |
+| status_code / status_code | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1768](../backend/app/models.py#L1768) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1769](../backend/app/models.py#L1769) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1754, 'end_line': 1756, 'owner': 'MailSuppression', 'conditions': [], 'definition': "(UniqueConstraint('email', name='uq_mail_suppression_email'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1756, 'end_line': 1758, 'owner': 'MailSuppression', 'conditions': [], 'definition': "(UniqueConstraint('email', name='uq_mail_suppression_email'),)"}]`
 
 Relationships: `[]`
 
@@ -1557,16 +1558,16 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'primary_key': 'True'} | [backend/app/models.py:1780](../backend/app/models.py#L1780) |
-| version / version | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '1'} | [backend/app/models.py:1783](../backend/app/models.py#L1783) |
-| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1784](../backend/app/models.py#L1784) |
-| tier / tier | Mapped[str] | False | ['String(10)'] {'nullable': 'False', 'default': "'cold'"} | [backend/app/models.py:1786](../backend/app/models.py#L1786) |
-| locale / locale | Mapped[str] | False | ['String(2)'] {'nullable': 'False', 'default': "'ru'"} | [backend/app/models.py:1787](../backend/app/models.py#L1787) |
-| timezone / timezone | Mapped[str \| None] | True | ['String(60)'] {} | [backend/app/models.py:1788](../backend/app/models.py#L1788) |
-| topics / topics | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1790](../backend/app/models.py#L1790) |
-| subjects / subjects | Mapped[list \| None] | True | ['JSON'] {} | [backend/app/models.py:1792](../backend/app/models.py#L1792) |
-| geo / geo | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1794](../backend/app/models.py#L1794) |
-| stats / stats | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1796](../backend/app/models.py#L1796) |
+| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'primary_key': 'True'} | [backend/app/models.py:1782](../backend/app/models.py#L1782) |
+| version / version | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '1'} | [backend/app/models.py:1785](../backend/app/models.py#L1785) |
+| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1786](../backend/app/models.py#L1786) |
+| tier / tier | Mapped[str] | False | ['String(10)'] {'nullable': 'False', 'default': "'cold'"} | [backend/app/models.py:1788](../backend/app/models.py#L1788) |
+| locale / locale | Mapped[str] | False | ['String(2)'] {'nullable': 'False', 'default': "'ru'"} | [backend/app/models.py:1789](../backend/app/models.py#L1789) |
+| timezone / timezone | Mapped[str \| None] | True | ['String(60)'] {} | [backend/app/models.py:1790](../backend/app/models.py#L1790) |
+| topics / topics | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1792](../backend/app/models.py#L1792) |
+| subjects / subjects | Mapped[list \| None] | True | ['JSON'] {} | [backend/app/models.py:1794](../backend/app/models.py#L1794) |
+| geo / geo | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1796](../backend/app/models.py#L1796) |
+| stats / stats | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1798](../backend/app/models.py#L1798) |
 
 Constraints: `[]`
 
@@ -1576,21 +1577,21 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1813](../backend/app/models.py#L1813) |
-| campaign / campaign | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:1814](../backend/app/models.py#L1814) |
-| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1815](../backend/app/models.py#L1815) |
-| locale / locale | Mapped[str] | False | ['String(2)'] {'nullable': 'False', 'default': "'ru'"} | [backend/app/models.py:1818](../backend/app/models.py#L1818) |
-| arm / arm | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'personal'"} | [backend/app/models.py:1820](../backend/app/models.py#L1820) |
-| subject_arm / subject_arm | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1821](../backend/app/models.py#L1821) |
-| tier / tier | Mapped[str] | False | ['String(10)'] {'nullable': 'False', 'default': "'cold'"} | [backend/app/models.py:1822](../backend/app/models.py#L1822) |
-| status / status | Mapped[str] | False | ['String(12)'] {'nullable': 'False', 'default': "'built'"} | [backend/app/models.py:1825](../backend/app/models.py#L1825) |
-| error / error | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1826](../backend/app/models.py#L1826) |
-| payload / payload | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1827](../backend/app/models.py#L1827) |
-| blocks_meta / blocks_meta | Mapped[list \| None] | True | ['JSON'] {} | [backend/app/models.py:1828](../backend/app/models.py#L1828) |
-| data_as_of / data_as_of | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:1829](../backend/app/models.py#L1829) |
-| built_at / built_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1830](../backend/app/models.py#L1830) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1815](../backend/app/models.py#L1815) |
+| campaign / campaign | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:1816](../backend/app/models.py#L1816) |
+| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1817](../backend/app/models.py#L1817) |
+| locale / locale | Mapped[str] | False | ['String(2)'] {'nullable': 'False', 'default': "'ru'"} | [backend/app/models.py:1820](../backend/app/models.py#L1820) |
+| arm / arm | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'personal'"} | [backend/app/models.py:1822](../backend/app/models.py#L1822) |
+| subject_arm / subject_arm | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:1823](../backend/app/models.py#L1823) |
+| tier / tier | Mapped[str] | False | ['String(10)'] {'nullable': 'False', 'default': "'cold'"} | [backend/app/models.py:1824](../backend/app/models.py#L1824) |
+| status / status | Mapped[str] | False | ['String(12)'] {'nullable': 'False', 'default': "'built'"} | [backend/app/models.py:1827](../backend/app/models.py#L1827) |
+| error / error | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:1828](../backend/app/models.py#L1828) |
+| payload / payload | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1829](../backend/app/models.py#L1829) |
+| blocks_meta / blocks_meta | Mapped[list \| None] | True | ['JSON'] {} | [backend/app/models.py:1830](../backend/app/models.py#L1830) |
+| data_as_of / data_as_of | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:1831](../backend/app/models.py#L1831) |
+| built_at / built_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1832](../backend/app/models.py#L1832) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1808, 'end_line': 1811, 'owner': 'NewsletterPersonalIssue', 'conditions': [], 'definition': "(UniqueConstraint('campaign', 'user_id', name='uq_newsletter_personal_issue'), Index('ix_newsletter_personal_issue_user', 'user_id', 'built_at'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1810, 'end_line': 1813, 'owner': 'NewsletterPersonalIssue', 'conditions': [], 'definition': "(UniqueConstraint('campaign', 'user_id', name='uq_newsletter_personal_issue'), Index('ix_newsletter_personal_issue_user', 'user_id', 'built_at'))"}]`
 
 Relationships: `[]`
 
@@ -1598,11 +1599,11 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| subject / subject | Mapped[str] | False | ['String(200)'] {'primary_key': 'True'} | [backend/app/models.py:1841](../backend/app/models.py#L1841) |
-| related / related | Mapped[str] | False | ['String(200)'] {'primary_key': 'True'} | [backend/app/models.py:1842](../backend/app/models.py#L1842) |
-| score / score | Mapped[float] | False | ['Numeric(8, 4)'] {'nullable': 'False'} | [backend/app/models.py:1843](../backend/app/models.py#L1843) |
-| visitors / visitors | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:1844](../backend/app/models.py#L1844) |
-| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1845](../backend/app/models.py#L1845) |
+| subject / subject | Mapped[str] | False | ['String(200)'] {'primary_key': 'True'} | [backend/app/models.py:1843](../backend/app/models.py#L1843) |
+| related / related | Mapped[str] | False | ['String(200)'] {'primary_key': 'True'} | [backend/app/models.py:1844](../backend/app/models.py#L1844) |
+| score / score | Mapped[float] | False | ['Numeric(8, 4)'] {'nullable': 'False'} | [backend/app/models.py:1845](../backend/app/models.py#L1845) |
+| visitors / visitors | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:1846](../backend/app/models.py#L1846) |
+| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1847](../backend/app/models.py#L1847) |
 
 Constraints: `[]`
 
@@ -1612,11 +1613,11 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| q_hash / q_hash | Mapped[str] | False | ['String(64)'] {'primary_key': 'True'} | [backend/app/models.py:1856](../backend/app/models.py#L1856) |
-| subject / subject | Mapped[str] | False | ['String(200)'] {'nullable': 'False'} | [backend/app/models.py:1857](../backend/app/models.py#L1857) |
-| selects / selects | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:1858](../backend/app/models.py#L1858) |
-| share / share | Mapped[float] | False | ['Numeric(5, 4)'] {'nullable': 'False'} | [backend/app/models.py:1859](../backend/app/models.py#L1859) |
-| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1860](../backend/app/models.py#L1860) |
+| q_hash / q_hash | Mapped[str] | False | ['String(64)'] {'primary_key': 'True'} | [backend/app/models.py:1858](../backend/app/models.py#L1858) |
+| subject / subject | Mapped[str] | False | ['String(200)'] {'nullable': 'False'} | [backend/app/models.py:1859](../backend/app/models.py#L1859) |
+| selects / selects | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:1860](../backend/app/models.py#L1860) |
+| share / share | Mapped[float] | False | ['Numeric(5, 4)'] {'nullable': 'False'} | [backend/app/models.py:1861](../backend/app/models.py#L1861) |
+| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1862](../backend/app/models.py#L1862) |
 
 Constraints: `[]`
 
@@ -1626,15 +1627,15 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1869](../backend/app/models.py#L1869) |
-| user_id / user_id | Mapped[uuid.UUID \| None] | True | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'True'} | [backend/app/models.py:1873](../backend/app/models.py#L1873) |
-| event / event | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:1876](../backend/app/models.py#L1876) |
-| ip / ip | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:1877](../backend/app/models.py#L1877) |
-| user_agent / user_agent | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1878](../backend/app/models.py#L1878) |
-| detail / detail | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1879](../backend/app/models.py#L1879) |
-| ts / ts | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1880](../backend/app/models.py#L1880) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:1871](../backend/app/models.py#L1871) |
+| user_id / user_id | Mapped[uuid.UUID \| None] | True | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'True'} | [backend/app/models.py:1875](../backend/app/models.py#L1875) |
+| event / event | Mapped[str] | False | ['String(30)'] {'nullable': 'False'} | [backend/app/models.py:1878](../backend/app/models.py#L1878) |
+| ip / ip | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:1879](../backend/app/models.py#L1879) |
+| user_agent / user_agent | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:1880](../backend/app/models.py#L1880) |
+| detail / detail | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1881](../backend/app/models.py#L1881) |
+| ts / ts | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1882](../backend/app/models.py#L1882) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1865, 'end_line': 1867, 'owner': 'AuthAudit', 'conditions': [], 'definition': "(Index('ix_auth_audit_user', 'user_id', 'ts'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1867, 'end_line': 1869, 'owner': 'AuthAudit', 'conditions': [], 'definition': "(Index('ix_auth_audit_user', 'user_id', 'ts'),)"}]`
 
 Relationships: `[]`
 
@@ -1642,22 +1643,22 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| session_id_hash / session_id_hash | Mapped[str] | False | ['String(80)'] {'primary_key': 'True'} | [backend/app/models.py:1895](../backend/app/models.py#L1895) |
-| schema_version / schema_version | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'1'", 'server_default': "'1'"} | [backend/app/models.py:1896](../backend/app/models.py#L1896) |
-| source_fingerprint / source_fingerprint | Mapped[str] | False | ['String(64)'] {'nullable': 'False', 'default': "''", 'server_default': "''"} | [backend/app/models.py:1897](../backend/app/models.py#L1897) |
-| latest_event_id / latest_event_id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1898](../backend/app/models.py#L1898) |
-| pending_event_id / pending_event_id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1899](../backend/app/models.py#L1899) |
-| event_count / event_count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1900](../backend/app/models.py#L1900) |
-| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'pending'", 'server_default': "'pending'"} | [backend/app/models.py:1901](../backend/app/models.py#L1901) |
-| report_json / report_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1902](../backend/app/models.py#L1902) |
-| visual_json / visual_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1903](../backend/app/models.py#L1903) |
-| pending_at / pending_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1904](../backend/app/models.py#L1904) |
-| due_at / due_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1905](../backend/app/models.py#L1905) |
-| attempt_count / attempt_count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1906](../backend/app/models.py#L1906) |
-| error / error | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:1907](../backend/app/models.py#L1907) |
-| generated_at / generated_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1908](../backend/app/models.py#L1908) |
+| session_id_hash / session_id_hash | Mapped[str] | False | ['String(80)'] {'primary_key': 'True'} | [backend/app/models.py:1897](../backend/app/models.py#L1897) |
+| schema_version / schema_version | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'1'", 'server_default': "'1'"} | [backend/app/models.py:1898](../backend/app/models.py#L1898) |
+| source_fingerprint / source_fingerprint | Mapped[str] | False | ['String(64)'] {'nullable': 'False', 'default': "''", 'server_default': "''"} | [backend/app/models.py:1899](../backend/app/models.py#L1899) |
+| latest_event_id / latest_event_id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1900](../backend/app/models.py#L1900) |
+| pending_event_id / pending_event_id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1901](../backend/app/models.py#L1901) |
+| event_count / event_count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1902](../backend/app/models.py#L1902) |
+| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'pending'", 'server_default': "'pending'"} | [backend/app/models.py:1903](../backend/app/models.py#L1903) |
+| report_json / report_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1904](../backend/app/models.py#L1904) |
+| visual_json / visual_json | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1905](../backend/app/models.py#L1905) |
+| pending_at / pending_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1906](../backend/app/models.py#L1906) |
+| due_at / due_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1907](../backend/app/models.py#L1907) |
+| attempt_count / attempt_count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0', 'server_default': "'0'"} | [backend/app/models.py:1908](../backend/app/models.py#L1908) |
+| error / error | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:1909](../backend/app/models.py#L1909) |
+| generated_at / generated_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:1910](../backend/app/models.py#L1910) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1891, 'end_line': 1893, 'owner': 'SessionAnalysisReport', 'conditions': [], 'definition': "(Index('ix_session_analysis_due', 'status', 'due_at'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1893, 'end_line': 1895, 'owner': 'SessionAnalysisReport', 'conditions': [], 'definition': "(Index('ix_session_analysis_due', 'status', 'due_at'),)"}]`
 
 Relationships: `[]`
 
@@ -1665,16 +1666,16 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[uuid.UUID] | False | ['Uuid()'] {'primary_key': 'True', 'default': 'uuid.uuid4'} | [backend/app/models.py:1936](../backend/app/models.py#L1936) |
-| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1937](../backend/app/models.py#L1937) |
-| kind / kind | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:1938](../backend/app/models.py#L1938) |
-| item_key / item_key | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:1939](../backend/app/models.py#L1939) |
-| title / title | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1940](../backend/app/models.py#L1940) |
-| payload / payload | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1941](../backend/app/models.py#L1941) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1942](../backend/app/models.py#L1942) |
-| updated_at / updated_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1943](../backend/app/models.py#L1943) |
+| id / id | Mapped[uuid.UUID] | False | ['Uuid()'] {'primary_key': 'True', 'default': 'uuid.uuid4'} | [backend/app/models.py:1938](../backend/app/models.py#L1938) |
+| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1939](../backend/app/models.py#L1939) |
+| kind / kind | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:1940](../backend/app/models.py#L1940) |
+| item_key / item_key | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:1941](../backend/app/models.py#L1941) |
+| title / title | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:1942](../backend/app/models.py#L1942) |
+| payload / payload | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1943](../backend/app/models.py#L1943) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1944](../backend/app/models.py#L1944) |
+| updated_at / updated_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1945](../backend/app/models.py#L1945) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1931, 'end_line': 1934, 'owner': 'UserSavedItem', 'conditions': [], 'definition': "(UniqueConstraint('user_id', 'kind', 'item_key', name='uq_user_saved_item'), Index('ix_user_saved_items_user_kind', 'user_id', 'kind', 'created_at'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1933, 'end_line': 1936, 'owner': 'UserSavedItem', 'conditions': [], 'definition': "(UniqueConstraint('user_id', 'kind', 'item_key', name='uq_user_saved_item'), Index('ix_user_saved_items_user_kind', 'user_id', 'kind', 'created_at'))"}]`
 
 Relationships: `[]`
 
@@ -1682,16 +1683,16 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[uuid.UUID] | False | ['Uuid()'] {'primary_key': 'True', 'default': 'uuid.uuid4'} | [backend/app/models.py:1960](../backend/app/models.py#L1960) |
-| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1961](../backend/app/models.py#L1961) |
-| subject_kind / subject_kind | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:1962](../backend/app/models.py#L1962) |
-| subject_key / subject_key | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:1963](../backend/app/models.py#L1963) |
-| channel / channel | Mapped[str] | False | ['String(16)'] {'nullable': 'False', 'default': "'inapp'", 'server_default': "'inapp'"} | [backend/app/models.py:1964](../backend/app/models.py#L1964) |
-| last_seen_date / last_seen_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:1965](../backend/app/models.py#L1965) |
-| last_notified_date / last_notified_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:1966](../backend/app/models.py#L1966) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1967](../backend/app/models.py#L1967) |
+| id / id | Mapped[uuid.UUID] | False | ['Uuid()'] {'primary_key': 'True', 'default': 'uuid.uuid4'} | [backend/app/models.py:1962](../backend/app/models.py#L1962) |
+| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1963](../backend/app/models.py#L1963) |
+| subject_kind / subject_kind | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:1964](../backend/app/models.py#L1964) |
+| subject_key / subject_key | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:1965](../backend/app/models.py#L1965) |
+| channel / channel | Mapped[str] | False | ['String(16)'] {'nullable': 'False', 'default': "'inapp'", 'server_default': "'inapp'"} | [backend/app/models.py:1966](../backend/app/models.py#L1966) |
+| last_seen_date / last_seen_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:1967](../backend/app/models.py#L1967) |
+| last_notified_date / last_notified_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:1968](../backend/app/models.py#L1968) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1969](../backend/app/models.py#L1969) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1955, 'end_line': 1958, 'owner': 'UserWatch', 'conditions': [], 'definition': "(UniqueConstraint('user_id', 'subject_kind', 'subject_key', 'channel', name='uq_user_watch'), Index('ix_user_watches_subject', 'subject_kind', 'subject_key'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1957, 'end_line': 1960, 'owner': 'UserWatch', 'conditions': [], 'definition': "(UniqueConstraint('user_id', 'subject_kind', 'subject_key', 'channel', name='uq_user_watch'), Index('ix_user_watches_subject', 'subject_kind', 'subject_key'))"}]`
 
 Relationships: `[]`
 
@@ -1699,16 +1700,16 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[uuid.UUID] | False | ['Uuid()'] {'primary_key': 'True', 'default': 'uuid.uuid4'} | [backend/app/models.py:1977](../backend/app/models.py#L1977) |
-| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1978](../backend/app/models.py#L1978) |
-| source / source | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:1979](../backend/app/models.py#L1979) |
-| subject_key / subject_key | Mapped[str] | False | ['String(300)'] {'nullable': 'False', 'default': "''", 'server_default': "''"} | [backend/app/models.py:1980](../backend/app/models.py#L1980) |
-| format / format | Mapped[str] | False | ['String(8)'] {'nullable': 'False'} | [backend/app/models.py:1981](../backend/app/models.py#L1981) |
-| params / params | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1982](../backend/app/models.py#L1982) |
-| rows_count / rows_count | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1983](../backend/app/models.py#L1983) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1984](../backend/app/models.py#L1984) |
+| id / id | Mapped[uuid.UUID] | False | ['Uuid()'] {'primary_key': 'True', 'default': 'uuid.uuid4'} | [backend/app/models.py:1979](../backend/app/models.py#L1979) |
+| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'nullable': 'False'} | [backend/app/models.py:1980](../backend/app/models.py#L1980) |
+| source / source | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:1981](../backend/app/models.py#L1981) |
+| subject_key / subject_key | Mapped[str] | False | ['String(300)'] {'nullable': 'False', 'default': "''", 'server_default': "''"} | [backend/app/models.py:1982](../backend/app/models.py#L1982) |
+| format / format | Mapped[str] | False | ['String(8)'] {'nullable': 'False'} | [backend/app/models.py:1983](../backend/app/models.py#L1983) |
+| params / params | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:1984](../backend/app/models.py#L1984) |
+| rows_count / rows_count | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:1985](../backend/app/models.py#L1985) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:1986](../backend/app/models.py#L1986) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1973, 'end_line': 1975, 'owner': 'UserExport', 'conditions': [], 'definition': "(Index('ix_user_exports_user_created', 'user_id', 'created_at'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1975, 'end_line': 1977, 'owner': 'UserExport', 'conditions': [], 'definition': "(Index('ix_user_exports_user_created', 'user_id', 'created_at'),)"}]`
 
 Relationships: `[]`
 
@@ -1716,12 +1717,12 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'primary_key': 'True'} | [backend/app/models.py:1999](../backend/app/models.py#L1999) |
-| data / data | Mapped[dict] | False | ['JSON'] {'nullable': 'False', 'default': 'dict'} | [backend/app/models.py:2002](../backend/app/models.py#L2002) |
-| feed_token_hash / feed_token_hash | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:2003](../backend/app/models.py#L2003) |
-| updated_at / updated_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2004](../backend/app/models.py#L2004) |
+| user_id / user_id | Mapped[uuid.UUID] | False | ["ForeignKey('users.id', ondelete='CASCADE')"] {'primary_key': 'True'} | [backend/app/models.py:2001](../backend/app/models.py#L2001) |
+| data / data | Mapped[dict] | False | ['JSON'] {'nullable': 'False', 'default': 'dict'} | [backend/app/models.py:2004](../backend/app/models.py#L2004) |
+| feed_token_hash / feed_token_hash | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:2005](../backend/app/models.py#L2005) |
+| updated_at / updated_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2006](../backend/app/models.py#L2006) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 1995, 'end_line': 1997, 'owner': 'UserPreference', 'conditions': [], 'definition': "(Index('ix_user_preferences_feed_token', 'feed_token_hash', unique=True),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 1997, 'end_line': 1999, 'owner': 'UserPreference', 'conditions': [], 'definition': "(Index('ix_user_preferences_feed_token', 'feed_token_hash', unique=True),)"}]`
 
 Relationships: `[]`
 
@@ -1729,32 +1730,32 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| user_id / user_id | Mapped[uuid.UUID] | False | ['Uuid()', "ForeignKey('users.id', ondelete='CASCADE')"] {'primary_key': 'True'} | [backend/app/models.py:2024](../backend/app/models.py#L2024) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2027](../backend/app/models.py#L2027) |
-| method / method | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:2029](../backend/app/models.py#L2029) |
-| site_locale / site_locale | Mapped[str \| None] | True | ['String(2)'] {} | [backend/app/models.py:2031](../backend/app/models.py#L2031) |
-| newsletter / newsletter | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:2032](../backend/app/models.py#L2032) |
-| country / country | Mapped[str \| None] | True | ['String(60)'] {} | [backend/app/models.py:2033](../backend/app/models.py#L2033) |
-| country_code / country_code | Mapped[str \| None] | True | ['String(2)'] {} | [backend/app/models.py:2034](../backend/app/models.py#L2034) |
-| geo_region / geo_region | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:2035](../backend/app/models.py#L2035) |
-| channel / channel | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:2037](../backend/app/models.py#L2037) |
-| referrer_host / referrer_host | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:2038](../backend/app/models.py#L2038) |
-| utm_source / utm_source | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:2039](../backend/app/models.py#L2039) |
-| utm_medium / utm_medium | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:2040](../backend/app/models.py#L2040) |
-| utm_campaign / utm_campaign | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:2041](../backend/app/models.py#L2041) |
-| device_type / device_type | Mapped[str \| None] | True | ['String(12)'] {} | [backend/app/models.py:2042](../backend/app/models.py#L2042) |
-| browser / browser | Mapped[str \| None] | True | ['String(40)'] {} | [backend/app/models.py:2043](../backend/app/models.py#L2043) |
-| os / os | Mapped[str \| None] | True | ['String(30)'] {} | [backend/app/models.py:2044](../backend/app/models.py#L2044) |
-| browser_lang / browser_lang | Mapped[str \| None] | True | ['String(16)'] {} | [backend/app/models.py:2045](../backend/app/models.py#L2045) |
-| landing_page / landing_page | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:2046](../backend/app/models.py#L2046) |
-| trigger / trigger | Mapped[str \| None] | True | ['String(30)'] {} | [backend/app/models.py:2048](../backend/app/models.py#L2048) |
-| sessions_before / sessions_before | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2049](../backend/app/models.py#L2049) |
-| pageviews_before / pageviews_before | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2050](../backend/app/models.py#L2050) |
-| days_to_signup / days_to_signup | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2051](../backend/app/models.py#L2051) |
-| filled_at / filled_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2053](../backend/app/models.py#L2053) |
-| source / source | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:2055](../backend/app/models.py#L2055) |
+| user_id / user_id | Mapped[uuid.UUID] | False | ['Uuid()', "ForeignKey('users.id', ondelete='CASCADE')"] {'primary_key': 'True'} | [backend/app/models.py:2026](../backend/app/models.py#L2026) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2029](../backend/app/models.py#L2029) |
+| method / method | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:2031](../backend/app/models.py#L2031) |
+| site_locale / site_locale | Mapped[str \| None] | True | ['String(2)'] {} | [backend/app/models.py:2033](../backend/app/models.py#L2033) |
+| newsletter / newsletter | Mapped[bool \| None] | True | ['Boolean'] {} | [backend/app/models.py:2034](../backend/app/models.py#L2034) |
+| country / country | Mapped[str \| None] | True | ['String(60)'] {} | [backend/app/models.py:2035](../backend/app/models.py#L2035) |
+| country_code / country_code | Mapped[str \| None] | True | ['String(2)'] {} | [backend/app/models.py:2036](../backend/app/models.py#L2036) |
+| geo_region / geo_region | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:2037](../backend/app/models.py#L2037) |
+| channel / channel | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:2039](../backend/app/models.py#L2039) |
+| referrer_host / referrer_host | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:2040](../backend/app/models.py#L2040) |
+| utm_source / utm_source | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:2041](../backend/app/models.py#L2041) |
+| utm_medium / utm_medium | Mapped[str \| None] | True | ['String(120)'] {} | [backend/app/models.py:2042](../backend/app/models.py#L2042) |
+| utm_campaign / utm_campaign | Mapped[str \| None] | True | ['String(200)'] {} | [backend/app/models.py:2043](../backend/app/models.py#L2043) |
+| device_type / device_type | Mapped[str \| None] | True | ['String(12)'] {} | [backend/app/models.py:2044](../backend/app/models.py#L2044) |
+| browser / browser | Mapped[str \| None] | True | ['String(40)'] {} | [backend/app/models.py:2045](../backend/app/models.py#L2045) |
+| os / os | Mapped[str \| None] | True | ['String(30)'] {} | [backend/app/models.py:2046](../backend/app/models.py#L2046) |
+| browser_lang / browser_lang | Mapped[str \| None] | True | ['String(16)'] {} | [backend/app/models.py:2047](../backend/app/models.py#L2047) |
+| landing_page / landing_page | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:2048](../backend/app/models.py#L2048) |
+| trigger / trigger | Mapped[str \| None] | True | ['String(30)'] {} | [backend/app/models.py:2050](../backend/app/models.py#L2050) |
+| sessions_before / sessions_before | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2051](../backend/app/models.py#L2051) |
+| pageviews_before / pageviews_before | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2052](../backend/app/models.py#L2052) |
+| days_to_signup / days_to_signup | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2053](../backend/app/models.py#L2053) |
+| filled_at / filled_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2055](../backend/app/models.py#L2055) |
+| source / source | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:2057](../backend/app/models.py#L2057) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 2020, 'end_line': 2022, 'owner': 'UserSignup', 'conditions': [], 'definition': "(Index('ix_user_signups_created', 'created_at'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2022, 'end_line': 2024, 'owner': 'UserSignup', 'conditions': [], 'definition': "(Index('ix_user_signups_created', 'created_at'),)"}]`
 
 Relationships: `[]`
 
@@ -1762,16 +1763,16 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:2071](../backend/app/models.py#L2071) |
-| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:2072](../backend/app/models.py#L2072) |
-| event_name / event_name | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:2073](../backend/app/models.py#L2073) |
-| dim / dim | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:2074](../backend/app/models.py#L2074) |
-| value / value | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:2075](../backend/app/models.py#L2075) |
-| count / count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:2076](../backend/app/models.py#L2076) |
-| sessions / sessions | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:2077](../backend/app/models.py#L2077) |
-| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2078](../backend/app/models.py#L2078) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:2073](../backend/app/models.py#L2073) |
+| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:2074](../backend/app/models.py#L2074) |
+| event_name / event_name | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:2075](../backend/app/models.py#L2075) |
+| dim / dim | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:2076](../backend/app/models.py#L2076) |
+| value / value | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:2077](../backend/app/models.py#L2077) |
+| count / count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:2078](../backend/app/models.py#L2078) |
+| sessions / sessions | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:2079](../backend/app/models.py#L2079) |
+| computed_at / computed_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2080](../backend/app/models.py#L2080) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 2067, 'end_line': 2069, 'owner': 'DailyGoalDim', 'conditions': [], 'definition': "(UniqueConstraint('day', 'event_name', 'dim', 'value', name='uq_daily_goal_dim_key'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2069, 'end_line': 2071, 'owner': 'DailyGoalDim', 'conditions': [], 'definition': "(UniqueConstraint('day', 'event_name', 'dim', 'value', name='uq_daily_goal_dim_key'),)"}]`
 
 Relationships: `[]`
 
@@ -1779,14 +1780,14 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| chat_id / chat_id | Mapped[str] | False | ['String(32)'] {'primary_key': 'True'} | [backend/app/models.py:2094](../backend/app/models.py#L2094) |
-| chat_hash / chat_hash | Mapped[str] | False | ['String(64)'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:2095](../backend/app/models.py#L2095) |
-| first_code / first_code | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:2096](../backend/app/models.py#L2096) |
-| heard_from / heard_from | Mapped[str \| None] | True | ['String(24)'] {} | [backend/app/models.py:2097](../backend/app/models.py#L2097) |
-| asked_source_at / asked_source_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2098](../backend/app/models.py#L2098) |
-| first_seen_at / first_seen_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2099](../backend/app/models.py#L2099) |
-| last_seen_at / last_seen_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2100](../backend/app/models.py#L2100) |
-| blocked_at / blocked_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2101](../backend/app/models.py#L2101) |
+| chat_id / chat_id | Mapped[str] | False | ['String(32)'] {'primary_key': 'True'} | [backend/app/models.py:2096](../backend/app/models.py#L2096) |
+| chat_hash / chat_hash | Mapped[str] | False | ['String(64)'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:2097](../backend/app/models.py#L2097) |
+| first_code / first_code | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:2098](../backend/app/models.py#L2098) |
+| heard_from / heard_from | Mapped[str \| None] | True | ['String(24)'] {} | [backend/app/models.py:2099](../backend/app/models.py#L2099) |
+| asked_source_at / asked_source_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2100](../backend/app/models.py#L2100) |
+| first_seen_at / first_seen_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2101](../backend/app/models.py#L2101) |
+| last_seen_at / last_seen_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2102](../backend/app/models.py#L2102) |
+| blocked_at / blocked_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2103](../backend/app/models.py#L2103) |
 
 Constraints: `[]`
 
@@ -1796,14 +1797,14 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:2108](../backend/app/models.py#L2108) |
-| occurred_at / occurred_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2109](../backend/app/models.py#L2109) |
-| chat_hash / chat_hash | Mapped[str] | False | ['String(64)'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:2110](../backend/app/models.py#L2110) |
-| kind / kind | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:2112](../backend/app/models.py#L2112) |
-| code / code | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:2113](../backend/app/models.py#L2113) |
-| topic / topic | Mapped[str \| None] | True | ['String(24)'] {} | [backend/app/models.py:2114](../backend/app/models.py#L2114) |
+| id / id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:2110](../backend/app/models.py#L2110) |
+| occurred_at / occurred_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2111](../backend/app/models.py#L2111) |
+| chat_hash / chat_hash | Mapped[str] | False | ['String(64)'] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:2112](../backend/app/models.py#L2112) |
+| kind / kind | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:2114](../backend/app/models.py#L2114) |
+| code / code | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:2115](../backend/app/models.py#L2115) |
+| topic / topic | Mapped[str \| None] | True | ['String(24)'] {} | [backend/app/models.py:2116](../backend/app/models.py#L2116) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 2106, 'end_line': 2106, 'owner': 'PublicBotEvent', 'conditions': [], 'definition': "(Index('ix_public_bot_events_kind_ts', 'kind', 'occurred_at'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2108, 'end_line': 2108, 'owner': 'PublicBotEvent', 'conditions': [], 'definition': "(Index('ix_public_bot_events_kind_ts', 'kind', 'occurred_at'),)"}]`
 
 Relationships: `[]`
 
@@ -1811,20 +1812,20 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:2127](../backend/app/models.py#L2127) |
-| occurred_at / occurred_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive', 'index': 'True'} | [backend/app/models.py:2128](../backend/app/models.py#L2128) |
-| chat_id / chat_id | Mapped[str \| None] | True | ['String(32)'] {} | [backend/app/models.py:2129](../backend/app/models.py#L2129) |
-| user_id / user_id | Mapped[str \| None] | True | ['String(32)'] {} | [backend/app/models.py:2130](../backend/app/models.py#L2130) |
-| username / username | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:2131](../backend/app/models.py#L2131) |
-| first_name / first_name | Mapped[str \| None] | True | ['String(128)'] {} | [backend/app/models.py:2132](../backend/app/models.py#L2132) |
-| last_name / last_name | Mapped[str \| None] | True | ['String(128)'] {} | [backend/app/models.py:2133](../backend/app/models.py#L2133) |
-| language_code / language_code | Mapped[str \| None] | True | ['String(16)'] {} | [backend/app/models.py:2134](../backend/app/models.py#L2134) |
-| direction / direction | Mapped[str] | False | ['String(8)'] {'nullable': 'False'} | [backend/app/models.py:2135](../backend/app/models.py#L2135) |
-| kind / kind | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:2136](../backend/app/models.py#L2136) |
-| text / text | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:2137](../backend/app/models.py#L2137) |
-| payload / payload | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:2138](../backend/app/models.py#L2138) |
+| id / id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:2129](../backend/app/models.py#L2129) |
+| occurred_at / occurred_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive', 'index': 'True'} | [backend/app/models.py:2130](../backend/app/models.py#L2130) |
+| chat_id / chat_id | Mapped[str \| None] | True | ['String(32)'] {} | [backend/app/models.py:2131](../backend/app/models.py#L2131) |
+| user_id / user_id | Mapped[str \| None] | True | ['String(32)'] {} | [backend/app/models.py:2132](../backend/app/models.py#L2132) |
+| username / username | Mapped[str \| None] | True | ['String(64)'] {} | [backend/app/models.py:2133](../backend/app/models.py#L2133) |
+| first_name / first_name | Mapped[str \| None] | True | ['String(128)'] {} | [backend/app/models.py:2134](../backend/app/models.py#L2134) |
+| last_name / last_name | Mapped[str \| None] | True | ['String(128)'] {} | [backend/app/models.py:2135](../backend/app/models.py#L2135) |
+| language_code / language_code | Mapped[str \| None] | True | ['String(16)'] {} | [backend/app/models.py:2136](../backend/app/models.py#L2136) |
+| direction / direction | Mapped[str] | False | ['String(8)'] {'nullable': 'False'} | [backend/app/models.py:2137](../backend/app/models.py#L2137) |
+| kind / kind | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:2138](../backend/app/models.py#L2138) |
+| text / text | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:2139](../backend/app/models.py#L2139) |
+| payload / payload | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:2140](../backend/app/models.py#L2140) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 2125, 'end_line': 2125, 'owner': 'PublicBotDialog', 'conditions': [], 'definition': "(Index('ix_public_bot_dialog_chat_ts', 'chat_id', 'occurred_at'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2127, 'end_line': 2127, 'owner': 'PublicBotDialog', 'conditions': [], 'definition': "(Index('ix_public_bot_dialog_chat_ts', 'chat_id', 'occurred_at'),)"}]`
 
 Relationships: `[]`
 
@@ -1832,15 +1833,15 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:2145](../backend/app/models.py#L2145) |
-| chat_id / chat_id | Mapped[str] | False | ['String(32)', "ForeignKey('public_bot_chats.chat_id', ondelete='CASCADE')"] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:2146](../backend/app/models.py#L2146) |
-| topic / topic | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:2149](../backend/app/models.py#L2149) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2150](../backend/app/models.py#L2150) |
-| last_point_date / last_point_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:2152](../backend/app/models.py#L2152) |
-| last_value / last_value | Mapped[float \| None] | True | ['Numeric(14, 4)'] {} | [backend/app/models.py:2153](../backend/app/models.py#L2153) |
-| last_sent_at / last_sent_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2154](../backend/app/models.py#L2154) |
+| id / id | Mapped[int] | False | ["BigInteger().with_variant(Integer, 'sqlite')"] {'primary_key': 'True'} | [backend/app/models.py:2147](../backend/app/models.py#L2147) |
+| chat_id / chat_id | Mapped[str] | False | ['String(32)', "ForeignKey('public_bot_chats.chat_id', ondelete='CASCADE')"] {'nullable': 'False', 'index': 'True'} | [backend/app/models.py:2148](../backend/app/models.py#L2148) |
+| topic / topic | Mapped[str] | False | ['String(24)'] {'nullable': 'False'} | [backend/app/models.py:2151](../backend/app/models.py#L2151) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2152](../backend/app/models.py#L2152) |
+| last_point_date / last_point_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:2154](../backend/app/models.py#L2154) |
+| last_value / last_value | Mapped[float \| None] | True | ['Numeric(14, 4)'] {} | [backend/app/models.py:2155](../backend/app/models.py#L2155) |
+| last_sent_at / last_sent_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2156](../backend/app/models.py#L2156) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 2143, 'end_line': 2143, 'owner': 'PublicBotSubscription', 'conditions': [], 'definition': "(UniqueConstraint('chat_id', 'topic', name='uq_public_bot_sub_chat_topic'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2145, 'end_line': 2145, 'owner': 'PublicBotSubscription', 'conditions': [], 'definition': "(UniqueConstraint('chat_id', 'topic', name='uq_public_bot_sub_chat_topic'),)"}]`
 
 Relationships: `[]`
 
@@ -1848,11 +1849,11 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:2163](../backend/app/models.py#L2163) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:2164](../backend/app/models.py#L2164) |
-| text / text | Mapped[str] | False | ['String(600)'] {'nullable': 'False'} | [backend/app/models.py:2165](../backend/app/models.py#L2165) |
-| until / until | Mapped[date \| None] | True | ['Date'] {'nullable': 'True'} | [backend/app/models.py:2166](../backend/app/models.py#L2166) |
-| deleted / deleted | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False', 'server_default': "'false'"} | [backend/app/models.py:2167](../backend/app/models.py#L2167) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:2165](../backend/app/models.py#L2165) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:2166](../backend/app/models.py#L2166) |
+| text / text | Mapped[str] | False | ['String(600)'] {'nullable': 'False'} | [backend/app/models.py:2167](../backend/app/models.py#L2167) |
+| until / until | Mapped[date \| None] | True | ['Date'] {'nullable': 'True'} | [backend/app/models.py:2168](../backend/app/models.py#L2168) |
+| deleted / deleted | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False', 'server_default': "'false'"} | [backend/app/models.py:2169](../backend/app/models.py#L2169) |
 
 Constraints: `[]`
 
@@ -1862,13 +1863,13 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:2179](../backend/app/models.py#L2179) |
-| slug / slug | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:2180](../backend/app/models.py#L2180) |
-| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:2181](../backend/app/models.py#L2181) |
-| source / source | Mapped[str] | False | ['String(16)'] {'nullable': 'False', 'default': "'site'", 'server_default': "'site'"} | [backend/app/models.py:2183](../backend/app/models.py#L2183) |
-| count / count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:2184](../backend/app/models.py#L2184) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:2181](../backend/app/models.py#L2181) |
+| slug / slug | Mapped[str] | False | ['String(120)'] {'nullable': 'False'} | [backend/app/models.py:2182](../backend/app/models.py#L2182) |
+| date / date | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:2183](../backend/app/models.py#L2183) |
+| source / source | Mapped[str] | False | ['String(16)'] {'nullable': 'False', 'default': "'site'", 'server_default': "'site'"} | [backend/app/models.py:2185](../backend/app/models.py#L2185) |
+| count / count | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:2186](../backend/app/models.py#L2186) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 2177, 'end_line': 2177, 'owner': 'ResearchDownload', 'conditions': [], 'definition': "(UniqueConstraint('slug', 'date', 'source', name='uq_research_downloads_slug_date_src'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2179, 'end_line': 2179, 'owner': 'ResearchDownload', 'conditions': [], 'definition': "(UniqueConstraint('slug', 'date', 'source', name='uq_research_downloads_slug_date_src'),)"}]`
 
 Relationships: `[]`
 
@@ -1876,29 +1877,29 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:2202](../backend/app/models.py#L2202) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2203](../backend/app/models.py#L2203) |
-| rubric / rubric | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:2204](../backend/app/models.py#L2204) |
-| status / status | Mapped[str] | False | ['String(12)'] {'nullable': 'False', 'default': "'draft'"} | [backend/app/models.py:2205](../backend/app/models.py#L2205) |
-| text / text | Mapped[str] | False | ['Text'] {'nullable': 'False'} | [backend/app/models.py:2206](../backend/app/models.py#L2206) |
-| chart_topic / chart_topic | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:2207](../backend/app/models.py#L2207) |
-| link_url / link_url | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:2208](../backend/app/models.py#L2208) |
-| silent / silent | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'True', 'server_default': "'true'"} | [backend/app/models.py:2209](../backend/app/models.py#L2209) |
-| why / why | Mapped[str \| None] | True | ['String(600)'] {} | [backend/app/models.py:2210](../backend/app/models.py#L2210) |
-| planned_at / planned_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2211](../backend/app/models.py#L2211) |
-| decided_at / decided_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2212](../backend/app/models.py#L2212) |
-| decided_by / decided_by | Mapped[str \| None] | True | ['String(32)'] {} | [backend/app/models.py:2213](../backend/app/models.py#L2213) |
-| feedback / feedback | Mapped[str \| None] | True | ['String(600)'] {} | [backend/app/models.py:2214](../backend/app/models.py#L2214) |
-| published_at / published_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2215](../backend/app/models.py#L2215) |
-| telegram_message_id / telegram_message_id | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2216](../backend/app/models.py#L2216) |
-| parent_id / parent_id | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2217](../backend/app/models.py#L2217) |
-| run_id / run_id | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2218](../backend/app/models.py#L2218) |
-| blocked / blocked | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False', 'server_default': "'false'"} | [backend/app/models.py:2219](../backend/app/models.py#L2219) |
-| audit / audit | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:2220](../backend/app/models.py#L2220) |
-| review_messages / review_messages | Mapped[list \| None] | True | ['JSON'] {} | [backend/app/models.py:2221](../backend/app/models.py#L2221) |
-| error / error | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:2222](../backend/app/models.py#L2222) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:2204](../backend/app/models.py#L2204) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2205](../backend/app/models.py#L2205) |
+| rubric / rubric | Mapped[str] | False | ['String(20)'] {'nullable': 'False'} | [backend/app/models.py:2206](../backend/app/models.py#L2206) |
+| status / status | Mapped[str] | False | ['String(12)'] {'nullable': 'False', 'default': "'draft'"} | [backend/app/models.py:2207](../backend/app/models.py#L2207) |
+| text / text | Mapped[str] | False | ['Text'] {'nullable': 'False'} | [backend/app/models.py:2208](../backend/app/models.py#L2208) |
+| chart_topic / chart_topic | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:2209](../backend/app/models.py#L2209) |
+| link_url / link_url | Mapped[str \| None] | True | ['String(500)'] {} | [backend/app/models.py:2210](../backend/app/models.py#L2210) |
+| silent / silent | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'True', 'server_default': "'true'"} | [backend/app/models.py:2211](../backend/app/models.py#L2211) |
+| why / why | Mapped[str \| None] | True | ['String(600)'] {} | [backend/app/models.py:2212](../backend/app/models.py#L2212) |
+| planned_at / planned_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2213](../backend/app/models.py#L2213) |
+| decided_at / decided_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2214](../backend/app/models.py#L2214) |
+| decided_by / decided_by | Mapped[str \| None] | True | ['String(32)'] {} | [backend/app/models.py:2215](../backend/app/models.py#L2215) |
+| feedback / feedback | Mapped[str \| None] | True | ['String(600)'] {} | [backend/app/models.py:2216](../backend/app/models.py#L2216) |
+| published_at / published_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2217](../backend/app/models.py#L2217) |
+| telegram_message_id / telegram_message_id | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2218](../backend/app/models.py#L2218) |
+| parent_id / parent_id | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2219](../backend/app/models.py#L2219) |
+| run_id / run_id | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2220](../backend/app/models.py#L2220) |
+| blocked / blocked | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False', 'server_default': "'false'"} | [backend/app/models.py:2221](../backend/app/models.py#L2221) |
+| audit / audit | Mapped[dict \| None] | True | ['JSON'] {} | [backend/app/models.py:2222](../backend/app/models.py#L2222) |
+| review_messages / review_messages | Mapped[list \| None] | True | ['JSON'] {} | [backend/app/models.py:2223](../backend/app/models.py#L2223) |
+| error / error | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:2224](../backend/app/models.py#L2224) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 2197, 'end_line': 2200, 'owner': 'ChannelPost', 'conditions': [], 'definition': "(Index('ix_channel_posts_status', 'status', 'planned_at'), Index('ix_channel_posts_created', 'created_at'))"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2199, 'end_line': 2202, 'owner': 'ChannelPost', 'conditions': [], 'definition': "(Index('ix_channel_posts_status', 'status', 'planned_at'), Index('ix_channel_posts_created', 'created_at'))"}]`
 
 Relationships: `[]`
 
@@ -1906,22 +1907,22 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:2230](../backend/app/models.py#L2230) |
-| started_at / started_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2231](../backend/app/models.py#L2231) |
-| kind / kind | Mapped[str] | False | ['String(12)'] {'nullable': 'False'} | [backend/app/models.py:2232](../backend/app/models.py#L2232) |
-| trigger / trigger | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:2233](../backend/app/models.py#L2233) |
-| model / model | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:2234](../backend/app/models.py#L2234) |
-| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'ok'"} | [backend/app/models.py:2235](../backend/app/models.py#L2235) |
-| decision / decision | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:2236](../backend/app/models.py#L2236) |
-| note / note | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:2237](../backend/app/models.py#L2237) |
-| steps / steps | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:2238](../backend/app/models.py#L2238) |
-| web_searches / web_searches | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:2239](../backend/app/models.py#L2239) |
-| prompt_tokens / prompt_tokens | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:2240](../backend/app/models.py#L2240) |
-| completion_tokens / completion_tokens | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:2241](../backend/app/models.py#L2241) |
-| cost_usd / cost_usd | Mapped[float] | False | ['Numeric(10, 5)'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:2242](../backend/app/models.py#L2242) |
-| seconds / seconds | Mapped[float \| None] | True | ['Numeric(8, 1)'] {} | [backend/app/models.py:2243](../backend/app/models.py#L2243) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:2232](../backend/app/models.py#L2232) |
+| started_at / started_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2233](../backend/app/models.py#L2233) |
+| kind / kind | Mapped[str] | False | ['String(12)'] {'nullable': 'False'} | [backend/app/models.py:2234](../backend/app/models.py#L2234) |
+| trigger / trigger | Mapped[str \| None] | True | ['String(300)'] {} | [backend/app/models.py:2235](../backend/app/models.py#L2235) |
+| model / model | Mapped[str] | False | ['String(80)'] {'nullable': 'False'} | [backend/app/models.py:2236](../backend/app/models.py#L2236) |
+| status / status | Mapped[str] | False | ['String(20)'] {'nullable': 'False', 'default': "'ok'"} | [backend/app/models.py:2237](../backend/app/models.py#L2237) |
+| decision / decision | Mapped[str \| None] | True | ['String(20)'] {} | [backend/app/models.py:2238](../backend/app/models.py#L2238) |
+| note / note | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:2239](../backend/app/models.py#L2239) |
+| steps / steps | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:2240](../backend/app/models.py#L2240) |
+| web_searches / web_searches | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:2241](../backend/app/models.py#L2241) |
+| prompt_tokens / prompt_tokens | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:2242](../backend/app/models.py#L2242) |
+| completion_tokens / completion_tokens | Mapped[int] | False | ['Integer'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:2243](../backend/app/models.py#L2243) |
+| cost_usd / cost_usd | Mapped[float] | False | ['Numeric(10, 5)'] {'nullable': 'False', 'default': '0'} | [backend/app/models.py:2244](../backend/app/models.py#L2244) |
+| seconds / seconds | Mapped[float \| None] | True | ['Numeric(8, 1)'] {} | [backend/app/models.py:2245](../backend/app/models.py#L2245) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 2228, 'end_line': 2228, 'owner': 'ChannelAuthorRun', 'conditions': [], 'definition': "(Index('ix_channel_author_runs_started', 'started_at'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2230, 'end_line': 2230, 'owner': 'ChannelAuthorRun', 'conditions': [], 'definition': "(Index('ix_channel_author_runs_started', 'started_at'),)"}]`
 
 Relationships: `[]`
 
@@ -1929,9 +1930,9 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| day / day | Mapped[date] | False | ['Date'] {'primary_key': 'True'} | [backend/app/models.py:2250](../backend/app/models.py#L2250) |
-| subscribers / subscribers | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:2251](../backend/app/models.py#L2251) |
-| taken_at / taken_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2252](../backend/app/models.py#L2252) |
+| day / day | Mapped[date] | False | ['Date'] {'primary_key': 'True'} | [backend/app/models.py:2252](../backend/app/models.py#L2252) |
+| subscribers / subscribers | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:2253](../backend/app/models.py#L2253) |
+| taken_at / taken_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2254](../backend/app/models.py#L2254) |
 
 Constraints: `[]`
 
@@ -1941,13 +1942,13 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:2260](../backend/app/models.py#L2260) |
-| message_id / message_id | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:2261](../backend/app/models.py#L2261) |
-| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:2262](../backend/app/models.py#L2262) |
-| views / views | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:2263](../backend/app/models.py#L2263) |
-| posted_at / posted_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2264](../backend/app/models.py#L2264) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:2262](../backend/app/models.py#L2262) |
+| message_id / message_id | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:2263](../backend/app/models.py#L2263) |
+| day / day | Mapped[date] | False | ['Date'] {'nullable': 'False'} | [backend/app/models.py:2264](../backend/app/models.py#L2264) |
+| views / views | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:2265](../backend/app/models.py#L2265) |
+| posted_at / posted_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2266](../backend/app/models.py#L2266) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 2258, 'end_line': 2258, 'owner': 'ChannelPostView', 'conditions': [], 'definition': "(UniqueConstraint('message_id', 'day', name='uq_channel_post_views_msg_day'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2260, 'end_line': 2260, 'owner': 'ChannelPostView', 'conditions': [], 'definition': "(UniqueConstraint('message_id', 'day', name='uq_channel_post_views_msg_day'),)"}]`
 
 Relationships: `[]`
 
@@ -1955,11 +1956,11 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:2272](../backend/app/models.py#L2272) |
-| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2273](../backend/app/models.py#L2273) |
-| kind / kind | Mapped[str] | False | ['String(8)'] {'nullable': 'False'} | [backend/app/models.py:2274](../backend/app/models.py#L2274) |
-| text / text | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:2275](../backend/app/models.py#L2275) |
-| deleted / deleted | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False', 'server_default': "'false'"} | [backend/app/models.py:2276](../backend/app/models.py#L2276) |
+| id / id | Mapped[int] | False | [] {'primary_key': 'True'} | [backend/app/models.py:2274](../backend/app/models.py#L2274) |
+| created_at / created_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False', 'default': '_utcnow_naive'} | [backend/app/models.py:2275](../backend/app/models.py#L2275) |
+| kind / kind | Mapped[str] | False | ['String(8)'] {'nullable': 'False'} | [backend/app/models.py:2276](../backend/app/models.py#L2276) |
+| text / text | Mapped[str] | False | ['String(300)'] {'nullable': 'False'} | [backend/app/models.py:2277](../backend/app/models.py#L2277) |
+| deleted / deleted | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False', 'server_default': "'false'"} | [backend/app/models.py:2278](../backend/app/models.py#L2278) |
 
 Constraints: `[]`
 
@@ -1969,12 +1970,12 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| part / part | Mapped[str] | False | ['String(16)'] {'primary_key': 'True'} | [backend/app/models.py:2291](../backend/app/models.py#L2291) |
-| active / active | Mapped[str \| None] | True | ['String(1)'] {} | [backend/app/models.py:2292](../backend/app/models.py#L2292) |
-| built_at / built_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2293](../backend/app/models.py#L2293) |
-| signature / signature | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:2294](../backend/app/models.py#L2294) |
-| rows / rows | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2295](../backend/app/models.py#L2295) |
-| seconds / seconds | Mapped[float \| None] | True | ['Numeric(10, 2)'] {} | [backend/app/models.py:2296](../backend/app/models.py#L2296) |
+| part / part | Mapped[str] | False | ['String(16)'] {'primary_key': 'True'} | [backend/app/models.py:2293](../backend/app/models.py#L2293) |
+| active / active | Mapped[str \| None] | True | ['String(1)'] {} | [backend/app/models.py:2294](../backend/app/models.py#L2294) |
+| built_at / built_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2295](../backend/app/models.py#L2295) |
+| signature / signature | Mapped[str \| None] | True | ['Text'] {} | [backend/app/models.py:2296](../backend/app/models.py#L2296) |
+| rows / rows | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2297](../backend/app/models.py#L2297) |
+| seconds / seconds | Mapped[float \| None] | True | ['Numeric(10, 2)'] {} | [backend/app/models.py:2298](../backend/app/models.py#L2298) |
 
 Constraints: `[]`
 
@@ -1985,7 +1986,7 @@ Relationships: `[]`
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 2352, 'end_line': 2352, 'owner': 'SearchWorldRowA', 'conditions': [], 'definition': "_search_world_indexes('search_world_a')"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2354, 'end_line': 2354, 'owner': 'SearchWorldRowA', 'conditions': [], 'definition': "_search_world_indexes('search_world_a')"}]`
 
 Relationships: `[]`
 
@@ -1994,7 +1995,7 @@ Relationships: `[]`
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 2357, 'end_line': 2357, 'owner': 'SearchWorldRowB', 'conditions': [], 'definition': "_search_world_indexes('search_world_b')"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2359, 'end_line': 2359, 'owner': 'SearchWorldRowB', 'conditions': [], 'definition': "_search_world_indexes('search_world_b')"}]`
 
 Relationships: `[]`
 
@@ -2021,7 +2022,7 @@ Relationships: `[]`
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 2399, 'end_line': 2399, 'owner': 'SearchRegionFactA', 'conditions': [], 'definition': "(Index('ix_search_region_facts_a_region', 'region_id'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2401, 'end_line': 2401, 'owner': 'SearchRegionFactA', 'conditions': [], 'definition': "(Index('ix_search_region_facts_a_region', 'region_id'),)"}]`
 
 Relationships: `[]`
 
@@ -2030,7 +2031,7 @@ Relationships: `[]`
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 2404, 'end_line': 2404, 'owner': 'SearchRegionFactB', 'conditions': [], 'definition': "(Index('ix_search_region_facts_b_region', 'region_id'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2406, 'end_line': 2406, 'owner': 'SearchRegionFactB', 'conditions': [], 'definition': "(Index('ix_search_region_facts_b_region', 'region_id'),)"}]`
 
 Relationships: `[]`
 
@@ -2039,7 +2040,7 @@ Relationships: `[]`
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 2416, 'end_line': 2416, 'owner': 'SearchSubnationalFactA', 'conditions': [], 'definition': "(Index('ix_search_subnational_facts_a_region', 'region_id'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2418, 'end_line': 2418, 'owner': 'SearchSubnationalFactA', 'conditions': [], 'definition': "(Index('ix_search_subnational_facts_a_region', 'region_id'),)"}]`
 
 Relationships: `[]`
 
@@ -2048,7 +2049,7 @@ Relationships: `[]`
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 2421, 'end_line': 2421, 'owner': 'SearchSubnationalFactB', 'conditions': [], 'definition': "(Index('ix_search_subnational_facts_b_region', 'region_id'),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2423, 'end_line': 2423, 'owner': 'SearchSubnationalFactB', 'conditions': [], 'definition': "(Index('ix_search_subnational_facts_b_region', 'region_id'),)"}]`
 
 Relationships: `[]`
 
@@ -2056,16 +2057,16 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| indicator_id / indicator_id | Mapped[int] | False | ['Integer'] {'primary_key': 'True', 'autoincrement': 'False'} | [backend/app/models.py:2440](../backend/app/models.py#L2440) |
-| country_id / country_id | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:2441](../backend/app/models.py#L2441) |
-| last_date / last_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:2442](../backend/app/models.py#L2442) |
-| last_value / last_value | Mapped[float \| None] | True | ['Numeric(20, 6)'] {} | [backend/app/models.py:2443](../backend/app/models.py#L2443) |
-| prev_date / prev_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:2444](../backend/app/models.py#L2444) |
-| prev_value / prev_value | Mapped[float \| None] | True | ['Numeric(20, 6)'] {} | [backend/app/models.py:2445](../backend/app/models.py#L2445) |
-| has_nonzero / has_nonzero | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False'} | [backend/app/models.py:2446](../backend/app/models.py#L2446) |
-| synced_at / synced_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:2447](../backend/app/models.py#L2447) |
+| indicator_id / indicator_id | Mapped[int] | False | ['Integer'] {'primary_key': 'True', 'autoincrement': 'False'} | [backend/app/models.py:2442](../backend/app/models.py#L2442) |
+| country_id / country_id | Mapped[int] | False | ['Integer'] {'nullable': 'False'} | [backend/app/models.py:2443](../backend/app/models.py#L2443) |
+| last_date / last_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:2444](../backend/app/models.py#L2444) |
+| last_value / last_value | Mapped[float \| None] | True | ['Numeric(20, 6)'] {} | [backend/app/models.py:2445](../backend/app/models.py#L2445) |
+| prev_date / prev_date | Mapped[date \| None] | True | ['Date'] {} | [backend/app/models.py:2446](../backend/app/models.py#L2446) |
+| prev_value / prev_value | Mapped[float \| None] | True | ['Numeric(20, 6)'] {} | [backend/app/models.py:2447](../backend/app/models.py#L2447) |
+| has_nonzero / has_nonzero | Mapped[bool] | False | ['Boolean'] {'nullable': 'False', 'default': 'False'} | [backend/app/models.py:2448](../backend/app/models.py#L2448) |
+| synced_at / synced_at | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:2449](../backend/app/models.py#L2449) |
 
-Constraints: `[{'path': 'backend/app/models.py', 'line': 2432, 'end_line': 2438, 'owner': 'WorldLatestPoint', 'conditions': [], 'definition': "(Index('ix_world_latest_points_country', 'country_id', postgresql_include=('indicator_id', 'last_date', 'last_value', 'prev_date', 'prev_value', 'has_nonzero')),)"}]`
+Constraints: `[{'path': 'backend/app/models.py', 'line': 2434, 'end_line': 2440, 'owner': 'WorldLatestPoint', 'conditions': [], 'definition': "(Index('ix_world_latest_points_country', 'country_id', postgresql_include=('indicator_id', 'last_date', 'last_value', 'prev_date', 'prev_value', 'has_nonzero')),)"}]`
 
 Relationships: `[]`
 
@@ -2073,16 +2074,16 @@ Relationships: `[]`
 
 | Python / SQL | Type | Nullable | Column arguments / options | Source |
 | --- | --- | --- | --- | --- |
-| id / id | Mapped[int] | False | ['Integer'] {'primary_key': 'True', 'autoincrement': 'False'} | [backend/app/models.py:2454](../backend/app/models.py#L2454) |
-| maintained_since / maintained_since | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:2455](../backend/app/models.py#L2455) |
-| filled_at / filled_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2456](../backend/app/models.py#L2456) |
-| cursor_country_id / cursor_country_id | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2457](../backend/app/models.py#L2457) |
-| cursor_indicator_id / cursor_indicator_id | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2458](../backend/app/models.py#L2458) |
-| pass_started_at / pass_started_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2459](../backend/app/models.py#L2459) |
-| pass_completed_at / pass_completed_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2460](../backend/app/models.py#L2460) |
-| last_run_at / last_run_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2461](../backend/app/models.py#L2461) |
-| rows / rows | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2462](../backend/app/models.py#L2462) |
-| rows_changed / rows_changed | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2463](../backend/app/models.py#L2463) |
+| id / id | Mapped[int] | False | ['Integer'] {'primary_key': 'True', 'autoincrement': 'False'} | [backend/app/models.py:2456](../backend/app/models.py#L2456) |
+| maintained_since / maintained_since | Mapped[datetime] | False | ['DateTime'] {'nullable': 'False'} | [backend/app/models.py:2457](../backend/app/models.py#L2457) |
+| filled_at / filled_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2458](../backend/app/models.py#L2458) |
+| cursor_country_id / cursor_country_id | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2459](../backend/app/models.py#L2459) |
+| cursor_indicator_id / cursor_indicator_id | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2460](../backend/app/models.py#L2460) |
+| pass_started_at / pass_started_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2461](../backend/app/models.py#L2461) |
+| pass_completed_at / pass_completed_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2462](../backend/app/models.py#L2462) |
+| last_run_at / last_run_at | Mapped[datetime \| None] | True | ['DateTime'] {} | [backend/app/models.py:2463](../backend/app/models.py#L2463) |
+| rows / rows | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2464](../backend/app/models.py#L2464) |
+| rows_changed / rows_changed | Mapped[int \| None] | True | ['Integer'] {} | [backend/app/models.py:2465](../backend/app/models.py#L2465) |
 
 Constraints: `[]`
 
@@ -2555,6 +2556,7 @@ Relationships: `[]`
 | alembic.versions.20261118_search_index._COPIES | Tuple | sequence/source expression | [backend/alembic/versions/20261118_search_index.py:24](../backend/alembic/versions/20261118_search_index.py#L24) |
 | alembic.versions.20261119_points_autovacuum.TABLES | Tuple | sequence/source expression | [backend/alembic/versions/20261119_points_autovacuum.py:38](../backend/alembic/versions/20261119_points_autovacuum.py#L38) |
 | alembic.versions.20261119_points_autovacuum.OPTIONS | Dict | 'autovacuum_vacuum_scale_factor', 'autovacuum_vacuum_threshold', 'autovacuum_vacuum_insert_scale_factor', 'autovacuum_analyze_scale_factor', 'log_autovacuum_min_duration' | [backend/alembic/versions/20261119_points_autovacuum.py:39](../backend/alembic/versions/20261119_points_autovacuum.py#L39) |
+| alembic.versions.20261120_region_data_updated.RENAMED | Dict | 'tour-avtobusy-passazhiry', 'tour-obshchepit-oborot-mes', 'tour-obshchepit-restorany', 'tour-obshchepit-stolovye', 'tour-obshchepit-rezultat-restorany' | [backend/alembic/versions/20261120_region_data_updated.py:21](../backend/alembic/versions/20261120_region_data_updated.py#L21) |
 | app.api.admin_bi._DASHBOARD_LOCK | Call | computed source expression | [backend/app/api/admin_bi.py:60](../backend/app/api/admin_bi.py#L60) |
 | app.api.admin_bi._INFLIGHT | Dict | sequence/source expression | [backend/app/api/admin_bi.py:71](../backend/app/api/admin_bi.py#L71) |
 | app.api.admin_bi._LAST_ERROR | Dict | sequence/source expression | [backend/app/api/admin_bi.py:72](../backend/app/api/admin_bi.py#L72) |
@@ -2586,7 +2588,7 @@ Relationships: `[]`
 | app.api.indicators._YOY_TARGET | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/api/indicators.py:36](../backend/app/api/indicators.py#L36) |
 | app.api.indicators._YOY_TOLERANCE | Call | computed source expression | [backend/app/api/indicators.py:43](../backend/app/api/indicators.py#L43) |
 | app.api.indicators._HERO_FROM_YOY_SIBLING | Dict | 'cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services' | [backend/app/api/indicators.py:206](../backend/app/api/indicators.py#L206) |
-| app.api.indicators._CODE_RE | Call | computed source expression | [backend/app/api/indicators.py:412](../backend/app/api/indicators.py#L412) |
+| app.api.indicators._CODE_RE | Call | computed source expression | [backend/app/api/indicators.py:413](../backend/app/api/indicators.py#L413) |
 | app.api.mail.LISTS | Dict | 'unsub', 'unsub_watch', 'unpers' | [backend/app/api/mail.py:49](../backend/app/api/mail.py#L49) |
 | app.api.mail.PERSONAL_KINDS | Tuple | sequence/source expression | [backend/app/api/mail.py:55](../backend/app/api/mail.py#L55) |
 | app.api.oauth._REDIRECT_OVERRIDES | Dict | 'google', 'yandex', 'vk' | [backend/app/api/oauth.py:109](../backend/app/api/oauth.py#L109) |
@@ -2597,15 +2599,15 @@ Relationships: `[]`
 | app.api.regions.HEADLINE_INDEX_TO_GROWTH | Dict | '20.1' | [backend/app/api/regions.py:69](../backend/app/api/regions.py#L69) |
 | app.api.regions.HEADLINE_INDEX_TO_GROWTH_EN | Dict | '20.1' | [backend/app/api/regions.py:73](../backend/app/api/regions.py#L73) |
 | app.api.regions.LANDING_TABLES | Tuple | sequence/source expression | [backend/app/api/regions.py:78](../backend/app/api/regions.py#L78) |
-| app.api.regions._COMPARE_WARM_SLUGS | Tuple | sequence/source expression | [backend/app/api/regions.py:486](../backend/app/api/regions.py#L486) |
-| app.api.regions._MONTHS_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:569](../backend/app/api/regions.py#L569) |
-| app.api.regions._MONTHS_EN | Tuple | sequence/source expression | [backend/app/api/regions.py:571](../backend/app/api/regions.py#L571) |
-| app.api.regions.MONTH_NAMES_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:1139](../backend/app/api/regions.py#L1139) |
+| app.api.regions._COMPARE_WARM_SLUGS | Tuple | sequence/source expression | [backend/app/api/regions.py:507](../backend/app/api/regions.py#L507) |
+| app.api.regions._MONTHS_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:590](../backend/app/api/regions.py#L590) |
+| app.api.regions._MONTHS_EN | Tuple | sequence/source expression | [backend/app/api/regions.py:592](../backend/app/api/regions.py#L592) |
+| app.api.regions.MONTH_NAMES_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:1174](../backend/app/api/regions.py#L1174) |
 | app.api.research.SOURCES | Tuple | sequence/source expression | [backend/app/api/research.py:34](../backend/app/api/research.py#L34) |
 | app.api.research.PUBLIC_SOURCES | Tuple | sequence/source expression | [backend/app/api/research.py:35](../backend/app/api/research.py#L35) |
 | app.api.research._LINK_SOURCES | Tuple | sequence/source expression | [backend/app/api/research.py:36](../backend/app/api/research.py#L36) |
 | app.api.research._LOCALIZED | Tuple | sequence/source expression | [backend/app/api/research.py:77](../backend/app/api/research.py#L77) |
-| app.api.search._DATABASE_FAILURES | Tuple | sequence/source expression | [backend/app/api/search.py:33](../backend/app/api/search.py#L33) |
+| app.api.search._DATABASE_FAILURES | Tuple | sequence/source expression | [backend/app/api/search.py:34](../backend/app/api/search.py#L34) |
 | app.api.seo_pages._RENDER_SEM | Call | computed source expression | [backend/app/api/seo_pages.py:165](../backend/app/api/seo_pages.py#L165) |
 | app.api.sitemap._ANNUAL_SUMMARY_EN | Dict | 'Рост цен за год', 'Итог за год (сумма)', 'Значение на конец года', 'Среднее за год' | [backend/app/api/sitemap.py:90](../backend/app/api/sitemap.py#L90) |
 | app.api.sitemap._OG_INDICATOR_ALIASES | Dict | 'inflation', 'gdp' | [backend/app/api/sitemap.py:700](../backend/app/api/sitemap.py#L700) |
@@ -2872,7 +2874,7 @@ Relationships: `[]`
 | app.data.housing_historical.SPECS | Tuple | sequence/source expression | [backend/app/data/housing_historical.py:58](../backend/app/data/housing_historical.py#L58) |
 | app.data.i18n.en_catalog.EN_EXACT_PATHS | Call | computed source expression | [backend/app/data/i18n/en_catalog.py:23](../backend/app/data/i18n/en_catalog.py#L23) |
 | app.data.i18n.en_catalog.EN_PATH_PREFIXES | Tuple | sequence/source expression | [backend/app/data/i18n/en_catalog.py:45](../backend/app/data/i18n/en_catalog.py#L45) |
-| app.data.i18n.glossary_en.GLOSSARY_EN | Dict | 'Инфляция', 'ИПЦ', 'Индекс потребительских цен', 'Ключевая ставка', 'Безработица', 'Уровень безработицы', 'ВВП', 'Номинальный ВВП', 'Реальный ВВП', 'Заработная плата', 'г/г', 'м/м', 'кв/кв', 'Росстат', 'Банк России', 'Минфин', 'Минфин России', 'Московская биржа', 'Евростат', 'Международный валютный фонд', 'Всемирный банк', 'Банк международных расчётов', 'UN Tourism (Всемирная туристская организация ООН)', 'ОЭСР', 'Статистическая служба Кипра (CYSTAT)', 'Национальная статистическая служба Грузии (Geostat)', 'Министерство культуры и туризма Турции', 'Статистический комитет Армении', 'Государственный комитет по статистике Азербайджана', 'Министерство туризма Индии', 'Центральное статистическое бюро Израиля', 'Национальная туристическая организация Японии (JNTO)', 'Корейская организация туризма', 'Статистическое управление Черногории (Monstat)', 'Республиканское статистическое управление Сербии', 'Национальный институт статистики Испании (INE)', 'Банк международных расчётов (BIS)', 'Международная организация труда', 'Международная организация труда (МОТ)', 'Рыночные котировки', 'Статистическое управление Канады', 'Банк Канады', 'Австралийское бюро статистики', 'Резервный банк Австралии', 'Управление национальной статистики Великобритании', 'Банк Англии', 'Федеральный резервный банк Сент-Луиса', 'Бюро трудовой статистики США', 'Бюро экономического анализа США', 'Банк Японии', 'Статистическое бюро Японии', 'Банк Кореи', 'Банк Бразилии', 'Банк Мексики', 'Национальное статистическое бюро Китая', 'Китайская система валютных торгов', 'Министерство статистики и программной реализации Индии', 'Резервный банк Индии', 'Бюро переписи населения США', 'Бразильский институт географии и статистики (IBGE)', 'Управление энергетической информации США (EIA)', 'Европейский центральный банк', 'Министерство финансов США', 'Совет управляющих Федеральной резервной системы США', 'Министерство труда США', 'Федеральное агентство по жилищному финансированию США', 'Административно-бюджетное управление США', 'через FRED', 'Россия', 'Регионы', 'Регионы России', 'Сравнение', 'Прогноз', 'Методология', 'Источник' | [backend/app/data/i18n/glossary_en.py:10](../backend/app/data/i18n/glossary_en.py#L10) |
+| app.data.i18n.glossary_en.GLOSSARY_EN | Dict | 'Инфляция', 'ИПЦ', 'Индекс потребительских цен', 'Ключевая ставка', 'Безработица', 'Уровень безработицы', 'ВВП', 'Номинальный ВВП', 'Реальный ВВП', 'Заработная плата', 'г/г', 'м/м', 'кв/кв', 'Росстат', 'Банк России', 'Росстат по данным ФСБ России', 'Росавиация (ЕМИСС)', 'Росавиация (архив отчётов)', 'Росавиация; аэропорт и отраслевые рейтинги (вторичные)', 'ФНС России', 'Федеральное казначейство', 'ОЭСР по данным Египта', 'Министерство туризма и спорта Таиланда', 'Нацкомстат Узбекистана', 'Бюро национальной статистики Казахстана', 'Национальное управление туризма Вьетнама', 'Бюро статистики Мальдив', 'Статистическое агентство Индонезии', 'Управление по развитию туризма Шри-Ланки', 'Белстат', 'Национальное бюро статистики Сейшел', 'Центральный банк Доминиканской Республики', 'Национальная статистическая служба Монголии', 'Statistics Mauritius', 'Управление статистики Занзибара', 'Национальное статистическое управление Кубы', 'Агентство по статистике Таджикистана', 'Департамент экономики и туризма Дубая', 'Департамент культуры и туризма Абу-Даби', 'Совет по туризму Гонконга', 'Министерство туризма Филиппин', 'Нацстатком Киргизии', 'Управление по туризму Макао', 'Управление государственной статистики Абхазии', 'Минфин', 'Минфин России', 'Московская биржа', 'Евростат', 'Международный валютный фонд', 'Всемирный банк', 'Банк международных расчётов', 'UN Tourism (Всемирная туристская организация ООН)', 'ОЭСР', 'Статистическая служба Кипра (CYSTAT)', 'Национальная статистическая служба Грузии (Geostat)', 'Министерство культуры и туризма Турции', 'Статистический комитет Армении', 'Государственный комитет по статистике Азербайджана', 'Министерство туризма Индии', 'Центральное статистическое бюро Израиля', 'Национальная туристическая организация Японии (JNTO)', 'Корейская организация туризма', 'Национальное бюро статистики Китая', 'Статистическое управление Черногории (Monstat)', 'Республиканское статистическое управление Сербии', 'Национальный институт статистики Испании (INE)', 'Банк международных расчётов (BIS)', 'Международная организация труда', 'Международная организация труда (МОТ)', 'Рыночные котировки', 'Статистическое управление Канады', 'Банк Канады', 'Австралийское бюро статистики', 'Резервный банк Австралии', 'Управление национальной статистики Великобритании', 'Банк Англии', 'Федеральный резервный банк Сент-Луиса', 'Бюро трудовой статистики США', 'Бюро экономического анализа США', 'Банк Японии', 'Статистическое бюро Японии', 'Банк Кореи', 'Банк Бразилии', 'Банк Мексики', 'Национальное статистическое бюро Китая', 'Китайская система валютных торгов', 'Министерство статистики и программной реализации Индии', 'Резервный банк Индии', 'Бюро переписи населения США', 'Бразильский институт географии и статистики (IBGE)', 'Управление энергетической информации США (EIA)', 'Европейский центральный банк', 'Министерство финансов США', 'Совет управляющих Федеральной резервной системы США', 'Министерство труда США', 'Федеральное агентство по жилищному финансированию США', 'Административно-бюджетное управление США', 'через FRED', 'Россия', 'Регионы', 'Регионы России', 'Сравнение', 'Прогноз', 'Методология', 'Источник' | [backend/app/data/i18n/glossary_en.py:10](../backend/app/data/i18n/glossary_en.py#L10) |
 | app.data.i18n.indicator_copy_en.INDICATOR_COPY_EN | Dict | **unpack, **unpack, **unpack, **unpack, **unpack, **unpack, **unpack, **unpack, **unpack, 'cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services', 'key-rate', 'usd-rub', 'eur-rub', 'cny-rub', 'try-rub', 'kzt-rub', 'ruonia', 'm0', 'm2', 'mortgage-rate', 'deposit-rate', 'auto-loan-rate', 'credit-rate-corp-short', 'credit-rate-ind-short', 'unemployment', 'wages-nominal', 'gdp-nominal', 'gdp-real', 'wages-real', 'housing-affordability', 'm1', 'consumer-credit', 'business-credit', 'deposits-individual', 'deposits-business', 'budget-deficit', 'housing-price-primary', 'housing-price-secondary', 'ipi', 'ipi-mining', 'ipi-manufacturing', 'ipi-energy', 'ipi-water', 'population', 'population-natural-growth', 'population-total-growth', 'population-migration', 'current-account', 'ppi', 'exports', 'imports', 'trade-balance', 'international-reserves', 'external-debt', 'gdp-consumption', 'gdp-government', 'gdp-investment', 'labor-force', 'employment', 'budget-revenue', 'budget-expenditure', 'services-exports', 'services-imports', 'fdi-net', 'births', 'deaths', 'birth-rate', 'death-rate', 'working-age-population', 'pop-under-working-age', 'pop-over-working-age', 'pensioners', 'retail-trade', 'construction-work', 'capital-investment', 'housing-commissioned', 'depreciation-rate', 'grad-students', 'doctoral-students', 'rd-organizations', 'rd-personnel', 'innovation-activity', 'tech-innovation-share', 'small-business-innovation', 'gold-price', 'btc-usd', 'eth-usd', 'sol-usd', 'imoex', 'mcftr', 'rtsi', 'rgbi', 'corp-bond-index', 'usd-index', 'eur-usd', 'gbp-eur', 'cny-eur', 'gbp-usd', 'usd-cny', 'ust-10y', 'brent', 'copper', 'silver', 'natural-gas', 'wheat', 'soybean', 'coal', 'fuel-ai92', 'deposit-rate-medium', 'deposit-rate-long', 'credit-rate-corp-1to3y', 'credit-rate-corp-over3y', 'credit-rate-ind-1to3y', 'credit-rate-ind-over3y', 'wages-nominal-annual', 'wages-nominal-annual-yoy', 'wages-index', 'housing-affordability-primary', 'gdp-yoy', 'gdp-qoq', 'gdp-real-yoy', 'gdp-real-qoq', 'gdp-nominal-annual', 'gdp-real-annual', 'inflation-quarterly', 'inflation-annual', 'cpi-food-quarterly', 'cpi-food-annual', 'cpi-food-yoy', 'cpi-food-qoq', 'cpi-food-period-weekly', 'cpi-food-period-monthly', 'cpi-nonfood-quarterly', 'cpi-nonfood-annual', 'cpi-nonfood-yoy', 'cpi-nonfood-qoq', 'cpi-nonfood-period-weekly', 'cpi-nonfood-period-monthly', 'cpi-services-quarterly', 'cpi-services-annual', 'cpi-services-yoy', 'cpi-services-qoq', 'cpi-services-period-weekly', 'cpi-services-period-monthly', 'cpi-yoy', 'cpi-qoq', 'cpi-period-weekly', 'cpi-period-monthly', 'inflation-weekly', 'inflation-weekly-food', 'inflation-weekly-nonfood', 'inflation-weekly-services', 'housing-qoq-secondary', 'housing-yoy-primary', 'housing-qoq-primary', 'housing-yoy-secondary', 'housing-annual-primary', 'housing-annual-secondary', 'unemployment-quarterly', 'unemployment-annual', 'current-account-yoy-abs', 'trade-balance-yoy-abs', 'current-account-yoy', 'ipi-yoy', 'exports-monthly', 'imports-monthly', 'trade-balance-monthly', 'exports-yoy', 'imports-yoy', 'exports-qoq', 'imports-qoq', 'services-exports-monthly', 'services-imports-monthly', 'ppi-yoy', 'ppi-qoq', 'ppi-mom', 'ppi-annual', 'wages-yoy', 'steel', 'fuel-ai95', 'fuel-diesel', 'weo-gdp-usd', 'weo-gdp-per-capita-usd', 'weo-budget-balance-gdp', 'weo-government-debt-gdp' | [backend/app/data/i18n/indicator_copy_en.py:34](../backend/app/data/i18n/indicator_copy_en.py#L34) |
 | app.data.i18n.price_goods_en.PRICE_GOODS_EN | Dict | 'ceni-abonentskaya-plata-pri-kombinirovannoy-sisteme-oplaty-uslug', 'ceni-abonentskaya-plata-za-mobilnyy-internet', 'ceni-abonentskaya-plata-za-polzovanie-uslugami-sotovoy-svyazi', 'ceni-abonentskaya-plata-za-radiotranslyacionnuyu-tochku', 'ceni-abonentskaya-plata-za-televizionnuyu-antennu', 'ceni-acetilcistein-acc-600-mg', 'ceni-acetilsalicilovaya-kislota', 'ceni-acipol', 'ceni-adelfan-ezidreks', 'ceni-afobazol-10-mg', 'ceni-aktivirovannyy-ugol', 'ceni-albom-dlya-risovaniya', 'ceni-allohol', 'ceni-almagel-suspenziya', 'ceni-alteya-lekarstvennogo-travy-ekstrakt', 'ceni-ambroksol', 'ceni-amlodipin', 'ceni-amoksicillin-500-mg', 'ceni-amoksicillin-s-klavulanovoy-kislotoy-500-mg-125-mg', 'ceni-ampicillin-250-mg', 'ceni-antiseptik-dlya-ruk', 'ceni-apiksaban-elikvis-5-mg', 'ceni-apparat-dlya-izmereniya-arterialnogo-davleniya-elektronnyy', 'ceni-arenda-individualnogo-bankovskogo-seyfa', 'ceni-aseptolin-90', 'ceni-askofen-p', 'ceni-askorbinovaya-kislota', 'ceni-askorbinovaya-kislota-1846548', 'ceni-aspirin-upsa-po-500-mg', 'ceni-atenolol-50-mg', 'ceni-atorvastatin', 'ceni-avtoruchka-sharikovaya', 'ceni-azitromicin-500-mg', 'ceni-balansirovka-koles-legkovogo-avtomobilya', 'ceni-baranina-krome-beskostnogo-myasa', 'ceni-baranochnye-izdeliya', 'ceni-batareyki-elektricheskie-tipa-aa', 'ceni-bele-dlya-novorozhdennyh-i-detey-yaselnogo-vozrasta', 'ceni-benzin-avtomobilnyy', 'ceni-benzin-avtomobilnyy-marki-a-76-ai-80', 'ceni-betalok-zok', 'ceni-bint', 'ceni-bisakodil-5-mg', 'ceni-bisoprolol', 'ceni-bloki-stroitelnye', 'ceni-bluzka-dlya-devochek-shkolnogo-vozrasta', 'ceni-bluzka-zhenskaya', 'ceni-botinki-polubotinki-dlya-detey-doshkolnogo-vozrasta', 'ceni-botinki-polubotinki-dlya-detey-shkolnogo-vozrasta', 'ceni-britvennye-stanki-odnorazovye', 'ceni-bromgeksin-8-mg', 'ceni-bryuki-dlya-detey-doshkolnogo-vozrasta-rost-92-122-sm-iz-pol', 'ceni-bryuki-dlya-detey-shkolnogo-vozrasta-iz-dzhinsovoy-tkani', 'ceni-bryuki-dlya-detey-shkolnogo-vozrasta-iz-polusherstyanyh-ili', 'ceni-bryuki-iz-dzhinsovoy-tkani-dlya-detey-doshkolnogo-vozrasta-r', 'ceni-bryuki-muzhskie-iz-dzhinsovoy-tkani-dzhinsy', 'ceni-bryuki-muzhskie-iz-polusherstyanyh-ili-smesovyh-tkaney', 'ceni-bryuki-zhenskie-iz-dzhinsovoy-tkani-dzhinsy', 'ceni-bryuki-zhenskie-iz-polusherstyanyh-ili-smesovyh-tkaney', 'ceni-bulochnye-izdeliya-sdobnye-iz-muki-vysshego-sorta-shtuchnye', 'ceni-bumaga-ofisnaya', 'ceni-bumaga-tualetnaya', 'ceni-bumazhnye-nosovye-platki', 'ceni-bumazhnye-stolovye-salfetki', 'ceni-butylochka-dlya-kormleniya', 'ceni-byustgalter', 'ceni-cd-disk-s-zapisyu', 'ceni-ceftriakson', 'ceni-cement-tarirovannyy', 'ceni-cetirizin', 'ceni-cetrin', 'ceni-chasy-budilnik', 'ceni-chasy-naruchnye', 'ceni-chasy-naruchnye-kvarcevye', 'ceni-chasy-naruchnye-mehanicheskie', 'ceni-chay-chernyy-bayhovyy-paketirovannyy', 'ceni-chay-zelenyy', 'ceni-chaynik', 'ceni-chaynik-stalnoy-emalirovannyy', 'ceni-chemodan', 'ceni-chesnok', 'ceni-citramon', 'ceni-dezinficiruyuschee-sredstvo-dlya-poverhnostey', 'ceni-dezodorant', 'ceni-diagnostika-na-magnitno-rezonansnom-ili-kompyuternom-tomogra', 'ceni-diazolin-100-mg', 'ceni-diklofenak', 'ceni-diklofenak-rastvor-dlya-inekciy-75-mg', 'ceni-divan-krovat', 'ceni-dom-otdyha-pansionat', 'ceni-dopolnitelnye-zanyatiya-dlya-detey-doshkolnogo-vozrasta', 'ceni-dopolnitelnye-zanyatiya-v-gosudarstvennyh-i-municipalnyh-obs', 'ceni-doska-obreznaya', 'ceni-drel-elektricheskaya', 'ceni-drotaverin', 'ceni-drova', 'ceni-duhi-importnye', 'ceni-duhi-otechestvennye', 'ceni-dvd-disk-s-zapisyu', 'ceni-dzhemper-dlya-detey-shkolnogo-vozrasta', 'ceni-dzhemper-muzhskoy', 'ceni-dzhemper-sviter-dlya-detey-doshkolnogo-vozrasta-rost-92-122', 'ceni-dzhemper-zhenskiy', 'ceni-ekskursionnaya-poezdka-na-avtobuse-po-gorodam-evropy', 'ceni-ekskursionnaya-poezdka-v-finlyandiyu', 'ceni-ekskursionnaya-poezdka-v-germaniyu', 'ceni-ekskursionnaya-poezdka-vo-franciyu', 'ceni-ekskursionnye-tury-po-rossii', 'ceni-ekskursiya-avtobusnaya', 'ceni-elektrochaynik', 'ceni-elektroenergiya-v-kvartirah-bez-elektroplit-sverh-minimalnog', 'ceni-elektroenergiya-v-kvartirah-s-elektroplitami-sverh-minimalno', 'ceni-elektropylesos-napolnyy', 'ceni-elektroutyug', 'ceni-elektroutyug-moschnostyu-do-1800-vt-otechestvennyy-proizvods', 'ceni-elektroutyug-s-avtomaticheskim-termoregulyatorom-parouvlazhn', 'ceni-elektroutyug-s-termoregulyatorom-parouvlazhnitelem', 'ceni-enalapril', 'ceni-enterosgel', 'ceni-ergoferon', 'ceni-eritromicin-otechestvennyy-po-0-25-g', 'ceni-essenciale-forte-n-300-mg', 'ceni-eufillin-150-mg', 'ceni-evroshifer', 'ceni-ezhednevnaya-gazeta-v-roznicu', 'ceni-ezhenedelnaya-gazeta-v-roznicu', 'ceni-falimint-25-mg', 'ceni-file-rybnoe', 'ceni-file-seldi-solenoe', 'ceni-fizioterapevticheskoe-lechenie', 'ceni-flesh-nakopitel-usb', 'ceni-flukonazol-150-mg', 'ceni-fluocinolona-acetonid-0-025-maz', 'ceni-fosfogliv', 'ceni-fotoapparat', 'ceni-furosemid-40-mg', 'ceni-futbolka-detskaya', 'ceni-gastroskopiya-fgds-egds', 'ceni-gaz-setevoy-1755094', 'ceni-gaz-szhizhennyy', 'ceni-gaz-szhizhennyy-1755070', 'ceni-gaz-szhizhennyy-v-ballonah', 'ceni-gazeta-v-roznicu', 'ceni-gazovoe-motornoe-toplivo', 'ceni-gel-dlya-dusha', 'ceni-geparin-natriya-1000-me-g-gel', 'ceni-geparinovaya-maz', 'ceni-gipotiazid-25-mg', 'ceni-gipsokarton', 'ceni-glicin-100-mg', 'ceni-godovaya-stoimost-polisa-dobrovolnogo-strahovaniya-legkovogo', 'ceni-godovaya-stoimost-polisa-dobrovolnogo-strahovaniya-zhilya-ot', 'ceni-godovaya-stoimost-polisa-obyazatelnogo-strahovaniya-grazhdan', 'ceni-golovnoy-ubor-muzhskoy-iz-ovchiny-meha-krolika-ili-kombiniro', 'ceni-golovnoy-ubor-zhenskiy-iz-ovchiny-meha-krolika-iskusstvennog', 'ceni-goroh-i-fasol', 'ceni-goroshek-zelenyy-konservirovannyy', 'ceni-grammidin', 'ceni-griby-svezhie', 'ceni-grippferon', 'ceni-grushi', 'ceni-halat-zhenskiy', 'ceni-himchistka-muzhskogo-kostyuma', 'ceni-himicheskaya-zavivka-volos', 'ceni-hleb-i-bulochnye-izdeliya-iz-pshenichnoy-muki-1-i-2-sortov', 'ceni-hleb-i-bulochnye-izdeliya-iz-pshenichnoy-muki-vysshego-sorta', 'ceni-hlopya-iz-zlakov-suhie-zavtraki', 'ceni-hlorgeksidin', 'ceni-hlorgeksidin-rastvor-dlya-naruzhnogo-primeneniya-0-05', 'ceni-hloropiramin', 'ceni-holodilnik-dvuhkamernyy-emkostyu-250-350-l-importnyy', 'ceni-holodilnik-dvuhkamernyy-emkostyu-250-350-l-otechestvennyy', 'ceni-holodilnik-dvuhkamernyy-emkostyu-250-360-l', 'ceni-holodilnik-kompressionnyy-napolnyy-odnokamernyy-klass-emkost', 'ceni-holodilnik-minsk-biryusa-dvuh-trehkamernyy', 'ceni-holodilnik-zil-trehkamernyy-analogi-stinol-nord', 'ceni-ibuprofen', 'ceni-igrushki-myagkie', 'ceni-igrushki-plastmassovye-dlya-detey-yaselnogo-vozrasta', 'ceni-ikra-lososevyh-ryb-otechestvennaya', 'ceni-indapamid', 'ceni-ingalipt-aerozol-dlya-mestnogo-primeneniya', 'ceni-ingavirin', 'ceni-interferon-alfa-2v', 'ceni-izgotovlenie-fotografiy-dlya-dokumentov', 'ceni-izgotovlenie-groba', 'ceni-izgotovlenie-koronki', 'ceni-izgotovlenie-semnogo-zubnogo-proteza', 'ceni-kakao', 'ceni-kalmary-morozhenye', 'ceni-kanefron-n', 'ceni-karamel', 'ceni-karandash-chernografitnyy', 'ceni-kardiomagnil', 'ceni-kasseta-dlya-magnitofona-audiokasseta-importnaya-bez-zapisi', 'ceni-kastryulya', 'ceni-kastryulya-iz-emalirovannoy-ili-nerzhaveyuschey-stali', 'ceni-keksy-rulety', 'ceni-ketchup', 'ceni-ketoprofen-2-5-gel', 'ceni-ketorol-ekspress', 'ceni-ketorolak', 'ceni-kinoteatry', 'ceni-kirpich', 'ceni-kirpich-krasnyy', 'ceni-kislomolochnye-produkty', 'ceni-klinicheskiy-osmotr-zhivotnogo', 'ceni-klubnaya-karta-v-fitnes-centr', 'ceni-kniga-detektivno-priklyuchencheskogo-zhanra', 'ceni-kniga-hudozhestvennaya', 'ceni-kolbasa-varenaya-i-sorta', 'ceni-kolbasa-varenaya-vysshego-sorta', 'ceni-kolco-obruchalnoe-zolotoe', 'ceni-koldreks-poroshok-5-g', 'ceni-kolekalciferol-vitamin-d3', 'ceni-kolgotki-detskie', 'ceni-kolgotki-zhenskie-elastichnye', 'ceni-kolgotki-zhenskie-elastichnye-plotnostyu-15-20-den', 'ceni-kolgotki-zhenskie-elastichnye-plotnostyu-svyshe-20-den', 'ceni-kolyaska-dlya-novorozhdennogo', 'ceni-kombinaciya-zhenskaya-trikotazhnaya', 'ceni-kombinezon-kostyum-uteplennyy-dlya-detey-doshkolnogo-vozrast', 'ceni-kombinezon-uteplennyy-dlya-detey-do-odnogo-goda', 'ceni-kombinirovannye-analgetiki', 'ceni-kombinirovannye-kontraceptivy', 'ceni-kombinirovannyy-bilet-dlya-proezda-v-gorodskom-passazhirskom', 'ceni-komissiya-banka-za-perevod-sredstv-s-karty-na-kartu-klientu', 'ceni-kommutiruemyy-dostup-v-internet', 'ceni-komplekt-postelnogo-belya-iz-hlopchatobumazhnoy-tkani', 'ceni-komplekt-postelnogo-belya-polutoraspalnyy-iz-hlopchatobumazh', 'ceni-komplekt-stolovyh-priborov', 'ceni-komplekt-stolovyh-priborov-iz-nerzhaveyuschey-stali', 'ceni-komprimirovannyy-prirodnyy-gaz', 'ceni-kompyuter-personalnyy-perenosnoy-noutbuk', 'ceni-kompyuter-planshetnyy', 'ceni-konfety-myagkie-glazirovannye-shokoladom', 'ceni-konki', 'ceni-konki-rolikovye', 'ceni-konservy-fruktovo-yagodnye-dlya-detskogo-pitaniya', 'ceni-konservy-myasnye', 'ceni-konservy-myasnye-1846542', 'ceni-konservy-myasnye-dlya-detskogo-pitaniya', 'ceni-konservy-ovoschnye-dlya-detskogo-pitaniya', 'ceni-konservy-ovoschnye-zakusochnye-obedennye', 'ceni-konservy-rybnye-naturalnye-i-s-dobavleniem-masla', 'ceni-konservy-rybnye-naturalnye-i-s-dobavleniem-masla-1846540', 'ceni-konservy-rybnye-v-tomatnom-souse', 'ceni-konservy-rybnye-v-tomatnom-souse-1846574', 'ceni-konservy-tomatnye', 'ceni-konstruktor-detskiy-plastmassovyy', 'ceni-konyak-importnyy', 'ceni-konyak-ordinarnyy-otechestvennyy', 'ceni-korrigiruyuschie-ochki', 'ceni-korvalol', 'ceni-kostyum-dvoyka-muzhskoy-iz-sherstyanyh-polusherstyanyh-ili-s', 'ceni-kostyum-dvoyka-zhenskiy-iz-sherstyanyh-ili-polusherstyanyh-t', 'ceni-kostyum-dvoyka-zhenskiy-iz-trikotazhnogo-polotna', 'ceni-kostyum-sportivnyy-dlya-detey-shkolnogo-vozrasta', 'ceni-kostyum-sportivnyy-dlya-vzroslyh', 'ceni-kostyum-trikotazhnyy-dlya-detey-doshkolnogo-vozrasta', 'ceni-kostyum-trikotazhnyy-dlya-detey-yaselnogo-vozrasta', 'ceni-kover-kovrovoe-pokrytie-palas-sinteticheskiy', 'ceni-kover-sherstyanoy-polusherstyanoy', 'ceni-kraska-dlya-volos', 'ceni-kraski-maslyanye-emali', 'ceni-krem-detskiy', 'ceni-krem-dlya-lica', 'ceni-krem-dlya-lica-importnyy', 'ceni-krem-dlya-lica-otechestvennyy', 'ceni-krem-dlya-ruk', 'ceni-kremaciya', 'ceni-kreslo-detskoe-avtomobilnoe', 'ceni-kreslo-myagkoe', 'ceni-krevetki-morozhenye-nerazdelannye', 'ceni-krossovye-tufli-detskie-s-verhom-iz-naturalnoy-kozhi-razmer', 'ceni-krossovye-tufli-dlya-detey', 'ceni-krossovye-tufli-dlya-vzroslyh', 'ceni-krossovye-tufli-dlya-vzroslyh-s-verhom-iz-iskusstvennoy-kozh', 'ceni-krossovye-tufli-dlya-vzroslyh-s-verhom-iz-naturalnoy-kozhi', 'ceni-krovat-dlya-novorozhdennyh', 'ceni-krupy-ovsyanaya-i-perlovaya', 'ceni-kruzhka-chashka-chaynaya-s-blyudcem', 'ceni-ksarelto-20-mg', 'ceni-kserokopirovanie-dokumenta', 'ceni-ksilometazolin', 'ceni-kulinarnye-izdeliya-iz-pticy', 'ceni-kurerskaya-dostavka', 'ceni-kurtka-dlya-detey-doshkolnogo-vozrasta-demisezonnaya-s-verho', 'ceni-kurtka-dlya-detey-doshkolnogo-vozrasta-s-verhom-iz-plaschevy', 'ceni-kurtka-dlya-detey-doshkolnogo-vozrasta-zimnyaya-iz-smesovyh', 'ceni-kurtka-dlya-detey-shkolnogo-vozrasta-demisezonnaya-s-verhom', 'ceni-kurtka-dlya-detey-shkolnogo-vozrasta-s-verhom-iz-plaschevyh', 'ceni-kurtka-dlya-detey-shkolnogo-vozrasta-s-verhom-iz-plaschevyh-1709717', 'ceni-kurtka-dlya-detey-shkolnogo-vozrasta-zimnyaya-s-verhom-iz-pl', 'ceni-kurtka-muzhskaya-bez-uteplitelya-vetrovka', 'ceni-kurtka-muzhskaya-demisezonnaya-s-verhom-iz-plaschevyh-tkaney', 'ceni-kurtka-muzhskaya-iz-naturalnoy-kozhi', 'ceni-kurtka-muzhskaya-s-verhom-iz-plaschevyh-tkaney-uteplennaya', 'ceni-kurtka-muzhskaya-zimnyaya-s-verhom-iz-plaschevyh-tkaney', 'ceni-kurtka-zhenskaya-bez-uteplitelya-vetrovka', 'ceni-kurtka-zhenskaya-iz-naturalnoy-kozhi', 'ceni-laminat', 'ceni-lampa-elektricheskaya-osvetitelnaya', 'ceni-lampa-energosberegayuschaya', 'ceni-lampa-svetodiodnaya', 'ceni-lechebnyy-massazh', 'ceni-lechenie-kariesa', 'ceni-legkovoy-avtomobil-importnyy-novyy', 'ceni-legkovoy-avtomobil-importnyy-poderzhannyy', 'ceni-legkovoy-avtomobil-inostrannoy-marki-novyy', 'ceni-legkovoy-avtomobil-inostrannoy-marki-sobrannyy-na-avtomobiln', 'ceni-legkovoy-avtomobil-otechestvennyy-novyy', 'ceni-levomekol-maz', 'ceni-likery-desertnye-krepostyu-do-28-ob-spirta', 'ceni-limony', 'ceni-lineks', 'ceni-linoleum', 'ceni-lizobakt', 'ceni-lopata-sadovaya', 'ceni-loperamid', 'ceni-loratadin-10-mg', 'ceni-lozartan', 'ceni-magne-v6', 'ceni-magnitola-stereo', 'ceni-manikyur', 'ceni-margarin', 'ceni-mashina-shveynaya', 'ceni-mashina-stiralnaya-avtomaticheskaya', 'ceni-mashina-stiralnaya-avtomaticheskaya-importnaya', 'ceni-mashina-stiralnaya-avtomaticheskaya-otechestvennaya', 'ceni-mashina-stiralnaya-malogabaritnaya', 'ceni-maslo-podsolnechnoe-1709737', 'ceni-matras-detskiy', 'ceni-matras-dlya-vzroslyh', 'ceni-mayka-detskaya', 'ceni-mayka-futbolka-muzhskaya-belevaya', 'ceni-mayka-futbolka-zhenskaya-belevaya', 'ceni-mayonez', 'ceni-med-pchelinyy-naturalnyy', 'ceni-mehovoy-golovnoy-ubor-detskiy', 'ceni-mehovoy-golovnoy-ubor-muzhskoy-iz-naturalnogo-meha', 'ceni-mehovoy-golovnoy-ubor-zhenskiy-iz-naturalnogo-meha', 'ceni-meloksikam', 'ceni-menovazin', 'ceni-metallocherepica', 'ceni-metamizol-natriya', 'ceni-metiluracil-10-maz', 'ceni-metoprolol', 'ceni-mezhdugorodnaya-telefonnaya-svyaz', 'ceni-midokalm-150-mg', 'ceni-mikser-blender', 'ceni-mini-traktor-otechestvennyy', 'ceni-miramistin-0-01', 'ceni-molochnyy-napitok-pasterizovannyy-2-5-3-2-zhirnosti', 'ceni-molochnyy-napitok-sterilizovannyy-2-5-3-2-zhirnosti', 'ceni-moloko-celnoe-pasterizovannoe-sterilizovannoe-2-5-3-2-zhirno', 'ceni-moloko-celnoe-razlivnoe', 'ceni-moloko-dlya-detey', 'ceni-moloko-pitevoe-celnoe-pasterizovannoe-bolee-3-2-zhirnosti', 'ceni-moloko-pitevoe-celnoe-sterilizovannoe-2-5-3-2-zhirnosti', 'ceni-moloko-sguschennoe-s-saharom', 'ceni-moloko-sguschennoe-s-saharom-1846539', 'ceni-moloko-suhoe-celnoe', 'ceni-monitor-dlya-nastolnogo-kompyutera', 'ceni-monoblok', 'ceni-morozhenoe-slivochnoe', 'ceni-morozhenoe-slivochnoe-importnoe', 'ceni-morozhenoe-slivochnoe-otechestvennoe', 'ceni-morozilnik-emkostyu-200-240-l-otechestvennyy', 'ceni-motocikl-bez-kolyaski-skuter', 'ceni-motocikl-s-kolyaskoy-otechestvennyy', 'ceni-moyka-dlya-kuhni', 'ceni-moyka-iz-nerzhaveyuschey-stali-dlya-kuhni', 'ceni-moyka-legkovogo-avtomobilya', 'ceni-mukaltin', 'ceni-muzei-i-vystavki', 'ceni-muzykalnyy-centr', 'ceni-myach-futbolnyy', 'ceni-myach-sportivnyy', 'ceni-myaso-indeyki', 'ceni-myasokopchenosti', 'ceni-mylo-hozyaystvennoe', 'ceni-mylo-tualetnoe', 'ceni-mylo-tualetnoe-zhidkoe', 'ceni-nabor-flomasterov', 'ceni-nabor-korpusnoy-mebeli', 'ceni-nabor-kuhonnoy-mebeli', 'ceni-nabor-mebeli-dlya-spalni', 'ceni-nabor-myagkoy-mebeli', 'ceni-nabor-myagkoy-mebeli-divan-i-dva-kresla-obivka-iz-dekorativn', 'ceni-nabor-myagkoy-mebeli-divan-i-dva-kresla-obivka-iz-vorsovyh-t', 'ceni-nachalnyy-kurs-obucheniya-vozhdeniyu-legkovogo-avtomobilya', 'ceni-nacionalnye-syry-i-brynza', 'ceni-naem-zhilyh-pomescheniy-v-gosudarstvennom-i-municipalnom-zhi', 'ceni-nafazolin-0-1', 'ceni-napitki-gazirovannye', 'ceni-nastoyka-boyaryshnika', 'ceni-nastoyka-pustyrnika', 'ceni-nastoyki-gorkie-krepostyu-svyshe-28-ob-spirta', 'ceni-natriya-hlorid-0-9', 'ceni-naushniki-besprovodnye', 'ceni-navolochka-iz-hlopchatobumazhnoy-tkani', 'ceni-nimesulid', 'ceni-nitki-shveynye', 'ceni-nitroglicerin-0-5-mg', 'ceni-noski-golfy-detskie', 'ceni-noski-golfy-zhenskie', 'ceni-noski-muzhskie', 'ceni-obed-v-restorane', 'ceni-obed-v-stolovoy-kafe-zakusochnoy-krome-stolovoy-v-organizaci', 'ceni-obed-v-stolovoy-v-organizacii', 'ceni-oboi-bumazhnye', 'ceni-oboi-vinilovye', 'ceni-obraschenie-s-tverdymi-kommunalnymi-othodami', 'ceni-obschiy-analiz-krovi', 'ceni-obsluzhivanie-bankovskoy-karty-v-nacionalnoy-valyute', 'ceni-obuchenie-v-gosudarstvennyh-i-municipalnyh-obrazovatelnyh-or', 'ceni-obuchenie-v-negosudarstvennyh-obrazovatelnyh-organizaciyah-v', 'ceni-obuchenie-v-negosudarstvennyh-obscheobrazovatelnyh-organizac', 'ceni-obuchenie-v-obrazovatelnyh-organizaciyah-srednego-profession', 'ceni-obuv-domashnyaya-s-tekstilnym-verhom-dlya-detey', 'ceni-obuv-domashnyaya-s-tekstilnym-verhom-dlya-vzroslyh', 'ceni-odekolon', 'ceni-odeyalo-steganoe', 'ceni-oformlenie-doverennosti-v-notarialnoy-kontore', 'ceni-oftan-katahrom', 'ceni-okorochka-kurinye', 'ceni-omeprazol', 'ceni-orehi', 'ceni-oseltamivir-nomides-75-mg', 'ceni-otinum-kapli-20', 'ceni-otoplenie-1785748', 'ceni-otpravka-telegrammy-obyknovennoy-vnutrenney', 'ceni-ovoschi-naturalnye-konservirovannye-marinovannye', 'ceni-ovoschi-zamorozhennye', 'ceni-ovsyanye-hlopya-gerkules', 'ceni-palto-detskoe-mehovoe-ili-dublenka', 'ceni-palto-polupalto-dlya-detey-shkolnogo-vozrasta-demisezonnoe-s', 'ceni-palto-polupalto-zhenskoe-s-verhom-iz-plaschevyh-tkaney', 'ceni-palto-polupalto-zimnee-zhenskoe-s-verhom-iz-smesovyh-tkaney', 'ceni-palto-zhenskoe-demisezonnoe-iz-sherstyanyh-ili-polusherstyan', 'ceni-palto-zhenskoe-iz-karakulya', 'ceni-palto-zhenskoe-iz-nutrii', 'ceni-palto-zhenskoe-mehovoe-i-dublenka', 'ceni-palto-zhenskoe-zimnee', 'ceni-palto-zhenskoe-zimnee-iz-sherstyanyh-ili-polusherstyanyh-tka', 'ceni-pankreatin', 'ceni-papirosy', 'ceni-paracetamol', 'ceni-pasta-zubnaya', 'ceni-pasta-zubnaya-importnaya', 'ceni-pasta-zubnaya-otechestvennaya', 'ceni-pech-mikrovolnovaya', 'ceni-pechat-cvetnyh-fotografiy', 'ceni-pechen-govyazhya', 'ceni-pechen-govyazhya-svinaya', 'ceni-pechen-pticy', 'ceni-pechene', 'ceni-pelenki-dlya-novorozhdennyh', 'ceni-pena-dlya-britya', 'ceni-pentalgin', 'ceni-perchatki-iz-naturalnoy-kozhi', 'ceni-perchatki-trikotazhnye-muzhskie', 'ceni-perchatki-trikotazhnye-zhenskie', 'ceni-perec-chernyy-goroshek', 'ceni-perec-sladkiy-svezhiy', 'ceni-peresylka-prostogo-pisma-vnutri-rossii-massoy-do-20-g', 'ceni-perevod-denezhnyh-sredstv-dlya-zachisleniya-na-schet-drugogo', 'ceni-perevod-summy-so-vklada-v-predelah-sistemy-sberbanka-rossii', 'ceni-pervichnyy-konsultativnyy-osmotr-bolnogo-u-stomatologa', 'ceni-pervichnyy-konsultativnyy-priem-u-vracha-specialista', 'ceni-pidzhak-zhaket-zhenskiy', 'ceni-pilomaterialy-neobreznye-hvoynyh-porod', 'ceni-pivo-otechestvennoe', 'ceni-pivo-zarubezhnyh-torgovyh-marok', 'ceni-pizhama-detskaya', 'ceni-plasch-muzhskoy-iz-smesovyh-tkaney', 'ceni-plasch-zhenskiy', 'ceni-plata-za-ishodyaschee-sms-soobschenie', 'ceni-plata-za-peresylku-prostoy-posylki-vnutri-rossii-massoy-1-2', 'ceni-plata-za-polzovanie-potrebitelskim-kreditom-procentnaya-stav', 'ceni-plata-za-zhile-v-domah-gosudarstvennogo-i-municipalnogo-zhil', 'ceni-plate-dlya-devochek-doshkolnogo-vozrasta-rost-92-122-sm-iz-p', 'ceni-plate-plate-kostyum-sarafan-dlya-devochek-shkolnogo-vozrasta', 'ceni-plate-plate-kostyum-zhenskoe-iz-hlopchatobumazhnyh-ili-smeso', 'ceni-plate-plate-kostyum-zhenskoe-iz-polusherstyanyh-ili-smesovyh', 'ceni-plate-plate-kostyum-zhenskoe-iz-polusherstyanyh-smesovyh-tka', 'ceni-plate-sarafan-dlya-devochek-shkolnogo-vozrasta-iz-hlopchatob', 'ceni-plate-sarafan-letnee-dlya-devochek-doshkolnogo-vozrasta', 'ceni-plate-zhenskoe-iz-smesovyh-tkaney-ili-legkogo-trikotazhnogo', 'ceni-platok-nosovoy', 'ceni-plita-bytovaya', 'ceni-plitka-keramicheskaya-oblicovochnaya-dlya-vnutrennih-rabot', 'ceni-plity-drevesnostruzhechnye-orientirovanno-struzhechnye', 'ceni-podgotovka-yuristom-iskovogo-zayavleniya-v-sud-o-rastorzheni', 'ceni-podguzniki-detskie-bumazhnye', 'ceni-pododeyalnik-iz-hlopchatobumazhnoy-tkani', 'ceni-podpiska-na-onlayn-videoservisy', 'ceni-podushka', 'ceni-poezdka-na-otdyh-v-ispaniyu', 'ceni-poezdka-na-otdyh-v-oae', 'ceni-poezdka-na-otdyh-v-tailand', 'ceni-poezdka-v-belarus', 'ceni-poezdka-v-greciyu', 'ceni-poezdka-v-kitay', 'ceni-poezdki-v-otdelnye-strany-blizhnego-vostoka', 'ceni-poezdki-v-otdelnye-strany-sredizemnomorya', 'ceni-poezdki-v-otdelnye-strany-sredney-azii', 'ceni-poezdki-v-otdelnye-strany-yugo-vostochnoy-azii', 'ceni-poezdki-v-otdelnye-strany-yuzhnoy-azii', 'ceni-poezdki-v-strany-zakavkazya', 'ceni-pogrebenie', 'ceni-polet-v-salone-ekonomicheskogo-klassa-samoleta', 'ceni-polivitaminy', 'ceni-polivitaminy-bez-mineralov-otechestvennye', 'ceni-polivitaminy-importnye', 'ceni-polivitaminy-s-makro-i-mikroelementami', 'ceni-polotence-bannoe', 'ceni-polotence-kuhonnoe', 'ceni-polotence-lichnoe', 'ceni-polubotinki-muzhskie-s-verhom-iz-iskusstvennoy-kozhi', 'ceni-polubotinki-tufli-muzhskie-s-verhom-iz-naturalnoy-kozhi', 'ceni-polzovanie-obschestvennym-tualetom', 'ceni-polzunki-iz-hlopchatobumazhnogo-trikotazhnogo-polotna', 'ceni-pomada', 'ceni-pomyvka-v-bane-v-obschem-otdelenii', 'ceni-poroshkoobraznye-chistyaschie-sredstva', 'ceni-poroshok-stiralnyy', 'ceni-poshiv-bryuk', 'ceni-poshiv-zhenskogo-platya', 'ceni-postanovka-naboek', 'ceni-povtornoe-poluchenie-gerbovogo-dokumenta-v-organah-zags', 'ceni-prebyvanie-pacienta-v-kruglosutochnom-stacionare', 'ceni-predostavlenie-abonentu-v-postoyannoe-polzovanie-abonentskoy', 'ceni-predostavlenie-mestnogo-soedineniya-razgovora-po-sotovoy-svy', 'ceni-predostavlenie-mestnogo-telefonnogo-soedineniya-pri-povremen', 'ceni-predostavlenie-mezhdugorodnyh-telefonnyh-soedineniy-razgovor', 'ceni-predostavlenie-mezhdugorodnyh-telefonnyh-soedineniy-razgovor-1755097', 'ceni-preservy-rybnye', 'ceni-privivka-zhivotnogo', 'ceni-produkciya-predpriyatiy-obschestvennogo-pitaniya-bystrogo-ob', 'ceni-proezd-v-gorodskom-kommercheskom-avtobuse', 'ceni-proezd-v-gorodskom-municipalnom-avtobuse', 'ceni-proezd-v-kupeynom-vagone-skorogo-firmennogo-poezda-dalnego-s', 'ceni-proezd-v-plackartnom-vagone-skorogo-firmennogo-poezda-dalneg', 'ceni-proezd-v-sidyachih-vagonah-v-skorostnyh-poezdah-dalnego-sled', 'ceni-proigryvatel-multimedia', 'ceni-prokladki-zhenskie-gigienicheskie', 'ceni-prokladki-zhenskie-gigienicheskie-ezhednevnye', 'ceni-prostynya-iz-hlopchatobumazhnoy-tkani', 'ceni-prozhivanie-v-gostinice', 'ceni-prozhivanie-v-gostinice-1-ili-v-motele', 'ceni-prozhivanie-v-gostinice-2', 'ceni-prozhivanie-v-gostinice-3', 'ceni-prozhivanie-v-gostinice-4-5', 'ceni-prozhivanie-v-hostele', 'ceni-prozhivanie-v-studencheskom-obschezhitii', 'ceni-pryaniki', 'ceni-psheno', 'ceni-ranec-ryukzak-dlya-shkolnikov', 'ceni-rascheska-plastmassovaya', 'ceni-rechnoy-kruiz-na-territorii-rossii', 'ceni-regulirovka-razvala-shozhdeniya-koles-legkovogo-avtomobilya', 'ceni-remen-muzhskoy', 'ceni-remont-bryuk', 'ceni-remont-chasov-naruchnyh-mehanicheskih', 'ceni-remont-holodilnikov', 'ceni-remont-importnyh-televizorov-cvetnogo-izobrazheniya', 'ceni-remont-malyh-elektrobytovyh-priborov', 'ceni-remont-otechestvennyh-televizorov-cvetnogo-izobrazheniya', 'ceni-remont-televizorov', 'ceni-remont-televizorov-cvetnogo-izobrazheniya', 'ceni-rengalin', 'ceni-rengalin-1848407', 'ceni-renni', 'ceni-rimantadin', 'ceni-robot-pylesos', 'ceni-rozuvastatin', 'ceni-rubashka-verhnyaya-dlya-malchikov-doshkolnogo-vozrasta', 'ceni-ruberoid', 'ceni-ryba-morozhenaya-razdelannaya-krome-lososevyh-porod', 'ceni-ryba-zhivaya-i-ohlazhdennaya', 'ceni-ryte-mogily', 'ceni-ryte-mogily-mehanicheskim-sposobom-na-novom-meste-zahoroneni', 'ceni-ryte-mogily-ruchnym-sposobom-na-novom-meste-zahoroneniya', 'ceni-ryte-mogily-ruchnym-sposobom-na-rodstvennom-meste-zahoroneni', 'ceni-ryukzak-dlya-vzroslyh', 'ceni-ryumka-fuzher-iz-prostogo-stekla', 'ceni-salfetki-vlazhnye', 'ceni-salicilovaya-kislota', 'ceni-sanatoriy', 'ceni-sanitarno-gigienicheskaya-maska-medicinskaya', 'ceni-sapogi-botinki-dlya-detey-shkolnogo-vozrasta-zimnie-s-verhom', 'ceni-sapogi-botinki-muzhskie-zimnie-s-verhom-iz-naturalnoy-kozhi', 'ceni-sapogi-botinki-zimnie-dlya-detey-shkolnogo-vozrasta-na-utepl', 'ceni-sapogi-botinki-zimnie-valenki-dlya-detey-doshkolnogo-vozrast', 'ceni-sapogi-celnorezinovye-dlya-detey', 'ceni-sapogi-celnorezinovye-dlya-vzroslyh', 'ceni-sapogi-muzhskie-na-uteplennoy-podkladke-krome-naturalnogo-me', 'ceni-sapogi-sapozhki-botinki-zhenskie-osennie-s-verhom-iz-iskusst', 'ceni-sapogi-zhenskie-demisezonnye-s-verhom-iz-naturalnoy-kozhi', 'ceni-sapogi-zhenskie-osennie-s-verhom-iz-naturalnoy-kozhi', 'ceni-sapogi-zhenskie-osennie-vysokie-s-verhom-iz-naturalnoy-kozhi', 'ceni-sapogi-zhenskie-zimnie-na-uteplennoy-podkladke-krome-natural', 'ceni-sapogi-zhenskie-zimnie-s-verhom-iz-naturalnoy-kozhi', 'ceni-sapozhki-zhenskie-korotkie-botinki-s-verhom-iz-naturalnoy-ko', 'ceni-schetka-zubnaya', 'ceni-seld-solenaya', 'ceni-sennozidy-a-i-b', 'ceni-shampun', 'ceni-sharf-dlya-vzroslyh', 'ceni-sharf-iz-sherstyanoy-polusherstyanoy-sinteticheskoy-ili-smes', 'ceni-sharf-sherstyanoy', 'ceni-shifer', 'ceni-shinomontazh-koles-legkovogo-avtomobilya', 'ceni-shiny-dlya-legkovogo-avtomobilya', 'ceni-shkaf-dlya-platya-i-belya', 'ceni-shkaf-navesnoy-kuhonnyy-polka', 'ceni-shkaf-navesnoy-kuhonnyy-polka-dvuhstvorchatyy', 'ceni-shkaf-veshalka-dlya-prihozhey', 'ceni-shpricy-odnorazovye', 'ceni-sigarety-bez-filtra-otechestvennye', 'ceni-sigarety-s-filtrom-otechestvennye', 'ceni-sigarety-s-filtrom-zarubezhnyh-torgovyh-marok', 'ceni-sinupret', 'ceni-sinupret-1848524', 'ceni-sitec-nabivnoy-otechestvennyy', 'ceni-skovoroda', 'ceni-skovoroda-s-antiprigarnym-pokrytiem', 'ceni-slivki-pitevye', 'ceni-smart-chasy', 'ceni-smartfon', 'ceni-smekta-poroshok-3-g', 'ceni-smesi-suhie-molochnye-dlya-detskogo-pitaniya', 'ceni-soderzhanie-i-remont-zhilya-v-gosudarstvennom-i-municipalnom', 'ceni-soki-fruktovye', 'ceni-sol-yodirovannaya-pischevaya', 'ceni-solenye-i-kopchenye-delikatesnye-produkty-iz-ryby', 'ceni-sorochka-nochnaya-zhenskaya', 'ceni-sorochka-verhnyaya-dlya-malchikov-shkolnogo-vozrasta', 'ceni-sorochka-verhnyaya-muzhskaya-iz-hlopchatobumazhnyh-ili-smeso', 'ceni-sosiski-sardelki', 'ceni-soska-pustyshka-detskaya', 'ceni-spazmalgon', 'ceni-spichki', 'ceni-spironolakton', 'ceni-steklo-okonnoe-listovoe', 'ceni-stirka-i-glazhenie-belya-pryamogo', 'ceni-stoimost-startovogo-komplekta-za-podklyuchenie-k-operatoru-s', 'ceni-stol-obedennyy', 'ceni-stol-pismennyy', 'ceni-stol-rabochiy-kuhonnyy', 'ceni-strepsils-tabletki-dlya-rassasyvaniya', 'ceni-stul-s-myagkim-sidenem', 'ceni-suhie-korma-dlya-domashnih-zhivotnyh', 'ceni-suhie-pripravy-specii', 'ceni-suhie-supy-v-paketah', 'ceni-suhie-supy-v-paketah-1846550', 'ceni-suhofrukty', 'ceni-sulfacetamid-20', 'ceni-sumka-zhenskaya', 'ceni-sumka-zhenskaya-s-verhom-iz-iskusstvennoy-kozhi', 'ceni-sumka-zhenskaya-s-verhom-iz-naturalnoy-kozhi', 'ceni-suprastin', 'ceni-svekla-stolovaya', 'ceni-svetilnik-potolochnyy', 'ceni-svezhesrezannye-cvety', 'ceni-syrki-tvorozhnye-glazirovannye', 'ceni-syrki-tvorozhnye-glazirovannye-shokoladom', 'ceni-syrki-tvorozhnye-glazirovannye-shokoladom-1846554', 'ceni-syry-plavlenye', 'ceni-syry-sychuzhnye-tverdye-i-myagkie', 'ceni-taburet-dlya-kuhni', 'ceni-tarelka-obedennaya', 'ceni-tarelka-obedennaya-melkaya-ili-glubokaya', 'ceni-taurin-4', 'ceni-teatry', 'ceni-telefonnyy-apparat-otechestvennyy', 'ceni-telefonnyy-apparat-sotovoy-svyazi-v-komplekte', 'ceni-telefonnyy-apparat-stacionarnyy', 'ceni-televizor-cvetnogo-izobrazheniya', 'ceni-televizor-cvetnogo-izobrazheniya-otechestvennyy-razmer-ekran', 'ceni-televizor-cvetnogo-izobrazheniya-razmer-ekrana-po-diagonali', 'ceni-termometr-medicinskiy-bezrtutnyy-galinstanovyy', 'ceni-termometr-medicinskiy-elektronnyy-standartnyy', 'ceni-termometr-medicinskiy-rtutnyy', 'ceni-tetrad-shkolnaya', 'ceni-timolol-kapli-glaznye-0-25', 'ceni-tkan-kostyumnaya-polusherstyanaya', 'ceni-tkan-kostyumnaya-sherstyanaya', 'ceni-tkan-kostyumnaya-sherstyanaya-i-polusherstyanaya', 'ceni-tkan-platevaya-iz-iskusstvennogo-ili-sinteticheskogo-shelka', 'ceni-tkani-dekorativnye-dlya-izgotovleniya-shtor-i-zanavesey', 'ceni-tkani-hlopchatobumazhnye-belevye', 'ceni-tkani-lnyanye-polulnyanye-prostynnye', 'ceni-torf', 'ceni-torty', 'ceni-trekrezan', 'ceni-trikotazhnaya-shapochka-detskaya', 'ceni-trikotazhnyy-golovnoy-ubor-dlya-vzroslyh', 'ceni-trikotazhnyy-golovnoy-ubor-muzhskoy', 'ceni-trikotazhnyy-golovnoy-ubor-zhenskiy', 'ceni-trimmer', 'ceni-trokserutin-2-gel', 'ceni-trusy-detskie', 'ceni-trusy-muzhskie', 'ceni-trusy-muzhskie-iz-hlopchatobumazhnogo-trikotazhnogo-polotna', 'ceni-trusy-muzhskie-iz-hlopchatobumazhnoy-tkani', 'ceni-trusy-zhenskie', 'ceni-tualetnaya-voda', 'ceni-tufli-detskie-letnie-sandalety', 'ceni-tufli-letnie-bosonozhki-zhenskie-iz-naturalnoy-kozhi', 'ceni-tufli-zhenskie-letnie-bosonozhki', 'ceni-tufli-zhenskie-letnie-bosonozhki-s-verhom-iz-iskusstvennoy-k', 'ceni-tufli-zhenskie-modelnye-s-verhom-iz-naturalnoy-kozhi', 'ceni-tufli-zhenskie-zakrytye', 'ceni-tufli-zhenskie-zakrytye-s-verhom-iz-iskusstvennoy-kozhi', 'ceni-tufli-zhenskie-zakrytye-s-verhom-iz-naturalnoy-kozhi', 'ceni-tush-dlya-resnic', 'ceni-tvorog-nezhirnyy', 'ceni-tvorog-zhirnyy', 'ceni-tvorozhok-detskiy', 'ceni-tyul-polotno-gardinnoe', 'ceni-uchebnik-uchebnoe-posobie-didakticheskiy-material-dlya-obsch', 'ceni-udalenie-zuba-pod-mestnym-obezbolivaniem', 'ceni-udostoverenie-zaveschaniya-v-notarialnoy-kontore', 'ceni-ugol', 'ceni-ultrazvukovoe-issledovanie-bryushnoy-polosti', 'ceni-umifenovir-arbidol-100-mg', 'ceni-uslugi-arendy-avtomobiley', 'ceni-uslugi-organizatora-provedeniya-torzhestv', 'ceni-uslugi-po-organizacii-i-vypolneniyu-rabot-po-ekspluatacii-do', 'ceni-uslugi-po-snabzheniyu-elektroenergiey', 'ceni-uslugi-po-vospitaniyu-detey-predostavlyaemye-naemnym-persona', 'ceni-uslugi-sidelok', 'ceni-ustanovka-natyazhnogo-potolka', 'ceni-ustanovka-plastikovyh-okon', 'ceni-ustnaya-konsultaciya-yurista-po-semeynym-voprosam', 'ceni-uzhin-v-restorane', 'ceni-valeriany-ekstrakt', 'ceni-validol', 'ceni-valokordin', 'ceni-valoserdin', 'ceni-varene-dzhem-povidlo', 'ceni-varezhki-perchatki-detskie', 'ceni-vata', 'ceni-vata-otechestvennaya', 'ceni-velosiped-dlya-doshkolnikov', 'ceni-velosiped-dorozhnyy-dlya-vzroslyh', 'ceni-vermishel', 'ceni-veroshpiron', 'ceni-videokasseta-bez-zapisi', 'ceni-videomagnitofon', 'ceni-videopleer-pishuschiy-importnyy', 'ceni-vino-igristoe-importnoe', 'ceni-vino-igristoe-otechestvennoe', 'ceni-vino-vinogradnoe-kreplenoe', 'ceni-vino-vinogradnoe-kreplenoe-krepostyu-do-20-ob-spirta', 'ceni-vino-vinogradnoe-stolovoe', 'ceni-vino-vinogradnoe-stolovoe-suhoe-polusuhoe-polusladkoe-krepos', 'ceni-vinograd', 'ceni-vinpocetin-5-mg', 'ceni-voda-mineralnaya', 'ceni-voda-mineralnaya-i-pitevaya', 'ceni-voda-pitevaya', 'ceni-vodka-krepostyu-40-i-vyshe-obyknovennogo-kachestva-tipa-rasp', 'ceni-vodka-krepostyu-40-ob-spirta-i-vyshe', 'ceni-vodka-krepostyu-40-ob-spirta-i-vyshe-obyknovennogo-kachestva', 'ceni-vodka-krepostyu-40-ob-spirta-i-vyshe-povyshennogo-kachestva', 'ceni-vodka-krepostyu-40-ob-spirta-i-vyshe-povyshennogo-kachestva-1785701', 'ceni-vodka-krepostyu-40-ob-spirta-i-vyshe-povyshennogo-kachestva-1785754', 'ceni-vodootvedenie-1785688', 'ceni-vodoroda-peroksid', 'ceni-vodosnabzhenie-goryachee', 'ceni-vodosnabzhenie-holodnoe', 'ceni-vodosnabzhenie-holodnoe-i-vodootvedenie', 'ceni-vodosnabzhenie-holodnoe-i-vodootvedenie-1759589', 'ceni-vosstanovlenie-zuba-plomboy', 'ceni-vypolnenie-malyarnyh-rabot', 'ceni-vypolnenie-oboynyh-rabot', 'ceni-vypolnenie-rabot-po-oblicovke-kafelnoy-plitkoy', 'ceni-vznosy-na-kapitalnyy-remont', 'ceni-yagody-zamorozhennye', 'ceni-yod', 'ceni-yogurt', 'ceni-yogurt-1846538', 'ceni-yubka-dlya-devochek-shkolnogo-vozrasta', 'ceni-yubka-zhenskaya-iz-polusherstyanyh-ili-smesovyh-tkaney', 'ceni-zamena-elementov-pitaniya-v-naruchnyh-chasah', 'ceni-zanyatiya-na-kursah-inostrannyh-yazykov', 'ceni-zanyatiya-na-kursah-professionalnogo-obucheniya', 'ceni-zanyatiya-v-gruppah-obschey-fizicheskoy-podgotovki', 'ceni-zanyatiya-v-plavatelnyh-basseynah', 'ceni-zefir-pastila', 'ceni-zelen-svezhaya', 'ceni-zemlya-dlya-rasteniy', 'ceni-zerkalo-navesnoe-dlya-vannoy-komnaty', 'ceni-zhevatelnaya-rezinka', 'ceni-zhidkie-chistyaschie-i-moyuschie-sredstva', 'ceni-zhidkie-sredstva-dlya-stirki', 'ceni-zont' | [backend/app/data/i18n/price_goods_en.py:11](../backend/app/data/i18n/price_goods_en.py#L11) |
 | app.data.i18n.price_goods_en._UNIT_FIX | Dict | 'ceni-askorbinovaya-kislota', 'ceni-polivitaminy', 'ceni-polivitaminy-bez-mineralov-otechestvennye', 'ceni-polivitaminy-importnye', 'ceni-polivitaminy-s-makro-i-mikroelementami', 'ceni-podguzniki-detskie-bumazhnye', 'ceni-prokladki-zhenskie-gigienicheskie', 'ceni-prokladki-zhenskie-gigienicheskie-ezhednevnye', 'ceni-bloki-stroitelnye', 'ceni-kirpich', 'ceni-kirpich-krasnyy', 'ceni-kombinirovannye-kontraceptivy', 'ceni-kolco-obruchalnoe-zolotoe', 'ceni-plata-za-polzovanie-potrebitelskim-kreditom-procentnaya-stav' | [backend/app/data/i18n/price_goods_en.py:818](../backend/app/data/i18n/price_goods_en.py#L818) |
@@ -2883,16 +2885,16 @@ Relationships: `[]`
 | app.data.i18n.regions_en.FEDERAL_DISTRICTS_EN | Dict | 'cfo', 'szfo', 'ufo-south', 'skfo', 'pfo', 'urfo', 'sfo', 'dfo' | [backend/app/data/i18n/regions_en.py:116](../backend/app/data/i18n/regions_en.py#L116) |
 | app.data.i18n.regions_en.CONTESTED_REGION_NAMES_EN | List | sequence/source expression | [backend/app/data/i18n/regions_en.py:128](../backend/app/data/i18n/regions_en.py#L128) |
 | app.data.i18n.seo_en.CATEGORY_META_EN | Dict | 'prices', 'rates', 'currencies', 'indices', 'finance', 'commodities', 'labor', 'gdp', 'population', 'trade', 'business', 'science', 'tourism' | [backend/app/data/i18n/seo_en.py:27](../backend/app/data/i18n/seo_en.py#L27) |
-| app.data.i18n.seo_en.PAGE_META_EN | Dict | 'home', 'about', 'research', 'methodology', 'privacy', 'terms', 'compare', 'forecasts', 'calculator', 'calculator-mortgage', 'calculator-compound', 'calendar', 'demographics', 'widgets', 'russia', 'russia-categories' | [backend/app/data/i18n/seo_en.py:307](../backend/app/data/i18n/seo_en.py#L307) |
-| app.data.i18n.seo_en.HOME_TEMPLATES_EN | Dict | 'eyebrow', 'h2_countries', 'h2_flagships', 'h2_tools', 'itemlist_countries', 'itemlist_flagships' | [backend/app/data/i18n/seo_en.py:830](../backend/app/data/i18n/seo_en.py#L830) |
-| app.data.i18n.seo_en.PAGE_TEMPLATES_EN | Dict | 'h2_related', 'h2_categories', 'h2_section_indicators' | [backend/app/data/i18n/seo_en.py:844](../backend/app/data/i18n/seo_en.py#L844) |
-| app.data.i18n.seo_en.WORLD_TEMPLATES_EN | Dict | 'country_title', 'country_h1', 'country_desc_national', 'country_desc_eurostat', 'indicator_title', 'indicator_desc', 'indicator_h1', 'rating_title', 'rating_title_year', 'rating_title_for_year', 'rating_desc', 'rating_intro', 'n_indicators_one', 'n_indicators_many', 'keywords_rating', 'keywords_country', 'keywords_indicator', 'rating_eyebrow', 'rating_th_rank', 'rating_th_country', 'rating_th_value', 'rating_th_unit', 'rating_th_period', 'rating_h2_full', 'rating_h2_missing', 'rating_missing_p', 'rating_h2_other', 'rating_h2_years', 'rating_h2_source', 'rating_source_p', 'rating_tile_first', 'rating_tile_last', 'rating_tile_with_data', 'rating_tile_last_date', 'rating_no_data', 'rating_unit_fallback', 'rating_of_total', 'rating_money_guard', 'rating_index_guard', 'rating_with_data', 'rating_without_data', 'country_eyebrow_national', 'country_eyebrow_eurostat', 'country_lead_national', 'country_lead_eurostat', 'country_h2_key', 'country_h2_main', 'country_figure_year_ago', 'country_figure_real', 'country_figure_yoy', 'country_h2_source', 'country_source_national', 'country_source_eurostat', 'country_figcaption', 'country_h2_neighbors', 'country_image_name', 'country_section_total', 'country_h2_russia', 'country_russia_p', 'th_indicator', 'th_value', 'th_period', 'indicator_tile_last', 'indicator_tile_date', 'indicator_tile_period', 'indicator_tile_source', 'indicator_table_h2', 'indicator_h2_source', 'indicator_source_p', 'indicator_h2_russia', 'indicator_russia_p', 'indicator_lead', 'indicator_desc_fallback', 'indicator_unit_clause', 'indicator_period_line', 'indicator_period_line_freq', 'indicator_h2_peers', 'indicator_h2_siblings', 'indicator_open_source', 'indicator_unit_fallback', 'indicator_alt', 'indicator_figcaption', 'indicator_dataset_desc', 'period_year', 'freq_monthly', 'freq_quarterly', 'freq_annual', 'freq_daily', 'freq_weekly' | [backend/app/data/i18n/seo_en.py:858](../backend/app/data/i18n/seo_en.py#L858) |
-| app.data.i18n.seo_en.TODAY_SPECS_EN | Dict | 'usd-rub', 'eur-rub', 'cny-rub', 'key-rate', 'cpi', 'gold-price', 'fuel-ai92', 'fuel-ai95', 'fuel-diesel', 'imoex' | [backend/app/data/i18n/seo_en.py:1049](../backend/app/data/i18n/seo_en.py#L1049) |
-| app.data.i18n.seo_en.TODAY_TEMPLATES_EN | Dict | 'title_fresh', 'title_stale', 'desc', 'stale_clause', 'fresh_clause', 'h1_fresh', 'h1_stale', 'keywords', 'change_flat', 'change_up_pp', 'change_down_pp', 'change_up', 'change_down', 'badge_flat', 'faq_h2', 'faq_answer_last', 'faq_answer_change', 'faq_freq_q', 'faq_freq_a', 'eyebrow_fresh', 'eyebrow_stale', 'stale_note', 'tile_prev', 'tile_min', 'tile_max', 'tile_updated', 'on_date', 'source_meta', 'body_lead', 'chart_alt', 'chart_caption', 'cta_chart', 'table_h2', 'th_date', 'th_value', 'range_note', 'history_h2', 'history_p', 'hub_eyebrow', 'hub_lead', 'hub_h2', 'hub_more_h2', 'hub_more_p', 'hub_item_today', 'hub_keywords', 'hub_alt', 'hub_caption' | [backend/app/data/i18n/seo_en.py:1092](../backend/app/data/i18n/seo_en.py#L1092) |
-| app.data.i18n.seo_en.CALENDAR_TEMPLATES_EN | Dict | 'title', 'desc_future', 'desc_past', 'h1', 'intro', 'keywords', 'eyebrow', 'tile_publications', 'tile_rosstat', 'tile_cbr', 'tile_other', 'h2_month', 'h2_neighbors', 'th_date', 'th_publication', 'th_agency', 'th_status', 'status_expected', 'status_dash', 'status_moved', 'actual_prefix', 'interactive', 'source_rosstat', 'source_cbr', 'source_minfin', 'months' | [backend/app/data/i18n/seo_en.py:1184](../backend/app/data/i18n/seo_en.py#L1184) |
-| app.data.i18n.seo_en.REGIONAL_TEMPLATES_EN | Dict | 'regions_hub.title', 'regions_hub.description', 'regions_hub.h1', 'regions_hub.eyebrow', 'regions_hub.lead', 'regions_hub.ratings_h2', 'regions_hub.ratings_p', 'regions_hub.ratings_h3', 'regions_hub.map_h3', 'regions_hub.keywords', 'region_profile.title', 'region_profile.description', 'region_profile.h1', 'region_profile.eyebrow', 'region_profile.lead', 'region_profile.catalog_partial', 'region_profile.catalog_full', 'region_profile.see_also', 'region_profile.all_regions', 'region_profile.russia_summary', 'region_profile.top_demand', 'region_profile.keywords', 'region_monthly.p1', 'region_monthly.p1_mom', 'region_monthly.p1_yoy', 'region_monthly.p2', 'region_monthly.p3', 'region_monthly.rel_level', 'region_monthly.rel_above', 'region_monthly.rel_below', 'region_monthly.extremes', 'region_monthly.checkpoints_h2', 'region_monthly.faq_value_q', 'region_monthly.faq_value_a', 'region_monthly.faq_change_q', 'region_monthly.faq_change_a', 'region_monthly.faq_change_flat', 'region_monthly.faq_source_q', 'region_monthly.faq_source_a', 'region_monthly.faq_h2', 'region_monthly.neighbors_h2', 'region_monthly.table_h2', 'region_monthly.th_month', 'region_monthly.th_value', 'region_monthly.alt', 'region_monthly.caption', 'region_monthly.siblings_h2', 'region_monthly.title', 'region_monthly.description', 'region_monthly.dataset_description', 'region_monthly.creator', 'region_monthly.image_name', 'region_monthly.source_h2', 'region_monthly.source_p', 'region_monthly.unit_fallback', 'region_monthly.keywords', 'region_monthly.w_lead', 'region_monthly.w_lead_rf', 'region_monthly.w_h2', 'region_monthly.w_p', 'region_monthly.w_th_date', 'region_monthly.w_th_russia', 'region_monthly.w_faq_q', 'region_monthly.w_faq_a', 'region_monthly.w_title', 'region_monthly.w_description', 'region_indicator.title', 'region_indicator.description', 'region_indicator.h1', 'region_indicator.p1', 'region_indicator.p1_change', 'region_indicator.p2_5y', 'region_indicator.p2_full', 'region_indicator.p3', 'region_indicator.p3_rf', 'region_indicator.rel_above', 'region_indicator.rel_below', 'region_indicator.rel_level', 'region_indicator.rating_full', 'region_indicator.rating_table', 'region_indicator.p4', 'region_indicator.checkpoints_h2', 'region_indicator.checkpoint_item', 'region_indicator.faq_h2', 'region_indicator.faq_value_q', 'region_indicator.faq_value_a', 'region_indicator.faq_rank_q', 'region_indicator.faq_rank_a', 'region_indicator.faq_list_q', 'region_indicator.faq_list_a', 'region_indicator.faq_change_q', 'region_indicator.faq_change_a', 'region_indicator.faq_source_q', 'region_indicator.faq_source_a', 'region_indicator.macro_h2', 'region_indicator.macro_p', 'region_indicator.neighbors_h2', 'region_indicator.table_h2', 'region_indicator.th_year', 'region_indicator.th_value', 'region_indicator.alt', 'region_indicator.caption', 'region_indicator.siblings_h2', 'region_indicator.rank_bit_achievement', 'region_indicator.rank_bit_list', 'region_indicator.rank_bit_none', 'region_indicator.keywords', 'region_indicator.pct_flat', 'region_indicator.pct_up', 'region_indicator.pct_down', 'region_indicator.pct_by', 'region_indicator.pct_times', 'region_indicator.times_word', 'region_indicator.rank_top3', 'region_indicator.rank_top10', 'region_indicator.rank_bottom', 'region_indicator.rank_place', 'region_indicator.list_top3', 'region_indicator.list_top10', 'region_indicator.list_bottom', 'region_indicator.list_place', 'region_rating_hub.title', 'region_rating_hub.description', 'region_rating_hub.h1', 'region_rating_hub.eyebrow', 'region_rating_hub.lead', 'region_rating_hub.keywords', 'region_rating.title', 'region_rating.description', 'region_rating.h1', 'region_vs.title', 'region_vs.description', 'region_vs.h1', 'region_vs.intro', 'region_vs.eyebrow', 'region_vs.alt', 'region_vs.caption', 'region_vs.table_h2', 'region_vs.th_indicator', 'region_vs.th_year', 'region_vs.section_dynamics', 'region_vs.rating_link', 'region_vs.profiles_h2', 'region_vs.profiles_p', 'region_vs.keywords', 'region_vs.jsonld_name', 'region_vs.image_name', 'region_rating.alt', 'region_rating.russia_tile', 'region_rating.data_for', 'region_rating.year_suffix', 'region_rating.regions_n', 'region_rating.th_region', 'region_rating.faq_h2', 'region_rating.faq_year_q', 'region_rating.faq_year_a', 'region_rating.map_h2', 'region_rating.map_p', 'region_rating.macro_h2', 'region_rating.macro_p', 'region_rating.source_h2', 'region_rating.source_p', 'region_rating.keywords', 'region_rating.image_name', 'region_rating.siblings_rankings', 'region_rating.siblings_indicators', 'region_rating.source_label', 'region_map.title', 'region_map.description', 'region_map.h1', 'region_map.eyebrow', 'region_map.lead', 'region_map.year_note', 'region_map.year_note_stale', 'region_map.tile_year', 'region_map.tile_regions', 'region_map.leaders_h2', 'region_map.rating_h2', 'region_map.rating_p', 'region_map.rating_label_achievement', 'region_map.rating_label_list', 'region_map.years_h2', 'region_map.source_h2', 'region_map.source_p', 'region_map.caption', 'region_map.alt', 'region_map.crumb', 'region_map.overview_title', 'region_map.overview_desc', 'region_map.overview_h1', 'region_map.overview_eyebrow', 'region_map.overview_lead', 'region_map.overview_popular_h2', 'region_map.overview_rankings_h2', 'region_map.overview_rankings_p', 'region_map.overview_keywords', 'region_map.keywords' | [backend/app/data/i18n/seo_en.py:1247](../backend/app/data/i18n/seo_en.py#L1247) |
-| app.data.i18n.seo_en.YEAR_TEMPLATES_EN | Dict | 'title_annual_current', 'title_annual', 'title_ytd', 'title_single', 'title_quarterly', 'title_weekly', 'title_daily', 'title_monthly', 'desc_single', 'desc_multi', 'period_note_ytd', 'summary_as_of', 'summary_annual_value', 'summary_value', 'summary_chain', 'summary_sum', 'summary_last', 'summary_avg', 'h2_single', 'h2_single_as_of', 'h2_ytd', 'h2_totals', 'h2_neighbors', 'h2_all_values', 'h2_chart', 'h2_other_years', 'chart_p', 'year_link', 'chart_alt_single', 'chart_alt_multi', 'chart_caption_single', 'chart_caption_multi', 'image_caption_single', 'image_caption_multi', 'jsonld_name', 'keywords', 'th_year', 'th_date', 'th_value', 'th_value_unit', 'th_cpi_change', 'li_value_date', 'li_source', 'li_summary', 'li_year_start', 'li_year_end', 'li_latest', 'li_range', 'li_obs', 'range_minmax', 'range_cpi', 'change_value', 'change_no_prev', 'change_no_data', 'change_vs', 'change_vs_pp', 'change_zero_base', 'hist_insufficient', 'hist_no_data', 'hist_above', 'hist_below', 'hist_at', 'hist_position', 'hist_max_sole', 'hist_max_tie', 'hist_max_other', 'hist_min_sole', 'hist_min_tie', 'hist_min_other', 'gap_ago', 'gap_ago_one' | [backend/app/data/i18n/seo_en.py:1627](../backend/app/data/i18n/seo_en.py#L1627) |
-| app.data.i18n.seo_en.INDICATOR_TEMPLATES_EN | Dict | 'title', 'description_fallback', 'intro_fallback', 'chart_caption', 'chart_alt', 'image_name', 'forecast_image_name', 'methodology_fallback', 'block_what', 'block_why', 'block_read', 'block_freq', 'block_method', 'block_source', 'block_why_body', 'block_read_body', 'block_freq_body', 'block_source_body', 'freq_daily', 'freq_weekly', 'freq_monthly', 'freq_quarterly', 'freq_annual', 'section_current', 'section_methodology', 'section_latest', 'section_related', 'section_years', 'year_link', 'li_latest', 'li_date', 'li_frequency', 'li_source', 'li_points', 'li_period', 'th_date', 'th_value', 'th_value_unit', 'th_cpi_change', 'keywords', 'forecast_desc_tail', 'forecast_chart_note', 'forecast_link' | [backend/app/data/i18n/seo_en.py:1726](../backend/app/data/i18n/seo_en.py#L1726) |
+| app.data.i18n.seo_en.PAGE_META_EN | Dict | 'home', 'about', 'research', 'methodology', 'privacy', 'terms', 'compare', 'forecasts', 'calculator', 'calculator-mortgage', 'calculator-compound', 'calendar', 'demographics', 'widgets', 'russia', 'russia-categories' | [backend/app/data/i18n/seo_en.py:302](../backend/app/data/i18n/seo_en.py#L302) |
+| app.data.i18n.seo_en.HOME_TEMPLATES_EN | Dict | 'eyebrow', 'h2_countries', 'h2_flagships', 'h2_tools', 'itemlist_countries', 'itemlist_flagships' | [backend/app/data/i18n/seo_en.py:825](../backend/app/data/i18n/seo_en.py#L825) |
+| app.data.i18n.seo_en.PAGE_TEMPLATES_EN | Dict | 'h2_related', 'h2_categories', 'h2_section_indicators' | [backend/app/data/i18n/seo_en.py:839](../backend/app/data/i18n/seo_en.py#L839) |
+| app.data.i18n.seo_en.WORLD_TEMPLATES_EN | Dict | 'country_title', 'country_h1', 'country_desc_national', 'country_desc_eurostat', 'indicator_title', 'indicator_desc', 'indicator_h1', 'rating_title', 'rating_title_year', 'rating_title_for_year', 'rating_desc', 'rating_intro', 'n_indicators_one', 'n_indicators_many', 'keywords_rating', 'keywords_country', 'keywords_indicator', 'rating_eyebrow', 'rating_th_rank', 'rating_th_country', 'rating_th_value', 'rating_th_unit', 'rating_th_period', 'rating_h2_full', 'rating_h2_missing', 'rating_missing_p', 'rating_h2_other', 'rating_h2_years', 'rating_h2_source', 'rating_source_p', 'rating_tile_first', 'rating_tile_last', 'rating_tile_with_data', 'rating_tile_last_date', 'rating_no_data', 'rating_unit_fallback', 'rating_of_total', 'rating_money_guard', 'rating_index_guard', 'rating_with_data', 'rating_without_data', 'country_eyebrow_national', 'country_eyebrow_eurostat', 'country_lead_national', 'country_lead_eurostat', 'country_h2_key', 'country_h2_main', 'country_figure_year_ago', 'country_figure_real', 'country_figure_yoy', 'country_h2_source', 'country_source_national', 'country_source_eurostat', 'country_figcaption', 'country_h2_neighbors', 'country_image_name', 'country_section_total', 'country_h2_russia', 'country_russia_p', 'th_indicator', 'th_value', 'th_period', 'indicator_tile_last', 'indicator_tile_date', 'indicator_tile_period', 'indicator_tile_source', 'indicator_table_h2', 'indicator_h2_source', 'indicator_source_p', 'indicator_h2_russia', 'indicator_russia_p', 'indicator_lead', 'indicator_desc_fallback', 'indicator_unit_clause', 'indicator_period_line', 'indicator_period_line_freq', 'indicator_h2_peers', 'indicator_h2_siblings', 'indicator_open_source', 'indicator_unit_fallback', 'indicator_alt', 'indicator_figcaption', 'indicator_dataset_desc', 'period_year', 'freq_monthly', 'freq_quarterly', 'freq_annual', 'freq_daily', 'freq_weekly' | [backend/app/data/i18n/seo_en.py:853](../backend/app/data/i18n/seo_en.py#L853) |
+| app.data.i18n.seo_en.TODAY_SPECS_EN | Dict | 'usd-rub', 'eur-rub', 'cny-rub', 'key-rate', 'cpi', 'gold-price', 'fuel-ai92', 'fuel-ai95', 'fuel-diesel', 'imoex' | [backend/app/data/i18n/seo_en.py:1044](../backend/app/data/i18n/seo_en.py#L1044) |
+| app.data.i18n.seo_en.TODAY_TEMPLATES_EN | Dict | 'title_fresh', 'title_stale', 'desc', 'stale_clause', 'fresh_clause', 'h1_fresh', 'h1_stale', 'keywords', 'change_flat', 'change_up_pp', 'change_down_pp', 'change_up', 'change_down', 'badge_flat', 'faq_h2', 'faq_answer_last', 'faq_answer_change', 'faq_freq_q', 'faq_freq_a', 'eyebrow_fresh', 'eyebrow_stale', 'stale_note', 'tile_prev', 'tile_min', 'tile_max', 'tile_updated', 'on_date', 'source_meta', 'body_lead', 'chart_alt', 'chart_caption', 'cta_chart', 'table_h2', 'th_date', 'th_value', 'range_note', 'history_h2', 'history_p', 'hub_eyebrow', 'hub_lead', 'hub_h2', 'hub_more_h2', 'hub_more_p', 'hub_item_today', 'hub_keywords', 'hub_alt', 'hub_caption' | [backend/app/data/i18n/seo_en.py:1087](../backend/app/data/i18n/seo_en.py#L1087) |
+| app.data.i18n.seo_en.CALENDAR_TEMPLATES_EN | Dict | 'title', 'desc_future', 'desc_past', 'h1', 'intro', 'keywords', 'eyebrow', 'tile_publications', 'tile_rosstat', 'tile_cbr', 'tile_other', 'h2_month', 'h2_neighbors', 'th_date', 'th_publication', 'th_agency', 'th_status', 'status_expected', 'status_dash', 'status_moved', 'actual_prefix', 'interactive', 'source_rosstat', 'source_cbr', 'source_minfin', 'months' | [backend/app/data/i18n/seo_en.py:1179](../backend/app/data/i18n/seo_en.py#L1179) |
+| app.data.i18n.seo_en.REGIONAL_TEMPLATES_EN | Dict | 'regions_hub.title', 'regions_hub.description', 'regions_hub.h1', 'regions_hub.eyebrow', 'regions_hub.lead', 'regions_hub.ratings_h2', 'regions_hub.ratings_p', 'regions_hub.ratings_h3', 'regions_hub.map_h3', 'regions_hub.keywords', 'region_profile.title', 'region_profile.description', 'region_profile.h1', 'region_profile.eyebrow', 'region_profile.lead', 'region_profile.catalog_partial', 'region_profile.catalog_full', 'region_profile.see_also', 'region_profile.all_regions', 'region_profile.russia_summary', 'region_profile.top_demand', 'region_profile.keywords', 'region_monthly.p1', 'region_monthly.p1_mom', 'region_monthly.p1_yoy', 'region_monthly.p2', 'region_monthly.p3', 'region_monthly.rel_level', 'region_monthly.rel_above', 'region_monthly.rel_below', 'region_monthly.extremes', 'region_monthly.checkpoints_h2', 'region_monthly.faq_value_q', 'region_monthly.faq_value_a', 'region_monthly.faq_change_q', 'region_monthly.faq_change_a', 'region_monthly.faq_change_flat', 'region_monthly.faq_source_q', 'region_monthly.faq_source_a', 'region_monthly.faq_h2', 'region_monthly.neighbors_h2', 'region_monthly.table_h2', 'region_monthly.th_month', 'region_monthly.th_value', 'region_monthly.alt', 'region_monthly.caption', 'region_monthly.siblings_h2', 'region_monthly.title', 'region_monthly.description', 'region_monthly.dataset_description', 'region_monthly.creator', 'region_monthly.image_name', 'region_monthly.source_h2', 'region_monthly.source_p', 'region_monthly.unit_fallback', 'region_monthly.keywords', 'region_monthly.w_lead', 'region_monthly.w_lead_rf', 'region_monthly.w_h2', 'region_monthly.w_p', 'region_monthly.w_th_date', 'region_monthly.w_th_russia', 'region_monthly.w_faq_q', 'region_monthly.w_faq_a', 'region_monthly.w_title', 'region_monthly.w_description', 'region_indicator.title', 'region_indicator.description', 'region_indicator.h1', 'region_indicator.p1', 'region_indicator.p1_change', 'region_indicator.p2_5y', 'region_indicator.p2_full', 'region_indicator.p3', 'region_indicator.p3_rf', 'region_indicator.rel_above', 'region_indicator.rel_below', 'region_indicator.rel_level', 'region_indicator.rating_full', 'region_indicator.rating_table', 'region_indicator.p4', 'region_indicator.checkpoints_h2', 'region_indicator.checkpoint_item', 'region_indicator.faq_h2', 'region_indicator.faq_value_q', 'region_indicator.faq_value_a', 'region_indicator.faq_rank_q', 'region_indicator.faq_rank_a', 'region_indicator.faq_list_q', 'region_indicator.faq_list_a', 'region_indicator.faq_change_q', 'region_indicator.faq_change_a', 'region_indicator.faq_source_q', 'region_indicator.faq_source_a', 'region_indicator.macro_h2', 'region_indicator.macro_p', 'region_indicator.neighbors_h2', 'region_indicator.table_h2', 'region_indicator.th_year', 'region_indicator.th_value', 'region_indicator.alt', 'region_indicator.caption', 'region_indicator.siblings_h2', 'region_indicator.rank_bit_achievement', 'region_indicator.rank_bit_list', 'region_indicator.rank_bit_none', 'region_indicator.keywords', 'region_indicator.pct_flat', 'region_indicator.pct_up', 'region_indicator.pct_down', 'region_indicator.pct_by', 'region_indicator.pct_times', 'region_indicator.times_word', 'region_indicator.rank_top3', 'region_indicator.rank_top10', 'region_indicator.rank_bottom', 'region_indicator.rank_place', 'region_indicator.list_top3', 'region_indicator.list_top10', 'region_indicator.list_bottom', 'region_indicator.list_place', 'region_rating_hub.title', 'region_rating_hub.description', 'region_rating_hub.h1', 'region_rating_hub.eyebrow', 'region_rating_hub.lead', 'region_rating_hub.keywords', 'region_rating.title', 'region_rating.description', 'region_rating.h1', 'region_vs.title', 'region_vs.description', 'region_vs.h1', 'region_vs.intro', 'region_vs.eyebrow', 'region_vs.alt', 'region_vs.caption', 'region_vs.table_h2', 'region_vs.th_indicator', 'region_vs.th_year', 'region_vs.section_dynamics', 'region_vs.rating_link', 'region_vs.profiles_h2', 'region_vs.profiles_p', 'region_vs.keywords', 'region_vs.jsonld_name', 'region_vs.image_name', 'region_rating.alt', 'region_rating.russia_tile', 'region_rating.data_for', 'region_rating.year_suffix', 'region_rating.regions_n', 'region_rating.th_region', 'region_rating.faq_h2', 'region_rating.faq_year_q', 'region_rating.faq_year_a', 'region_rating.map_h2', 'region_rating.map_p', 'region_rating.macro_h2', 'region_rating.macro_p', 'region_rating.source_h2', 'region_rating.source_p', 'region_rating.keywords', 'region_rating.image_name', 'region_rating.siblings_rankings', 'region_rating.siblings_indicators', 'region_rating.source_label', 'region_map.title', 'region_map.description', 'region_map.h1', 'region_map.eyebrow', 'region_map.lead', 'region_map.year_note', 'region_map.year_note_stale', 'region_map.tile_year', 'region_map.tile_regions', 'region_map.leaders_h2', 'region_map.rating_h2', 'region_map.rating_p', 'region_map.rating_label_achievement', 'region_map.rating_label_list', 'region_map.years_h2', 'region_map.source_h2', 'region_map.source_p', 'region_map.caption', 'region_map.alt', 'region_map.crumb', 'region_map.overview_title', 'region_map.overview_desc', 'region_map.overview_h1', 'region_map.overview_eyebrow', 'region_map.overview_lead', 'region_map.overview_popular_h2', 'region_map.overview_rankings_h2', 'region_map.overview_rankings_p', 'region_map.overview_keywords', 'region_map.keywords' | [backend/app/data/i18n/seo_en.py:1242](../backend/app/data/i18n/seo_en.py#L1242) |
+| app.data.i18n.seo_en.YEAR_TEMPLATES_EN | Dict | 'title_annual_current', 'title_annual', 'title_ytd', 'title_single', 'title_quarterly', 'title_weekly', 'title_daily', 'title_monthly', 'desc_single', 'desc_multi', 'period_note_ytd', 'summary_as_of', 'summary_annual_value', 'summary_value', 'summary_chain', 'summary_sum', 'summary_last', 'summary_avg', 'h2_single', 'h2_single_as_of', 'h2_ytd', 'h2_totals', 'h2_neighbors', 'h2_all_values', 'h2_chart', 'h2_other_years', 'chart_p', 'year_link', 'chart_alt_single', 'chart_alt_multi', 'chart_caption_single', 'chart_caption_multi', 'image_caption_single', 'image_caption_multi', 'jsonld_name', 'keywords', 'th_year', 'th_date', 'th_value', 'th_value_unit', 'th_cpi_change', 'li_value_date', 'li_source', 'li_summary', 'li_year_start', 'li_year_end', 'li_latest', 'li_range', 'li_obs', 'range_minmax', 'range_cpi', 'change_value', 'change_no_prev', 'change_no_data', 'change_vs', 'change_vs_pp', 'change_zero_base', 'hist_insufficient', 'hist_no_data', 'hist_above', 'hist_below', 'hist_at', 'hist_position', 'hist_max_sole', 'hist_max_tie', 'hist_max_other', 'hist_min_sole', 'hist_min_tie', 'hist_min_other', 'gap_ago', 'gap_ago_one' | [backend/app/data/i18n/seo_en.py:1622](../backend/app/data/i18n/seo_en.py#L1622) |
+| app.data.i18n.seo_en.INDICATOR_TEMPLATES_EN | Dict | 'title', 'description_fallback', 'intro_fallback', 'chart_caption', 'chart_alt', 'image_name', 'forecast_image_name', 'methodology_fallback', 'block_what', 'block_why', 'block_read', 'block_freq', 'block_method', 'block_source', 'block_why_body', 'block_read_body', 'block_freq_body', 'block_source_body', 'freq_daily', 'freq_weekly', 'freq_monthly', 'freq_quarterly', 'freq_annual', 'section_current', 'section_methodology', 'section_latest', 'section_related', 'section_years', 'year_link', 'li_latest', 'li_date', 'li_frequency', 'li_source', 'li_points', 'li_period', 'th_date', 'th_value', 'th_value_unit', 'th_cpi_change', 'keywords', 'forecast_desc_tail', 'forecast_chart_note', 'forecast_link' | [backend/app/data/i18n/seo_en.py:1721](../backend/app/data/i18n/seo_en.py#L1721) |
 | app.data.indicator_seo.CATEGORY_KEYWORDS_RU | Dict | 'Цены', 'Ставки', 'Финансы', 'ВВП', 'Рынок труда', 'Население', 'Торговля', 'Бизнес', 'Наука', 'Туризм' | [backend/app/data/indicator_seo.py:16](../backend/app/data/indicator_seo.py#L16) |
 | app.data.indicator_seo.FORECAST_SSR_PILOT_CODES | Call | computed source expression | [backend/app/data/indicator_seo.py:34](../backend/app/data/indicator_seo.py#L34) |
 | app.data.indicator_seo.INDICATOR_SEO_KEYWORDS | Dict | 'cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services', 'inflation-quarterly', 'inflation-annual', 'cpi-food-annual', 'cpi-nonfood-annual', 'cpi-services-annual', 'inflation-weekly', 'inflation-weekly-food', 'inflation-weekly-nonfood', 'inflation-weekly-services', 'ppi', 'ppi-yoy', 'ppi-mom', 'ppi-annual', 'key-rate', 'usd-rub', 'eur-rub', 'cny-rub', 'try-rub', 'kzt-rub', 'ruonia', 'm0', 'm2', 'mortgage-rate', 'auto-loan-rate', 'credit-rate-corp-short', 'credit-rate-corp-1to3y', 'credit-rate-corp-over3y', 'credit-rate-ind-short', 'credit-rate-ind-1to3y', 'credit-rate-ind-over3y', 'deposit-rate-medium', 'deposit-rate-long', 'deposit-rate', 'budget-deficit', 'budget-revenue', 'budget-expenditure', 'consumer-credit', 'deposits-individual', 'external-debt', 'business-credit', 'ipi-mining', 'ipi-manufacturing', 'ipi-energy', 'ipi-water', 'fuel-ai92', 'fuel-ai95', 'fuel-diesel', 'gold-price', 'btc-usd', 'eth-usd', 'sol-usd', 'imoex', 'mcftr', 'rtsi', 'rgbi', 'corp-bond-index', 'usd-index', 'ust-10y', 'eur-usd', 'gbp-usd', 'usd-cny', 'weo-gdp-usd', 'weo-gdp-per-capita-usd', 'weo-budget-balance-gdp', 'weo-government-debt-gdp', 'brent', 'copper', 'silver', 'natural-gas', 'wheat', 'soybean', 'coal', 'steel', 'gdp-nominal', 'gdp-nominal-annual', 'gdp-real', 'gdp-real-annual', 'gdp-yoy', 'gdp-qoq', 'gdp-real-yoy', 'gdp-real-qoq', 'gdp-consumption', 'gdp-government', 'housing-price-primary', 'housing-price-secondary', 'housing-yoy-primary', 'housing-yoy-secondary', 'housing-annual-primary', 'housing-annual-secondary', 'unemployment', 'labor-force', 'employment', 'wages', 'wages-real', 'population', 'births', 'deaths', 'retail-trade', 'construction-work', 'capital-investment', 'ipi', 'depreciation-rate', 'housing-commissioned', 'gdp-investment', 'birth-rate', 'death-rate', 'pensioners', 'pop-over-working-age', 'pop-under-working-age', 'working-age-population', 'population-migration', 'population-natural-growth', 'population-total-growth', 'doctoral-students', 'grad-students', 'innovation-activity', 'rd-organizations', 'rd-personnel', 'small-business-innovation', 'tech-innovation-share', 'wages-nominal', 'current-account', 'exports', 'imports', 'services-exports', 'services-imports', 'trade-balance', 'fdi-net', 'deposits-business', 'international-reserves', 'm1', 'housing-affordability' | [backend/app/data/indicator_seo.py:103](../backend/app/data/indicator_seo.py#L103) |
@@ -2921,39 +2923,54 @@ Relationships: `[]`
 | app.data.region_indicator_polarity.LOWER_BETTER_TABLE_CODES | Call | computed source expression | [backend/app/data/region_indicator_polarity.py:78](../backend/app/data/region_indicator_polarity.py#L78) |
 | app.data.rosstat_weekly_goods.GOODS | Tuple | sequence/source expression | [backend/app/data/rosstat_weekly_goods.py:43](../backend/app/data/rosstat_weekly_goods.py#L43) |
 | app.data.rosstat_weekly_goods.GOODS_BY_CODE | DictComp | computed source expression | [backend/app/data/rosstat_weekly_goods.py:101](../backend/app/data/rosstat_weekly_goods.py#L101) |
-| app.data.tourism_regional.SOURCES | Dict | 'emiss', 'rosstat_turpotok', 'cbr', 'fns', 'fsa', 'minec', 'treasury', 'rosstat_pub', 'rosstat_calc', 'sber' | [backend/app/data/tourism_regional.py:49](../backend/app/data/tourism_regional.py#L49) |
-| app.data.tourism_regional.SECTION_TOURISM | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:146](../backend/app/data/tourism_regional.py#L146) |
-| app.data.tourism_regional.SECTION_TRANSPORT | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:147](../backend/app/data/tourism_regional.py#L147) |
-| app.data.tourism_regional.SECTION_PRICES | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:148](../backend/app/data/tourism_regional.py#L148) |
-| app.data.tourism_regional.ANNUAL_KSR | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:204](../backend/app/data/tourism_regional.py#L204) |
-| app.data.tourism_regional.ANNUAL_SANATORIUMS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:299](../backend/app/data/tourism_regional.py#L299) |
-| app.data.tourism_regional.DESTINATIONS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:371](../backend/app/data/tourism_regional.py#L371) |
-| app.data.tourism_regional.ORIGINS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:406](../backend/app/data/tourism_regional.py#L406) |
-| app.data.tourism_regional.ANNUAL_FIRMS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:417](../backend/app/data/tourism_regional.py#L417) |
-| app.data.tourism_regional.ANNUAL_PENDING | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:479](../backend/app/data/tourism_regional.py#L479) |
-| app.data.tourism_regional.MONTHLY_EMISS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:528](../backend/app/data/tourism_regional.py#L528) |
-| app.data.tourism_regional.MONTHLY_TRANSPORT | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:639](../backend/app/data/tourism_regional.py#L639) |
-| app.data.tourism_regional.MONTHLY_CPI | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:706](../backend/app/data/tourism_regional.py#L706) |
-| app.data.tourism_regional.TURPOTOK | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:725](../backend/app/data/tourism_regional.py#L725) |
-| app.data.tourism_regional.QUARTERLY_CBR | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:782](../backend/app/data/tourism_regional.py#L782) |
-| app.data.tourism_regional.TAX | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:818](../backend/app/data/tourism_regional.py#L818) |
-| app.data.tourism_regional.REGISTRIES | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:840](../backend/app/data/tourism_regional.py#L840) |
-| app.data.tourism_regional.PUBLICATIONS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:906](../backend/app/data/tourism_regional.py#L906) |
-| app.data.tourism_regional.SERIES | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:1035](../backend/app/data/tourism_regional.py#L1035) |
-| app.data.tourism_regional.SERIES_BY_CODE | DictComp | computed source expression | [backend/app/data/tourism_regional.py:1039](../backend/app/data/tourism_regional.py#L1039) |
-| app.data.tourism_russia.INBOUND_COUNTRIES | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:319](../backend/app/data/tourism_russia.py#L319) |
-| app.data.tourism_russia.OUTBOUND_COUNTRIES | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:333](../backend/app/data/tourism_russia.py#L333) |
-| app.data.tourism_russia.AIR_DIMS | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:463](../backend/app/data/tourism_russia.py#L463) |
-| app.data.tourism_russia.AIRPORTS | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:464](../backend/app/data/tourism_russia.py#L464) |
-| app.data.tourism_russia.DEST_URLS | Dict | 'EG', 'TH', 'UZ', 'KZ', 'VN', 'MV', 'MV-M', 'ID', 'LK', 'BY', 'SC', 'DO', 'MN', 'MN-M', 'MU', 'MU-M', 'TZ-ZN', 'CU', 'TJ', 'AE-DU' | [backend/app/data/tourism_russia.py:677](../backend/app/data/tourism_russia.py#L677) |
-| app.data.tourism_russia.DESTINATIONS | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:700](../backend/app/data/tourism_russia.py#L700) |
-| app.data.tourism_russia._DEST_DEFAULT_TAIL | Dict | 'egypt', 'thailand', 'uzbekistan', 'kazakhstan' | [backend/app/data/tourism_russia.py:749](../backend/app/data/tourism_russia.py#L749) |
-| app.data.tourism_russia.CPI_ITEMS | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:800](../backend/app/data/tourism_russia.py#L800) |
-| app.data.tourism_russia.SERIES | DictComp | computed source expression | [backend/app/data/tourism_russia.py:982](../backend/app/data/tourism_russia.py#L982) |
-| app.data.tourism_russia.VARIANT_GROUPS | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:989](../backend/app/data/tourism_russia.py#L989) |
-| app.data.tourism_russia._FORECAST_CFG | Dict | 'monthly_auto', 'annual_auto', 'generic_quarterly', 'signed_quarterly' | [backend/app/data/tourism_russia.py:1088](../backend/app/data/tourism_russia.py#L1088) |
-| app.data.tourism_russia._WHY | Dict | 'cbr', 'fsb', 'gva', 'transport', 'hotels' | [backend/app/data/tourism_russia.py:1147](../backend/app/data/tourism_russia.py#L1147) |
-| app.data.tourism_russia._FREQ | Dict | 'cbr', 'fsb', 'gva', 'transport', 'hotels', 'prices', 'static', 'dest' | [backend/app/data/tourism_russia.py:1185](../backend/app/data/tourism_russia.py#L1185) |
+| app.data.tourism_regional.SOURCES | Dict | 'emiss', 'rosstat_turpotok', 'cbr', 'fns', 'fsa', 'minec', 'treasury', 'rosstat_pub', 'rosstat_calc', 'regions', 'mos', 'fns_rsmp', 'sber' | [backend/app/data/tourism_regional.py:49](../backend/app/data/tourism_regional.py#L49) |
+| app.data.tourism_regional.SECTION_TOURISM | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:177](../backend/app/data/tourism_regional.py#L177) |
+| app.data.tourism_regional.SECTION_TRANSPORT | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:178](../backend/app/data/tourism_regional.py#L178) |
+| app.data.tourism_regional.SECTION_PRICES | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:179](../backend/app/data/tourism_regional.py#L179) |
+| app.data.tourism_regional.SECTION_TRADE | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:180](../backend/app/data/tourism_regional.py#L180) |
+| app.data.tourism_regional.ANNUAL_KSR | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:236](../backend/app/data/tourism_regional.py#L236) |
+| app.data.tourism_regional.ANNUAL_SANATORIUMS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:321](../backend/app/data/tourism_regional.py#L321) |
+| app.data.tourism_regional.DESTINATIONS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:393](../backend/app/data/tourism_regional.py#L393) |
+| app.data.tourism_regional.ORIGINS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:428](../backend/app/data/tourism_regional.py#L428) |
+| app.data.tourism_regional.ANNUAL_FIRMS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:439](../backend/app/data/tourism_regional.py#L439) |
+| app.data.tourism_regional.ANNUAL_PENDING | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:501](../backend/app/data/tourism_regional.py#L501) |
+| app.data.tourism_regional.MONTHLY_EMISS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:545](../backend/app/data/tourism_regional.py#L545) |
+| app.data.tourism_regional.MONTHLY_TRANSPORT | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:651](../backend/app/data/tourism_regional.py#L651) |
+| app.data.tourism_regional.MONTHLY_CPI | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:727](../backend/app/data/tourism_regional.py#L727) |
+| app.data.tourism_regional.TURPOTOK | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:801](../backend/app/data/tourism_regional.py#L801) |
+| app.data.tourism_regional.QUARTERLY_CBR | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:858](../backend/app/data/tourism_regional.py#L858) |
+| app.data.tourism_regional.TAX | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:894](../backend/app/data/tourism_regional.py#L894) |
+| app.data.tourism_regional.REGISTRIES | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:916](../backend/app/data/tourism_regional.py#L916) |
+| app.data.tourism_regional.PUBLICATIONS | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:984](../backend/app/data/tourism_regional.py#L984) |
+| app.data.tourism_regional.INDUSTRY | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:1137](../backend/app/data/tourism_regional.py#L1137) |
+| app.data.tourism_regional.REGIONAL_ESTIMATES | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:1190](../backend/app/data/tourism_regional.py#L1190) |
+| app.data.tourism_regional.NOT_RANKED | Call | computed source expression | [backend/app/data/tourism_regional.py:1218](../backend/app/data/tourism_regional.py#L1218) |
+| app.data.tourism_regional.SERIES | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:1220](../backend/app/data/tourism_regional.py#L1220) |
+| app.data.tourism_regional.SERIES_BY_CODE | DictComp | computed source expression | [backend/app/data/tourism_regional.py:1224](../backend/app/data/tourism_regional.py#L1224) |
+| app.data.tourism_regional.SOURCE_URLS | Dict | 'rosstat_turpotok', 'cbr', 'fns', 'fsa', 'minec', 'treasury', 'rosstat_pub', 'rosstat_calc', 'mos', 'sber', 'fns_rsmp' | [backend/app/data/tourism_regional.py:1336](../backend/app/data/tourism_regional.py#L1336) |
+| app.data.tourism_regional._SERIES_URLS | Dict | **unpack, 'tour-cbr-poezdki-eksport', 'tour-cbr-poezdki-eksport-delovye', 'tour-cbr-poezdki-eksport-lichnye', 'tour-cbr-turuslugi-eksport', 'tour-cena-kupe-nefirmennyy', 'tour-cena-plackart-nefirmennyy' | [backend/app/data/tourism_regional.py:1351](../backend/app/data/tourism_regional.py#L1351) |
+| app.data.tourism_regional.ZERO_NOT_CHANGE | Call | computed source expression | [backend/app/data/tourism_regional.py:1406](../backend/app/data/tourism_regional.py#L1406) |
+| app.data.tourism_regional.TAX_NOT_INTRODUCED | Dict | 'moskva' | [backend/app/data/tourism_regional.py:1407](../backend/app/data/tourism_regional.py#L1407) |
+| app.data.tourism_regional.RENAMED | Dict | 'tour-avtobusy-passazhiry', 'tour-obshchepit-oborot-mes', 'tour-obshchepit-restorany', 'tour-obshchepit-stolovye', 'tour-obshchepit-rezultat-restorany' | [backend/app/data/tourism_regional.py:1413](../backend/app/data/tourism_regional.py#L1413) |
+| app.data.tourism_regional._NON_TOURISM_TABLES | Tuple | sequence/source expression | [backend/app/data/tourism_regional.py:1421](../backend/app/data/tourism_regional.py#L1421) |
+| app.data.tourism_regional.RETIRED | Call | computed source expression | [backend/app/data/tourism_regional.py:1432](../backend/app/data/tourism_regional.py#L1432) |
+| app.data.tourism_russia._COUNTRY_NOTE | Dict | 'egypt' | [backend/app/data/tourism_russia.py:322](../backend/app/data/tourism_russia.py#L322) |
+| app.data.tourism_russia.INBOUND_COUNTRIES | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:329](../backend/app/data/tourism_russia.py#L329) |
+| app.data.tourism_russia.OUTBOUND_COUNTRIES | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:343](../backend/app/data/tourism_russia.py#L343) |
+| app.data.tourism_russia.AIR_DIMS | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:486](../backend/app/data/tourism_russia.py#L486) |
+| app.data.tourism_russia.AIRPORTS | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:487](../backend/app/data/tourism_russia.py#L487) |
+| app.data.tourism_russia.DEST_URLS | Dict | 'EG', 'TH', 'UZ', 'KZ', 'VN', 'MV', 'MV-M', 'ID', 'LK', 'BY', 'SC', 'DO', 'MN', 'MN-M', 'MU', 'MU-M', 'TZ-ZN', 'CU', 'TJ', 'AE-DU', 'UZ-M', 'HK-M', 'PH', 'PH-M', 'KG', 'AE-AZ', 'AE-DU-RU', 'AB', 'MO', 'MO-YTD' | [backend/app/data/tourism_russia.py:705](../backend/app/data/tourism_russia.py#L705) |
+| app.data.tourism_russia.DESTINATIONS | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:738](../backend/app/data/tourism_russia.py#L738) |
+| app.data.tourism_russia._DEST_DEFAULT_TAIL | Dict | 'egypt', 'thailand', 'uzbekistan', 'kazakhstan' | [backend/app/data/tourism_russia.py:813](../backend/app/data/tourism_russia.py#L813) |
+| app.data.tourism_russia.CPI_ITEMS | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:888](../backend/app/data/tourism_russia.py#L888) |
+| app.data.tourism_russia.HIST_INBOUND | Call | computed source expression | [backend/app/data/tourism_russia.py:963](../backend/app/data/tourism_russia.py#L963) |
+| app.data.tourism_russia.HIST_OUTBOUND | Call | computed source expression | [backend/app/data/tourism_russia.py:977](../backend/app/data/tourism_russia.py#L977) |
+| app.data.tourism_russia.SERIES | DictComp | computed source expression | [backend/app/data/tourism_russia.py:1277](../backend/app/data/tourism_russia.py#L1277) |
+| app.data.tourism_russia.SERIES | DictComp | computed source expression | [backend/app/data/tourism_russia.py:1313](../backend/app/data/tourism_russia.py#L1313) |
+| app.data.tourism_russia.VARIANT_GROUPS | Tuple | sequence/source expression | [backend/app/data/tourism_russia.py:1318](../backend/app/data/tourism_russia.py#L1318) |
+| app.data.tourism_russia._FORECAST_CFG | Dict | 'monthly_auto', 'annual_auto', 'generic_quarterly', 'signed_quarterly' | [backend/app/data/tourism_russia.py:1455](../backend/app/data/tourism_russia.py#L1455) |
+| app.data.tourism_russia._WHY | Dict | 'cbr', 'fsb', 'gva', 'transport', 'hotels' | [backend/app/data/tourism_russia.py:1516](../backend/app/data/tourism_russia.py#L1516) |
+| app.data.tourism_russia._FREQ | Dict | 'cbr', 'fsb', 'gva', 'transport', 'hotels', 'prices', 'static', 'dest' | [backend/app/data/tourism_russia.py:1554](../backend/app/data/tourism_russia.py#L1554) |
 | app.data.view_model_families.GRAN_ORDER | Tuple | sequence/source expression | [backend/app/data/view_model_families.py:46](../backend/app/data/view_model_families.py#L46) |
 | app.data.view_model_families.GRAN_LABEL | Dict | 'day', 'week', 'month', 'quarter', 'year' | [backend/app/data/view_model_families.py:48](../backend/app/data/view_model_families.py#L48) |
 | app.data.view_model_families.GRAN_FREQUENCY | Dict | 'day', 'week', 'month', 'quarter', 'year' | [backend/app/data/view_model_families.py:57](../backend/app/data/view_model_families.py#L57) |
@@ -2989,10 +3006,10 @@ Relationships: `[]`
 | app.data.world_concept_national.NATIONAL_CONCEPT_INDICATOR_CODES | Dict | 'unemployment-rate', 'population', 'activity-rate', 'long-term-interest-rate', 'policy-rate', 'hicp-index' | [backend/app/data/world_concept_national.py:14](../backend/app/data/world_concept_national.py#L14) |
 | app.data.world_concept_national.HICP_NATIONAL_YOY_KIND | Dict | 'cn-cpi-all', 'br-cpi-ipca-yoy' | [backend/app/data/world_concept_national.py:87](../backend/app/data/world_concept_national.py#L87) |
 | app.data.world_concept_national._CONCEPT_BY_NATIONAL_CODE | DictComp | computed source expression | [backend/app/data/world_concept_national.py:103](../backend/app/data/world_concept_national.py#L103) |
-| app.data.world_concept_russia.RUSSIA_CONCEPT_LINKS | Dict | 'unemployment-rate', 'hicp-index', 'population', 'gdp-usd', 'gdp-per-capita-usd', 'budget-balance-gdp', 'government-debt-gdp', 'policy-rate', 'youth-unemployment-rate' | [backend/app/data/world_concept_russia.py:37](../backend/app/data/world_concept_russia.py#L37) |
-| app.data.world_concept_russia.RUSSIA_COUNTRY_PAYLOAD | Dict | 'code', 'slug', 'name', 'name_en', 'name_ru', 'region', 'region_ru', 'indicators_count', 'is_active' | [backend/app/data/world_concept_russia.py:225](../backend/app/data/world_concept_russia.py#L225) |
-| app.data.world_concept_russia._RUSSIA_CARD_ALIASES | Dict | 'cpi' | [backend/app/data/world_concept_russia.py:264](../backend/app/data/world_concept_russia.py#L264) |
-| app.data.world_concept_russia._RUSSIA_CODE_TO_CONCEPT | Dict | **unpack, **unpack | [backend/app/data/world_concept_russia.py:268](../backend/app/data/world_concept_russia.py#L268) |
+| app.data.world_concept_russia.RUSSIA_CONCEPT_LINKS | Dict | 'unemployment-rate', 'hicp-index', 'population', 'gdp-usd', 'gdp-per-capita-usd', 'budget-balance-gdp', 'government-debt-gdp', 'policy-rate', 'youth-unemployment-rate', 'outbound-trips', 'tourist-arrivals' | [backend/app/data/world_concept_russia.py:39](../backend/app/data/world_concept_russia.py#L39) |
+| app.data.world_concept_russia.RUSSIA_COUNTRY_PAYLOAD | Dict | 'code', 'slug', 'name', 'name_en', 'name_ru', 'region', 'region_ru', 'indicators_count', 'is_active' | [backend/app/data/world_concept_russia.py:266](../backend/app/data/world_concept_russia.py#L266) |
+| app.data.world_concept_russia._RUSSIA_CARD_ALIASES | Dict | 'cpi' | [backend/app/data/world_concept_russia.py:305](../backend/app/data/world_concept_russia.py#L305) |
+| app.data.world_concept_russia._RUSSIA_CODE_TO_CONCEPT | Dict | **unpack, **unpack | [backend/app/data/world_concept_russia.py:309](../backend/app/data/world_concept_russia.py#L309) |
 | app.data.world_concepts._RATING_SURFACES | Call | computed source expression | [backend/app/data/world_concepts.py:40](../backend/app/data/world_concepts.py#L40) |
 | app.data.world_concepts.WORLD_CONCEPTS | Tuple | sequence/source expression | [backend/app/data/world_concepts.py:42](../backend/app/data/world_concepts.py#L42) |
 | app.data.world_concepts.CONCEPT_BY_SLUG | DictComp | computed source expression | [backend/app/data/world_concepts.py:393](../backend/app/data/world_concepts.py#L393) |
@@ -3263,14 +3280,14 @@ Relationships: `[]`
 | app.services.display.CPI_INDEX_CODES | Call | computed source expression | [backend/app/services/display.py:36](../backend/app/services/display.py#L36) |
 | app.services.display._PERIOD_LABEL | Dict | 'weekly', 'monthly', 'quarterly', 'annual' | [backend/app/services/display.py:52](../backend/app/services/display.py#L52) |
 | app.services.display._PERIOD_LABEL_EN | Dict | 'weekly', 'monthly', 'quarterly', 'annual' | [backend/app/services/display.py:58](../backend/app/services/display.py#L58) |
-| app.services.display._UNIT_EN | Dict | 'USD/баррель', 'USD/млн БТЕ', 'USD/т', 'USD/унция', 'USD/фунт', 'US¢/бушель', 'млн $', 'млн кв.м', 'чел.', 'тыс. чел.', 'млн чел.', 'ед.', '% от среднего по ЕС на душу населения', 'тыс. тонн в год', 'индекс (1 кв. 1980 = 100)', 'руб.', 'руб', 'млн руб.', 'млн руб', 'млрд руб.', 'млрд руб', 'трлн руб.', 'трлн руб', 'руб./л', 'руб./г', 'тыс. руб.', 'тыс. руб', 'км²', 'км2', 'человек', 'чел. на км²', 'п.п.', 'п.п', 'п. п.', 'пункт', 'пункты', 'пунктов', 'изменение за месяц, п.п.', 'изменение за месяц', 'изменение за квартал, п.п.', 'изменение за год, п.п.', '% ВВП', 'млн евро', 'в текущих ценах, млн евро', 'в постоянных ценах 2015 года, млн евро', 'в постоянных ценах 2010 года, млн евро', 'ППС на душу населения', 'тысяча рублей', 'тысяч рублей', 'тысяч тонн', 'рублей за литр', 'тыс. тонн', 'тыс. т н. э.', 'кг н. э.', 'евро за кг н. э.', 'евро', 'тыс. евро', 'млн евро, с сезонной корректировкой', 'млн евро, в постоянных ценах', 'в постоянных ценах 2020 года, евро на душу населения', 'на душу населения, евро', '% экономически активного населения', '% населения', '% населения ЕС', '% занятости', '% от итога', '% к ожидаемому уровню', 'изменение к предыдущему периоду', 'изменение к тому же периоду прошлого года', 'темп изменения к предыдущему периоду', 'темп изменения, с сезонной корректировкой', 'изменение, %', 'изменение за год', 'изменение за год, %', 'среднее изменение за 12 месяцев', 'сальдо', 'ГВт·ч', 'МВт', 'ТДж', 'млн м³', 'тыс. м²', 'км', 'тыс. баррелей', 'лет', 'часов в неделю', 'штук', 'тыс. единиц', 'автомобилей', 'койко-мест', 'сделок', 'дней запаса', 'градусо-сутки', 'балл индекса', 'пунктов индекса Джини', 'раз', 'индекс', 'индекс, среднегодовой', 'вероятность / лет', 'детей на женщину', 'на 1000 женщин соответствующего возраста', 'на 1000 человек населения', 'на 1000 человек соответствующего возраста', 'на 1000 живорождённых', 'на 1000 жителей', 'на одного жителя', 'на одну женщину', 'на одного мужчину', '‰ от суммарных весов стран ЕС', '‰ от суммарных весов категорий', 'индекс (2015 = 100)', 'индекс (2015 = 100), с сезонной корректировкой', 'индекс (2015 = 100), среднегодовой', 'индекс (2021 = 100)', 'индекс (2020 = 100)', 'индекс (2025 = 100)', 'индекс (2005 = 100)', 'индекс (2017 = 100)', 'индекс (1982–84 = 100)', 'индекс (2011–12 = 100)', 'индекс (2012 = 100)', 'индекс (2002 = 100)', 'индекс (2-я половина июля 2018 = 100)', 'индекс (среднее 1995 = 100)', 'индекс (тот же месяц прошлого года = 100)', 'тыс. человек', 'тысяч человек', 'млн долларов США', 'млрд долларов США (цены 2017)', 'тыс. долларов США', 'млрд $', '$ на человека', 'иены', 'млрд иен', 'иен за 1 доллар США', 'юаней за 1 доллар США', '100 млн юаней', 'тыс. канадских долларов', 'млн канадских долларов', 'млн канадских долларов (цены 2017)', 'канадских долларов за 1 доллар США', 'млн австралийских долларов', 'млн австралийских долларов (цепные объёмы)', 'долларов США за 1 австралийский доллар', 'млн фунтов стерлингов', 'млн фунтов стерлингов (цепные объёмы)', 'долларов США за 1 фунт стерлингов', 'долларов США за 1 евро', 'млрд долларов США', 'долларов США', 'долларов США за галлон', 'долларов США за баррель', 'долларов США в час', 'долларов США (цены 2017) на человека', 'тыс. единиц', 'тыс. единиц в год', 'млн автомобилей в год', 'индекс (1982 = 100)', 'индекс (1 кв. 1991 = 100)', 'вон за 1 доллар США', 'млрд вон', 'млрд вон (цены 2020)', 'мексиканских песо за 1 доллар США', 'млн мексиканских песо (постоянные цены 2018)', 'бразильских реалов за 1 доллар США', 'крор рупий', 'рупий за 1 доллар США', 'тыс. долл.', 'тыс. долл', 'млн долл.', 'млн долл', 'млн долл., текущие цены', 'млн долл. 2017 г.', 'долл.', 'долл', 'долл. 2017 г.', 'текущие цены', 'рабочих мест', 'отношение' | [backend/app/services/display.py:66](../backend/app/services/display.py#L66) |
-| app.services.display._RU_MONTHS_GEN | Tuple | sequence/source expression | [backend/app/services/display.py:255](../backend/app/services/display.py#L255) |
-| app.services.display._RU_MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/display.py:259](../backend/app/services/display.py#L259) |
-| app.services.display._CHAIN_LINKED_YEAR_RE | Call | computed source expression | [backend/app/services/display.py:302](../backend/app/services/display.py#L302) |
-| app.services.display._CHAIN_LINKED_RE | Call | computed source expression | [backend/app/services/display.py:305](../backend/app/services/display.py#L305) |
-| app.services.display._CYRILLIC_RE | Call | computed source expression | [backend/app/services/display.py:349](../backend/app/services/display.py#L349) |
-| app.services.display._EN_MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/display.py:556](../backend/app/services/display.py#L556) |
-| app.services.display._TEMPLATE_ANNUAL_KIND | Dict | 'T3', 'T4', 'T5', 'T6', 'T7', 'T9', 'T9s' | [backend/app/services/display.py:658](../backend/app/services/display.py#L658) |
+| app.services.display._UNIT_EN | Dict | 'USD/баррель', 'USD/млн БТЕ', 'USD/т', 'USD/унция', 'USD/фунт', 'US¢/бушель', 'млн $', 'млн кв.м', 'чел.', 'тыс. чел.', 'тыс. поездок', 'млн ночёвок', 'тыс. номеров', 'тыс. мест', 'мест', 'тыс. турпакетов', 'млрд пасс.-км', '% г/г', 'млн чел.', 'ед.', '% от среднего по ЕС на душу населения', 'тыс. тонн в год', 'индекс (1 кв. 1980 = 100)', 'руб.', 'руб', 'млн руб.', 'млн руб', 'млрд руб.', 'млрд руб', 'трлн руб.', 'трлн руб', 'руб./л', 'руб./г', 'тыс. руб.', 'тыс. руб', 'км²', 'км2', 'человек', 'чел. на км²', 'п.п.', 'п.п', 'п. п.', 'пункт', 'пункты', 'пунктов', 'изменение за месяц, п.п.', 'изменение за месяц', 'изменение за квартал, п.п.', 'изменение за год, п.п.', '% ВВП', 'млн евро', 'в текущих ценах, млн евро', 'в постоянных ценах 2015 года, млн евро', 'в постоянных ценах 2010 года, млн евро', 'ППС на душу населения', 'тысяча рублей', 'тысяч рублей', 'тысяч тонн', 'рублей за литр', 'тыс. тонн', 'тыс. т н. э.', 'кг н. э.', 'евро за кг н. э.', 'евро', 'тыс. евро', 'млн евро, с сезонной корректировкой', 'млн евро, в постоянных ценах', 'в постоянных ценах 2020 года, евро на душу населения', 'на душу населения, евро', '% экономически активного населения', '% населения', '% населения ЕС', '% занятости', '% от итога', '% к ожидаемому уровню', 'изменение к предыдущему периоду', 'изменение к тому же периоду прошлого года', 'темп изменения к предыдущему периоду', 'темп изменения, с сезонной корректировкой', 'изменение, %', 'изменение за год', 'изменение за год, %', 'среднее изменение за 12 месяцев', 'сальдо', 'ГВт·ч', 'МВт', 'ТДж', 'млн м³', 'тыс. м²', 'км', 'тыс. баррелей', 'лет', 'часов в неделю', 'штук', 'тыс. единиц', 'автомобилей', 'койко-мест', 'сделок', 'дней запаса', 'градусо-сутки', 'балл индекса', 'пунктов индекса Джини', 'раз', 'индекс', 'индекс, среднегодовой', 'вероятность / лет', 'детей на женщину', 'на 1000 женщин соответствующего возраста', 'на 1000 человек населения', 'на 1000 человек соответствующего возраста', 'на 1000 живорождённых', 'на 1000 жителей', 'на одного жителя', 'на одну женщину', 'на одного мужчину', '‰ от суммарных весов стран ЕС', '‰ от суммарных весов категорий', 'индекс (2015 = 100)', 'индекс (2015 = 100), с сезонной корректировкой', 'индекс (2015 = 100), среднегодовой', 'индекс (2021 = 100)', 'индекс (2020 = 100)', 'индекс (2025 = 100)', 'индекс (2005 = 100)', 'индекс (2017 = 100)', 'индекс (1982–84 = 100)', 'индекс (2011–12 = 100)', 'индекс (2012 = 100)', 'индекс (2002 = 100)', 'индекс (2-я половина июля 2018 = 100)', 'индекс (среднее 1995 = 100)', 'индекс (тот же месяц прошлого года = 100)', 'тыс. человек', 'тысяч человек', 'млн долларов США', 'млрд долларов США (цены 2017)', 'тыс. долларов США', 'млрд $', '$ на человека', 'иены', 'млрд иен', 'иен за 1 доллар США', 'юаней за 1 доллар США', '100 млн юаней', 'тыс. канадских долларов', 'млн канадских долларов', 'млн канадских долларов (цены 2017)', 'канадских долларов за 1 доллар США', 'млн австралийских долларов', 'млн австралийских долларов (цепные объёмы)', 'долларов США за 1 австралийский доллар', 'млн фунтов стерлингов', 'млн фунтов стерлингов (цепные объёмы)', 'долларов США за 1 фунт стерлингов', 'долларов США за 1 евро', 'млрд долларов США', 'долларов США', 'долларов США за галлон', 'долларов США за баррель', 'долларов США в час', 'долларов США (цены 2017) на человека', 'тыс. единиц', 'тыс. единиц в год', 'млн автомобилей в год', 'индекс (1982 = 100)', 'индекс (1 кв. 1991 = 100)', 'вон за 1 доллар США', 'млрд вон', 'млрд вон (цены 2020)', 'мексиканских песо за 1 доллар США', 'млн мексиканских песо (постоянные цены 2018)', 'бразильских реалов за 1 доллар США', 'крор рупий', 'рупий за 1 доллар США', 'тыс. долл.', 'тыс. долл', 'млн долл.', 'млн долл', 'млн долл., текущие цены', 'млн долл. 2017 г.', 'долл.', 'долл', 'долл. 2017 г.', 'текущие цены', 'рабочих мест', 'отношение' | [backend/app/services/display.py:66](../backend/app/services/display.py#L66) |
+| app.services.display._RU_MONTHS_GEN | Tuple | sequence/source expression | [backend/app/services/display.py:264](../backend/app/services/display.py#L264) |
+| app.services.display._RU_MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/display.py:268](../backend/app/services/display.py#L268) |
+| app.services.display._CHAIN_LINKED_YEAR_RE | Call | computed source expression | [backend/app/services/display.py:311](../backend/app/services/display.py#L311) |
+| app.services.display._CHAIN_LINKED_RE | Call | computed source expression | [backend/app/services/display.py:314](../backend/app/services/display.py#L314) |
+| app.services.display._CYRILLIC_RE | Call | computed source expression | [backend/app/services/display.py:358](../backend/app/services/display.py#L358) |
+| app.services.display._EN_MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/display.py:565](../backend/app/services/display.py#L565) |
+| app.services.display._TEMPLATE_ANNUAL_KIND | Dict | 'T3', 'T4', 'T5', 'T6', 'T7', 'T9', 'T9s' | [backend/app/services/display.py:667](../backend/app/services/display.py#L667) |
 | app.services.download_content.WALL_EVENTS | Call | computed source expression | [backend/app/services/download_content.py:61](../backend/app/services/download_content.py#L61) |
 | app.services.download_content.FORMAT_LABELS | Dict | 'download_excel', 'download_csv', 'demographics_csv', 'download_ical', 'chart_image_download', 'compare_image_download', 'regions_map_gif_download', 'export_run', 'research_download' | [backend/app/services/download_content.py:64](../backend/app/services/download_content.py#L64) |
 | app.services.download_content.WALL_LABELS | Dict | 'download_limit', 'chart_image_blocked', 'compare_image_blocked', 'compare_limit_hit', 'regions_map_gif_blocked' | [backend/app/services/download_content.py:75](../backend/app/services/download_content.py#L75) |
@@ -3675,23 +3692,23 @@ Relationships: `[]`
 | app.services.scrape_guard._TELEMETRY_PREFIXES | Tuple | sequence/source expression | [backend/app/services/scrape_guard.py:112](../backend/app/services/scrape_guard.py#L112) |
 | app.services.scrape_guard._AUTH_PREFIXES | Tuple | sequence/source expression | [backend/app/services/scrape_guard.py:121](../backend/app/services/scrape_guard.py#L121) |
 | app.services.scrape_guard._HEADLESS_GL_RE | Call | computed source expression | [backend/app/services/scrape_guard.py:127](../backend/app/services/scrape_guard.py#L127) |
-| app.services.search._PERCENT_UNITS | Tuple | sequence/source expression | [backend/app/services/search.py:62](../backend/app/services/search.py#L62) |
-| app.services.search._INTENT_CONCEPTS | Dict | 'cpi', 'unemployment', 'population', 'gdp-per-capita', 'gdp' | [backend/app/services/search.py:64](../backend/app/services/search.py#L64) |
-| app.services.search._INFLATION_WORD | Call | computed source expression | [backend/app/services/search.py:68](../backend/app/services/search.py#L68) |
-| app.services.search._REGION_HEADLINES | Dict | 'wage' | [backend/app/services/search.py:76](../backend/app/services/search.py#L76) |
-| app.services.search._RUSSIA_HEADLINES | Dict | 'housing', 'birth-count', 'cpi', 'gdp', 'wage', 'unemployment', 'key-rate', 'fuel', 'fuel-ai95', 'fuel-ai92', 'fuel-diesel', 'pensioners', 'exports', 'imports', 'gas-price', 'natural-gas', 'газ', 'trade-balance', 'wages-real', 'wages-nominal', 'gdp-nominal', 'gdp-real', 'mortgage-rate', 'credit-rate', 'cpi-food', 'government-debt', 'budget-balance', 'reserves', 'mortality', 'births', 'copper', 'silver', 'budget-expenditure', 'budget-revenue', 'государство' | [backend/app/services/search.py:79](../backend/app/services/search.py#L79) |
-| app.services.search._NATIVE_PRICE_WORDS | Tuple | sequence/source expression | [backend/app/services/search.py:145](../backend/app/services/search.py#L145) |
-| app.services.search._PRICE_VALUATION_PHRASES | Tuple | sequence/source expression | [backend/app/services/search.py:146](../backend/app/services/search.py#L146) |
-| app.services.search._COUNTRY_HEADLINE_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search.py:214](../backend/app/services/search.py#L214) |
-| app.services.search._COUNTRY_HEADLINE_CODE_PATTERNS | Tuple | sequence/source expression | [backend/app/services/search.py:215](../backend/app/services/search.py#L215) |
-| app.services.search._CONCEPT_HEADLINE_PATTERNS | Dict | 'gdp', 'gdp-per-capita', 'unemployment', 'population', 'cpi' | [backend/app/services/search.py:230](../backend/app/services/search.py#L230) |
-| app.services.search._CONCEPT_HEADLINE_BONUS_KEYS | Call | computed source expression | [backend/app/services/search.py:241](../backend/app/services/search.py#L241) |
-| app.services.search._CONCEPT_HEADLINE_REGEX | DictComp | computed source expression | [backend/app/services/search.py:249](../backend/app/services/search.py#L249) |
-| app.services.search._REGIONAL_INDICATOR_KINDS | Tuple | sequence/source expression | [backend/app/services/search.py:1455](../backend/app/services/search.py#L1455) |
-| app.services.search._PRICE_WORDS | Call | computed source expression | [backend/app/services/search.py:1456](../backend/app/services/search.py#L1456) |
-| app.services.search._ANNUAL_CHANGE_WORDS | Call | computed source expression | [backend/app/services/search.py:1457](../backend/app/services/search.py#L1457) |
-| app.services.search._HEADLINE_ORDER | DictComp | computed source expression | [backend/app/services/search.py:1482](../backend/app/services/search.py#L1482) |
-| app.services.search._BY_REGIONS | Call | computed source expression | [backend/app/services/search.py:1488](../backend/app/services/search.py#L1488) |
+| app.services.search._PERCENT_UNITS | Tuple | sequence/source expression | [backend/app/services/search.py:65](../backend/app/services/search.py#L65) |
+| app.services.search._INTENT_CONCEPTS | Dict | 'cpi', 'unemployment', 'population', 'gdp-per-capita', 'gdp' | [backend/app/services/search.py:67](../backend/app/services/search.py#L67) |
+| app.services.search._INFLATION_WORD | Call | computed source expression | [backend/app/services/search.py:71](../backend/app/services/search.py#L71) |
+| app.services.search._REGION_HEADLINES | Dict | 'wage' | [backend/app/services/search.py:80](../backend/app/services/search.py#L80) |
+| app.services.search._RUSSIA_HEADLINES | Dict | 'housing', 'birth-count', 'cpi', 'gdp', 'wage', 'unemployment', 'key-rate', 'fuel', 'fuel-ai95', 'fuel-ai92', 'fuel-diesel', 'pensioners', 'exports', 'imports', 'gas-price', 'natural-gas', 'газ', 'trade-balance', 'wages-real', 'wages-nominal', 'gdp-nominal', 'gdp-real', 'mortgage-rate', 'credit-rate', 'cpi-food', 'government-debt', 'budget-balance', 'reserves', 'mortality', 'births', 'copper', 'silver', 'budget-expenditure', 'budget-revenue', 'государство' | [backend/app/services/search.py:83](../backend/app/services/search.py#L83) |
+| app.services.search._NATIVE_PRICE_WORDS | Tuple | sequence/source expression | [backend/app/services/search.py:149](../backend/app/services/search.py#L149) |
+| app.services.search._PRICE_VALUATION_PHRASES | Tuple | sequence/source expression | [backend/app/services/search.py:150](../backend/app/services/search.py#L150) |
+| app.services.search._COUNTRY_HEADLINE_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search.py:218](../backend/app/services/search.py#L218) |
+| app.services.search._COUNTRY_HEADLINE_CODE_PATTERNS | Tuple | sequence/source expression | [backend/app/services/search.py:219](../backend/app/services/search.py#L219) |
+| app.services.search._CONCEPT_HEADLINE_PATTERNS | Dict | 'gdp', 'gdp-per-capita', 'unemployment', 'population', 'cpi' | [backend/app/services/search.py:234](../backend/app/services/search.py#L234) |
+| app.services.search._CONCEPT_HEADLINE_BONUS_KEYS | Call | computed source expression | [backend/app/services/search.py:245](../backend/app/services/search.py#L245) |
+| app.services.search._CONCEPT_HEADLINE_REGEX | DictComp | computed source expression | [backend/app/services/search.py:253](../backend/app/services/search.py#L253) |
+| app.services.search._REGIONAL_INDICATOR_KINDS | Tuple | sequence/source expression | [backend/app/services/search.py:1459](../backend/app/services/search.py#L1459) |
+| app.services.search._PRICE_WORDS | Call | computed source expression | [backend/app/services/search.py:1460](../backend/app/services/search.py#L1460) |
+| app.services.search._ANNUAL_CHANGE_WORDS | Call | computed source expression | [backend/app/services/search.py:1461](../backend/app/services/search.py#L1461) |
+| app.services.search._HEADLINE_ORDER | DictComp | computed source expression | [backend/app/services/search.py:1486](../backend/app/services/search.py#L1486) |
+| app.services.search._BY_REGIONS | Call | computed source expression | [backend/app/services/search.py:1492](../backend/app/services/search.py#L1492) |
 | app.services.search_currency_aliases._SHARED_LAST_WORDS | Call | computed source expression | [backend/app/services/search_currency_aliases.py:15](../backend/app/services/search_currency_aliases.py#L15) |
 | app.services.search_currency_aliases._ROOT_SUFFIXES | Tuple | sequence/source expression | [backend/app/services/search_currency_aliases.py:18](../backend/app/services/search_currency_aliases.py#L18) |
 | app.services.search_currency_aliases._GENERIC_FIRST | Call | computed source expression | [backend/app/services/search_currency_aliases.py:20](../backend/app/services/search_currency_aliases.py#L20) |
@@ -3792,7 +3809,11 @@ Relationships: `[]`
 | app.services.search_rewrite._CONJUNCTION | Call | computed source expression | [backend/app/services/search_rewrite.py:300](../backend/app/services/search_rewrite.py#L300) |
 | app.services.search_rewrite._LINK_TEXT_PARAMS | Tuple | sequence/source expression | [backend/app/services/search_rewrite.py:315](../backend/app/services/search_rewrite.py#L315) |
 | app.services.search_rewrite._LINK | Call | computed source expression | [backend/app/services/search_rewrite.py:316](../backend/app/services/search_rewrite.py#L316) |
+| app.services.search_section._WORD | Call | computed source expression | [backend/app/services/search_section.py:21](../backend/app/services/search_section.py#L21) |
+| app.services.search_section._PLACE_KINDS | Call | computed source expression | [backend/app/services/search_section.py:23](../backend/app/services/search_section.py#L23) |
+| app.services.search_section._TOURISM_CATEGORIES | Call | computed source expression | [backend/app/services/search_section.py:24](../backend/app/services/search_section.py#L24) |
 | app.services.search_tourism.TOURISM_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search_tourism.py:13](../backend/app/services/search_tourism.py#L13) |
+| app.services.search_tourism.TOURISM_KEYS | Call | computed source expression | [backend/app/services/search_tourism.py:60](../backend/app/services/search_tourism.py#L60) |
 | app.services.search_units.UNIT_RULES | Dict | 'money', 'million', 'billion', 'thousand', 'rub', 'usd', 'cad', 'aud', 'gbp', 'cny', 'jpy', 'eur', 'persons', 'index', 'percentage-point', 'litre', 'tonne', 'kilogram', 'square-metre', 'chained-prices', 'btu', 'cubic-metre', 'solid-cubic-metre' | [backend/app/services/search_units.py:9](../backend/app/services/search_units.py#L9) |
 | app.services.search_units.UNIT_EXCLUDES | Dict | 'square-metre', 'cubic-metre' | [backend/app/services/search_units.py:34](../backend/app/services/search_units.py#L34) |
 | app.services.search_units.UNIT_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search_units.py:36](../backend/app/services/search_units.py#L36) |
@@ -3810,11 +3831,14 @@ Relationships: `[]`
 | app.services.seo_calendar._MONTHS_PREP | Tuple | sequence/source expression | [backend/app/services/seo_calendar.py:39](../backend/app/services/seo_calendar.py#L39) |
 | app.services.seo_calendar._SOURCE_NAMES | Dict | 'rosstat', 'cbr', 'minfin' | [backend/app/services/seo_calendar.py:44](../backend/app/services/seo_calendar.py#L44) |
 | app.services.seo_cite.LABEL | Dict | 'ru', 'en' | [backend/app/services/seo_cite.py:16](../backend/app/services/seo_cite.py#L16) |
+| app.services.seo_cite._RU_MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/seo_cite.py:19](../backend/app/services/seo_cite.py#L19) |
+| app.services.seo_cite._EN_MONTHS | Tuple | sequence/source expression | [backend/app/services/seo_cite.py:20](../backend/app/services/seo_cite.py#L20) |
+| app.services.seo_cite._ROMAN | Tuple | sequence/source expression | [backend/app/services/seo_cite.py:21](../backend/app/services/seo_cite.py#L21) |
 | app.services.seo_content.CATEGORY_META | Dict | 'prices', 'rates', 'currencies', 'indices', 'finance', 'commodities', 'labor', 'gdp', 'population', 'trade', 'business', 'science', 'tourism' | [backend/app/services/seo_content.py:49](../backend/app/services/seo_content.py#L49) |
-| app.services.seo_content.CATEGORIES | Call | computed source expression | [backend/app/services/seo_content.py:284](../backend/app/services/seo_content.py#L284) |
-| app.services.seo_content.STATIC_PAGES | List | sequence/source expression | [backend/app/services/seo_content.py:286](../backend/app/services/seo_content.py#L286) |
-| app.services.seo_content.PAGE_META | Dict | 'home', 'about', 'research', 'methodology', 'privacy', 'terms', 'compare', 'forecasts', 'calculator', 'calculator-mortgage', 'calculator-compound', 'calendar', 'demographics', 'widgets', 'russia', 'russia-categories' | [backend/app/services/seo_content.py:303](../backend/app/services/seo_content.py#L303) |
-| app.services.seo_content.GLOBAL_INDICATOR_BLOCKS | Tuple | sequence/source expression | [backend/app/services/seo_content.py:753](../backend/app/services/seo_content.py#L753) |
+| app.services.seo_content.CATEGORIES | Call | computed source expression | [backend/app/services/seo_content.py:279](../backend/app/services/seo_content.py#L279) |
+| app.services.seo_content.STATIC_PAGES | List | sequence/source expression | [backend/app/services/seo_content.py:281](../backend/app/services/seo_content.py#L281) |
+| app.services.seo_content.PAGE_META | Dict | 'home', 'about', 'research', 'methodology', 'privacy', 'terms', 'compare', 'forecasts', 'calculator', 'calculator-mortgage', 'calculator-compound', 'calendar', 'demographics', 'widgets', 'russia', 'russia-categories' | [backend/app/services/seo_content.py:298](../backend/app/services/seo_content.py#L298) |
+| app.services.seo_content.GLOBAL_INDICATOR_BLOCKS | Tuple | sequence/source expression | [backend/app/services/seo_content.py:748](../backend/app/services/seo_content.py#L748) |
 | app.services.seo_country_figures._SPARK_POINTS | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual' | [backend/app/services/seo_country_figures.py:38](../backend/app/services/seo_country_figures.py#L38) |
 | app.services.seo_country_figures._TOLERANCE_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual' | [backend/app/services/seo_country_figures.py:43](../backend/app/services/seo_country_figures.py#L43) |
 | app.services.seo_country_figures._LABELS_RU | Dict | 'hicp-index', 'unemployment-rate', 'gdp-volume-quarterly', 'gdp-volume-annual', 'gdp-usd', 'gdp-per-capita-usd', 'population', 'budget-balance-gdp', 'government-debt-gdp', 'long-term-interest-rate', 'activity-rate', 'gdp-per-capita-eu', 'policy-rate', 'youth-unemployment-rate', 'gini-index', 'poverty-rate', 'income-share-top10', 'life-expectancy', 'tourist-arrivals', 'outbound-trips', 'tourism-gdp-share', 'tourism-employment-share' | [backend/app/services/seo_country_figures.py:46](../backend/app/services/seo_country_figures.py#L46) |
@@ -3837,30 +3861,30 @@ Relationships: `[]`
 | app.services.seo_index_control._INDEXED_PREFIXES | Tuple | sequence/source expression | [backend/app/services/seo_index_control.py:44](../backend/app/services/seo_index_control.py#L44) |
 | app.services.seo_indicator_month._EN_MONTHS | Tuple | sequence/source expression | [backend/app/services/seo_indicator_month.py:50](../backend/app/services/seo_indicator_month.py#L50) |
 | app.services.seo_regional.MACRO_BY_TABLE | Dict | '1.1', '3.4', '2.10.1', '20.1', '8.1', '10.1', '16.20', '16.21', '16.22' | [backend/app/services/seo_regional.py:53](../backend/app/services/seo_regional.py#L53) |
-| app.services.seo_regional._MONTH_NAMES_NOM | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1357](../backend/app/services/seo_regional.py#L1357) |
-| app.services.seo_regional._MONTH_NAMES_GEN | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1361](../backend/app/services/seo_regional.py#L1361) |
-| app.services.seo_regional._MONTH_NAMES_PREP | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1365](../backend/app/services/seo_regional.py#L1365) |
-| app.services.seo_regional._MONTH_NAMES_DAT | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1369](../backend/app/services/seo_regional.py#L1369) |
-| app.services.seo_regional._MONTH_NAMES_EN | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1373](../backend/app/services/seo_regional.py#L1373) |
-| app.services.seo_regional._MONTH_CASES | Dict | 'nom', 'gen', 'prep', 'dat' | [backend/app/services/seo_regional.py:1377](../backend/app/services/seo_regional.py#L1377) |
-| app.services.seo_regional._MONTHLY_RU | Dict | 'p1', 'p1_mom', 'p1_yoy', 'p2', 'p3', 'rel_level', 'rel_above', 'rel_below', 'extremes', 'checkpoints_h2', 'faq_value_q', 'faq_value_a', 'faq_change_q', 'faq_change_a', 'faq_change_flat', 'faq_source_q', 'faq_source_a', 'faq_h2', 'neighbors_h2', 'table_h2', 'th_month', 'th_value', 'alt', 'caption', 'siblings_h2', 'title', 'description', 'dataset_description', 'creator', 'image_name', 'source_h2', 'source_p', 'unit_fallback', 'keywords', 'w_lead', 'w_lead_rf', 'w_h2', 'w_p', 'w_th_date', 'w_th_russia', 'w_faq_q', 'w_faq_a', 'w_title', 'w_description' | [backend/app/services/seo_regional.py:1400](../backend/app/services/seo_regional.py#L1400) |
+| app.services.seo_regional._MONTH_NAMES_NOM | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1410](../backend/app/services/seo_regional.py#L1410) |
+| app.services.seo_regional._MONTH_NAMES_GEN | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1414](../backend/app/services/seo_regional.py#L1414) |
+| app.services.seo_regional._MONTH_NAMES_PREP | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1418](../backend/app/services/seo_regional.py#L1418) |
+| app.services.seo_regional._MONTH_NAMES_DAT | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1422](../backend/app/services/seo_regional.py#L1422) |
+| app.services.seo_regional._MONTH_NAMES_EN | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1426](../backend/app/services/seo_regional.py#L1426) |
+| app.services.seo_regional._MONTH_CASES | Dict | 'nom', 'gen', 'prep', 'dat' | [backend/app/services/seo_regional.py:1430](../backend/app/services/seo_regional.py#L1430) |
+| app.services.seo_regional._MONTHLY_RU | Dict | 'p1', 'p1_mom', 'p1_yoy', 'p2', 'p3', 'rel_level', 'rel_above', 'rel_below', 'extremes', 'checkpoints_h2', 'faq_value_q', 'faq_value_a', 'faq_change_q', 'faq_change_a', 'faq_change_flat', 'faq_source_q', 'faq_source_a', 'faq_h2', 'neighbors_h2', 'table_h2', 'th_month', 'th_value', 'alt', 'caption', 'siblings_h2', 'title', 'description', 'dataset_description', 'creator', 'image_name', 'source_h2', 'source_p', 'unit_fallback', 'keywords', 'w_lead', 'w_lead_rf', 'w_h2', 'w_p', 'w_th_date', 'w_th_russia', 'w_faq_q', 'w_faq_a', 'w_title', 'w_description' | [backend/app/services/seo_regional.py:1453](../backend/app/services/seo_regional.py#L1453) |
 | app.services.seo_regional_quarterly._T | Dict | 'ru', 'en' | [backend/app/services/seo_regional_quarterly.py:23](../backend/app/services/seo_regional_quarterly.py#L23) |
 | app.services.seo_regional_quarterly._SOURCE_KEYS | Dict | 'ru', 'en' | [backend/app/services/seo_regional_quarterly.py:84](../backend/app/services/seo_regional_quarterly.py#L84) |
 | app.services.seo_regional_year._ALLOWED_REGION_KINDS | Tuple | sequence/source expression | [backend/app/services/seo_regional_year.py:65](../backend/app/services/seo_regional_year.py#L65) |
 | app.services.seo_regional_year._YEAR_TEMPLATES_EN | Dict | 'h1', 'alt', 'caption', 'desc_main', 'change_vs', 'change_vs_pct', 'rf_h2', 'rf_para', 'rf_note', 'rank_h2', 'rank_full_link', 'rank_sentence', 'dyn_h2_by_year', 'dyn_h2_neighbors', 'checkpoints_h2', 'checkpoint_item', 'decade_h2', 'cta_h2', 'cta_link', 'cta_p', 'other_years_h2', 'other_year_link', 'trail_last', 'rank_desc', 'rank_desc_none', 'jsonld_name', 'keywords' | [backend/app/services/seo_regional_year.py:75](../backend/app/services/seo_regional_year.py#L75) |
 | app.services.seo_renderer._SENTENCE_END | Call | computed source expression | [backend/app/services/seo_renderer.py:177](../backend/app/services/seo_renderer.py#L177) |
 | app.services.seo_renderer._ABBREVIATION_END | Call | computed source expression | [backend/app/services/seo_renderer.py:179](../backend/app/services/seo_renderer.py#L179) |
-| app.services.seo_renderer._BOOT_FACTS | Dict | 'ru', 'en' | [backend/app/services/seo_renderer.py:1141](../backend/app/services/seo_renderer.py#L1141) |
-| app.services.seo_renderer.FREQUENCY_LABELS_RU | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual', 'yearly' | [backend/app/services/seo_renderer.py:1468](../backend/app/services/seo_renderer.py#L1468) |
-| app.services.seo_renderer.FREQUENCY_LABELS_EN | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual', 'yearly' | [backend/app/services/seo_renderer.py:1477](../backend/app/services/seo_renderer.py#L1477) |
-| app.services.seo_renderer.FLAGSHIP_CODES | Call | computed source expression | [backend/app/services/seo_renderer.py:1486](../backend/app/services/seo_renderer.py#L1486) |
-| app.services.seo_renderer.YANDEX_VERIFICATION_CODES | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:1582](../backend/app/services/seo_renderer.py#L1582) |
-| app.services.seo_renderer._CHART_LINK_TITLE | Dict | 'ru', 'en' | [backend/app/services/seo_renderer.py:1613](../backend/app/services/seo_renderer.py#L1613) |
-| app.services.seo_renderer._NF_GUESS_RULES | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2095](../backend/app/services/seo_renderer.py#L2095) |
-| app.services.seo_renderer.AUTOLINK_TERMS | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2351](../backend/app/services/seo_renderer.py#L2351) |
-| app.services.seo_renderer.HOME_FLAGSHIP_CODES_EN | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2525](../backend/app/services/seo_renderer.py#L2525) |
-| app.services.seo_renderer.HOME_POPULAR_CODES_RU | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2543](../backend/app/services/seo_renderer.py#L2543) |
-| app.services.seo_renderer._SSR_VS_COUNTRY_LABELS | Dict | 'germany', 'united-states', 'france', 'china', 'japan', 'russia' | [backend/app/services/seo_renderer.py:4098](../backend/app/services/seo_renderer.py#L4098) |
+| app.services.seo_renderer._BOOT_FACTS | Dict | 'ru', 'en' | [backend/app/services/seo_renderer.py:1146](../backend/app/services/seo_renderer.py#L1146) |
+| app.services.seo_renderer.FREQUENCY_LABELS_RU | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual', 'yearly' | [backend/app/services/seo_renderer.py:1473](../backend/app/services/seo_renderer.py#L1473) |
+| app.services.seo_renderer.FREQUENCY_LABELS_EN | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual', 'yearly' | [backend/app/services/seo_renderer.py:1482](../backend/app/services/seo_renderer.py#L1482) |
+| app.services.seo_renderer.FLAGSHIP_CODES | Call | computed source expression | [backend/app/services/seo_renderer.py:1491](../backend/app/services/seo_renderer.py#L1491) |
+| app.services.seo_renderer.YANDEX_VERIFICATION_CODES | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:1587](../backend/app/services/seo_renderer.py#L1587) |
+| app.services.seo_renderer._CHART_LINK_TITLE | Dict | 'ru', 'en' | [backend/app/services/seo_renderer.py:1618](../backend/app/services/seo_renderer.py#L1618) |
+| app.services.seo_renderer._NF_GUESS_RULES | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2103](../backend/app/services/seo_renderer.py#L2103) |
+| app.services.seo_renderer.AUTOLINK_TERMS | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2359](../backend/app/services/seo_renderer.py#L2359) |
+| app.services.seo_renderer.HOME_FLAGSHIP_CODES_EN | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2533](../backend/app/services/seo_renderer.py#L2533) |
+| app.services.seo_renderer.HOME_POPULAR_CODES_RU | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:2551](../backend/app/services/seo_renderer.py#L2551) |
+| app.services.seo_renderer._SSR_VS_COUNTRY_LABELS | Dict | 'germany', 'united-states', 'france', 'china', 'japan', 'russia' | [backend/app/services/seo_renderer.py:4106](../backend/app/services/seo_renderer.py#L4106) |
 | app.services.seo_research._COPY | Dict | 'ru', 'en' | [backend/app/services/seo_research.py:18](../backend/app/services/seo_research.py#L18) |
 | app.services.seo_today._MONTHS_GEN | Tuple | sequence/source expression | [backend/app/services/seo_today.py:49](../backend/app/services/seo_today.py#L49) |
 | app.services.seo_today._STALE_AFTER_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual' | [backend/app/services/seo_today.py:95](../backend/app/services/seo_today.py#L95) |
@@ -3878,8 +3902,8 @@ Relationships: `[]`
 | app.services.seo_world._KEY_CATEGORY_ORDER | Tuple | sequence/source expression | [backend/app/services/seo_world.py:233](../backend/app/services/seo_world.py#L233) |
 | app.services.seo_world._FREQ_LINK_LABEL_RU | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/seo_world.py:426](../backend/app/services/seo_world.py#L426) |
 | app.services.seo_world._FREQ_LINK_LABEL_EN | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/seo_world.py:434](../backend/app/services/seo_world.py#L434) |
-| app.services.seo_world._SOURCE_BY_PROVIDER | Dict | 'eurostat', 'statcan', 'boc_valet', 'abs', 'rba', 'ons', 'boe_iadb', 'fred', 'bls', 'bea', 'boj', 'estat', 'ecos', 'bcb_sgs', 'banxico_sie', 'nbs', 'cfets', 'mospi', 'rbi', 'imf', 'bis', 'worldbank', 'ilo', 'census', 'ibge', 'imf_bop', 'untourism', 'oecd_tourism', 'eurostat_travel', 'cystat', 'geostat', 'ktb_tr', 'armstat', 'azstat', 'mot_india', 'cbs_israel', 'jnto', 'kto_korea', 'monstat', 'rzs_serbia', 'ine_spain', 'eurostat_residence' | [backend/app/services/seo_world.py:571](../backend/app/services/seo_world.py#L571) |
-| app.services.seo_world._PROVIDER_OPEN_LABEL | DictComp | computed source expression | [backend/app/services/seo_world.py:689](../backend/app/services/seo_world.py#L689) |
+| app.services.seo_world._SOURCE_BY_PROVIDER | Dict | 'eurostat', 'statcan', 'boc_valet', 'abs', 'rba', 'ons', 'boe_iadb', 'fred', 'bls', 'bea', 'boj', 'estat', 'ecos', 'bcb_sgs', 'banxico_sie', 'nbs', 'cfets', 'mospi', 'rbi', 'imf', 'bis', 'worldbank', 'ilo', 'census', 'ibge', 'imf_bop', 'untourism', 'oecd_tourism', 'eurostat_travel', 'cystat', 'geostat', 'ktb_tr', 'armstat', 'azstat', 'mot_india', 'cbs_israel', 'jnto', 'kto_korea', 'monstat', 'rzs_serbia', 'ine_spain', 'eurostat_residence', 'nbs_china_yearbook' | [backend/app/services/seo_world.py:571](../backend/app/services/seo_world.py#L571) |
+| app.services.seo_world._PROVIDER_OPEN_LABEL | DictComp | computed source expression | [backend/app/services/seo_world.py:690](../backend/app/services/seo_world.py#L690) |
 | app.services.seo_world_subnational._NOT_FOUND | Tuple | sequence/source expression | [backend/app/services/seo_world_subnational.py:37](../backend/app/services/seo_world_subnational.py#L37) |
 | app.services.seo_year_ui._SHORT_CELL_UNITS | Call | computed source expression | [backend/app/services/seo_year_ui.py:26](../backend/app/services/seo_year_ui.py#L26) |
 | app.services.session_analysis._PARAM_KEYS | Call | computed source expression | [backend/app/services/session_analysis.py:33](../backend/app/services/session_analysis.py#L33) |
@@ -3907,14 +3931,14 @@ Relationships: `[]`
 | app.services.site_urls._W3C_LASTMOD | Call | computed source expression | [backend/app/services/site_urls.py:102](../backend/app/services/site_urls.py#L102) |
 | app.services.site_urls._PUBLIC_REGION_KINDS | Tuple | sequence/source expression | [backend/app/services/site_urls.py:111](../backend/app/services/site_urls.py#L111) |
 | app.services.site_urls._REGIONAL_PAIR_DATA | Call | computed source expression | [backend/app/services/site_urls.py:455](../backend/app/services/site_urls.py#L455) |
-| app.services.site_urls._REG_PAIRS_COUNT | Call | computed source expression | [backend/app/services/site_urls.py:1788](../backend/app/services/site_urls.py#L1788) |
-| app.services.site_urls._REG_YEARS_COUNT | Call | computed source expression | [backend/app/services/site_urls.py:1790](../backend/app/services/site_urls.py#L1790) |
-| app.services.site_urls._WORLD_CARDS_COUNT | Call | computed source expression | [backend/app/services/site_urls.py:1802](../backend/app/services/site_urls.py#L1802) |
-| app.services.site_urls._WORLD_YEARS_COUNT | Call | computed source expression | [backend/app/services/site_urls.py:1811](../backend/app/services/site_urls.py#L1811) |
-| app.services.site_urls._SIMPLE_SECTION_ORDER | List | sequence/source expression | [backend/app/services/site_urls.py:1821](../backend/app/services/site_urls.py#L1821) |
-| app.services.site_urls._CHUNKED_SOURCES | Dict | 'months-', 'world-indicators-', 'regional-', 'regional-years-', 'world-years-', 'world-region-years-' | [backend/app/services/site_urls.py:1916](../backend/app/services/site_urls.py#L1916) |
-| app.services.site_urls._SIMPLE_SECTION_BUILDERS | Dict | 'core', 'today', 'ratings', 'maps', 'regions', 'region-vs', 'world-ratings', 'world', 'world-regions', 'world-region-vs', 'calendar', 'world-vs', 'years' | [backend/app/services/site_urls.py:1957](../backend/app/services/site_urls.py#L1957) |
-| app.services.site_urls.SECTION_BUILDERS | Dict | sequence/source expression | [backend/app/services/site_urls.py:2010](../backend/app/services/site_urls.py#L2010) |
+| app.services.site_urls._REG_PAIRS_COUNT | Call | computed source expression | [backend/app/services/site_urls.py:1790](../backend/app/services/site_urls.py#L1790) |
+| app.services.site_urls._REG_YEARS_COUNT | Call | computed source expression | [backend/app/services/site_urls.py:1792](../backend/app/services/site_urls.py#L1792) |
+| app.services.site_urls._WORLD_CARDS_COUNT | Call | computed source expression | [backend/app/services/site_urls.py:1804](../backend/app/services/site_urls.py#L1804) |
+| app.services.site_urls._WORLD_YEARS_COUNT | Call | computed source expression | [backend/app/services/site_urls.py:1813](../backend/app/services/site_urls.py#L1813) |
+| app.services.site_urls._SIMPLE_SECTION_ORDER | List | sequence/source expression | [backend/app/services/site_urls.py:1823](../backend/app/services/site_urls.py#L1823) |
+| app.services.site_urls._CHUNKED_SOURCES | Dict | 'months-', 'world-indicators-', 'regional-', 'regional-years-', 'world-years-', 'world-region-years-' | [backend/app/services/site_urls.py:1918](../backend/app/services/site_urls.py#L1918) |
+| app.services.site_urls._SIMPLE_SECTION_BUILDERS | Dict | 'core', 'today', 'ratings', 'maps', 'regions', 'region-vs', 'world-ratings', 'world', 'world-regions', 'world-region-vs', 'calendar', 'world-vs', 'years' | [backend/app/services/site_urls.py:1959](../backend/app/services/site_urls.py#L1959) |
+| app.services.site_urls.SECTION_BUILDERS | Dict | sequence/source expression | [backend/app/services/site_urls.py:2012](../backend/app/services/site_urls.py#L2012) |
 | app.services.sitemap_images._SEGMENT | Call | computed source expression | [backend/app/services/sitemap_images.py:16](../backend/app/services/sitemap_images.py#L16) |
 | app.services.sitemap_images._WORLD_CODE | Call | computed source expression | [backend/app/services/sitemap_images.py:17](../backend/app/services/sitemap_images.py#L17) |
 | app.services.sitemap_priority.WHOLE_SECTIONS | Tuple | sequence/source expression | [backend/app/services/sitemap_priority.py:39](../backend/app/services/sitemap_priority.py#L39) |
@@ -3995,32 +4019,37 @@ Relationships: `[]`
 | app.services.tourism_regional_loader._SKIP | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:92](../backend/app/services/tourism_regional_loader.py#L92) |
 | app.services.tourism_regional_loader._RUSSIA_WITHOUT_NEW | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:93](../backend/app/services/tourism_regional_loader.py#L93) |
 | app.services.tourism_regional_loader.MONTHS | Tuple | sequence/source expression | [backend/app/services/tourism_regional_loader.py:147](../backend/app/services/tourism_regional_loader.py#L147) |
-| app.services.tourism_regional_loader._STRUCTURAL | Set | sequence/source expression | [backend/app/services/tourism_regional_loader.py:233](../backend/app/services/tourism_regional_loader.py#L233) |
-| app.services.tourism_regional_loader._TOTAL | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:234](../backend/app/services/tourism_regional_loader.py#L234) |
-| app.services.tourism_regional_loader._CELL | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:307](../backend/app/services/tourism_regional_loader.py#L307) |
-| app.services.tourism_regional_loader._JS_ESCAPE | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:343](../backend/app/services/tourism_regional_loader.py#L343) |
-| app.services.tourism_regional_loader._QUARTER | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:476](../backend/app/services/tourism_regional_loader.py#L476) |
-| app.services.tourism_regional_loader._ROMAN | Dict | 'I', 'II', 'III', 'IV' | [backend/app/services/tourism_regional_loader.py:477](../backend/app/services/tourism_regional_loader.py#L477) |
-| app.services.tourism_regional_loader._CBR_CODES | Dict | ('exp', 'всего'), ('exp', 'деловые'), ('exp', 'личные'), ('exp', 'туристские услуги'), ('imp', 'всего'), ('imp', 'деловые'), ('imp', 'личные'), ('imp', 'туристские услуги') | [backend/app/services/tourism_regional_loader.py:478](../backend/app/services/tourism_regional_loader.py#L478) |
-| app.services.tourism_regional_loader._TURPOTOK_SHEET | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:574](../backend/app/services/tourism_regional_loader.py#L574) |
-| app.services.tourism_regional_loader._TURPOTOK_CODES | Dict | ('1', '1'), ('1', '2'), ('2', '1'), ('2', '2') | [backend/app/services/tourism_regional_loader.py:575](../backend/app/services/tourism_regional_loader.py#L575) |
-| app.services.tourism_regional_loader._YTD_QUARTER | Dict | 'январь-март', 'январь-июнь', 'январь-сентябрь', 'январь-декабрь' | [backend/app/services/tourism_regional_loader.py:577](../backend/app/services/tourism_regional_loader.py#L577) |
-| app.services.tourism_regional_loader._FNS_ZIP | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:655](../backend/app/services/tourism_regional_loader.py#L655) |
-| app.services.tourism_regional_loader._TURPOTOK_LINK | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:729](../backend/app/services/tourism_regional_loader.py#L729) |
-| app.services.tourism_regional_loader._ACTIVE | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:749](../backend/app/services/tourism_regional_loader.py#L749) |
-| app.services.tourism_regional_loader.INN_REGION | Dict | '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68', '69', '70', '71', '72', '73', '74', '75', '76', '77', '78', '79', '83', '86', '87', '89', '91', '92', '80', '81', '84', '85', '88' | [backend/app/services/tourism_regional_loader.py:807](../backend/app/services/tourism_regional_loader.py#L807) |
-| app.services.tourism_regional_loader._PRICE_SHEET | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:942](../backend/app/services/tourism_regional_loader.py#L942) |
-| app.services.tourism_regional_loader._PRICE_OWN | Dict | 'проезд в купейном вагоне скорого нефирменного поезда дальнего следования, в расчете на 100 км пути', 'проезд в плацкартном вагоне скорого нефирменного поезда дальнего следования, в расчете на 100 км пути' | [backend/app/services/tourism_regional_loader.py:943](../backend/app/services/tourism_regional_loader.py#L943) |
-| app.services.tourism_regional_loader._TUR_RUS | Dict | 'R5t1', 'R5t2', 'R5t3', 'R5t4' | [backend/app/services/tourism_regional_loader.py:995](../backend/app/services/tourism_regional_loader.py#L995) |
-| app.services.tourism_regional_loader.TOCHNO | Dict | 'tour-platnye-uslugi-gostinicy', 'tour-platnye-uslugi-sanatorii', 'tour-platnye-uslugi-specksr', 'tour-platnye-turistskie-uslugi', 'tour-ifo-gostinicy', 'tour-ifo-sanatorii', 'tour-ifo-specksr', 'tour-ifo-turistskie', 'tour-ipc-gostinicy-dek', 'tour-ipc-sanatorii-dek', 'tour-ipc-vnutrenniy-turizm-dek', 'tour-ipc-zarubezhnyy-turizm-dek', 'tour-organizacii-otdyha-chislo', 'tour-sanatorii-v-uzkom-smysle', 'tour-sanatorii-detskie', 'tour-sanatorii-profilaktorii', 'tour-obshchepit-restorany', 'tour-obshchepit-stolovye', 'tour-obshchepit-rezultat-restorany', 'tour-investicii-gostinicy-restorany' | [backend/app/services/tourism_regional_loader.py:1051](../backend/app/services/tourism_regional_loader.py#L1051) |
-| app.services.tourism_showcase._TOURISM_NAME | Call | computed source expression | [backend/app/services/tourism_showcase.py:37](../backend/app/services/tourism_showcase.py#L37) |
-| app.services.tourism_showcase._NOT_TOURISM_NAME | Call | computed source expression | [backend/app/services/tourism_showcase.py:43](../backend/app/services/tourism_showcase.py#L43) |
-| app.services.tourism_showcase._SQL_STEMS | Tuple | sequence/source expression | [backend/app/services/tourism_showcase.py:46](../backend/app/services/tourism_showcase.py#L46) |
-| app.services.tourism_showcase.RUSSIA_LEAD_CODES | Tuple | sequence/source expression | [backend/app/services/tourism_showcase.py:56](../backend/app/services/tourism_showcase.py#L56) |
-| app.services.tourism_showcase.REGION_GROUPS | Tuple | sequence/source expression | [backend/app/services/tourism_showcase.py:63](../backend/app/services/tourism_showcase.py#L63) |
-| app.services.tourism_showcase.REGION_GROUP_ORDER | Tuple | sequence/source expression | [backend/app/services/tourism_showcase.py:71](../backend/app/services/tourism_showcase.py#L71) |
-| app.services.tourism_showcase._RUSSIA_SERIES | Call | computed source expression | [backend/app/services/tourism_showcase.py:182](../backend/app/services/tourism_showcase.py#L182) |
-| app.services.tourism_showcase._SIDE_SERIES | Call | computed source expression | [backend/app/services/tourism_showcase.py:183](../backend/app/services/tourism_showcase.py#L183) |
+| app.services.tourism_regional_loader._STRUCTURAL | Set | sequence/source expression | [backend/app/services/tourism_regional_loader.py:235](../backend/app/services/tourism_regional_loader.py#L235) |
+| app.services.tourism_regional_loader._TOTAL | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:236](../backend/app/services/tourism_regional_loader.py#L236) |
+| app.services.tourism_regional_loader._CELL | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:309](../backend/app/services/tourism_regional_loader.py#L309) |
+| app.services.tourism_regional_loader._JS_ESCAPE | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:345](../backend/app/services/tourism_regional_loader.py#L345) |
+| app.services.tourism_regional_loader._QUARTER | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:484](../backend/app/services/tourism_regional_loader.py#L484) |
+| app.services.tourism_regional_loader._ROMAN | Dict | 'I', 'II', 'III', 'IV' | [backend/app/services/tourism_regional_loader.py:485](../backend/app/services/tourism_regional_loader.py#L485) |
+| app.services.tourism_regional_loader._CBR_CODES | Dict | ('exp', 'всего'), ('exp', 'деловые'), ('exp', 'личные'), ('exp', 'туристские услуги'), ('imp', 'всего'), ('imp', 'деловые'), ('imp', 'личные'), ('imp', 'туристские услуги') | [backend/app/services/tourism_regional_loader.py:486](../backend/app/services/tourism_regional_loader.py#L486) |
+| app.services.tourism_regional_loader._TURPOTOK_SHEET | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:582](../backend/app/services/tourism_regional_loader.py#L582) |
+| app.services.tourism_regional_loader._TURPOTOK_CODES | Dict | ('1', '1'), ('1', '2'), ('2', '1'), ('2', '2') | [backend/app/services/tourism_regional_loader.py:583](../backend/app/services/tourism_regional_loader.py#L583) |
+| app.services.tourism_regional_loader._YTD_QUARTER | Dict | 'январь-март', 'январь-июнь', 'январь-сентябрь', 'январь-декабрь' | [backend/app/services/tourism_regional_loader.py:585](../backend/app/services/tourism_regional_loader.py#L585) |
+| app.services.tourism_regional_loader._FNS_ZIP | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:663](../backend/app/services/tourism_regional_loader.py#L663) |
+| app.services.tourism_regional_loader._TURPOTOK_LINK | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:737](../backend/app/services/tourism_regional_loader.py#L737) |
+| app.services.tourism_regional_loader._ACTIVE | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:757](../backend/app/services/tourism_regional_loader.py#L757) |
+| app.services.tourism_regional_loader.INN_REGION | Dict | '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68', '69', '70', '71', '72', '73', '74', '75', '76', '77', '78', '79', '83', '86', '87', '89', '91', '92', '80', '81', '84', '85', '88' | [backend/app/services/tourism_regional_loader.py:815](../backend/app/services/tourism_regional_loader.py#L815) |
+| app.services.tourism_regional_loader._PRICE_SHEET | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:950](../backend/app/services/tourism_regional_loader.py#L950) |
+| app.services.tourism_regional_loader._PRICE_OWN | Dict | 'проезд в купейном вагоне скорого нефирменного поезда дальнего следования, в расчете на 100 км пути', 'проезд в плацкартном вагоне скорого нефирменного поезда дальнего следования, в расчете на 100 км пути' | [backend/app/services/tourism_regional_loader.py:951](../backend/app/services/tourism_regional_loader.py#L951) |
+| app.services.tourism_regional_loader._TUR_RUS | Dict | 'R5t1', 'R5t2', 'R5t3', 'R5t4' | [backend/app/services/tourism_regional_loader.py:1003](../backend/app/services/tourism_regional_loader.py#L1003) |
+| app.services.tourism_regional_loader.TOCHNO | Dict | 'tour-platnye-uslugi-gostinicy', 'tour-platnye-uslugi-sanatorii', 'tour-platnye-uslugi-specksr', 'tour-platnye-turistskie-uslugi', 'tour-ifo-gostinicy', 'tour-ifo-sanatorii', 'tour-ifo-specksr', 'tour-ifo-turistskie', 'tour-ipc-gostinicy-dek', 'tour-ipc-sanatorii-dek', 'tour-ipc-vnutrenniy-turizm-dek', 'tour-ipc-zarubezhnyy-turizm-dek', 'tour-organizacii-otdyha-chislo', 'tour-sanatorii-v-uzkom-smysle', 'tour-sanatorii-detskie', 'tour-sanatorii-profilaktorii', 'obshchepit-restorany', 'obshchepit-stolovye', 'obshchepit-rezultat-restorany', 'tour-investicii-gostinicy-restorany' | [backend/app/services/tourism_regional_loader.py:1059](../backend/app/services/tourism_regional_loader.py#L1059) |
+| app.services.tourism_regional_loader._PART | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:1127](../backend/app/services/tourism_regional_loader.py#L1127) |
+| app.services.tourism_regional_loader._DOUBTFUL | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:1129](../backend/app/services/tourism_regional_loader.py#L1129) |
+| app.services.tourism_regional_loader._MONTH_RE | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:1208](../backend/app/services/tourism_regional_loader.py#L1208) |
+| app.services.tourism_regional_loader._MSP_CODE | Call | computed source expression | [backend/app/services/tourism_regional_loader.py:1256](../backend/app/services/tourism_regional_loader.py#L1256) |
+| app.services.tourism_regional_loader._MSP_SERIES | Dict | '55', '56', '79' | [backend/app/services/tourism_regional_loader.py:1257](../backend/app/services/tourism_regional_loader.py#L1257) |
+| app.services.tourism_showcase._TOURISM_NAME | Call | computed source expression | [backend/app/services/tourism_showcase.py:45](../backend/app/services/tourism_showcase.py#L45) |
+| app.services.tourism_showcase._NOT_TOURISM_NAME | Call | computed source expression | [backend/app/services/tourism_showcase.py:51](../backend/app/services/tourism_showcase.py#L51) |
+| app.services.tourism_showcase._SQL_STEMS | Tuple | sequence/source expression | [backend/app/services/tourism_showcase.py:54](../backend/app/services/tourism_showcase.py#L54) |
+| app.services.tourism_showcase.RUSSIA_LEAD_CODES | Tuple | sequence/source expression | [backend/app/services/tourism_showcase.py:63](../backend/app/services/tourism_showcase.py#L63) |
+| app.services.tourism_showcase.REGION_GROUPS | Tuple | sequence/source expression | [backend/app/services/tourism_showcase.py:70](../backend/app/services/tourism_showcase.py#L70) |
+| app.services.tourism_showcase.REGION_GROUP_ORDER | Tuple | sequence/source expression | [backend/app/services/tourism_showcase.py:78](../backend/app/services/tourism_showcase.py#L78) |
+| app.services.tourism_showcase._RUSSIA_SERIES | Call | computed source expression | [backend/app/services/tourism_showcase.py:216](../backend/app/services/tourism_showcase.py#L216) |
+| app.services.tourism_showcase._SIDE_SERIES | Call | computed source expression | [backend/app/services/tourism_showcase.py:217](../backend/app/services/tourism_showcase.py#L217) |
 | app.services.traffic_channel._SEARCH_HOSTS | Tuple | sequence/source expression | [backend/app/services/traffic_channel.py:24](../backend/app/services/traffic_channel.py#L24) |
 | app.services.traffic_channel._YANDEX_SERVICE_PREFIXES | Tuple | sequence/source expression | [backend/app/services/traffic_channel.py:29](../backend/app/services/traffic_channel.py#L29) |
 | app.services.traffic_channel._NOT_SEARCH_HOSTS | Tuple | sequence/source expression | [backend/app/services/traffic_channel.py:44](../backend/app/services/traffic_channel.py#L44) |
@@ -4168,11 +4197,12 @@ Relationships: `[]`
 | app.services.world_official_forecast._PERCENT_BOUND_CODES | Call | computed source expression | [backend/app/services/world_official_forecast.py:55](../backend/app/services/world_official_forecast.py#L55) |
 | app.services.world_rank_values._FORCE_YOY_CONCEPTS | Call | computed source expression | [backend/app/services/world_rank_values.py:48](../backend/app/services/world_rank_values.py#L48) |
 | app.services.world_rank_values._FLOW_RANK_CONCEPTS | Call | computed source expression | [backend/app/services/world_rank_values.py:57](../backend/app/services/world_rank_values.py#L57) |
-| app.services.world_rank_values.WORLD_RATING_QUERY_NAMES | Dict | 'hicp-index', 'unemployment-rate', 'budget-balance-gdp', 'government-debt-gdp', 'population', 'long-term-interest-rate', 'activity-rate', 'gdp-per-capita-eu', 'gdp-usd', 'gdp-per-capita-usd', 'policy-rate', 'youth-unemployment-rate', 'gini-index', 'poverty-rate', 'income-share-top10', 'life-expectancy', 'tourist-arrivals', 'outbound-trips', 'tourism-gdp-share', 'tourism-employment-share' | [backend/app/services/world_rank_values.py:236](../backend/app/services/world_rank_values.py#L236) |
-| app.services.world_rank_values.WORLD_RATING_QUERY_NAMES_EN | Dict | 'hicp-index', 'unemployment-rate', 'budget-balance-gdp', 'government-debt-gdp', 'population', 'long-term-interest-rate', 'activity-rate', 'gdp-per-capita-eu', 'gdp-usd', 'gdp-per-capita-usd', 'policy-rate', 'youth-unemployment-rate', 'gini-index', 'poverty-rate', 'income-share-top10', 'life-expectancy', 'tourist-arrivals', 'outbound-trips', 'tourism-gdp-share', 'tourism-employment-share' | [backend/app/services/world_rank_values.py:260](../backend/app/services/world_rank_values.py#L260) |
-| app.services.world_rank_values._WORLD_REGION_EN | Dict | 'Европа', 'Азия', 'Америка', 'Африка', 'Океания' | [backend/app/services/world_rank_values.py:283](../backend/app/services/world_rank_values.py#L283) |
+| app.services.world_rank_values.WORLD_RATING_QUERY_NAMES | Dict | 'hicp-index', 'unemployment-rate', 'budget-balance-gdp', 'government-debt-gdp', 'population', 'long-term-interest-rate', 'activity-rate', 'gdp-per-capita-eu', 'gdp-usd', 'gdp-per-capita-usd', 'policy-rate', 'youth-unemployment-rate', 'gini-index', 'poverty-rate', 'income-share-top10', 'life-expectancy', 'tourist-arrivals', 'outbound-trips', 'tourism-gdp-share', 'tourism-employment-share' | [backend/app/services/world_rank_values.py:238](../backend/app/services/world_rank_values.py#L238) |
+| app.services.world_rank_values.WORLD_RATING_QUERY_NAMES_EN | Dict | 'hicp-index', 'unemployment-rate', 'budget-balance-gdp', 'government-debt-gdp', 'population', 'long-term-interest-rate', 'activity-rate', 'gdp-per-capita-eu', 'gdp-usd', 'gdp-per-capita-usd', 'policy-rate', 'youth-unemployment-rate', 'gini-index', 'poverty-rate', 'income-share-top10', 'life-expectancy', 'tourist-arrivals', 'outbound-trips', 'tourism-gdp-share', 'tourism-employment-share' | [backend/app/services/world_rank_values.py:262](../backend/app/services/world_rank_values.py#L262) |
+| app.services.world_rank_values._WORLD_REGION_EN | Dict | 'Европа', 'Азия', 'Америка', 'Африка', 'Океания' | [backend/app/services/world_rank_values.py:285](../backend/app/services/world_rank_values.py#L285) |
 | app.services.world_russia_rank._GDP_USD_METHOD_CONCEPTS | Call | computed source expression | [backend/app/services/world_russia_rank.py:42](../backend/app/services/world_russia_rank.py#L42) |
-| app.services.world_russia_rank._NATIVE_COMPARE_FREQUENCIES | Call | computed source expression | [backend/app/services/world_russia_rank.py:242](../backend/app/services/world_russia_rank.py#L242) |
+| app.services.world_russia_rank._PERIODS_PER_YEAR | Dict | 'monthly', 'quarterly' | [backend/app/services/world_russia_rank.py:222](../backend/app/services/world_russia_rank.py#L222) |
+| app.services.world_russia_rank._NATIVE_COMPARE_FREQUENCIES | Call | computed source expression | [backend/app/services/world_russia_rank.py:260](../backend/app/services/world_russia_rank.py#L260) |
 | app.services.world_series_title._TITLE_AXES | Call | computed source expression | [backend/app/services/world_series_title.py:26](../backend/app/services/world_series_title.py#L26) |
 | app.services.world_series_title._TITLE_BUDGETS | Call | computed source expression | [backend/app/services/world_series_title.py:28](../backend/app/services/world_series_title.py#L28) |
 | app.services.world_series_title.SLICE_AXES | Tuple | sequence/source expression | [backend/app/services/world_series_title.py:35](../backend/app/services/world_series_title.py#L35) |
@@ -4180,44 +4210,44 @@ Relationships: `[]`
 | app.services.world_series_title._WORD | Call | computed source expression | [backend/app/services/world_series_title.py:217](../backend/app/services/world_series_title.py#L217) |
 | app.services.world_subnational_forecast.FREQUENCIES | Dict | 'annual', 'quarterly', 'monthly' | [backend/app/services/world_subnational_forecast.py:19](../backend/app/services/world_subnational_forecast.py#L19) |
 | app.services.world_subnational_ingest._REAL_INCOME_UNITS_RE | Call | computed source expression | [backend/app/services/world_subnational_ingest.py:47](../backend/app/services/world_subnational_ingest.py#L47) |
-| app.services.world_tourism_ingest.NETWORK_PROVIDERS | Tuple | sequence/source expression | [backend/app/services/world_tourism_ingest.py:50](../backend/app/services/world_tourism_ingest.py#L50) |
-| app.services.world_tourism_ingest._DATASET_BY_PROVIDER | Dict | src.IMF_PROVIDER, src.UNT_PROVIDER, src.OECD_PROVIDER, src.ESTAT_PROVIDER, src.CYSTAT_PROVIDER, src.GEOSTAT_PROVIDER, **unpack | [backend/app/services/world_tourism_ingest.py:59](../backend/app/services/world_tourism_ingest.py#L59) |
+| app.services.world_tourism_ingest.NETWORK_PROVIDERS | Tuple | sequence/source expression | [backend/app/services/world_tourism_ingest.py:51](../backend/app/services/world_tourism_ingest.py#L51) |
+| app.services.world_tourism_ingest._DATASET_BY_PROVIDER | Dict | src.IMF_PROVIDER, src.UNT_PROVIDER, src.OECD_PROVIDER, src.ESTAT_PROVIDER, src.CYSTAT_PROVIDER, src.GEOSTAT_PROVIDER, **unpack | [backend/app/services/world_tourism_ingest.py:60](../backend/app/services/world_tourism_ingest.py#L60) |
 | app.services.world_tourism_sources.NETWORK_SOURCE_PROVIDERS | Tuple | sequence/source expression | [backend/app/services/world_tourism_sources.py:57](../backend/app/services/world_tourism_sources.py#L57) |
 | app.services.world_tourism_sources.SOURCE_BY_PROVIDER | Dict | IMF_PROVIDER, UNT_PROVIDER, OECD_PROVIDER, ESTAT_PROVIDER, CYSTAT_PROVIDER, GEOSTAT_PROVIDER, KTB_PROVIDER | [backend/app/services/world_tourism_sources.py:62](../backend/app/services/world_tourism_sources.py#L62) |
 | app.services.world_tourism_sources.UNT_ZIP_RE | Call | computed source expression | [backend/app/services/world_tourism_sources.py:77](../backend/app/services/world_tourism_sources.py#L77) |
 | app.services.world_tourism_sources.GEOSTAT_VISITS_RE | Call | computed source expression | [backend/app/services/world_tourism_sources.py:86](../backend/app/services/world_tourism_sources.py#L86) |
-| app.services.world_tourism_sources.IMF_SERIES | Tuple | sequence/source expression | [backend/app/services/world_tourism_sources.py:140](../backend/app/services/world_tourism_sources.py#L140) |
-| app.services.world_tourism_sources.UNT_SERIES | Tuple | sequence/source expression | [backend/app/services/world_tourism_sources.py:227](../backend/app/services/world_tourism_sources.py#L227) |
-| app.services.world_tourism_sources.OECD_EMP_SHARE | Call | computed source expression | [backend/app/services/world_tourism_sources.py:327](../backend/app/services/world_tourism_sources.py#L327) |
-| app.services.world_tourism_sources.OECD_GDP_SHARE | Call | computed source expression | [backend/app/services/world_tourism_sources.py:338](../backend/app/services/world_tourism_sources.py#L338) |
-| app.services.world_tourism_sources.OECD_RU_ARRIVALS | Call | computed source expression | [backend/app/services/world_tourism_sources.py:359](../backend/app/services/world_tourism_sources.py#L359) |
-| app.services.world_tourism_sources.ESTAT_RU_CREDIT | Call | computed source expression | [backend/app/services/world_tourism_sources.py:388](../backend/app/services/world_tourism_sources.py#L388) |
-| app.services.world_tourism_sources.ESTAT_RU_DEBIT | Call | computed source expression | [backend/app/services/world_tourism_sources.py:401](../backend/app/services/world_tourism_sources.py#L401) |
-| app.services.world_tourism_sources.CYSTAT_RU_ARRIVALS | Call | computed source expression | [backend/app/services/world_tourism_sources.py:410](../backend/app/services/world_tourism_sources.py#L410) |
-| app.services.world_tourism_sources.CYSTAT_TOTAL_ARRIVALS | Call | computed source expression | [backend/app/services/world_tourism_sources.py:426](../backend/app/services/world_tourism_sources.py#L426) |
-| app.services.world_tourism_sources.GEOSTAT_RU_VISITS | Call | computed source expression | [backend/app/services/world_tourism_sources.py:444](../backend/app/services/world_tourism_sources.py#L444) |
-| app.services.world_tourism_sources.GEOSTAT_TOTAL_VISITS | Call | computed source expression | [backend/app/services/world_tourism_sources.py:455](../backend/app/services/world_tourism_sources.py#L455) |
-| app.services.world_tourism_sources.NATIONAL_SOURCES | Dict | KTB_PROVIDER, ARMSTAT_PROVIDER, AZSTAT_PROVIDER, INDIA_PROVIDER, CBS_IL_PROVIDER, JNTO_PROVIDER, KTO_PROVIDER, MONSTAT_PROVIDER, RZS_PROVIDER, INE_PROVIDER, ESTAT_RES_PROVIDER | [backend/app/services/world_tourism_sources.py:478](../backend/app/services/world_tourism_sources.py#L478) |
-| app.services.world_tourism_sources._FREQ_RU | Dict | 'monthly', 'quarterly', 'annual' | [backend/app/services/world_tourism_sources.py:493](../backend/app/services/world_tourism_sources.py#L493) |
-| app.services.world_tourism_sources._FREQ_EN | Dict | 'monthly', 'quarterly', 'annual' | [backend/app/services/world_tourism_sources.py:494](../backend/app/services/world_tourism_sources.py#L494) |
-| app.services.world_tourism_sources._PERIOD_RU | Dict | 'monthly', 'quarterly', 'annual' | [backend/app/services/world_tourism_sources.py:495](../backend/app/services/world_tourism_sources.py#L495) |
-| app.services.world_tourism_sources._PERIOD_EN | Dict | 'monthly', 'quarterly', 'annual' | [backend/app/services/world_tourism_sources.py:496](../backend/app/services/world_tourism_sources.py#L496) |
-| app.services.world_tourism_sources._KTB_ORIGINS | Tuple | sequence/source expression | [backend/app/services/world_tourism_sources.py:521](../backend/app/services/world_tourism_sources.py#L521) |
-| app.services.world_tourism_sources.KTB_RU_ARRIVALS | Call | computed source expression | [backend/app/services/world_tourism_sources.py:611](../backend/app/services/world_tourism_sources.py#L611) |
-| app.services.world_tourism_sources.KTB_TOTAL_ARRIVALS | Call | computed source expression | [backend/app/services/world_tourism_sources.py:613](../backend/app/services/world_tourism_sources.py#L613) |
-| app.services.world_tourism_sources.KTB_ORIGIN_SERIES | Call | computed source expression | [backend/app/services/world_tourism_sources.py:616](../backend/app/services/world_tourism_sources.py#L616) |
-| app.services.world_tourism_sources._ACC_RU_ARRIVALS | Tuple | sequence/source expression | [backend/app/services/world_tourism_sources.py:624](../backend/app/services/world_tourism_sources.py#L624) |
-| app.services.world_tourism_sources._ACC_RU_NIGHTS | Tuple | sequence/source expression | [backend/app/services/world_tourism_sources.py:627](../backend/app/services/world_tourism_sources.py#L627) |
-| app.services.world_tourism_sources.TIDY_SPECS | Tuple | sequence/source expression | [backend/app/services/world_tourism_sources.py:650](../backend/app/services/world_tourism_sources.py#L650) |
-| app.services.world_tourism_sources.TIDY_PROVIDERS | Call | computed source expression | [backend/app/services/world_tourism_sources.py:713](../backend/app/services/world_tourism_sources.py#L713) |
-| app.services.world_tourism_sources.TIDY_FOLDERS | DictComp | computed source expression | [backend/app/services/world_tourism_sources.py:714](../backend/app/services/world_tourism_sources.py#L714) |
-| app.services.world_tourism_sources.TOURISM_PROVIDERS | Call | computed source expression | [backend/app/services/world_tourism_sources.py:722](../backend/app/services/world_tourism_sources.py#L722) |
-| app.services.world_tourism_sources._SERIES_BY_KEY | DictComp | computed source expression | [backend/app/services/world_tourism_sources.py:723](../backend/app/services/world_tourism_sources.py#L723) |
-| app.services.world_tourism_sources.NATIONAL_RU_ARRIVALS | Dict | 'CY', 'TR', 'IL' | [backend/app/services/world_tourism_sources.py:725](../backend/app/services/world_tourism_sources.py#L725) |
-| app.services.world_tourism_sources.ISO3_TO_CATALOG | Dict | 'ALB', 'ARM', 'AUT', 'AUS', 'AZE', 'BIH', 'BEL', 'BGR', 'BRA', 'CAN', 'CHE', 'CHN', 'CYP', 'CZE', 'DEU', 'DNK', 'EST', 'GRC', 'ESP', 'FIN', 'FRA', 'GEO', 'HRV', 'HUN', 'IRL', 'ISR', 'IND', 'ISL', 'ITA', 'JPN', 'KOR', 'LTU', 'LUX', 'LVA', 'MDA', 'MNE', 'MKD', 'MLT', 'MEX', 'NLD', 'NOR', 'NZL', 'POL', 'PRT', 'ROU', 'SRB', 'SWE', 'SVN', 'SVK', 'TUR', 'UKR', 'GBR', 'USA', 'ZAF', 'KOS', 'XKX' | [backend/app/services/world_tourism_sources.py:754](../backend/app/services/world_tourism_sources.py#L754) |
-| app.services.world_tourism_sources.M49_TO_CATALOG | Dict | 8, 51, 40, 36, 31, 70, 56, 100, 76, 124, 756, 156, 196, 203, 276, 208, 233, 300, 724, 246, 250, 268, 191, 348, 372, 376, 356, 352, 380, 392, 410, 440, 442, 428, 498, 499, 807, 470, 484, 528, 578, 554, 616, 620, 642, 688, 752, 705, 703, 792, 804, 826, 840, 710 | [backend/app/services/world_tourism_sources.py:764](../backend/app/services/world_tourism_sources.py#L764) |
-| app.services.world_tourism_sources.ESTAT_GEO_TO_CATALOG | Dict | 'GR', 'GB' | [backend/app/services/world_tourism_sources.py:773](../backend/app/services/world_tourism_sources.py#L773) |
-| app.services.world_tourism_sources._ROMAN_QUARTER | Dict | 'I', 'II', 'III', 'IV' | [backend/app/services/world_tourism_sources.py:992](../backend/app/services/world_tourism_sources.py#L992) |
+| app.services.world_tourism_sources.IMF_SERIES | Tuple | sequence/source expression | [backend/app/services/world_tourism_sources.py:150](../backend/app/services/world_tourism_sources.py#L150) |
+| app.services.world_tourism_sources.UNT_SERIES | Tuple | sequence/source expression | [backend/app/services/world_tourism_sources.py:237](../backend/app/services/world_tourism_sources.py#L237) |
+| app.services.world_tourism_sources.OECD_EMP_SHARE | Call | computed source expression | [backend/app/services/world_tourism_sources.py:341](../backend/app/services/world_tourism_sources.py#L341) |
+| app.services.world_tourism_sources.OECD_GDP_SHARE | Call | computed source expression | [backend/app/services/world_tourism_sources.py:352](../backend/app/services/world_tourism_sources.py#L352) |
+| app.services.world_tourism_sources.OECD_RU_ARRIVALS | Call | computed source expression | [backend/app/services/world_tourism_sources.py:373](../backend/app/services/world_tourism_sources.py#L373) |
+| app.services.world_tourism_sources.ESTAT_RU_CREDIT | Call | computed source expression | [backend/app/services/world_tourism_sources.py:402](../backend/app/services/world_tourism_sources.py#L402) |
+| app.services.world_tourism_sources.ESTAT_RU_DEBIT | Call | computed source expression | [backend/app/services/world_tourism_sources.py:415](../backend/app/services/world_tourism_sources.py#L415) |
+| app.services.world_tourism_sources.CYSTAT_RU_ARRIVALS | Call | computed source expression | [backend/app/services/world_tourism_sources.py:424](../backend/app/services/world_tourism_sources.py#L424) |
+| app.services.world_tourism_sources.CYSTAT_TOTAL_ARRIVALS | Call | computed source expression | [backend/app/services/world_tourism_sources.py:440](../backend/app/services/world_tourism_sources.py#L440) |
+| app.services.world_tourism_sources.GEOSTAT_RU_VISITS | Call | computed source expression | [backend/app/services/world_tourism_sources.py:458](../backend/app/services/world_tourism_sources.py#L458) |
+| app.services.world_tourism_sources.GEOSTAT_TOTAL_VISITS | Call | computed source expression | [backend/app/services/world_tourism_sources.py:469](../backend/app/services/world_tourism_sources.py#L469) |
+| app.services.world_tourism_sources.NATIONAL_SOURCES | Dict | KTB_PROVIDER, ARMSTAT_PROVIDER, AZSTAT_PROVIDER, INDIA_PROVIDER, CBS_IL_PROVIDER, JNTO_PROVIDER, KTO_PROVIDER, MONSTAT_PROVIDER, RZS_PROVIDER, INE_PROVIDER, NBS_CN_PROVIDER, ESTAT_RES_PROVIDER | [backend/app/services/world_tourism_sources.py:493](../backend/app/services/world_tourism_sources.py#L493) |
+| app.services.world_tourism_sources._FREQ_RU | Dict | 'monthly', 'quarterly', 'annual' | [backend/app/services/world_tourism_sources.py:509](../backend/app/services/world_tourism_sources.py#L509) |
+| app.services.world_tourism_sources._FREQ_EN | Dict | 'monthly', 'quarterly', 'annual' | [backend/app/services/world_tourism_sources.py:510](../backend/app/services/world_tourism_sources.py#L510) |
+| app.services.world_tourism_sources._PERIOD_RU | Dict | 'monthly', 'quarterly', 'annual' | [backend/app/services/world_tourism_sources.py:511](../backend/app/services/world_tourism_sources.py#L511) |
+| app.services.world_tourism_sources._PERIOD_EN | Dict | 'monthly', 'quarterly', 'annual' | [backend/app/services/world_tourism_sources.py:512](../backend/app/services/world_tourism_sources.py#L512) |
+| app.services.world_tourism_sources._KTB_ORIGINS | Tuple | sequence/source expression | [backend/app/services/world_tourism_sources.py:537](../backend/app/services/world_tourism_sources.py#L537) |
+| app.services.world_tourism_sources.KTB_RU_ARRIVALS | Call | computed source expression | [backend/app/services/world_tourism_sources.py:633](../backend/app/services/world_tourism_sources.py#L633) |
+| app.services.world_tourism_sources.KTB_TOTAL_ARRIVALS | Call | computed source expression | [backend/app/services/world_tourism_sources.py:635](../backend/app/services/world_tourism_sources.py#L635) |
+| app.services.world_tourism_sources.KTB_ORIGIN_SERIES | Call | computed source expression | [backend/app/services/world_tourism_sources.py:638](../backend/app/services/world_tourism_sources.py#L638) |
+| app.services.world_tourism_sources._ACC_RU_ARRIVALS | Tuple | sequence/source expression | [backend/app/services/world_tourism_sources.py:646](../backend/app/services/world_tourism_sources.py#L646) |
+| app.services.world_tourism_sources._ACC_RU_NIGHTS | Tuple | sequence/source expression | [backend/app/services/world_tourism_sources.py:649](../backend/app/services/world_tourism_sources.py#L649) |
+| app.services.world_tourism_sources.TIDY_SPECS | Tuple | sequence/source expression | [backend/app/services/world_tourism_sources.py:672](../backend/app/services/world_tourism_sources.py#L672) |
+| app.services.world_tourism_sources.TIDY_PROVIDERS | Call | computed source expression | [backend/app/services/world_tourism_sources.py:766](../backend/app/services/world_tourism_sources.py#L766) |
+| app.services.world_tourism_sources.TIDY_FILES | Dict | 'japan_annual' | [backend/app/services/world_tourism_sources.py:768](../backend/app/services/world_tourism_sources.py#L768) |
+| app.services.world_tourism_sources.TOURISM_PROVIDERS | Call | computed source expression | [backend/app/services/world_tourism_sources.py:780](../backend/app/services/world_tourism_sources.py#L780) |
+| app.services.world_tourism_sources._SERIES_BY_KEY | DictComp | computed source expression | [backend/app/services/world_tourism_sources.py:781](../backend/app/services/world_tourism_sources.py#L781) |
+| app.services.world_tourism_sources.NATIONAL_RU_ARRIVALS | Dict | 'CY', 'TR', 'IL' | [backend/app/services/world_tourism_sources.py:783](../backend/app/services/world_tourism_sources.py#L783) |
+| app.services.world_tourism_sources.ISO3_TO_CATALOG | Dict | 'ALB', 'ARM', 'AUT', 'AUS', 'AZE', 'BIH', 'BEL', 'BGR', 'BRA', 'CAN', 'CHE', 'CHN', 'CYP', 'CZE', 'DEU', 'DNK', 'EST', 'GRC', 'ESP', 'FIN', 'FRA', 'GEO', 'HRV', 'HUN', 'IRL', 'ISR', 'IND', 'ISL', 'ITA', 'JPN', 'KOR', 'LTU', 'LUX', 'LVA', 'MDA', 'MNE', 'MKD', 'MLT', 'MEX', 'NLD', 'NOR', 'NZL', 'POL', 'PRT', 'ROU', 'SRB', 'SWE', 'SVN', 'SVK', 'TUR', 'UKR', 'GBR', 'USA', 'ZAF', 'KOS', 'XKX' | [backend/app/services/world_tourism_sources.py:812](../backend/app/services/world_tourism_sources.py#L812) |
+| app.services.world_tourism_sources.M49_TO_CATALOG | Dict | 8, 51, 40, 36, 31, 70, 56, 100, 76, 124, 756, 156, 196, 203, 276, 208, 233, 300, 724, 246, 250, 268, 191, 348, 372, 376, 356, 352, 380, 392, 410, 440, 442, 428, 498, 499, 807, 470, 484, 528, 578, 554, 616, 620, 642, 688, 752, 705, 703, 792, 804, 826, 840, 710 | [backend/app/services/world_tourism_sources.py:822](../backend/app/services/world_tourism_sources.py#L822) |
+| app.services.world_tourism_sources.ESTAT_GEO_TO_CATALOG | Dict | 'GR', 'GB' | [backend/app/services/world_tourism_sources.py:831](../backend/app/services/world_tourism_sources.py#L831) |
+| app.services.world_tourism_sources._ROMAN_QUARTER | Dict | 'I', 'II', 'III', 'IV' | [backend/app/services/world_tourism_sources.py:1050](../backend/app/services/world_tourism_sources.py#L1050) |
 | app.services.world_view_modes._TRANSFORMS | Dict | 'level', 'mom', 'mom_abs', 'qoq', 'qoq_abs', 'yoy', 'yoy_abs', 'index_first', 'avg_quarter', 'avg_year' | [backend/app/services/world_view_modes.py:139](../backend/app/services/world_view_modes.py#L139) |
 | app.services.yandex_clean_param.CLEAN_PARAM_RULES | Tuple | sequence/source expression | [backend/app/services/yandex_clean_param.py:14](../backend/app/services/yandex_clean_param.py#L14) |
 | app.services.yandex_clean_param.CONTENT_PARAMS | Call | computed source expression | [backend/app/services/yandex_clean_param.py:25](../backend/app/services/yandex_clean_param.py#L25) |
