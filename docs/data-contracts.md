@@ -493,6 +493,13 @@ viewport exposure. Исторические параметры старых со
 
 <a id="forecasts-showcase"></a>
 
+### Раздел «Туризм»: `GET /api/v1/tourism/overview` и страница `/russia/category/tourism` (20.11.2026, ветка `tur/6-showcase`, не выпущено)
+
+- **Страница** — обычная категория `tourism` (`seo_content.CATEGORY_META`, `seo_en.CATEGORY_META_EN`, `categories.js`; `api_category` = «Туризм»): российские ряды берутся списком категории, в sitemap, крошках, подвале, хабе категорий и меню телефона раздел появляется сам. Под рядами России — этажи «Регионы России» и «Мир» (`TourismFloors.jsx`, серверная копия — `seo_tourism.py`, общий `CollectionPage` дополнен ссылками на рейтинги и ряды).
+- **API** (`api/tourism.py` → `services/tourism_showcase.py`): `{russia: {count, path}, regions: {count, items[{code, name, unit, year, rating_path, map_path, period?, leaders?[{slug, name, value, path}]}]}, world: {count, countries[{slug, name, path, count, series[{code, name, path}]}], concepts[{slug, name, path}]}}`. Язык — по хосту. Кэш Redis: ключ из версий `indicators`, `regions`, `world`; пустой ответ живёт 120 с.
+- **Отбор без списка кодов.** Регионы: код `tour-*`, раздел «Туризм» или туристическое название (`is_tourism_region_indicator`: турист, гостиниц, средства размещения, ночёвки, санатор, курорт, турфирм…; зарплаты «гостиницы и общепит» исключены). Лидеры (3) — у первых шести показателей, из `regions_heatmap` (год, месяц или квартал). Мир: `world_indicators.category_ru = 'Туризм'`, до трёх рядов на страну; понятия рейтинга — те, чьи наборы совпали с наборами этих рядов.
+- **Диапазонов и служебных полей нет.** Проверки: `tests/test_tourism_showcase.py`, `TourismFloors.component.test.jsx`, `test_ssr_matrix.py`.
+
 ### Витрина прогнозов: `GET /api/v1/forecasts/showcase` и страница `/forecasts`
 
 - **Назначение.** Показать только то, что платформа прогнозирует сама: Россия (`forecasts`/`forecast_values`: инфляция за 12 месяцев тем же расчётом, что `/indicators/cpi/inflation`, `gdp-real`, `unemployment`, `mortgage-rate`, `wages-nominal`)

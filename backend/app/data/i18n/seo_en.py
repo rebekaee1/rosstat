@@ -21,7 +21,7 @@ from app.services import site_paths as paths
 from app.services.seo_content import CategorySeo, PageSeo, SeoBlock
 
 # ---------------------------------------------------------------------------
-# Categories (12) — titles must match frontend categories.js seoTitleEn
+# Categories (13) — titles must match frontend categories.js seoTitleEn
 # ---------------------------------------------------------------------------
 
 CATEGORY_META_EN: dict[str, CategorySeo] = {
@@ -257,6 +257,45 @@ CATEGORY_META_EN: dict[str, CategorySeo] = {
             "science in Russia, research and development, R&D, "
             "innovation activity, graduate students, research organizations, "
             "Rosstat education"
+        ),
+    ),
+    "tourism": CategorySeo(
+        slug="tourism",
+        name="Tourism",
+        api_category="Туризм",
+        title="Tourism in Russia, its regions and the world — statistics",
+        description=(
+            "Tourist flows, outbound and inbound trips, hotels and overnight stays, health resorts, "
+            "and tourist spending — official data for Russia, its regions, and countries worldwide."
+        ),
+        intro=(
+            "Official tourism statistics in one place: how many trips Russians make at home and "
+            "abroad, how many foreign visitors come to Russia, how full hotels and health resorts "
+            "are, and how much travellers spend. Below are the same measures for Russia's regions "
+            "and a comparison with countries worldwide."
+        ),
+        flagship_code="tour-outbound-trips",
+        keywords=(
+            "tourism in Russia, tourism statistics, tourist flow, domestic tourism, outbound tourism, "
+            "inbound tourism, Russian trips abroad, foreign visitors to Russia, hotels, accommodation, "
+            "overnight stays, health resorts, tour operators, tourist tax, tourism by region, "
+            "world tourism, international tourist arrivals"
+        ),
+        blocks=(
+            SeoBlock(
+                "Where the data come from",
+                "Border crossings are counted by the Border Service and published by Rosstat. Hotels, "
+                "health resorts and tour operators come from Rosstat. Spending on trips abroad and "
+                "receipts from foreign visitors come from the Bank of Russia balance of payments. "
+                "Other countries come from national statistical offices, Eurostat and UN Tourism. "
+                "Approximate estimates are labelled separately.",
+            ),
+            SeoBlock(
+                "How to read the figures",
+                "Many series are published as a running total from the start of the year: the "
+                "September figure covers January to September. Compare it with the same period of "
+                "the previous year, not with the previous month.",
+            ),
         ),
     ),
 }

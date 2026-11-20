@@ -145,6 +145,10 @@ export const fetchWorldSearch = (q, { country, limit = 50 } = {}, { signal } = {
 export const fetchIndicatorsByCategory = (category, opts = {}) =>
   fetchIndicators({ category, ...opts });
 
+/** Раздел «Туризм»: этажи «Регионы России» и «Мир» (backend tourism_showcase.py). */
+export const fetchTourismOverview = ({ signal } = {}) =>
+  api.get('/tourism/overview', { signal }).then((r) => r.data);
+
 export const fetchIndicator = (code, { signal } = {}) =>
   api.get(`/indicators/${code}`, { signal }).then((r) => r.data);
 

@@ -18,6 +18,7 @@ import {
   Banknote,
   LineChart,
   Boxes,
+  Plane,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
@@ -46,6 +47,7 @@ const CATEGORY_ICONS = {
   Banknote,
   LineChart,
   Boxes,
+  Plane,
 };
 
 // Shared approved illustrations. They describe a topic, never a data value.
@@ -56,6 +58,8 @@ const CATEGORY_ART = {
   indices: 'forecast-glass', commodities: 'commodity', labor: 'population',
   gdp: 'industry', population: 'population', trade: 'tourism',
   business: 'industry', science: 'science',
+  // Туризм — тот же стеклянный глобус: кадр рисовался для «стран и поездок» (README-prompts), второй картинки нет.
+  tourism: 'tourism',
 };
 // Картинка показывается 210 CSS px (`.fe-category-art`): 320 px хватает только для DPR 1, 640 px — для DPR 2–3.
 const CATEGORY_ART_SIZES = '210px';

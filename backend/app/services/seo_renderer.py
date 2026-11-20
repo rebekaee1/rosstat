@@ -2900,13 +2900,22 @@ async def render_category_html(slug: str, db: AsyncSession) -> tuple[int, str]:
     trail = crumbs.russia_category_trail(category.name, paths.russia_category(slug))
     h2_indicators = page_template("h2_section_indicators") or "Индикаторы раздела"
     h2_related = page_template("h2_related") or "Связанные разделы"
+    extra_html, extra_entities = "", []
+    if slug == "tourism":
+        # Раздел «Туризм» (20.11.2026): этажи «Регионы России» и «Мир» под российскими рядами.
+        from app.services.seo_tourism import tourism_sections
+
+        try:
+            extra_html, extra_entities = await tourism_sections(db)
+        except Exception:  # этажи — дополнение; страница раздела остаётся без них
+            logger.warning("tourism sections SSR failed", exc_info=True)
     body = f"""<main class="seo-page">
 {_breadcrumbs_nav(trail)}
 <h1>{escape(category.title)}</h1>
 <p>{escape(category.intro)}</p>
 {_blocks_html(category.blocks)}
 <section><h2>{escape(h2_indicators)}</h2>{_links_list(links)}</section>
-<section><h2>{escape(h2_related)}</h2>{_links_list(_related_categories(slug))}</section>
+{extra_html}<section><h2>{escape(h2_related)}</h2>{_links_list(_related_categories(slug))}</section>
 </main>"""
     json_ld = [
         _site_json_ld(),
@@ -2927,7 +2936,7 @@ async def render_category_html(slug: str, db: AsyncSession) -> tuple[int, str]:
                        if ind.source else {}),
                 }
                 for ind in indicators[:12]
-            ],
+            ] + extra_entities,
         },
     ]
     html = await build_document(

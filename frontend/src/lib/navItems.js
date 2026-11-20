@@ -173,6 +173,11 @@ export function mobileNavGroups(locale) {
       id: 'currencies', icon: 'coins', to: russiaCategoryPath('currencies'), match: russiaCategoryPath('currencies'),
       labelKey: 'z2.nav.rates', hintKey: 'r9a.nav.currencies.hint',
     },
+    // Туризм (20.11.2026): раздел с Россией, регионами и миром — отдельной строкой, а не только внутри «Категорий».
+    {
+      id: 'tourism', icon: 'plane', to: russiaCategoryPath('tourism'), match: russiaCategoryPath('tourism'),
+      labelKey: 'tourism.nav.menu', hintKey: 'tourism.nav.menu.hint',
+    },
     {
       id: 'methodology', icon: 'book', to: '/methodology', match: '/methodology',
       labelKey: 'w6b.nav.method', hintKey: 'w6b.nav.method.hint',

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import {
   Menu, X, ShoppingBasket, ChevronDown, ArrowLeftRight, BarChart3, BookOpen, Building2, CalendarDays, Clock, Coins, Flag, GitCompare, Globe2,
-  Cookie, FileText, Home, Info, Landmark, Layers, Mail, Map as MapIcon, Percent, PiggyBank, TrendingUp, Code2, User,
+  Cookie, FileText, Home, Info, Landmark, Layers, Mail, Map as MapIcon, Percent, PiggyBank, Plane, TrendingUp, Code2, User,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
@@ -132,6 +132,7 @@ const MOBILE_ICONS = {
   trend: TrendingUp,
   layers: Layers,
   book: BookOpen,
+  plane: Plane,
 };
 
 // Инструменты: конвертер валют и калькуляторы (разные золотые значки, у каждого пометка «для каких стран») и конструктор виджетов.

@@ -45,6 +45,7 @@ MATRIX = [
     # (путь SSR, ожидаемый canonical-путь; для главной canonical — домен без слэша)
     ("/seo/page/home", ""),
     ("/seo/category/prices", "/russia/category/prices"),
+    ("/seo/category/tourism", "/russia/category/tourism"),
     ("/seo/indicator/cpi", "/russia/indicator/cpi"),
     ("/seo/regions", "/russia/region"),
     ("/seo/regions/map/naselenie", "/russia/region/map/naselenie"),

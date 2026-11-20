@@ -195,12 +195,12 @@ def test_sitemap_static_pages_constant():
 
     # Twelve categories × 1 indicator-grid page each (D5: split «Финансы и
     # валюты» → «Валюты» + «Деньги и бюджет»; +«Индексы» (MOEX); +«Товарные
-    # рынки» (сырьё, нефть/золото перенесены из «Финансы»)).
-    assert len(CATEGORIES) == 12
+    # рынки» (сырьё, нефть/золото перенесены из «Финансы»); +«Туризм» 20.11.2026).
+    assert len(CATEGORIES) == 13
     for slug in (
         "prices", "rates", "labor", "gdp", "finance",
         "trade", "population", "business", "science", "currencies",
-        "indices", "commodities",
+        "indices", "commodities", "tourism",
     ):
         assert slug in CATEGORIES
 

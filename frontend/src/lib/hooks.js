@@ -12,6 +12,7 @@ import {
   fetchDashboardSparklines,
   fetchDemographicsStructure,
   fetchCoverage,
+  fetchTourismOverview,
 } from './api';
 import { useLocale } from '../i18n';
 
@@ -33,6 +34,18 @@ export function useIndicators(options = {}) {
     queryKey: indicatorsListQueryKey(locale, { category, includeInactive, includeUnlisted }),
     queryFn: ({ signal }) => fetchIndicators({ category, includeInactive, includeUnlisted }, { signal }),
     staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    enabled,
+  });
+}
+
+/** Раздел «Туризм»: регионы и страны мира одной выдачей; язык — в ключе (ответ зависит от хоста). */
+export function useTourismOverview({ enabled = true } = {}) {
+  const { locale } = useLocale();
+  return useQuery({
+    queryKey: ['tourism-overview', locale],
+    queryFn: ({ signal }) => fetchTourismOverview({ signal }),
+    staleTime: 10 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
     enabled,
   });

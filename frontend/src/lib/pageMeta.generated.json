@@ -88,6 +88,14 @@
       "slug": "science",
       "title": "Наука и образование в России"
     },
+    "tourism": {
+      "description": "Турпоток, поездки за границу и въезд иностранцев, гостиницы и ночёвки, санатории, траты туристов — официальные данные по России, регионам и странам мира.",
+      "h1": "Туризм в России, регионах и мире — статистика",
+      "intro": "Здесь собрана статистика туризма из официальных источников: сколько поездок совершают россияне внутри страны и за границу, сколько иностранцев приезжает в Россию, как заполнены гостиницы и санатории, сколько туристы тратят. Ниже — те же показатели по регионам России и сравнение со странами мира.",
+      "name": "Туризм",
+      "slug": "tourism",
+      "title": "Туризм в России, регионах и мире — статистика"
+    },
     "trade": {
       "description": "Экспорт, импорт, торговый баланс, текущий счёт — квартальные данные Банка России.",
       "h1": "Внешняя торговля России",
@@ -186,6 +194,14 @@
         "name": "Science and education",
         "slug": "science",
         "title": "Science and education in Russia"
+      },
+      "tourism": {
+        "description": "Tourist flows, outbound and inbound trips, hotels and overnight stays, health resorts, and tourist spending — official data for Russia, its regions, and countries worldwide.",
+        "h1": "Tourism in Russia, its regions and the world — statistics",
+        "intro": "Official tourism statistics in one place: how many trips Russians make at home and abroad, how many foreign visitors come to Russia, how full hotels and health resorts are, and how much travellers spend. Below are the same measures for Russia's regions and a comparison with countries worldwide.",
+        "name": "Tourism",
+        "slug": "tourism",
+        "title": "Tourism in Russia, its regions and the world — statistics"
       },
       "trade": {
         "description": "Exports, imports, trade balance, and the current account — quarterly Bank of Russia data.",
