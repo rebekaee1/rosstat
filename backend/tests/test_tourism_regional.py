@@ -32,8 +32,9 @@ def test_registry_codes_tables_and_copy():
     codes = [s.code for s in R.SERIES]
     assert len(codes) == len(set(codes)) and all(len(c) <= 120 for c in codes)
     own = [s for s in R.SERIES if s.own_metadata]
-    assert all(s.code.startswith("tour-") or s.code in R.RENAMED.values() for s in own)
-    assert all(R.SERIES_BY_CODE[c].section[0] != 6 for c in R.RENAMED.values())
+    # Вне туризма (№37: общепит, автобусы, обеды в ресторанах) — без «tour-» и не в разделе 6.
+    assert all(s.code.startswith("tour-") or s.section[0] != 6 for s in own)
+    assert all(R.SERIES_BY_CODE[c].section[0] != 6 for c in R.RENAMED.values() if c in R.SERIES_BY_CODE)
     tables = [s.table_code for s in own]
     assert len(tables) == len(set(tables)) and all(len(t) <= 20 for t in tables)
     assert all(s.name_ru and s.name_en and s.unit_ru and s.unit_en and s.note_ru and s.note_en for s in own)
@@ -308,10 +309,11 @@ def test_seed_matches_sources_and_registry():
     assert pts[("tour-nalog-za-god", "russia", 2025)] == 5635.253
     # Наборы, не скачанные до бана fedstat, в снимке пусты — их догрузит живой прогон.
     # Сборник «Туризм в России» 2024 закрыл часть не скачанных наборов (санатории, номера высшей категории).
-    pending = {s.code for s in R.SERIES if s.emiss is not None and not s.emiss.seed}
-    from_book = {"tour-sanatorii-chislo", "tour-sanatorii-mesta", "tour-gostinicy-nomera-vysshey-kategorii"}
-    assert pending & {c for c, _s, _p in pts} == from_book
-    assert pts[("tour-gostinicy-nomera-vysshey-kategorii", "russia", 2023)] == 61018
+    # 21.11.2026: очередь a1 докачала ЕМИСС — без снимка остаются только наборы, историю которых берёт живая загрузка.
+    no_seed = {s.code for s in R.SERIES if s.emiss is not None and s.emiss.dataset == 31074}
+    assert not no_seed & {c for c, _s, _p in pts}
+    # ЕМИСС 57731 (гостиницы и аналогичные средства) главнее сборника (только гостиницы, 61 018).
+    assert pts[("tour-gostinicy-nomera-vysshey-kategorii", "russia", 2023)] == 66751
     assert pts[("tour-kurortnyy-sbor", "sankt-peterburg", 2024)] == 747.068857
     assert ("tour-kurortnyy-sbor", "russia", 2025) not in pts
     assert pts[("tour-ksr-zagruzka-mest", "russia", 2024)] == 33.0
@@ -323,7 +325,7 @@ def test_plan_years_full_then_tail():
     assert L.plan_years(annual, None, TODAY)[0][0] == 2002
     assert L.plan_years(annual, 2025, TODAY) == [[2024, 2025, 2026]]
     monthly = [R.SERIES_BY_CODE["tour-ksr-razmeshcheno-mes"]]
-    assert L.plan_years(monthly, None, TODAY) == [[2023], [2024], [2025], [2026]]
+    assert L.plan_years(monthly, None, TODAY) == [[2022], [2023], [2024], [2025], [2026]]
 
 
 # --- SSR ----------------------------------------------------------------------------------------------------------
@@ -430,17 +432,17 @@ def test_fns_archive_parsed_like_snapshot(terr):
 
 
 def test_other_page_unit_rescales(terr):
-    s = R.SERIES_BY_CODE["obshchepit-oborot-mes"]
+    s = R.SERIES_BY_CODE["tour-ksr-ploshchad-nomerov"]  # реестр: тыс. м²; на странице — «квадратный метр»
 
     async def fetch_page(dataset):
-        return _page(dataset, "миллион рублей").replace("1540294: {title: 'январь-февраль'},", "")
+        return _page(dataset, "квадратный метр").replace("1540283: {title: 'январь'}", "1558883: {title: 'значение показателя за год'}")
 
     async def post_grid(dataset, params):
-        return {"results": [{"dim57831": "Краснодарский край", "dim3": "2026", "dim1540283_d1_i1": "1500,5"}]}
+        return {"results": [{"dim57831": "Краснодарский край", "dim3": "2025", "dim1558883_d1_i1": "1500500"}]}
 
-    pts = asyncio.run(L.fetch_emiss_dataset(31258, [s], [2026], terr, today=TODAY,
+    pts = asyncio.run(L.fetch_emiss_dataset(44041, [s], [2025], terr, today=TODAY,
                                             fetch_page=fetch_page, post_grid=post_grid))
-    assert pts == [("obshchepit-oborot-mes", "krasnodarskiy-kray", 202601, 1500.5)]
+    assert pts == [("tour-ksr-ploshchad-nomerov", "krasnodarskiy-kray", 2025, 1500.5)]
 
 
 def test_turpotok_link_on_rosstat_page():
@@ -533,7 +535,7 @@ def test_stand_units_rescaled_and_js_escapes(terr):
     page = L.parse_indicator_page(_page(1, "x").replace("'Ночёвки'", "'a\\/b \\u0420'"))
     assert page["filters"]["0"]["values"]["1"] == "a/b Р"
     assert dict(s.emiss.alt_units)["квадратный метр"] == 0.001
-    assert dict(R.SERIES_BY_CODE["tour-ksr-nomera-klassificirovannye"].emiss.alt_units)["тысяча единиц"] == 1000.0
+    assert "tour-ksr-nomera-klassificirovannye" not in R.SERIES_BY_CODE  # 62159 — только Россия
     assert R.SERIES_BY_CODE["tour-vds-turindustrii"].emiss.src_unit == "миллион рублей"
     assert R.SERIES_BY_CODE["tour-vds-turindustrii-dolya-vrp"].emiss.dataset == 62197
 
@@ -647,3 +649,38 @@ def test_tourism_siblings_exclude_culture_and_sport():
     assert not R.is_tourism_sibling("chislennost-zriteley-teatrov-i-chislo-posescheniy-muzeev", "6.1.1")
     assert R.is_tourism_sibling("kollektivnye-sredstva-razmescheniya-chislo-kollektivnyh-sredstv-razmescheniya", "6.7.1")
     assert R.is_tourism_sibling("turpoezdki-s-nachala-goda", "6.m1")
+
+
+
+def test_g1_long_export_and_msp(terr):
+    rows = [{"country_or_region": "Российская Федерация без учета новых субъектов (с 01.01.2023)", "period": "2023-01",
+             "indicator": f"Оборот организаций с 2017 г., {R._LARGE_SMALL}, {R._HOTELS}", "value": "26657136.89"},
+            {"country_or_region": "Российская Федерация", "period": "2023-01",
+             "indicator": f"Оборот организаций с 2017 г., {R._LARGE_SMALL}, {R._HOTELS}", "value": "1"},
+            {"country_or_region": "Российская Федерация без учета новых субъектов (с 01.01.2023)", "period": "2023",
+             "indicator": f"Оборот организаций с 2017 г., {R._LARGE_SMALL}, {R._HOTELS}, январь-февраль", "value": "5"}]
+    pts = L.g1_points(rows, {"tour-oborot-gostinicy-mes": f"{R._LARGE_SMALL}, {R._HOTELS}"}, terr)
+    assert pts == [("tour-oborot-gostinicy-mes", "russia", 202301, 26657.13689)]
+    label = "Число субъектов МСП (реестр ФНС), ОКВЭД 79 «Деятельность туристических агентств», по основному виду деятельности"
+    msp = [{"country_or_region": "ПЕРМСКИЙ КРАЙ (код 59)", "period": "2016-10-08", "indicator": label, "value": "10"},
+           {"country_or_region": "КОМИ-ПЕРМЯЦКИЙ (код 81)", "period": "2016-10-08", "indicator": label, "value": "2"},
+           {"country_or_region": "ПЕРМСКИЙ КРАЙ (код 59)", "period": "2026-01-10", "indicator": label, "value": "30"},
+           {"country_or_region": "ПЕРМСКИЙ КРАЙ (код 59)", "period": "2026-11-10", "indicator": label, "value": "31"},
+           {"country_or_region": "Российская Федерация", "period": "2026-11-10", "indicator": label, "value": "900"},
+           {"country_or_region": "МОСКВА Г. (код 00)", "period": "2016-10-08", "indicator": label, "value": "5"},
+           {"country_or_region": "ПЕРМСКИЙ КРАЙ (код 59)", "period": "2026-11-10", "indicator": label + ", малые",
+            "value": "7"}]
+    assert sorted(L.msp_points(msp, terr)) == [("tour-msp-turagentstva", "permskiy-kray", 2016, 12.0),
+                                               ("tour-msp-turagentstva", "permskiy-kray", 2026, 31.0),
+                                               ("tour-msp-turagentstva", "russia", 2026, 900.0)]
+
+
+def test_formerly_pending_sets_now_in_snapshot():
+    pts = {(c, s, p): v for c, s, p, v in L.read_seed()}
+    codes = {c for c, _s, _p in pts}
+    for code in ("tour-ksr-rossiyane", "tour-ksr-inostrancy", "tour-sanatorii-chislo", "tour-vds-turindustrii",
+                 "tour-vds-turindustrii-dolya-vrp", "tour-ksr-razmeshcheno-mes", "tour-sanatorii-dohody-mes",
+                 "tour-deti-organizacii-otdyha", "oborot-obschestvennogo-pitaniya", "tour-msp-gostinicy"):
+        assert code in codes, code
+    assert ("oborot-obschestvennogo-pitaniya", "russia", 2024) not in pts  # у сборника; продление — с 2025
+    assert not {"tour-deti-turpoezdki", "tour-ksr-nomera-klassificirovannye", "obshchepit-oborot-mes"} & codes

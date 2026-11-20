@@ -28,8 +28,13 @@ def main(root: Path, cbr_dir: Path | None, today: date) -> None:
     points: list[L.Point] = []
     datasets = emiss_datasets()
     for dataset, series_list in datasets.items():
-        seeded = [s for s in series_list if s.emiss.seed]
+        # 21.11.2026: очередь a1 докачала ЕМИСС — в снимок идут все наборы, для которых есть выгрузка; масштаб —
+        # по единице выгрузки (как у живой загрузки), другая единица — набор пропускается.
+        meta_path = root / "a1" / "raw" / "emiss" / f"{dataset}.meta.json"
+        unit = json.loads(meta_path.read_text("utf-8")).get("unit", "") if meta_path.exists() else ""
+        seeded = L.series_for_unit(series_list, unit)
         if not seeded:
+            print(f"ЕМИСС {dataset}: единица {unit!r} не совпала с реестром, пропуск")
             continue
         a1 = root / "a1" / "raw" / "emiss" / f"{dataset}.csv.gz"
         a1_okved = root / "a1" / "raw" / "emiss_okved_I" / f"{dataset}_I.csv.gz"
@@ -38,7 +43,6 @@ def main(root: Path, cbr_dir: Path | None, today: date) -> None:
             text = gzip.decompress((a1 if a1.exists() else a1_okved).read_bytes()).decode("utf-8")
             rows = L.rows_from_csv(text)
         elif a3.exists():
-            import json
 
             data = json.loads(a3.read_text(encoding="utf-8"))
             filters = data["meta"]["filters"]
@@ -98,6 +102,27 @@ def main(root: Path, cbr_dir: Path | None, today: date) -> None:
                 best[(c, s, p)] = (r, v)
     points += [(c, s, p, v) for (c, s, p), (_r, v) in best.items()]
     points += L.occupancy_points(points)
+
+    # Добор g1 (21.11.2026): выгрузки ЕМИСС через стенд (оборот, работники, инвестиции) и реестр МСП. ИПЦ 31074 и
+    # средние цены 31448 в снимок не идут — их историю целиком берёт живая загрузка (снимок остановил бы её на 2022).
+    g1 = root / "g1" / "out"
+    from app.data import tourism_regional as R
+
+    specs = {
+        "tour-oborot-gostinicy-mes": ("57710", f"{R._LARGE_SMALL}, {R._HOTELS}"),
+        "tour-oborot-turagentstva-mes": ("57710", f"{R._LARGE_SMALL}, {R._AGENCIES}"),
+        "obshchepit-oborot-organizaciy-mes": ("57710", f"{R._LARGE_SMALL}, {R._FOOD}"),
+        "tour-rabotniki-gostinicy-mes": ("57848", R._HOTELS),
+        "tour-rabotniki-turagentstva-mes": ("57848", R._AGENCIES),
+        "tour-investicii-gostinicy": ("59084", f"{R._HOTELS}, {R._INVEST_SCOPE}"),
+        "tour-investicii-sanatorii": ("59084", f"{R._SANATORIUMS}, {R._INVEST_SCOPE}"),
+    }
+    for dataset in sorted({d for d, _s in specs.values()}):
+        with gzip.open(g1 / f"emiss_{dataset}_tidy.csv.gz", "rt", encoding="utf-8") as fh:
+            points += L.g1_points(csv.DictReader(fh, delimiter=";"),
+                                  {c: suf for c, (d, suf) in specs.items() if d == dataset}, terr)
+    with open(g1 / "msp_rsmp_tourism_tidy.csv", encoding="utf-8") as fh:
+        points += L.msp_points(csv.DictReader(fh, delimiter=";"), terr)
 
     # Добор g2 (20.11.2026): оценки турпотока регионов с методикой и открытые данные Москвы.
     g2 = root / "g2"
