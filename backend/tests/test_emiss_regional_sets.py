@@ -171,8 +171,12 @@ def test_run_writes_through_injected_transport(monkeypatch):
     monkeypatch.setattr(parser, "update_regional_year_bounds", noop)
     monkeypatch.setattr(parser, "publish_committed_regional_changes", publish)
     monkeypatch.setattr(parser, "_PAUSE_BETWEEN_REQUESTS", 0)
+    from app.services import emiss_regional_parser as transport
+
+    monkeypatch.setattr(transport, "_PAUSE_BETWEEN_REQUESTS", 0)
     stats = asyncio.run(parser.run_set_update(Db(), sets.FREIGHT, post_grid=post, today=date(2026, 11, 19)))
-    assert calls == [(31076, 2024), (31076, 2025), (31076, 2026)]
+    # Год — четыре квартальных запроса (20.11.2026: сетку 57806 за год fedstat обрывал без ответа).
+    assert calls == [(31076, y) for y in (2024, 2025, 2026) for _q in range(4)]
     assert stats == {"years": 3, "added": len(written), "updated": 0, "rejected": 0}
     assert (1, 10, 202609, 108.48) in written and published == [1]
 

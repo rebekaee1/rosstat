@@ -5,9 +5,11 @@
 режет 403), справочник территорий ``emiss_okato_31448.json`` + ``emiss_dimnames.json``, upsert с guard'ом
 ``value <> excluded.value``, региональная блокировка записи и публикация кэша после commit.
 
-Запрос — «год целиком»: строки — территория × (товар × вид индекса), столбцы — год × месяц; ключ ячейки
-``dim{год}_{oid месяца}_d…`` несёт месяц, поэтому 12 месяцев приходят одним ответом (у 31448 месяц в ключе не
-виден, там запрос «год × месяц»). Кварталы набора 31074 не запрашиваются.
+Запрос — «год»: строки — территория × (товар × вид индекса), столбцы — год × месяц; ключ ячейки
+``dim{год}_{oid месяца}_d…`` несёт месяц (у 31448 месяц в ключе не виден, там запрос «год × месяц»). С 20.11.2026
+год идёт четырьмя квартальными запросами (``post_grid_by_quarters``): сетку за 2022 год и позже fedstat не
+досчитывает и закрывает соединение без ответа, квартал считается за 4–21 с. Кварталы набора 31074 как значения
+периода не запрашиваются.
 
 Россия: до 2022 года — «Российская Федерация» (1688487), с 2023 — «без учёта новых субъектов» (1849012); обе
 пишутся в slug ``russia``, при двух значениях за месяц побеждает вторая (так же у 31448). Новые субъекты в
@@ -43,11 +45,11 @@ from app.services.emiss_regional_parser import (
     MONTH_OIDS,
     _RUSSIA_ID,
     _RUSSIA_LEGACY,
-    _post_grid,
     _upsert_monthly_points,
     load_dimnames,
     load_territory_ids,
     parse_ru_float,
+    post_grid_by_quarters,
 )
 from app.services.regional_storage import acquire_regional_write_lock, update_regional_year_bounds
 
@@ -165,7 +167,7 @@ def parse_year(payload: dict, req: GridRequest, year: int, dimnames: dict[str, s
 
 async def fetch_year(req: GridRequest, year: int, territory_ids: Sequence[str], dimnames: dict[str, str],
                      *, post_grid: Callable | None = None) -> list[tuple[str, str, int, float]]:
-    payload = await (post_grid or _post_grid)(req.dataset, build_params(req, year, territory_ids))
+    payload = await post_grid_by_quarters(req.dataset, build_params(req, year, territory_ids), post_grid=post_grid)
     return parse_year(payload, req, year, dimnames)
 
 

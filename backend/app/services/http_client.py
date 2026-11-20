@@ -26,6 +26,7 @@ Connect timeout and host breaker (2026-10-08): 07.10 rosstat.gov.ru 8 ч не
 from __future__ import annotations
 
 import contextvars
+import http.client
 import logging
 import threading
 import time
@@ -69,6 +70,34 @@ class SourceMaintenance(requests.ConnectionError):
     """Источник отвечает страницей-заглушкой «технические работы» вместо данных (не сетевой отказ и не «файла нет»)."""
 
 
+class HostDisconnected(requests.ConnectionError):
+    """Хост через прокси-хоп принял запрос и закрыл соединение без ответа (20.11.2026).
+
+    Это свойство хоста, а не прокси: хоп не помечается недоступным, предохранитель хоста не взводится, бан-статус
+    прежнего хопа ответом не подменяется. fedstat обрывает тяжёлую сетку dataGrid.do через 30–70 с счёта.
+    """
+
+
+def _host_dropped(exc: BaseException) -> bool:
+    """В цепочке исключения есть `RemoteDisconnected`: запрос ушёл, хост закрыл соединение без ответа.
+
+    urllib3 2.x при обрыве через HTTP-прокси сбрасывает признак «к прокси подключились» и оборачивает обрыв в
+    `ProxyError('Unable to connect to proxy', RemoteDisconnected(...))`, поэтому по классу ошибки хоп от хоста не
+    отличить — только по причине внутри.
+    """
+    seen: set[int] = set()
+    stack: list[object] = [exc]
+    while stack:
+        cur = stack.pop()
+        if not isinstance(cur, BaseException) or id(cur) in seen:
+            continue
+        seen.add(id(cur))
+        if isinstance(cur, http.client.RemoteDisconnected):
+            return True
+        stack.extend((cur.__cause__, cur.__context__, getattr(cur, "reason", None), *cur.args))
+    return False
+
+
 def _is_maintenance_stub(host: str, resp: requests.Response) -> bool:
     """HTML-ответ хоста из `_MAINTENANCE_HOSTS` с обеими метками заглушки. Настоящие страницы и файлы их не содержат."""
     if not any(host == h or host.endswith("." + h) for h in _MAINTENANCE_HOSTS):
@@ -97,6 +126,7 @@ _host_down_until: dict[str, float] = {}
 HOP_BREAKER_COOLDOWN_S = 20 * 60
 _hop_down_until: dict[tuple[str, str], float] = {}
 # 20.11.2026: `ReadTimeout` на прокси-хопе предохранитель хопа не взводит (`_via_next_hop`) — хоп работает, медлит хост.
+# Так же обрыв хостом без ответа (`HostDisconnected`): после него релей выключался, и наборы ЕМИСС получали прямой 403.
 
 
 # Журнал сетевых сбоев текущего прогона парсера (circle 12, 2026-10-12).
@@ -284,6 +314,10 @@ class ProxyFallbackSession(requests.Session):
             # Ошибка сертификата — свойство вызова (verify/CA), не недоступность хоста.
             record_fetch_issue(f"{host or url}: SSL error")
             raise
+        except HostDisconnected as exc:
+            # Хост жив (принял запрос через хоп): предохранитель хоста не взводится.
+            record_fetch_issue(f"{host or url} disconnected: {type(exc).__name__}")
+            raise
         except requests.ConnectionError as exc:
             if host:
                 _mark_host_down(host)
@@ -421,6 +455,9 @@ class ProxyFallbackSession(requests.Session):
         помечается недоступным, и ошибка уходит наружу как есть, а не подменяется бан-статусом прежнего хопа.
         До правки тяжёлый запрос ЕМИСС (>60 с через релей) взводил предохранитель релея на 20 минут, и все
         следующие запросы к fedstat — в том числе другие задачи — падали с прямым «HTTP 403» адреса прода.
+
+        Обрыв хостом (`RemoteDisconnected` в цепочке, 20.11.2026) — тоже не отказ хопа: fedstat закрывает соединение
+        на тяжёлой сетке через 30–70 с. Наружу уходит `HostDisconnected`, хоп остаётся рабочим, 403 не подставляется.
         """
         try:
             resp = self._request_hop(
@@ -428,9 +465,15 @@ class ProxyFallbackSession(requests.Session):
             )
             self._remember(url, hop, resp)
             return resp
-        except requests.ReadTimeout:
+        except (requests.ReadTimeout, HostDisconnected):
             raise
-        except _PROXY_FALLBACK_EXC:
+        except _PROXY_FALLBACK_EXC as exc:
+            if _host_dropped(exc):
+                logger.warning(
+                    "ETL %s %s: host closed the connection via %s hop without a response — hop stays up",
+                    method, url, nxt.split("://", 1)[0],
+                )
+                raise HostDisconnected(f"{_host(url)} closed the connection without a response via proxy") from exc
             _mark_hop_down(_host(url), nxt)
             if banned_resp is not None:
                 logger.warning(

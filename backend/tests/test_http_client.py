@@ -356,3 +356,46 @@ def test_relay_refusing_connection_still_arms_hop_breaker(monkeypatch):
     with patch.object(requests.Session, "request", fake_request):
         assert s.post("https://www.fedstat.ru/indicator/dataGrid.do?id=1").status_code == 403
     assert http_client._hop_down_remaining("www.fedstat.ru", "http://relay.test:8888") > 0
+
+
+def _host_dropped_via_proxy() -> requests.exceptions.ProxyError:
+    """Как на проде 20.11.2026: urllib3 2.x заворачивает обрыв хостом за HTTP-прокси в ProxyError «Unable to connect»."""
+    import http.client
+
+    from urllib3.exceptions import MaxRetryError, ProxyError
+
+    reason = ProxyError("Unable to connect to proxy", http.client.RemoteDisconnected(
+        "Remote end closed connection without response"))
+    return requests.exceptions.ProxyError(MaxRetryError(None, "/indicator/dataGrid.do?id=31074", reason=reason))
+
+
+def test_host_closing_connection_via_relay_keeps_relay_and_is_not_403(monkeypatch):
+    """20.11.2026: fedstat обрывал тяжёлую сетку через релей; обрыв выключал релей на 20 минут и выдавался за «HTTP 403»."""
+    s = _relay_session(monkeypatch)
+    calls: list[str | None] = []
+    drop = [True]
+
+    def fake_request(self, method, url, **kwargs):
+        px = (kwargs.get("proxies") or {}).get("https")
+        calls.append(px)
+        if not px:
+            return _resp(403)
+        if drop[0]:
+            raise _host_dropped_via_proxy()
+        return _resp(200)
+
+    with patch.object(requests.Session, "request", fake_request):
+        with pytest.raises(http_client.HostDisconnected):
+            s.post("https://www.fedstat.ru/indicator/dataGrid.do?id=57806")
+        assert http_client._hop_down_remaining("www.fedstat.ru", "http://relay.test:8888") == 0
+        assert http_client._host_down_remaining("www.fedstat.ru") == 0
+        drop[0] = False
+        calls.clear()
+        assert s.post("https://www.fedstat.ru/indicator/dataGrid.do?id=31076").status_code == 200
+    assert calls == [None, "http://relay.test:8888"]
+
+
+def test_host_dropped_is_found_only_by_remote_disconnected():
+    assert http_client._host_dropped(_host_dropped_via_proxy())
+    assert not http_client._host_dropped(requests.exceptions.ProxyError("Cannot connect to proxy: refused"))
+    assert not http_client._host_dropped(requests.exceptions.ConnectTimeout("relay silent"))
