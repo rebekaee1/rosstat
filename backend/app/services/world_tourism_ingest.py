@@ -13,7 +13,7 @@
 Национальные службы стран назначения (Турция, Армения, Азербайджан, Индия, Израиль, Япония, Корея, Черногория,
 Сербия, Испания) и Евростат «ночёвки по стране проживания» берутся из снимка `app/data/world_tourism_national.csv.gz`
 — нужные строки таблиц сбора c5 20.11.2026: их сайты отдают файлы с плавающими именами, часть не отвечает с прода
-(Турция). Обновление — новый сбор, `--build-snapshot <c5/raw>`, коммит снимка.
+(Турция). Обновление — новый сбор, `--build-snapshot <c5/raw>,<g3/raw>`, коммит снимка.
 
 Запуск::
 
@@ -24,7 +24,8 @@
     # из сохранённых файлов (каталог raw/ сбора 20.11.2026: imf_bop_travel.csv.gz, untourism/, oecd/, …)
     docker compose exec backend python -m app.services.world_tourism_ingest --raw-dir /tmp/tourism-raw
     # пересобрать снимок национальных служб из таблиц сбора (на Mac, затем коммит)
-    python -m app.services.world_tourism_ingest --build-snapshot .artifacts/tourism-2026-11-20/c5/raw
+    python -m app.services.world_tourism_ingest --build-snapshot \
+        .artifacts/tourism-2026-11-20/c5/raw,.artifacts/tourism-2026-11-20/g3/raw
 """
 
 from __future__ import annotations
@@ -129,13 +130,17 @@ def _read(path: Path) -> bytes:
 
 
 def fetch_tidy(provider: str, tidy_dir: Path | None = None) -> tuple[src.Parsed, dict]:
-    """Ряды издателя из таблицы сбора (`<tidy_dir>/<папка>/tidy.csv`) или из снимка в репозитории."""
+    """Ряды издателя из таблиц сбора (`<tidy_dir>/<папка>/tidy.csv`) или из снимка в репозитории."""
     specs = [spec for spec in src.TIDY_SPECS if spec.series.provider == provider]
-    if tidy_dir is not None:
-        text = (tidy_dir / src.TIDY_FOLDERS[provider] / "tidy.csv").read_text(encoding="utf-8-sig")
-    else:
-        text = snapshot_table(gzip.decompress(SNAPSHOT_PATH.read_bytes()).decode("utf-8"), src.TIDY_FOLDERS[provider])
-    return src.parse_tidy_csv(text, specs), {}
+    snapshot = None if tidy_dir is not None else gzip.decompress(SNAPSHOT_PATH.read_bytes()).decode("utf-8")
+    parsed: src.Parsed = {}
+    for folder in dict.fromkeys(spec.folder for spec in specs):
+        if tidy_dir is not None:
+            text = (tidy_dir / src.tidy_file(folder)).read_text(encoding="utf-8-sig")
+        else:
+            text = snapshot_table(snapshot, folder)
+        parsed.update(src.parse_tidy_csv(text, [spec for spec in specs if spec.folder == folder]))
+    return parsed, {}
 
 
 _SNAPSHOT_HEADER = "folder;country;period;origin;indicator;value"
@@ -151,7 +156,7 @@ def snapshot_table(snapshot: str, folder: str) -> str:
     return "\n".join(lines) + "\n"
 
 
-def build_snapshot(tidy_dir: Path, out: Path = SNAPSHOT_PATH) -> int:
+def build_snapshot(roots: list[Path], out: Path = SNAPSHOT_PATH) -> int:
     """Таблицы сбора → снимок: только строки, которые разбирают `TIDY_SPECS` (страны сайта, нужные подписи)."""
     import csv
     import io
@@ -163,8 +168,8 @@ def build_snapshot(tidy_dir: Path, out: Path = SNAPSHOT_PATH) -> int:
     catalog = set(src.M49_TO_CATALOG.values())
     rows = [_SNAPSHOT_HEADER]
     for folder in sorted(wanted):
-        reader = csv.DictReader(io.StringIO((tidy_dir / folder / "tidy.csv").read_text(encoding="utf-8-sig")),
-                                delimiter=";")
+        path = next(root / src.tidy_file(folder) for root in roots if (root / src.tidy_file(folder)).exists())
+        reader = csv.DictReader(io.StringIO(path.read_text(encoding="utf-8-sig")), delimiter=";")
         for row in reader:
             if ((row.get("indicator") or "").strip(), src._origin_key(row.get("origin") or "")) not in wanted[folder]:
                 continue
@@ -172,6 +177,7 @@ def build_snapshot(tidy_dir: Path, out: Path = SNAPSHOT_PATH) -> int:
                 geo = (row.get("country") or "").strip().upper()
                 if src.ESTAT_GEO_TO_CATALOG.get(geo, geo) not in catalog:
                     continue
+            row["country"] = row.get("country") or row.get("country_or_region") or ""
             cells = [row.get(key) or "" for key in ("country", "period", "origin", "indicator", "value")]
             rows.append(";".join([folder] + [cell.replace(";", ",") for cell in cells]))
     out.write_bytes(gzip.compress(("\n".join(rows) + "\n").encode("utf-8"), mtime=0))
@@ -219,7 +225,11 @@ def plan_writes(
     for provider, (parsed, freqs) in fetched.items():
         rows = plan.setdefault(provider, [])
         for (suffix, country), points in sorted(parsed.items()):
-            if country not in catalog or not points or points[-1][0].year < today.year - MAX_SILENT_YEARS:
+            if country not in catalog or not points:
+                continue
+            # Закрытая история национальной службы (Китай по странам — до 2018) подписана в методологии и
+            # остаётся; правило молчания — для рядов издателей, которые обновляются сами.
+            if provider not in src.TIDY_PROVIDERS and points[-1][0].year < today.year - MAX_SILENT_YEARS:
                 continue
             if suffix == _GDP_SHARE and provider == src.UNT_PROVIDER:
                 if src.OECD_PROVIDER in failed or country in oecd_gdp:
@@ -341,7 +351,7 @@ def _cli(argv: list[str]) -> dict:
         elif arg == "--tidy-dir":
             tidy_dir = Path(next(args))
         elif arg == "--build-snapshot":
-            return {"snapshot_rows": build_snapshot(Path(next(args)))}
+            return {"snapshot_rows": build_snapshot([Path(item) for item in next(args).split(",")])}
         elif arg in src.PROVIDERS:
             chosen.append(arg)
     if not chosen:
