@@ -102,7 +102,7 @@ async def render_research_article_html(slug: str) -> tuple[int, str] | None:
     body = f"""<main class="seo-page seo-research-article">
 {_breadcrumbs_nav(trail)}
 <article>
-<p>{escape(c["n"].format(n=a["number"]))} · {escape(c["release"].format(r=rel))}</p>
+<p>{escape(c["n"].format(n=a["number"]))} — {escape(c["release"].format(r=rel))}</p>
 <h1>{escape(a["title"])}</h1>
 <p>{escape(a["subtitle"])}</p>
 <ul>{figs}</ul>

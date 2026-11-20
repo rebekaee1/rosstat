@@ -72,7 +72,7 @@
 .fe-ra-body > section { margin-top: 36px; }
 .fe-ra-body h2 {
   font-size: clamp(21px, 2.4vw, 26px); line-height: 1.25; font-weight: 700; color: var(--fe-ink);
-  margin: 0 0 14px; scroll-margin-top: 96px;
+  margin: 0 0 14px;
 }
 .fe-ra-body p { margin: 0 0 14px; }
 .fe-ra-body a { color: var(--fe-blue); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }

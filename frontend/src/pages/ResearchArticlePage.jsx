@@ -46,7 +46,7 @@ export default function ResearchArticlePage() {
           <header className="fe-ra-head fe-reveal">
             <div className="fe-research-kicker">
               {t('research.number', { n: data.number })}
-              <span aria-hidden="true"> · </span>
+              <span aria-hidden="true"> — </span>
               {t('research.release', { r: release })}
             </div>
             <h1 className="mb-4 font-display text-3xl font-bold leading-tight text-text-primary md:text-4xl">{data.title}</h1>
