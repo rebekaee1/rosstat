@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2659  ·  **Строк:** 1 657 494  ·  **Токенов (≈):** 16 198 915
+**Файлов:** 2659  ·  **Строк:** 1 657 496  ·  **Токенов (≈):** 16 198 958
 
 ## По верхним папкам
 
@@ -16,7 +16,7 @@
 | `(root)` | 8 | 2 938 | 68 403 |
 | `.github` | 3 | 315 | 3 245 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 1202 | 401 317 | 4 682 613 |
+| `backend` | 1202 | 401 319 | 4 682 656 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 21 | 1 582 | 26 611 |
 | `docs` | 155 | 1 015 073 | 8 820 297 |
@@ -823,6 +823,7 @@
 | `backend/app/services/cbr_bop_parser.py` | 261 | 2 399 |
 | `frontend/src/styles/c11b-cabinet.css` | 245 | 2 399 |
 | `docs/adr/0019-personal-cabinet-behind-flag.md` | 50 | 2 398 |
+| `backend/tests/test_world_country_catalog_build.py` | 236 | 2 394 |
 | `frontend/src/pages/ForecastsPage.component.test.jsx` | 214 | 2 392 |
 | `frontend/src/pages/ComparePage.c10.component.test.jsx` | 190 | 2 390 |
 | `backend/app/services/promised_freshness.py` | 222 | 2 387 |
@@ -835,7 +836,6 @@
 | `frontend/src/components/IndicatorTile.jsx` | 206 | 2 365 |
 | `backend/tests/test_boot_splash.py` | 220 | 2 355 |
 | `scripts/refresh-search-crawler-ranges.py` | 211 | 2 352 |
-| `backend/tests/test_world_country_catalog_build.py` | 234 | 2 351 |
 | `backend/tests/test_emiss_quarterly.py` | 188 | 2 348 |
 | `frontend/src/components/regions/RegionParts.jsx` | 189 | 2 347 |
 | `backend/app/data/world_superseded.py` | 219 | 2 345 |

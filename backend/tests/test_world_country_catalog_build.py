@@ -203,7 +203,7 @@ def test_country_key_falls_back_to_world_generation(auth_env, monkeypatch):
 
 def test_reliability_mart_skips_hidden_tab_timings(auth_env):
     """`hid=1` (вкладка уходила в фон) не идёт в задержку API; отказы такого запроса считаются."""
-    from datetime import datetime, timezone
+    from datetime import datetime, timedelta, timezone
 
     from app.models import BehaviorEvent, ServerSession
     from app.services.analytics_marts import mart_reliability
@@ -219,7 +219,9 @@ def test_reliability_mart_skips_hidden_tab_timings(auth_env):
                 {"u": "/api/v1/ticker/live", "ms": 15000, "st": 0, "ok": 0, "hid": 1},
             ]
             # Скорость считается только у подтверждённых людей (20.11.2026).
-            db.add(ServerSession(day=now.date(), visitor_id_hash="v", started_at=now, ended_at=now, is_human=True))
+            # Окно витрины - дни по Москве (as_period): с 21:00 до 24:00 UTC день по UTC отстаёт на сутки.
+            msk_day = (now + timedelta(hours=3)).date()
+            db.add(ServerSession(day=msk_day, visitor_id_hash="v", started_at=now, ended_at=now, is_human=True))
             db.add_all([
                 BehaviorEvent(event_type="api_timing", session_id_hash=f"s{i}", visitor_id_hash="v",
                               page="/", params_json=p, occurred_at=now, ingested_at=now)

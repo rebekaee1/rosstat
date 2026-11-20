@@ -16158,9 +16158,9 @@
     },
     {
       "path": "backend/tests/test_world_country_catalog_build.py",
-      "sha256": "110c3ce4426c286804e69d9bf54fdd0c4102daeb494a780b7059b2b2c36435b4",
-      "bytes": 10031,
-      "lines": 234,
+      "sha256": "077406d36b6182364397272c54c2091bc2d58375a8fa7bb49dad322cbd593f9e",
+      "bytes": 10247,
+      "lines": 236,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -38388,24 +38388,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "dddece1af0914df6efb516869a7d80992f0df16d8e7a3c58dbc85804dc003ba9",
+  "ledger_sha256": "68619287c5c8c7df8f20a7a7dfd125d3a573ad58b9fd1e3818530e8863b08538",
   "javascript_inventory_sha256": "92d859651ab067507ac833f474acae45d7b6862d74b650a8f7d5e1994434a4b1",
-  "baseline_commit": "4aa3920a86967b4e9303f10d79047893cb77cb41",
+  "baseline_commit": "f0aa0ed3d806a0d48e1d7f1961cb73b68ac9a6ac",
   "branch": "int/2026-11-20-tourism",
   "unstaged_at_capture": [
-    "docs/adr/0038-tourism-section.md",
-    "docs/architecture-history.md",
-    "docs/architecture.md",
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/data-contracts.md",
-    "docs/dead-code-report.md",
-    "docs/indicator-index.json",
-    "docs/indicator-index.md",
-    "docs/knowledge-unknowns.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md",
-    "docs/runtime-inventory.json",
-    "docs/workflow.md"
+    "backend/tests/test_world_country_catalog_build.py"
   ]
 }
