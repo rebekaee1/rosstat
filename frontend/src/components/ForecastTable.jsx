@@ -1,7 +1,8 @@
-import { formatDate, formatValueWithUnit, unitSuffix, chartValueDigits } from '../lib/format';
+import { formatDate, formatValueWithUnit, unitSuffix } from '../lib/format';
 import { useT } from '../i18n';
 import '../styles/k5-pages.css';
 import { flatUnit } from '../lib/countryFlag';
+import { valueDigitsFor } from '../lib/seriesDigits';
 
 export default function ForecastTable({ mode = 'inflation', inflation, forecastData, actualPoints, unit = '%', dateFormat = 'full' }) {
   const t = useT();
@@ -35,7 +36,8 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
     ? t('forecast.title.inflation')
     : t('forecast.title.period', { period: t(periodKey) });
   const suffix = unitSuffix(unit);
-  const valueDigits = chartValueDigits(unit, mode);
+  // Точность прогноза равна точности факта: берётся по фактическим точкам, а не по прогнозным значениям.
+  const valueDigits = valueDigitsFor(unit, (actualRows || []).map((row) => row?.value), mode);
   const valueLabel = mode === 'inflation'
     ? t('forecast.value.inflation')
     : mode === 'quarterly' ? t('forecast.value.quarterly')

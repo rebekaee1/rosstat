@@ -2,7 +2,8 @@ import { useParams } from 'react-router-dom';
 import DataTable from './DataTable';
 import useMediaQuery from '../lib/useMediaQuery';
 
-import { resolveDateFormat, chartValueDigits } from '../lib/format';
+import { resolveDateFormat } from '../lib/format';
+import { valueDigitsFor } from '../lib/seriesDigits';
 import { chartSeriesForViewMode } from '../lib/chartSeriesForViewMode';
 import { useLocale } from '../i18n';
 import { resolveTableTitle } from '../i18n/resolveViewModeCopy';
@@ -87,8 +88,9 @@ export default function IndicatorDataTableSection({
         title={yearFilter ? `${tableTitle}, ${yearFilter}` : tableTitle}
         dateFormat={resolveDateFormat({ chartMode, frequency: indicator?.frequency, safeViewMode })}
         unit={chartMode === 'index' ? 'индекс' : ((isPpiFamily || isHousingFamily) && chartMode !== 'index' ? '%' : (indicator?.unit || '%'))}
-        valueDigits={chartValueDigits(
+        valueDigits={valueDigitsFor(
           chartMode === 'index' ? 'индекс' : (indicator?.unit || '%'),
+          (allData || []).map((row) => row?.value),
           safeViewMode || chartMode,
         )}
       />

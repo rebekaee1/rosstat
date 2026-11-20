@@ -4621,4 +4621,11 @@ export default {
   "kt3_outbound": "Where Russians travel",
   "kt3_allCountries": "All countries ({n})",
   "kt3_allCountriesEx": "{n} countries (Russia has its own section)",
+  // ===== Zone z2: chart, history table, forecast =====
+  "kt2_table_yoy": "Year over year",
+  "kt2_table_yoyUnit": "Year over year, {unit}",
+  "kt2_table_yoyNote": "vs the same period last year",
+  "kt2_table_yoyNoteAnnual": "vs the previous year",
+  "kt2_table_maxAll": "all-time high",
+  "kt2_table_minAll": "all-time low",
 };
