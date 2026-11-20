@@ -15,16 +15,24 @@ def _ind(name):
 def test_zero_none_series_only_for_tax_codes():
     assert _is_zero_none_series("tour-nalog-za-god")
     assert _is_zero_none_series("tour-nalog-s-nachala-goda")
+    assert _is_zero_none_series("tour-kurortnyy-sbor")
     assert not _is_zero_none_series("chislennost-naseleniya")
 
 
-def test_tourism_siblings_drop_theatres_and_stadiums_only_in_tourism_section(monkeypatch):
-    monkeypatch.setattr("app.services.seo_regional._icopy", lambda i: {"name": i.name})
-    rows = [_ind("Число театров"), _ind("Гости гостиниц"), _ind("Число стадионов"), _ind("Библиотеки"), _ind("Число бассейнов")]
-    kept = [x.name for x in _tourism_siblings(rows, 6, 10)]
-    assert kept == ["Гости гостиниц"]
-    assert len(_tourism_siblings(rows, 1, 10)) == 5
-    assert len(_tourism_siblings(rows, 6, 10)) == 1
+def test_tourism_siblings_use_the_same_list_as_api():
+    from app.data.tourism_regional import SERIES_BY_CODE
+
+    own = next(iter(SERIES_BY_CODE))
+    def row(code, table):
+        return SimpleNamespace(code=code, table_code=table, name=code)
+    theatre = row("teatry", "6.4")
+    hotels = row("gostinitsy", "6.1")
+    rows = [theatre, hotels, row(own, "6.x")]
+    ind = SimpleNamespace(code=own, table_code="6.x", section_num=6)
+    kept = [x.code for x in _tourism_siblings(rows, ind, 10)]
+    assert "teatry" not in kept and kept[0] == own
+    other = SimpleNamespace(code="x", table_code="1.1", section_num=1)
+    assert len(_tourism_siblings(rows, other, 10)) == 3
 
 
 def test_rating_html_puts_zero_tax_out_of_minimum(auth_env):
