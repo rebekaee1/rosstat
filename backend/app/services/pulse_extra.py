@@ -161,6 +161,16 @@ async def _world_ingest(db, start: datetime, end: datetime) -> dict[str, Any]:
         s["datasets_failed"] += int(failed or 0)
     # Статусы запусков: ok / partial / failed / running (проверено на боевой базе 16.11.2026).
     last = await db.scalar(select(func.max(WorldIngestRun.completed_at)).where(WorldIngestRun.status == "ok"))
+    # Причина рядом с числом (20.11.2026): без неё Пульс писал «7 наборов с ошибкой, причина не ясна».
+    problem_rows = (await db.execute(
+        select(WorldIngestRun.source, WorldIngestRun.error_message)
+        .where(WorldIngestRun.started_at >= start, WorldIngestRun.started_at < end, WorldIngestRun.is_shadow.is_(False),
+               WorldIngestRun.status.in_(("partial", "failed")), WorldIngestRun.error_message.is_not(None))
+        .order_by(WorldIngestRun.started_at.desc()))).all()
+    for source, message in problem_rows:
+        s = by_source.get(source)
+        if s is not None and "problem" not in s:
+            s["problem"] = str(message)[:600]
     return {"by_source": by_source, "runs": sum(sum(s["runs"].values()) for s in by_source.values()),
             "datasets_failed": sum(s["datasets_failed"] for s in by_source.values()),
             "last_success_utc": last.isoformat() if last else None}
@@ -319,6 +329,9 @@ def digits_lines(snapshot: dict) -> list[str]:
     wi = snapshot.get("world_ingest") or {}
     if wi and not wi.get("error"):
         lines.append(f"Мировые данные: запусков загрузки {wi.get('runs', 0)}, наборов с ошибкой {wi.get('datasets_failed', 0)}")
+        for src, s in (wi.get("by_source") or {}).items():
+            if s.get("problem"):
+                lines.append(f"  {src}: {s['problem'][:300]}")
     fr = snapshot.get("freshness") or {}
     if fr and not fr.get("error"):
         lv = fr.get("levels") or {}

@@ -20,6 +20,8 @@ from typing import Any, AsyncIterator, Mapping, Sequence
 
 import requests
 
+from app.services.http_client import create_source_session
+
 from app.services.world_adapters.mospi_api import (
     MospiApiAdapter,
     MospiApiError,
@@ -158,7 +160,7 @@ class RbiRatesAdapter:
         self._timeout = timeout
         self._country_code = country_code.strip().upper() or DEFAULT_COUNTRY_CODE
         self._session = session or build_session()
-        self._html_session = requests.Session()
+        self._html_session = create_source_session()
         self._html_session.headers.update({"User-Agent": _USER_AGENT})
 
         mospi_rows = [s for s in curated if str(s.dataset_id).upper() == "RBI"]

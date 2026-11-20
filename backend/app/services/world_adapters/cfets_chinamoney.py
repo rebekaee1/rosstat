@@ -35,6 +35,8 @@ from typing import Any, AsyncIterator, Mapping, Sequence
 
 import requests
 
+from app.services.http_client import create_source_session
+
 from app.services.world_source_adapter import (
     WorldDatasetVersion,
     WorldObservation,
@@ -271,7 +273,7 @@ class CfetsChinamoneyAdapter:
             raise CfetsChinamoneyError(
                 "CfetsChinamoneyAdapter requires at least one curated series"
             )
-        self._session = session or requests.Session()
+        self._session = session or create_source_session()
         self._timeout = timeout
         self._base_url = base_url.rstrip("/")
         self._country_code = country_code.strip().upper() or DEFAULT_COUNTRY_CODE

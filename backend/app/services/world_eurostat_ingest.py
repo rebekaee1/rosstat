@@ -504,6 +504,7 @@ async def world_eurostat_ingest_job(
     structure_accepted = 0
     structure_blocked = 0
     blocked_datasets: list[tuple[str, str]] = []
+    error_datasets: list[tuple[str, str]] = []
     skipped_datasets: list[tuple[str, str]] = []
     remapped_total = 0
     orphans_total = 0
@@ -589,6 +590,7 @@ async def world_eurostat_ingest_job(
             )
         else:
             failed += 1
+            error_datasets.append((entry.dataset_id, " ".join(str(detail or "").split())[:160]))
             logger.error("World Eurostat loader failed for %s: %s", entry.dataset_id, detail)
             await _record_dataset(
                 run_id=run_id,
@@ -604,6 +606,12 @@ async def world_eurostat_ingest_job(
         run.datasets_selected = processed
         run.datasets_succeeded = succeeded
         run.datasets_failed = failed
+        # Причина в журнале прогона (20.11.2026): Пульс видел «1 набор с ошибкой» без объяснения, хотя это был
+        # карантин разлома структуры bop_c6_m, снятый следующим прогоном.
+        problems = [f"карантин {ds}: {why}" for ds, why in blocked_datasets]
+        problems += [f"ошибка {ds}: {why}" for ds, why in error_datasets]
+        if problems:
+            run.error_message = "; ".join(problems)[:2000]
         run.status = "shadow" if shadow else ("ok" if failed == 0 and pending == 0 else "partial")
         run.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
         await db.commit()

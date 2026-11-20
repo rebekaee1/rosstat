@@ -23,8 +23,9 @@ from datetime import date, datetime, timezone
 from typing import Any, AsyncIterator, Mapping, Sequence
 
 import requests
-from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+
+from app.services.http_client import _TimeoutAdapter, create_source_session
 
 from app.services.world_source_adapter import (
     WorldDatasetVersion,
@@ -85,8 +86,8 @@ class MospiApiError(RuntimeError):
     """Raised when MoSPI returns an unusable payload."""
 
 
-class _LegacySSLAdapter(HTTPAdapter):
-    """Enable OP_LEGACY_SERVER_CONNECT for api.mospi.gov.in."""
+class _LegacySSLAdapter(_TimeoutAdapter):
+    """Enable OP_LEGACY_SERVER_CONNECT for api.mospi.gov.in; connect ограничен, как у ETL (20.11.2026)."""
 
     def init_poolmanager(self, *args, **kwargs):  # type: ignore[no-untyped-def]
         ctx = ssl.create_default_context()
@@ -175,14 +176,7 @@ def parse_plfs_annual_period(year_token: str) -> date:
 
 
 def build_session() -> requests.Session:
-    session = requests.Session()
-    session.verify = False
-    session.headers.update(
-        {
-            "User-Agent": _USER_AGENT,
-            "Accept": "application/json",
-        }
-    )
+    """Сессия MoSPI: старый TLS, свои повторы; обход блокировки сети сервера через ETL-прокси (20.11.2026)."""
     retry = Retry(
         total=3,
         connect=2,
@@ -193,8 +187,14 @@ def build_session() -> requests.Session:
         allowed_methods=frozenset({"GET", "POST"}),
         respect_retry_after_header=True,
     )
-    session.mount("https://", _LegacySSLAdapter(max_retries=retry))
-    session.mount("http://", _LegacySSLAdapter(max_retries=retry))
+    session = create_source_session(adapter=_LegacySSLAdapter(max_retries=retry))
+    session.verify = False
+    session.headers.update(
+        {
+            "User-Agent": _USER_AGENT,
+            "Accept": "application/json",
+        }
+    )
     return session
 
 
