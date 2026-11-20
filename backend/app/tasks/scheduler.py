@@ -26,6 +26,7 @@ from app.services.staleness import (  # noqa: F401  (реэкспорт для �
     STALENESS_SLA_DAYS,
     StaleRow,
     build_report,
+    derived_input_windows,
     find_stale,
     load_known_flagged,
     plan_staleness_message,
@@ -821,6 +822,39 @@ def calculation_engine_specs():
 STALENESS_QUERY_TIMEOUT_MS = 180_000
 
 
+async def _derived_inputs_ready(db, stale_rows: list[StaleRow]) -> set[str] | None:
+    """Производные-кандидаты в «сироты», у всех прямых источников которых есть точка следующего периода.
+
+    20.11.2026: 23 из 23 «производных не пересчитано» ждали данных (жильё — зарплату за сентябрь, годовой
+    «% к году» 9 курсов ЦБ — котировок 2010–2024, которых нет). Запрос — EXISTS по нескольким десяткам пар
+    (indicator_id, date) по индексу; при сбое — None, то есть прежнее поведение (лучше шум, чем слепота).
+    """
+    try:
+        windows = derived_input_windows(
+            stale_rows, {s.dst_code: s.src_codes for s in calculation_engine_specs()},
+            today=date.today(),
+        )
+        ready: set[str] = set()
+        for dst, wins in windows.items():
+            ok = True
+            for src, start, end in wins:
+                hit = await db.scalar(
+                    select(IndicatorData.id)
+                    .join(Indicator, Indicator.id == IndicatorData.indicator_id)
+                    .where(Indicator.code == src, IndicatorData.date >= start, IndicatorData.date < end)
+                    .limit(1)
+                )
+                if hit is None:
+                    ok = False
+                    break
+            if ok:
+                ready.add(dst)
+        return ready
+    except Exception:  # noqa: BLE001
+        logger.warning("Staleness check: derived inputs check failed", exc_info=True)
+        return None
+
+
 async def staleness_check_job() -> list[tuple[str, int]]:
     """Ежедневная проверка свежести всех активных индикаторов + Telegram-алерт."""
     async with async_session() as db:
@@ -860,6 +894,7 @@ async def staleness_check_job() -> list[tuple[str, int]]:
             for code, freq, max_date, parser_type, source, status, fetched_at in q.all()
         ]
         rows = [(r.code, r.frequency, r.max_date) for r in stale_rows]
+        inputs_ready = await _derived_inputs_ready(db, stale_rows)
 
     # Н-14: meta-чек «алерты сломаны». Система шлёт минимум одно сообщение в
     # сутки (ETL-summary); если последней успешной отправки нет > 26 ч —
@@ -907,6 +942,7 @@ async def staleness_check_job() -> list[tuple[str, int]]:
         report = build_report(
             stale_rows, derived_sources,
             today=date.today(), now=datetime.now(timezone.utc).replace(tzinfo=None),
+            inputs_ready=inputs_ready,
         )
         known = await load_known_flagged()
         # Раз в неделю — полная сводка по группам; в остальные дни — только

@@ -14,8 +14,9 @@ SLA» оказался шумом (2026-09-26: 428 рядов, из них по�
 * ``frozen`` — парсер читает источник без ошибок, но новых точек нет уже больше
   SLA + один полный период частоты (пропущен целый выпуск): источник не
   публикует, сделать нечего — только счётчик;
-* ``derived_follow`` — производные от просроченных первоисточников: отдельной
-  информации не несут, только счётчик;
+* ``derived_follow`` — производные, которым не из чего считать следующую точку:
+  первоисточник просрочен или у прямого источника нет точки закрытого
+  следующего периода (``derived_input_windows``, 20.11.2026); только счётчик;
 * «в пределах лага» — читаем без ошибок и просрочка не превышает один период
   сверх SLA: не сообщаем (обычная задержка публикации).
 
@@ -26,9 +27,9 @@ SLA» оказался шумом (2026-09-26: 428 рядов, из них по�
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from html import escape
-from typing import Iterable, Mapping, Sequence
+from typing import Collection, Iterable, Mapping, Sequence
 
 # Пороги с запасом на лаг публикации источника (месячный ряд Росстата выходит
 # через 4-6 недель после периода). Синхронизированы по духу с freshness-SLA
@@ -85,8 +86,14 @@ _CODES_PER_GROUP = 3
 # Ряды, которые источник выпускает реже своей частоты (дневные точки пачкой раз в неделю). 08.11.2026 «новая
 # просрочка» `usd-index` 9 дн.: индекс доллара ФРС (DTWEXBGS, релиз H.10) выходит по понедельникам за прошлую
 # неделю, у самой ФРС последняя точка была 30.10 - ряд был свежим. Значение - SLA в днях вместо частотного.
+#
+# `wages-nominal`: Росстат выпускает зарплату месяца M через 88–93 дня после 1-го числа M (боевой fetch_log
+# 2026: июнь → 02.09, июль → 30.09, август → 28.10), значит перед следующим выпуском точке до ~124 дней.
+# Месячный SLA 75 метил ряд просроченным с середины каждого месяца (16.11.2026 «новая просрочка» 107 дн.),
+# а за ним — всю цепочку доступности жилья (20.11: 14 «производных не пересчитано» до 172 дн.).
 SLA_OVERRIDE_DAYS: dict[str, int] = {
     "usd-index": 16,
+    "wages-nominal": 125,
 }
 
 
@@ -146,7 +153,7 @@ class StalenessReport:
 
     attention: list[StaleItem] = field(default_factory=list)   # чинится у нас
     frozen: list[StaleItem] = field(default_factory=list)      # источник молчит
-    derived_follow: int = 0                                    # производные от просроченных
+    derived_follow: int = 0                                    # производные ждут данных источника
     within_lag: int = 0                                        # здоровы, лаг публикации
     total_stale: int = 0                                       # всего старше SLA
     total_active: int = 0
@@ -178,6 +185,78 @@ def derived_roots(
     return roots
 
 
+def _add_months(d: date, months: int) -> date:
+    total = d.year * 12 + (d.month - 1) + months
+    return date(total // 12, total % 12 + 1, 1)
+
+
+def next_point_input_window(
+    max_date: date, frequency: str | None, src_frequency: str | None,
+) -> tuple[date, date] | None:
+    """Окно [start, end), где у источника должна быть точка, чтобы появилась СЛЕДУЮЩАЯ точка производного.
+
+    Следующая точка производного требует закрытого периода, то есть точки источника в его последней части:
+    последний месяц квартала/года, сам месяц, или последний период более редкого источника. Якоря дат —
+    конвенция `derived_ops._bucket_anchor`: месяц 1-го числа, квартал — 1-е число третьего месяца, год — 1 января.
+    None — частота незнакома, проверить нельзя.
+    """
+    freq = (frequency or "").lower()
+    if freq == "monthly":
+        end = _add_months(max_date, 2)
+    elif freq == "quarterly":
+        end = _add_months(max_date, 4)
+    elif freq == "annual":
+        end = date(max_date.year + 2, 1, 1)
+    elif freq in ("weekly", "daily"):
+        end = max_date + timedelta(days=PERIOD_DAYS[freq] + 1)
+        return max_date + timedelta(days=1), end
+    else:
+        return None
+    tail = max(period_days(src_frequency), 31)
+    return end - timedelta(days=tail), end
+
+
+def derived_input_windows(
+    rows: Iterable[StaleRow],
+    derived_sources: Mapping[str, Sequence[str]],
+    *,
+    today: date | None = None,
+) -> dict[str, list[tuple[str, date, date]]]:
+    """Для просроченных производных при не просроченных первоисточниках — окна проверки прямых источников.
+
+    Результат: ``{dst_code: [(src_code, start, end), ...]}``; вызывающий код проверяет по базе, есть ли у каждого
+    источника точка в окне, и передаёт в ``build_report(inputs_ready=…)`` коды, у которых есть все.
+    """
+    today = today or date.today()
+    rows = list(rows)
+    by_code = {r.code: r for r in rows}
+    stale_codes = {
+        r.code for r in rows
+        if r.max_date is not None and (today - r.max_date).days > sla_days(r.frequency, r.code)
+    }
+    out: dict[str, list[tuple[str, date, date]]] = {}
+    for code in stale_codes:
+        row = by_code[code]
+        if row.parser_type != "derived":
+            continue
+        roots = derived_roots(code, derived_sources)
+        if not roots or all(root in stale_codes for root in roots):
+            continue
+        windows: list[tuple[str, date, date]] = []
+        for src in derived_sources.get(code, ()):
+            src_row = by_code.get(src)
+            win = next_point_input_window(
+                row.max_date, row.frequency, src_row.frequency if src_row else None,
+            )
+            if win is None:
+                windows = []
+                break
+            windows.append((src, *win))
+        if windows:
+            out[code] = windows
+    return out
+
+
 def _fetch_unhealthy(row: StaleRow, now: datetime) -> bool:
     if row.last_status in UNHEALTHY_FETCH_STATUSES:
         return True
@@ -192,7 +271,11 @@ def build_report(
     *,
     today: date | None = None,
     now: datetime | None = None,
+    inputs_ready: Collection[str] | None = None,
 ) -> StalenessReport:
+    """``inputs_ready`` — производные, у всех прямых источников которых есть точка для следующего периода
+    (см. ``derived_input_windows``). None — проверки не было: производный при свежем первоисточнике — сирота.
+    """
     today = today or date.today()
     now = now or datetime.combine(today, datetime.min.time())
     rows = list(rows)
@@ -213,7 +296,14 @@ def build_report(
         freq = (row.frequency or "").lower()
         if row.parser_type == "derived":
             roots = derived_roots(row.code, derived_sources)
-            if not roots or all(root in stale_codes for root in roots):
+            # Сирота — только если следующую точку уже можно посчитать. Иначе ряд ждёт данных: первоисточник
+            # просрочен, у одного из входов ещё нет закрытого периода (жильё ждёт зарплату) или у источника
+            # дыра (курсы ЦБ к валютам, не котировавшимся 2010–2024: годового «% к году» не из чего считать).
+            if (
+                not roots
+                or all(root in stale_codes for root in roots)
+                or (inputs_ready is not None and row.code not in inputs_ready)
+            ):
                 report.derived_follow += 1
             else:
                 report.attention.append(
@@ -270,7 +360,7 @@ def _counters_line(report: StalenessReport) -> str:
             f"заморожены источником (читаем без ошибок, новых точек нет): {len(report.frozen)}"
         )
     if report.derived_follow:
-        parts.append(f"производные от просроченных: {report.derived_follow}")
+        parts.append(f"производные ждут данных первоисточника: {report.derived_follow}")
     if report.within_lag:
         parts.append(f"в пределах лага публикации: {report.within_lag}")
     return "Не требуют действий — " + "; ".join(parts) if parts else ""
