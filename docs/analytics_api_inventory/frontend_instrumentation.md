@@ -231,13 +231,17 @@ ym(107136069, 'init', {
 | (нет события) | быстрые SSR-страницы (`seo_renderer._add_platform_bridge`) | кнопка «Открыть интерактивный график», плитки и плавающая плашка — обычные ссылки на карточку показателя (с `24a40bcd`); отдельного события нет, учитывается ли переход в `behavior-standalone`/Метрике как просмотр следующей страницы, не проверялось | — |
 | `pwa_install_entry_click` | `PwaInstallEntry` (подвал) | клик «Установить приложение» | `platform` |
 | `header_login_click` / `header_register_click` | `Navbar` | CTA в шапке | — |
+| `limit_modal_register` / `limit_modal_close` | `DownloadLimitModal` (окно лимита гостя, с 20.11.2026) | «Зарегистрироваться по почте» / «Войти» в окне; закрытие окна без действия. Вход через соцсеть из окна виден как `oauth_consent_open` | `target` (`email`/`login`); `via` (`x`/`escape`/`scrim`/`back`) |
 | `signup` / `login_success` / `oauth_start` | auth-флоу (ADR-0007) | регистрация/вход | `method` |
 | `newsletter_opt_in` / `newsletter_opt_out` | кабинет | подписка на рассылку | — |
 
 > Конверсионная воронка картинок/выгрузок: `*_blocked` / `download_limit`
-> (гость уперся в стену) → `register_nudge_cta` / `header_register_click` →
-> `signup` → `chart_image_download` / `compare_image_download` (уже как юзер).
+> (гость уперся в стену) → `limit_modal_register` или `oauth_consent_open` в самом окне
+> (или `limit_modal_close`) → `signup` → `chart_image_download` / `compare_image_download` (уже как юзер).
 > Соотношение `*_blocked` к `signup` — основная метрика регистрационной стены.
+> `register_nudge_cta` / `header_register_click` — другие точки входа: за 13–19.11.2026 ни один из 62
+> упёршихся не нажал их после стены. Слабое звено `mart_signup_funnel` с 20.11.2026 считается по тем же
+> людям (из дошедших до шага — сколько дошли до любого следующего).
 
 ### Внешние интеграции
 

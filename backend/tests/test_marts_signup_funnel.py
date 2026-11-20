@@ -147,6 +147,39 @@ def test_signup_funnel_weakest_step_needs_a_sample():
     _run_with_db(scenario)
 
 
+def test_signup_funnel_weakest_follows_the_same_people_and_counts_modal_buttons():
+    """20.11.2026: кнопки окна лимита и «Создать аккаунт» приветственного экрана — нажатие «Регистрация»;
+    слабое звено — из упёршихся сколько пошли дальше, а не чужие клики по шапке."""
+    now = _now()
+    registered = uuid.uuid4()
+
+    async def scenario(maker):
+        async with maker() as db:
+            def fe(name, visitor, params=None):
+                return FrontendEvent(event_name=name, visitor_id_hash=visitor, session_id_hash=f"s{visitor}",
+                                     occurred_at=now, url="https://ru.forecasteconomy.com/", params_json=params)
+            rows = [fe("download_limit", f"w{i}") for i in range(12)]
+            # w0 нажал «по почте» в окне лимита; w1 сразу пошёл через соцсеть (шаг «нажали» перепрыгнут)
+            rows += [fe("limit_modal_register", "w0", {"target": "email"}), fe("oauth_consent_open", "w1"),
+                     fe("oauth_start", "w1")]
+            # чужие клики: шапка у тех, кто не упирался, и «Создать аккаунт» на приветствии
+            rows += [fe("header_register_click", f"h{i}") for i in range(5)]
+            rows += [fe("welcome_cta", "n1", {"target": "register"}), fe("welcome_cta", "n2", {"target": "bot"})]
+            rows += [fe("limit_modal_close", f"w{i}", {"via": "x"}) for i in range(2, 6)]
+            db.add_all(rows)
+            db.add(User(id=registered, created_at=now))
+            db.add(IdentityLink(user_id=str(registered), visitor_id_hash="w1"))
+            await db.commit()
+            data = await m.mart_signup_funnel(db, resolve_period("7d"))
+        steps = {s["key"]: s["count"] for s in data["steps"]}
+        # 5 шапка + w0 из окна + n1 с приветствия; «бот» и «закрыл окно» нажатием не считаются
+        assert steps["wall"] == 12 and steps["register_click"] == 7
+        # старое правило дало бы 12 → 7 (58 %) — чужие люди; по тем же людям дальше пошли двое
+        assert data["weakest"] == {"from": "wall", "to": "register_click", "base": 12, "next": 2, "rate_pct": 16.7}
+
+    _run_with_db(scenario)
+
+
 def test_goal_usage_sums_dims_and_reports_missing_data():
     day = _now().date()
 

@@ -296,6 +296,11 @@ export const events = {
   REGISTER_NUDGE_VIEW: 'register_nudge_view',
   REGISTER_NUDGE_EXPAND: 'register_nudge_expand',
   REGISTER_NUDGE_CTA: 'register_nudge_cta',
+  // Окно лимита гостя (DownloadLimitModal, 20.11.2026): «по почте» / «войти» и закрытие без действия.
+  // Вход через соцсеть из окна уже виден как oauth_consent_open. Без этих событий воронка не отличала
+  // «нажал в окне» от «закрыл окно» и сравнивала упёршихся с чужими кликами по шапке.
+  LIMIT_MODAL_REGISTER: 'limit_modal_register',
+  LIMIT_MODAL_CLOSE: 'limit_modal_close',
   // Подписка на показатель по почте (совет 19.11.2026): нажатие в строке «присылать» (общее имя с Telegram-частью,
   // свойство channel = 'email'; сам ключ SUBSCRIBE_LINE_CLICK объявлен выше), итог запроса, показ предложения после скачивания, подтверждение по ссылке письма.
   TOPIC_MAIL_DONE: 'topic_mail_done',

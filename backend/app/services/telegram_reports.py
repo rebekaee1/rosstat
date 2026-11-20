@@ -285,9 +285,9 @@ def weakest_text(funnel: dict | None) -> str:
     weak = (funnel or {}).get("weakest")
     if not weak:
         return ""
-    return (f"слабое звено: {FUNNEL_SHORT.get(weak['from'], weak['from'])} → "
-            f"{FUNNEL_SHORT.get(weak['to'], weak['to'])}, {fmt_int(weak['base'])} → {fmt_int(weak['next'])} "
-            f"({fmt_pct(weak['rate_pct'], 0)})")
+    # С 20.11.2026 base и next — одни и те же люди: дошли до шага и сколько из них пошли дальше.
+    return (f"слабое звено: {FUNNEL_SHORT.get(weak['from'], weak['from'])} — дальше пошли "
+            f"{fmt_int(weak['next'])} из {fmt_int(weak['base'])} ({fmt_pct(weak['rate_pct'], 0)})")
 
 
 def locale_coverage_note(funnel: dict | None) -> str:

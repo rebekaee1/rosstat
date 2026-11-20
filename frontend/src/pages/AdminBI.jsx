@@ -110,6 +110,8 @@ const EVENT_RU = {
   newsletter_opt_out: 'Отписка от рассылки',
   header_login_click: 'Клик «Войти» в шапке',
   header_register_click: 'Клик «Регистрация» в шапке',
+  limit_modal_register: 'Клик «Регистрация» в окне лимита',
+  limit_modal_close: 'Окно лимита закрыто без действия',
   feedback_nudge_view: 'Показ виджета обратной связи',
   feedback_nudge_expand: 'Раскрытие виджета обратной связи',
   feedback_nudge_cta: 'Клик в виджете обратной связи',

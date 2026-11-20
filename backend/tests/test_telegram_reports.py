@@ -146,7 +146,7 @@ def test_weekly_report_blocks():
     assert "🕳 Поиск без результатов: «биткоин к рублю» ×4" in text
     assert "🇬🇧 Английская версия: посетители 110" in text
     assert "слабое звено: «Регистрация»" not in text.split("🪜")[0]
-    assert "слабое звено: лимит → «Регистрация», 41 → 14 (34%)" in text
+    assert "слабое звено: лимит — дальше пошли 14 из 41 (34%)" in text
     assert "сравнение 21 (+50%)" in text
     assert text.count("<blockquote") == text.count("</blockquote>") == 1
     assert not re.search(r"@|\+7", text)
