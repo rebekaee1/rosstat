@@ -860,14 +860,21 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
     # у остальных тысяч - is_bot или не подтверждённый человек. Человек - как во всём Пульсе: is_human=true за окно.
     resource_visitors = {v for etype, _p, pr, _d, _s, v in rows
                          if etype == "js_error" and v and isinstance(pr, dict) and pr.get("kind") == "resource"}
+    # 20.11.2026: скорость (vital, api_timing) - тоже только у людей. Пульс 19.11 назвал «LCP региональных страниц
+    # на десктопе p75 5,2 с», а у людей (is_human=true) там 2,2 с (55 человек); 12 с давали 123 десктопных сессии без
+    # подтверждения человека. За 13-19.11: мир, десктоп - люди 2,4 с (239 человек), остальные 9,4 с (14,8 тыс. сессий
+    # фермы с JS). Холодные страницы, которые открывает ферма, медленные только для неё.
+    speed_visitors = {v for etype, _p, _pr, _d, _s, v in rows if etype in ("vital", "api_timing") and v}
     human_visitors: set[str] = set()
-    if resource_visitors:
+    candidates = list(resource_visitors) + list(speed_visitors - resource_visitors)
+    if candidates:
         human_visitors = set((await db.execute(
             select(ServerSession.visitor_id_hash).distinct()
             .where(ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
                    ServerSession.is_human.is_(True), ServerSession.is_internal.is_(False),
-                   ServerSession.visitor_id_hash.in_(list(resource_visitors)[:20000]))
+                   ServerSession.visitor_id_hash.in_(candidates[:40000]))
         )).scalars().all())
+    speed_unconfirmed = 0
     files_failed_inert = 0
     failed_file_people: set[str] = set()
 
@@ -900,6 +907,10 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
     for etype, page, params, device, session_id, visitor_id in rows:
         pr = params if isinstance(params, dict) else {}
         cell = (surface_from_url(page) or "other", device or _UNKNOWN)
+        if etype in ("vital", "api_timing") and visitor_id not in human_visitors:
+            speed_unconfirmed += 1  # робот или не подтверждённый человек: в скорость не идёт
+            if etype == "vital":
+                continue
         if etype == "vital" and pr.get("m") is not None:
             try:
                 vitals[str(pr["m"])].append(float(pr.get("v") or 0))
@@ -933,7 +944,7 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
             # `hid` (с 19.11.2026): вкладка уходила в фон во время запроса — время включает сон ноутбука и
             # заморозку вкладки, а не ответ сервера (481 с при ответе nginx за миллисекунды). В задержку не идёт;
             # отказы и 5xx такого запроса считаются, как раньше.
-            if not pr.get("hid"):
+            if not pr.get("hid") and visitor_id in human_visitors:
                 try:
                     api[u].append(float(pr.get("ms") or 0))
                 except (TypeError, ValueError):
@@ -960,6 +971,9 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
         "period": p.to_meta(),
         "vitals_p75": {m: _pctl(xs, 0.75) for m, xs in vitals.items()},
         "vitals_samples": {m: len(xs) for m, xs in vitals.items()},
+        # Замеры скорости (vital, api_timing) без подтверждённого человека: в vitals, page_device и api_slowest
+        # не входят (20.11.2026). Отказы и 5xx API считаются по всем, как раньше.
+        "speed_samples_unconfirmed": speed_unconfirmed,
         "js_errors_total": int(sum(errors.values())),
         "js_errors_top": [{"error": e, "count": c} for e, c in errors.most_common(12)],
         # Разделение свои/сторонние (этап 4б): свои — детально, чужие —

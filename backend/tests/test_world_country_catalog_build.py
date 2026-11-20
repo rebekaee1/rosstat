@@ -205,7 +205,7 @@ def test_reliability_mart_skips_hidden_tab_timings(auth_env):
     """`hid=1` (вкладка уходила в фон) не идёт в задержку API; отказы такого запроса считаются."""
     from datetime import datetime, timezone
 
-    from app.models import BehaviorEvent
+    from app.models import BehaviorEvent, ServerSession
     from app.services.analytics_marts import mart_reliability
 
     now = datetime.now(timezone.utc).replace(tzinfo=None)
@@ -218,6 +218,8 @@ def test_reliability_mart_skips_hidden_tab_timings(auth_env):
                 {"u": "/api/v1/ticker/live", "ms": 481343, "st": 200, "ok": 1, "hid": 1},
                 {"u": "/api/v1/ticker/live", "ms": 15000, "st": 0, "ok": 0, "hid": 1},
             ]
+            # Скорость считается только у подтверждённых людей (20.11.2026).
+            db.add(ServerSession(day=now.date(), visitor_id_hash="v", started_at=now, ended_at=now, is_human=True))
             db.add_all([
                 BehaviorEvent(event_type="api_timing", session_id_hash=f"s{i}", visitor_id_hash="v",
                               page="/", params_json=p, occurred_at=now, ingested_at=now)

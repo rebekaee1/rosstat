@@ -384,7 +384,7 @@ def reliability_line(rel: dict | None) -> str:
     if seen_5xx:
         bits.append(f"людям пришла ошибка 5xx (выборка) {fmt_int(seen_5xx)}")
     if lcp is not None:
-        bits.append(f"LCP p75 {fmt_seconds(lcp)}")
+        bits.append(f"LCP p75 у людей {fmt_seconds(lcp)}")
     if api is not None:
         bits.append(f"API p75 {fmt_int(api)} мс")
     if worst and worst["lcp_p75_ms"] >= 2500:
@@ -414,7 +414,7 @@ def reliability_details(rel: dict | None) -> list[str]:
         out.append("Не загрузились файлы: " + ", ".join(f"{escape(name)} ×{fmt_int(n)}" for name, n in list(files.items())[:3]))
     slow = [c for c in (rel or {}).get("page_device", []) if (c.get("lcp_samples") or 0) >= 5 and (c.get("lcp_p75_ms") or 0) >= 2500]
     if slow:
-        out.append("Медленные страницы (LCP p75): " + "; ".join(
+        out.append("Медленные страницы у людей (LCP p75): " + "; ".join(
             f"{SURFACE_LABELS.get(c['page_group'], c['page_group'])}, {DEVICE_LABELS.get(c['device'], c['device'])} "
             f"{fmt_seconds(c['lcp_p75_ms'])} (выборка {fmt_int(c['lcp_samples'])})" for c in slow[:3]))
     return out
