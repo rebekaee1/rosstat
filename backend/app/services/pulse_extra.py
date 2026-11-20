@@ -237,9 +237,6 @@ async def _calendar(db, d: date) -> dict[str, Any]:
     nxt = (await db.scalars(select(EconomicEvent).where(
         EconomicEvent.scheduled_date > d, EconomicEvent.scheduled_date <= d + timedelta(days=3),
         EconomicEvent.importance >= 2).order_by(EconomicEvent.scheduled_date, EconomicEvent.importance.desc()).limit(10))).all()
-    overdue = int(await db.scalar(select(func.count()).select_from(EconomicEvent).where(
-        EconomicEvent.scheduled_date < d, EconomicEvent.scheduled_date >= d - timedelta(days=14),
-        EconomicEvent.status == "scheduled", EconomicEvent.actual_date.is_(None))) or 0)
     # Ежедневные ставки (RUONIA и т. п.) повторяются каждый день и забивают список: название — один раз.
     seen: set[str] = set()
     upcoming = []
@@ -248,7 +245,75 @@ async def _calendar(db, d: date) -> dict[str, Any]:
             seen.add(e.title)
             upcoming.append(e)
     return {"day": [row(e) for e in day], "next_3_days": [row(e) for e in upcoming],
-            "scheduled_but_not_released_14d": overdue}
+            "past_unconfirmed_14d": await past_unconfirmed(db, d)}
+
+
+# Причины, по которым прошедшая публикация календаря не получила отметку «вышло» (20.11.2026).
+# До этой даты Пульс писал одно число «не отмечены как вышедшие» (22 за 06–19.11) и смешивал
+# скрытые оценки дат, события без ряда на сайте, недоступный источник и наш пропуск.
+UNCONFIRMED_REASONS = {
+    "our_miss": "точка пришла в нашей загрузке, отметки нет — наша ошибка",
+    "source_unreachable": "источник не отдал данные (сбой или запасной файл)",
+    "no_new_point": "загрузка прошла, новой точки в файле источника нет (выпуск в другом формате или позже)",
+    "not_fetched": "загрузка ряда после даты выпуска не запускалась",
+    "no_data_by_design": "выпуск без точки ряда: нет ряда на сайте, обзор, предварительная оценка",
+}
+_LOAD_OK = ("success", "no_new_data")
+_LOAD_UNREACHABLE = ("failed", "fallback_used")
+
+
+def classify_unconfirmed(ev, loads: list[tuple[str, int]]) -> str:
+    """Причина отсутствия отметки по событию и журналу загрузок его ряда после даты выпуска.
+
+    ``loads`` — пары (статус, добавлено точек) из ``fetch_log`` начиная с дня выпуска.
+    """
+    from app.services.calendar_sources.enrichment import _confirmable
+
+    if ev.indicator_id is None or ev.event_type not in ("data_release", "rate_decision") or not _confirmable(ev):
+        return "no_data_by_design"
+    if any(status == "success" and (added or 0) > 0 for status, added in loads):
+        return "our_miss"
+    if any(status in _LOAD_OK for status, _ in loads):
+        return "no_new_point"
+    if any(status in _LOAD_UNREACHABLE for status, _ in loads):
+        return "source_unreachable"
+    return "not_fetched"
+
+
+async def past_unconfirmed(db, d: date, days: int = 14) -> dict[str, Any]:
+    """Прошедшие публикации без отметки «вышло», по причинам. Скрытые оценки дат не считаются:
+    их нет в публичном календаре, отметить их нечем."""
+    from app.models import EconomicEvent, FetchLog
+
+    events = (await db.scalars(select(EconomicEvent).where(
+        EconomicEvent.scheduled_date < d, EconomicEvent.scheduled_date >= d - timedelta(days=days),
+        EconomicEvent.is_estimated.is_(False),
+        EconomicEvent.status.in_(("scheduled", "released")),
+        EconomicEvent.actual_date.is_(None),
+        (EconomicEvent.actual_value.is_(None)) | (EconomicEvent.actual_value == ""),
+    ).order_by(EconomicEvent.scheduled_date))).all()
+    ids = {e.indicator_id for e in events if e.indicator_id is not None}
+    since = datetime(*(d - timedelta(days=days)).timetuple()[:3]) - timedelta(hours=3)
+    loads: dict[int, list[tuple[datetime, str, int]]] = {}
+    if ids:
+        for ind_id, started, status, added in (await db.execute(
+                select(FetchLog.indicator_id, FetchLog.started_at, FetchLog.status, FetchLog.records_added)
+                .where(FetchLog.indicator_id.in_(ids), FetchLog.started_at >= since))).all():
+            loads.setdefault(ind_id, []).append((started, status, int(added or 0)))
+    by_reason: Counter = Counter()
+    examples: dict[str, list[str]] = {}
+    for ev in events:
+        # Начало дня выпуска по Москве в UTC (fetch_log.started_at хранится в UTC без зоны).
+        day_start = datetime(*ev.scheduled_date.timetuple()[:3]) - timedelta(hours=3)
+        after = [(s, a) for started, s, a in loads.get(ev.indicator_id, []) if started >= day_start]
+        reason = classify_unconfirmed(ev, after)
+        by_reason[reason] += 1
+        bucket = examples.setdefault(reason, [])
+        label = f"{ev.scheduled_date.strftime('%d.%m')} {(ev.title or '')[:60]}"
+        if label not in bucket and len(bucket) < 6:
+            bucket.append(label)
+    return {"total": len(events), "by_reason": dict(by_reason), "examples": examples,
+            "reasons": {k: UNCONFIRMED_REASONS[k] for k in by_reason}}
 
 
 async def _acquisition_week(db, d: date, end: datetime) -> dict[str, Any]:
@@ -342,6 +407,13 @@ def digits_lines(snapshot: dict) -> list[str]:
         lines.append(f"Telegram: отправлено {tg.get('sent', 0)}, не доставлено {tg.get('failed', 0)}, "
                      f"отложено в утреннюю сводку {tg.get('held_for_summary', 0)}")
     cal = snapshot.get("calendar") or {}
+    pu = (cal.get("past_unconfirmed_14d") or {}) if cal and not cal.get("error") else {}
+    if pu.get("total"):
+        br = pu.get("by_reason") or {}
+        lines.append(f"Календарь, 14 дней без отметки «вышло» {pu['total']}: наш пропуск {br.get('our_miss', 0)}, "
+                     f"источник не отдал {br.get('source_unreachable', 0)}, в файле источника новой точки нет "
+                     f"{br.get('no_new_point', 0)}, загрузка не запускалась {br.get('not_fetched', 0)}, "
+                     f"выпуск без точки ряда {br.get('no_data_by_design', 0)}")
     if cal and not cal.get("error") and cal.get("next_3_days"):
         lines.append("Ближайшие публикации: " + "; ".join(
             f"{e['date'][8:]}.{e['date'][5:7]} {e['title']}" for e in cal["next_3_days"][:4]))
