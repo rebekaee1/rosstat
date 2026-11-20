@@ -133,3 +133,13 @@ it('searches the text of a pasted fedstat search link', async () => {
   expect(api.get).toHaveBeenCalledWith('/search', expect.objectContaining({ params: { q: 'Коэффициент рождаемости', limit: 100 } }));
   expect(result.current.data.corrected_query).toBe('Коэффициент рождаемости');
 });
+
+it('передаёт раздел серверу только когда он есть (правка 17)', async () => {
+  const { rerender } = renderHook(({ q, section }) => useGlobalSearch(q, { section }), { wrapper, initialProps: { q: 'Турция', section: 'tourism' } });
+  await waitFor(() => expect(api.get).toHaveBeenCalledOnce());
+  expect(api.get).toHaveBeenCalledWith('/search', expect.objectContaining({ params: { q: 'Турция', limit: 100, section: 'tourism' } }));
+  api.get.mockClear();
+  rerender({ q: 'Египет', section: null });
+  await waitFor(() => expect(api.get).toHaveBeenCalledOnce());
+  expect(api.get).toHaveBeenCalledWith('/search', expect.objectContaining({ params: { q: 'Египет', limit: 100 } }));
+});

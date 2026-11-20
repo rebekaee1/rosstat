@@ -5,6 +5,7 @@
  */
 import { indicatorPath, russiaIndicatorPath } from './sitePaths';
 import { plainUnit } from './searchText';
+import { SECTION_EXAMPLE_KEYS } from './searchSection';
 
 export const SEARCH_EXAMPLE_KEYS = Object.freeze([
   // Z4: домашние темы первыми — цены в регионе, курс сума, ключевая ставка; зарубежные следом.
@@ -35,8 +36,10 @@ const SUGGESTION_PATHS = Object.freeze({
 });
 
 /** @returns {{ key: string, text: string, path: string|null }[]} */
-export function searchSuggestions(t, limit = SEARCH_EXAMPLE_KEYS.length) {
-  return SEARCH_EXAMPLE_KEYS.slice(0, limit).map((key) => ({
+export function searchSuggestions(t, limit, section = null) {
+  // Правка 50: «Популярное» берётся из раздела, где человек сейчас («Туризм» — Турция, ночёвки, туристический налог).
+  const keys = (section && SECTION_EXAMPLE_KEYS[section]) || SEARCH_EXAMPLE_KEYS;
+  return keys.slice(0, limit ?? keys.length).map((key) => ({
     key,
     text: t(key),
     path: SUGGESTION_PATHS[key] ? SUGGESTION_PATHS[key]() : null,

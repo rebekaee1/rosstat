@@ -52,6 +52,24 @@ export function splitSearchRows(rows, nameOf, { primaryLimit = SEARCH_PRIMARY_LI
  * служебные слова («ИПЦ», «цепные объёмы», база индекса) убраны. Остальные названия остаются как пришли.
  */
 export function friendlySearchName(item, name, t, locale = 'ru') {
+  return withTaxEra(baseSearchName(item, name, t, locale), t);
+}
+
+// Курортный сбор и туристический налог (правка 24): в выдаче по «налог» и «сбор» это два разных ряда разных лет.
+const RESORT_FEE_RE = /курортн\S*\s+сбор|resort\s+fee/i;
+const TOURIST_TAX_RE = /туристическ\S*\s+налог|tourist\s+tax/i;
+const HAS_YEAR_RE = /\b(?:19|20)\d{2}\b/;
+
+/** К названию добавляются годы действия («до 2024 года», «с 2025 года»); название с годом остаётся как есть. */
+export function withTaxEra(title, t) {
+  const text = String(title || '');
+  if (!text || HAS_YEAR_RE.test(text) || typeof t !== 'function') return text;
+  if (RESORT_FEE_RE.test(text)) return `${text} ${t('kt6_search_era_resortFee')}`;
+  if (TOURIST_TAX_RE.test(text)) return `${text} ${t('kt6_search_era_touristTax')}`;
+  return text;
+}
+
+function baseSearchName(item, name, t, locale) {
   const text = String(name || '').trim();
   if (item?.country_name && HICP_RE.test(text)) {
     return inflationTitle(item.country_name, t, locale);
