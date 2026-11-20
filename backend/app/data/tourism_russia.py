@@ -695,6 +695,14 @@ DEST_URLS = {
     "CU": "https://onei.gob.cu/turismo-0",
     "TJ": "https://www.stat.tj/ru/v-2025-godu-bolee-21-milliona-inostranczev-posetili-tadzhikistan/",
     "AE-DU": "https://www.dubaidet.gov.ae/en/research-and-insights/annual-visitor-report-2025",
+    "UZ-M": "https://stat.uz/ru/press-tsentr/novosti-goskomstata",
+    "HK-M": "https://partnernet.hktb.com/en/research_statistics/research_publications/index.html?id=3631",
+    "PH": "http://tourism.gov.ph/Tourism_demand/",
+    "PH-M": "http://tourism.gov.ph/Tourism_demand/",
+    "KG": "https://www.stat.gov.kg/ru/statistics/turizm/",
+    "AE-AZ": "https://dct.gov.ae/en/",
+    "AE-DU-RU": "https://www.dubaidet.gov.ae/en/research-and-insights/",
+    "AB": "https://cgsra.org/media/files/25.pdf",
 }
 
 DESTINATIONS: tuple[tuple[str, str, str, str, str, str, str, str, str], ...] = (
@@ -717,7 +725,7 @@ DESTINATIONS: tuple[tuple[str, str, str, str, str, str, str, str, str], ...] = (
     ("indonesia", "ID", "monthly", "monthly", "Индонезия", "Indonesia", "Статистическое агентство Индонезии",
      "с 2017 года", "Иностранные туристы — граждане России (Бали и вся страна)", "T6", "Индонезия"),
     ("sri-lanka", "LK", "monthly", "monthly", "Шри-Ланка", "Sri Lanka", "Управление по развитию туризма Шри-Ланки",
-     "с 2017 года (часть месяцев не опубликована)", "Туристы — граждане России", None, "Шри-Ланка"),
+     "с марта 2017 года (отчёты за три месяца 2017 года не найдены)", "Туристы — граждане России", None, "Шри-Ланка"),
     ("belarus", "BY", "annual", "annual", "Беларусь", "Belarus", "Белстат", "2021–2025 годов (кроме 2023)",
      "Организованные туристы и экскурсанты из России, принятые турфирмами Беларуси", "T10", "Беларусь"),
     ("seychelles", "SC", "monthly", "monthly", "Сейшелы", "Seychelles", "Национальное бюро статистики Сейшел",
@@ -743,6 +751,27 @@ DESTINATIONS: tuple[tuple[str, str, str, str, str, str, str, str, str], ...] = (
     ("dubai", "AE-DU", "annual", "annual", "Дубай (ОАЭ)", "Dubai (UAE)", "Департамент экономики и туризма Дубая",
      "за 2025 год", "Гости с ночёвкой из СНГ и Восточной Европы вместе с Россией (Россию отдельно Дубай не "
      "публикует)", None, "Дубай: СНГ и Восточная Европа"),
+    # g2/g3, 20.11.2026 (ночь).
+    ("uzbekistan-monthly", "UZ-M", "monthly", "monthly", "Узбекистан", "Uzbekistan", "Нацкомстат Узбекистана",
+     "с 2022 года (25 месяцев, собраны из пресс-релизов)", "Граждане России, въехавшие с туристскими целями", None,
+     "Узбекистан по месяцам"),
+    ("hong-kong", "HK-M", "monthly", "monthly", "Гонконг", "Hong Kong", "Совет по туризму Гонконга",
+     "с мая 2021 года", "Гости — граждане России", None, "Гонконг"),
+    ("philippines", "PH", "annual", "annual", "Филиппины", "Philippines", "Министерство туризма Филиппин",
+     "2007–2023 годов (2022 не опубликован)", "Гости, проживающие в России", "T10", "Филиппины"),
+    ("philippines-monthly", "PH-M", "monthly", "monthly", "Филиппины", "Philippines",
+     "Министерство туризма Филиппин", "2008 — января 2025 года (без 2022 и части 2024)",
+     "Гости, проживающие в России", None, "Филиппины по месяцам"),
+    ("kyrgyzstan", "KG", "annual", "annual", "Киргизия", "Kyrgyzstan", "Нацстатком Киргизии", "с 2008 года",
+     "Въезды граждан России через границу (пересечения, а не люди)", "T10", "Киргизия"),
+    ("abu-dhabi", "AE-AZ", "annual", "annual", "Абу-Даби (ОАЭ)", "Abu Dhabi (UAE)",
+     "Департамент культуры и туризма Абу-Даби", "за 2025 год", "Гости гостиниц — граждане России", None, "Абу-Даби"),
+    ("dubai-russia", "AE-DU-RU", "annual", "annual", "Дубай (ОАЭ)", "Dubai (UAE)",
+     "Департамент экономики и туризма Дубая", "за 2019 год (позже Дубай Россию отдельно не публикует)",
+     "Гости с ночёвкой из России", None, "Дубай: Россия, 2019"),
+    ("abkhazia", "AB", "annual", "annual", "Абхазия", "Abkhazia", "Управление государственной статистики Абхазии",
+     "с 2012 года", "Размещённые в гостиницах, санаториях и домах отдыха — все гости, не только из России", "T10",
+     "Абхазия"),
 )
 
 # Подпись в группе и шаблон режимов для первых четырёх стран (кортежи без хвоста).
@@ -760,16 +789,33 @@ def _dest_series() -> list[TourSeries]:
         name_en = f"Russian arrivals in {country_en} (destination data)"
         if slug.endswith("-monthly"):
             name, name_en = name.replace("(данные страны)", "(данные страны, по месяцам)"), name_en + ", monthly"
+        meth, meth_en = _M_DEST, _M_DEST_EN
         if slug == "dubai":
             name = "Дубай: гости из СНГ и Восточной Европы, включая Россию"
             name_en = "Dubai: visitors from the CIS and Eastern Europe, including Russia"
+        if slug == "abkhazia":
+            name = "Абхазия: размещённые в гостиницах и санаториях"
+            name_en = "Abkhazia: guests in hotels and health resorts"
+            meth = (
+                "Официальная статистика Абхазии («Абхазия в цифрах»): учтённые гостиницы, санатории, пансионаты и "
+                "дома отдыха; частный сектор не входит. Значение 2014 года в сборнике повторяет 2013 год и не "
+                "показано. Отдельно — оценка Министерства туризма Абхазии, методика которой не опубликована: около "
+                "1,38 млн гостей в 2024 году, 1,88 млн туристов и экскурсантов из России в 2025 году (вместе с "
+                "экскурсантами из Сочи), 1,74 млн за январь–сентябрь 2026 года. Выезд россиян в Абхазию по данным "
+                "пограничной службы ФСБ России — в ряду «Выездные туристские поездки россиян: Абхазия»."
+            )
+            meth_en = (
+                "Official statistics of Abkhazia: registered hotels, sanatoria and holiday homes; the private sector "
+                "is not included. The Abkhaz tourism ministry estimates about 1.88 million tourists and day "
+                "visitors from Russia in 2025 (methodology not published)."
+            )
         out.append(_s(
             f"tour-dest-{slug}", name, name_en, "тыс. чел.",
             "thousand people", freq, source, DEST_URLS[iso2], "tourism_destination_file",
             {"dest_iso2": iso2, "dest_kind": kind},
             f"{who} по статистике страны назначения ({country}), тысяч человек {per[freq]}. Данные {since}.",
             f"Russian citizens arriving in {country_en} according to {country_en}'s statistics, thousand "
-            f"{per_en[freq]}.", _M_DEST, _M_DEST_EN,
+            f"{per_en[freq]}.", meth, meth_en,
             f"россияне {country}, туристы из России {country}, {country}, выездной туризм",
             f"{source} {since}", listed=slug == "egypt", family=family,
         ))
@@ -971,6 +1017,59 @@ def _static_series() -> list[TourSeries]:
          "bed places", "Сколько мест в гостиницах ввели в действие за год.",
          "Hotel bed places commissioned during the year.", "строительство гостиниц, новые отели", False, "T10"),
     ]
+    _M_HIST = (
+        "Ежегодники Росстата 2003–2014 по сведениям пограничной службы ФСБ России: пересечения границы "
+        "иностранцами и россиянами — только страны дальнего зарубежья, без СНГ, со всеми целями (служебные, "
+        "туризм, частные, транзит, обслуживающий персонал) или только с целью «туризм». Это другой учёт, чем у "
+        "рядов «туристских поездок» Росстата с 2014 года, поэтому ряды ведутся отдельно и не продолжают друг "
+        "друга. 1994 год в ежегодниках не опубликован."
+    )
+    _M_HIST_EN = (
+        "Rosstat yearbooks 2003-2014 based on FSB border service records: border crossings to and from countries "
+        "outside the CIS only. A different count from Rosstat's tourist trips since 2014, so the series are kept "
+        "separate."
+    )
+    for code, name, name_en, desc, desc_en, listed in (
+        ("tour-hist-inbound", "Въезд иностранцев в Россию до 2014 года", "Foreign arrivals in Russia before 2014",
+         "Сколько раз иностранцы из стран дальнего зарубежья въезжали в Россию за год, с любыми целями, тысяч "
+         "поездок. 1993–2013 годы.", "Entries of citizens of non-CIS countries, all purposes, thousand.", False),
+        ("tour-hist-inbound-tourism", "Въезд иностранцев в Россию с целью туризма до 2014 года",
+         "Foreign tourist arrivals in Russia before 2014",
+         "Сколько раз иностранцы из стран дальнего зарубежья въезжали в Россию с целью «туризм», тысяч поездок. "
+         "1993–2013 годы.", "Entries for tourism by citizens of non-CIS countries, thousand.", False),
+        ("tour-hist-outbound", "Выезд россиян за рубеж до 2014 года", "Russian departures abroad before 2014",
+         "Сколько раз россияне выезжали в страны дальнего зарубежья за год, с любыми целями, тысяч поездок. "
+         "1993–2013 годы.", "Departures of Russians to non-CIS countries, all purposes, thousand.", True),
+        ("tour-hist-outbound-tourism", "Выезд россиян за рубеж с целью туризма до 2014 года",
+         "Russian tourist departures abroad before 2014",
+         "Сколько раз россияне выезжали в страны дальнего зарубежья с целью «туризм», тысяч поездок. "
+         "1993–2013 годы.", "Departures of Russians for tourism to non-CIS countries, thousand.", False),
+    ):
+        out.append(_s(code, name, name_en, "тыс. поездок", "thousand trips", "annual", SRC_FSB, BOOK_URL, S, {},
+                      desc, desc_en, _M_HIST, _M_HIST_EN, "история туризма, выезд за границу 1990-е, 2000-е",
+                      "Росстата по годам 1993–2013", family="T10", listed=listed))
+    _M_AIRPORT_ANNUAL = (
+        "Годовой пассажиропоток (улетевшие и прилетевшие) собран из двух видов источников. 2020–2021 годы — сумма "
+        "месяцев из отчётов Росавиации; Росавиация публиковала данные по аэропортам до февраля 2022 года и сейчас "
+        "их не раскрывает. Остальные годы — сообщения самого аэропорта и отраслевые рейтинги (вторичный источник, "
+        "не официальная статистика). 2018–2019 и часть 2000-х годов в этих источниках не найдены."
+    )
+    _M_AIRPORT_ANNUAL_EN = (
+        "Annual passenger traffic: 2020-2021 are sums of monthly Federal Air Transport Agency reports; other years "
+        "come from airport releases and industry rankings (secondary sources)."
+    )
+    for slug, short, short_en, listed in (("sochi", "Сочи", "Sochi", True), ("kazan", "Казань", "Kazan", False),
+                                          ("mineralnye-vody", "Минеральные Воды", "Mineralnye Vody", False),
+                                          ("kaliningrad", "Калининград", "Kaliningrad", False)):
+        out.append(_s(
+            f"tour-airport-annual-{slug}", f"Пассажиропоток аэропорта {short} по годам",
+            f"{short_en} airport annual passenger traffic", "тыс. чел.", "thousand people", "annual",
+            "Росавиация; аэропорт и отраслевые рейтинги (вторичные)", "https://favt.gov.ru/", S, {},
+            f"Сколько пассажиров улетело и прилетело через аэропорт {short} за год, тысяч человек.",
+            f"Departing and arriving passengers at {short_en} airport per year, thousand people.",
+            _M_AIRPORT_ANNUAL, _M_AIRPORT_ANNUAL_EN, f"аэропорт {short}, пассажиропоток {short}, авиаперевозки",
+            "по годам", family="T10", listed=listed,
+        ))
     for code, name, name_en, unit, unit_en, desc, desc_en, kw, listed, fam in book_rows:
         out.append(_s(code, name, name_en, unit, unit_en, "annual", SRC_ROSSTAT, BOOK_URL, S, {},
                       desc + " Данные 2014–2023 годов." if code != "tour-hotel-workers" else desc + " 2019–2023.",
@@ -1024,6 +1123,17 @@ VARIANT_GROUPS: tuple[tuple[str, str, tuple[tuple[str, str, str], ...]], ...] = 
         (f"tour-airport-{slug}", short, short_en.split(" ", 1)[-1] if slug in ("sheremetyevo", "vnukovo",
                                                                                 "domodedovo") else short_en)
         for slug, _label, short, short_en in AIRPORTS
+    ) + (
+        ("tour-airport-annual-sochi", "Сочи", "Sochi"),
+        ("tour-airport-annual-kazan", "Казань", "Kazan"),
+        ("tour-airport-annual-mineralnye-vody", "Минеральные Воды", "Mineralnye Vody"),
+        ("tour-airport-annual-kaliningrad", "Калининград", "Kaliningrad"),
+    )),
+    ("tourBorderHistory", "Пересечения границы 1993–2013", (
+        ("tour-hist-outbound", "Выезд россиян", "Russian departures"),
+        ("tour-hist-outbound-tourism", "Выезд с целью туризма", "Departures for tourism"),
+        ("tour-hist-inbound", "Въезд иностранцев", "Foreign arrivals"),
+        ("tour-hist-inbound-tourism", "Въезд с целью туризма", "Arrivals for tourism"),
     )),
     ("tourRail", "Железная дорога", (
         ("tour-rail-passengers", "Пассажиры", "Passengers"),

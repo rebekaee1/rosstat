@@ -325,7 +325,7 @@ def test_static_series_tax_resort_fee_and_redenominated_prices():
 def test_c5_destination_series_drop_sri_lanka_annual_total_and_label_dubai_as_a_region():
     text = (SNAP / rt.DESTINATIONS_FILE).read_text(encoding="utf-8")
     lk = {p.date: p.value for p in rt.parse_destination(text, "LK", "monthly")}
-    assert not any(date(2020, 9, 1) <= d <= date(2020, 12, 1) for d in lk)  # 49 397 четыре месяца подряд
+    assert 49.397 not in lk.values() and lk[date(2020, 12, 1)] == 0  # ряд g3: граница закрыта, а не годовой итог
     assert lk[date(2026, 10, 1)] == 6.75
     seychelles = rt.parse_destination(text, "SC", "monthly")
     assert len(seychelles) == 322 and seychelles[0].date == date(2000, 1, 1)  # ряд без пропусков → суммы за год
@@ -342,3 +342,18 @@ def test_page_labels_mix_cyrillic_and_unicode_escapes_without_mojibake():
     assert emiss._unescape(r"Пассажиры \u0430виа \'x\'") == "Пассажиры авиа 'x'"
     assert emiss._unescape("Российская Федерация") == "Российская Федерация"
     assert reg.SERIES["tour-packages"].unit == "тыс. турпакетов"  # шапка «6,4 млн турпакетов», а не «6,4 млн»
+
+
+def test_g2_g3_history_airports_and_replaced_sri_lanka():
+    static = (SNAP / rt.STATIC_FILE).read_text(encoding="utf-8")
+    hist = {p.date.year: p.value for p in rt.parse_static(static, "tour-hist-outbound")}
+    assert hist[1993] == 8475 and hist[2013] == 38521 and 1994 not in hist
+    sochi = {p.date.year: p.value for p in rt.parse_static(static, "tour-airport-annual-sochi")}
+    assert sochi[2025] == 12500 and 2020 in sochi  # 2020 — сумма месяцев Росавиации
+    assert "вторичный" in reg.SERIES["tour-airport-annual-sochi"].methodology
+    dest = (SNAP / rt.DESTINATIONS_FILE).read_text(encoding="utf-8")
+    lk = {p.date: p.value for p in rt.parse_destination(dest, "LK", "monthly")}
+    assert min(lk) == date(2017, 3, 1) and len(lk) == 115  # ряд g3: сумма месяцев = годовым итогам SLTDA
+    abkhazia = {p.date.year: p.value for p in rt.parse_destination(dest, "AB", "annual")}
+    assert 2014 not in abkhazia and abkhazia[2025] == 609.3
+    assert "1,88 млн" in reg.SERIES["tour-dest-abkhazia"].methodology

@@ -20114,6 +20114,234 @@
     "unit": "тыс. чел.",
     "variantAxis": null
   },
+  "tour-airport-annual-kaliningrad": {
+    "base": "tour-airport-annual-kaliningrad",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-airport-annual-kaliningrad",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-annual-kaliningrad-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-annual-kaliningrad-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Пассажиропоток аэропорта Калининград по годам",
+    "template": "T10",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-airport-annual-kazan": {
+    "base": "tour-airport-annual-kazan",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-airport-annual-kazan",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-annual-kazan-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-annual-kazan-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Пассажиропоток аэропорта Казань по годам",
+    "template": "T10",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-airport-annual-mineralnye-vody": {
+    "base": "tour-airport-annual-mineralnye-vody",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-airport-annual-mineralnye-vody",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-annual-mineralnye-vody-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-annual-mineralnye-vody-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Пассажиропоток аэропорта Минеральные Воды по годам",
+    "template": "T10",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-airport-annual-sochi": {
+    "base": "tour-airport-annual-sochi",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-airport-annual-sochi",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airport-annual-sochi-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airport-annual-sochi-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Пассажиропоток аэропорта Сочи по годам",
+    "template": "T10",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
   "tour-airport-domodedovo": {
     "base": "tour-airport-domodedovo",
     "defaultMode": "level",
@@ -20816,6 +21044,63 @@
     "unit": "тыс. чел.",
     "variantAxis": null
   },
+  "tour-dest-abkhazia": {
+    "base": "tour-dest-abkhazia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-dest-abkhazia",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-abkhazia-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-abkhazia-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Абхазия: размещённые в гостиницах и санаториях",
+    "template": "T10",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
   "tour-dest-belarus": {
     "base": "tour-dest-belarus",
     "defaultMode": "level",
@@ -21101,6 +21386,63 @@
     ],
     "name": "Прибытия россиян: Индонезия (данные страны)",
     "template": "T6",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-dest-kyrgyzstan": {
+    "base": "tour-dest-kyrgyzstan",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-dest-kyrgyzstan",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-kyrgyzstan-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-kyrgyzstan-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Прибытия россиян: Киргизия (данные страны)",
+    "template": "T10",
     "unit": "тыс. чел.",
     "variantAxis": null
   },
@@ -21506,6 +21848,63 @@
     ],
     "name": "Прибытия россиян: Монголия (данные страны, по месяцам)",
     "template": "T6",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-dest-philippines": {
+    "base": "tour-dest-philippines",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-dest-philippines",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-philippines-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-philippines-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Прибытия россиян: Филиппины (данные страны)",
+    "template": "T10",
     "unit": "тыс. чел.",
     "variantAxis": null
   },
@@ -21924,6 +22323,234 @@
     "name": "Доля туризма в ВВП России (годовой ряд)",
     "template": "T10a",
     "unit": "%",
+    "variantAxis": null
+  },
+  "tour-hist-inbound": {
+    "base": "tour-hist-inbound",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд иностранцев в Россию до 2014 года",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-inbound-tourism": {
+    "base": "tour-hist-inbound-tourism",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound-tourism",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-tourism-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-tourism-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд иностранцев в Россию с целью туризма до 2014 года",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-outbound": {
+    "base": "tour-hist-outbound",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-outbound",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-outbound-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-outbound-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Выезд россиян за рубеж до 2014 года",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-outbound-tourism": {
+    "base": "tour-hist-outbound-tourism",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-outbound-tourism",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-outbound-tourism-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-outbound-tourism-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Выезд россиян за рубеж с целью туризма до 2014 года",
+    "template": "T10",
+    "unit": "тыс. поездок",
     "variantAxis": null
   },
   "tour-hotel-beds": {
@@ -25177,7 +25804,7 @@
         "isNative": true,
         "label": "По годам",
         "mode": "level",
-        "unit": "тыс."
+        "unit": "тыс. турпакетов"
       },
       {
         "code": "tour-packages-yoy",
@@ -25202,7 +25829,7 @@
     ],
     "name": "Турпакеты, проданные населению",
     "template": "T10",
-    "unit": "тыс.",
+    "unit": "тыс. турпакетов",
     "variantAxis": null
   },
   "tour-packages-domestic": {
@@ -25234,7 +25861,7 @@
         "isNative": true,
         "label": "По годам",
         "mode": "level",
-        "unit": "тыс."
+        "unit": "тыс. турпакетов"
       },
       {
         "code": "tour-packages-domestic-yoy",
@@ -25259,7 +25886,7 @@
     ],
     "name": "Турпакеты по России, проданные россиянам",
     "template": "T10",
-    "unit": "тыс.",
+    "unit": "тыс. турпакетов",
     "variantAxis": null
   },
   "tour-packages-outbound": {
@@ -25291,7 +25918,7 @@
         "isNative": true,
         "label": "По годам",
         "mode": "level",
-        "unit": "тыс."
+        "unit": "тыс. турпакетов"
       },
       {
         "code": "tour-packages-outbound-yoy",
@@ -25316,7 +25943,7 @@
     ],
     "name": "Турпакеты за рубеж, проданные россиянам",
     "template": "T10",
-    "unit": "тыс.",
+    "unit": "тыс. турпакетов",
     "variantAxis": null
   },
   "tour-packages-value": {
