@@ -754,6 +754,21 @@ async def lifespan(app: FastAPI):
             coalesce=True,
         )
 
+        # Туризм по регионам (20.11.2026, app.services.tourism_regional_loader): снимок скачанного 20.11 (пишется только
+        # недостающее), затем ЕМИСС по названиям (наборы, не скачанные из-за бана fedstat, догружаются сами), «Поездки»
+        # ЦБ по субъектам, реестр Росаккредитации. Раз в сутки: оперативные наборы ЕМИСС выходят в разные дни.
+        from app.tasks.scheduler import tourism_regional_job as _tourism_regional
+
+        scheduler.add_job(
+            locked_job(_tourism_regional, "tourism_regional", ttl_seconds=2 * 3600),
+            trigger=CronTrigger(hour=8, minute=25, timezone="Europe/Moscow"),
+            id="tourism_regional",
+            name="Regional tourism series (region_data / quarterly / monthly)",
+            replace_existing=True,
+            max_instances=1,
+            coalesce=True,
+        )
+
         # Кредиты физлицам и ипотека по регионам помесячно (Банк России DataService, 19.11.2026): ЦБ публикует месяц
         # в начале второго месяца после него. Прогон без нового месяца стоит один запрос на ряд (Россия); с новым —
         # ~96 запросов на ряд, 7 рядов, несколько минут. Первый после выпуска грузит историю с 2019 года.

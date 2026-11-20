@@ -788,6 +788,16 @@ async def emiss_quarterly_job():
     await _job()
 
 
+async def tourism_regional_job():
+    """Туризм по регионам: гостиницы, санатории, турфирмы, турпоток, «Поездки» ЦБ, турналог, реестры (20.11.2026).
+
+    Расписание в main.py, реализация — app.services.tourism_regional_loader.
+    """
+    from app.services.tourism_regional_loader import tourism_regional_job as _job
+
+    await _job()
+
+
 async def cbr_regional_rates_job():
     """Ставки по вкладам и кредитам по регионам и федеральным округам (DataService Банка России, 19.11.2026).
 
