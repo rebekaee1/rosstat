@@ -136,9 +136,7 @@
   padding: 12px 0;
   color: var(--color-text-primary);
   text-decoration: none;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-text-tertiary) 14%, transparent);
 }
-.t6-trips__list li:last-child .t6-trip { border-bottom: 0; }
 .t6-trip__name { overflow-wrap: anywhere; font-weight: 600; }
 .t6-trip__period { color: var(--color-text-tertiary); font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
 .t6-trip__v { font-variant-numeric: tabular-nums; font-weight: 640; text-align: right; white-space: nowrap; }

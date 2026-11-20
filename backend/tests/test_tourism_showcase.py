@@ -185,7 +185,8 @@ def test_ssr_tourism_page_has_three_floors_and_markup(tourism_client):
     assert "Туризм в странах мира" in html
     assert "<h3>Куда ездят россияне</h3>" in html
     assert 'href="/russia/indicator/tour-outbound-turkey"' in html and "Турция" in html
-    assert re.search(r'<a href="/">Все страны \(\d+\)</a>', html)
+    # Подпись числа стран строится из countries_count / russia_included: «54 страны (Россия — в своём разделе)».
+    assert re.search(r'<a href="/">[^<]*\d+[^<]*стран[^<]*</a>', html)
     assert f'href="/world/rating/{rating.slug}"' in html
     assert 'name="keywords"' in html and "турпоток" in html
     ld = [json.loads(m) for m in re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)]
@@ -212,7 +213,7 @@ def test_ssr_tourism_page_in_english(tourism_client, auth_env):
     assert "<h1>Tourism in Russia, its regions and the world" in html
     assert "Tourism across Russia&#x27;s regions" in html or "Tourism across Russia's regions" in html
     assert "Tourism in countries worldwide" in html and ">Turkey<" in html
-    assert "<h3>Where Russians travel</h3>" in html and "All countries (" in html
+    assert "<h3>Where Russians travel</h3>" in html and re.search(r"\d+ countries \(Russia has its own section\)|All countries \(", html)
     assert "Туризм по регионам" not in html
 
 
