@@ -236,102 +236,102 @@
     "anonymous_functions": 1
   },
   "frontend/src/App.jsx": {
-    "sha256": "e57d385cdd2943efefc2d5324129bda49d2b628ed50d6b6bb551a171d742e289",
+    "sha256": "9f326a0c0b6c48f0dff493ce5fd8c9ea3cd747b14de0a1d23d5827cc50065f2a",
     "definitions": [
       {
         "name": "ScrollToTop",
-        "line": 114,
-        "end_line": 125,
+        "line": 115,
+        "end_line": 126,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "YandexMetrikaHit",
-        "line": 127,
-        "end_line": 159,
+        "line": 128,
+        "end_line": 160,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorDetailKeyed",
-        "line": 161,
-        "end_line": 164,
+        "line": 162,
+        "end_line": 165,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WorldCountryRoute",
-        "line": 167,
-        "end_line": 173,
+        "line": 168,
+        "end_line": 174,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WorldIndicatorRoute",
-        "line": 176,
-        "end_line": 182,
+        "line": 177,
+        "end_line": 183,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RedirectTo",
-        "line": 184,
-        "end_line": 188,
+        "line": 185,
+        "end_line": 189,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "NavigateKeepSearch",
-        "line": 191,
-        "end_line": 194,
+        "line": 192,
+        "end_line": 195,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CalculatorsAlias",
-        "line": 197,
-        "end_line": 200,
+        "line": 198,
+        "end_line": 201,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CountriesToHome",
-        "line": 203,
-        "end_line": 206,
+        "line": 204,
+        "end_line": 207,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ServerNotFoundGate",
-        "line": 216,
-        "end_line": 219,
+        "line": 217,
+        "end_line": 220,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "EmbedSpinner",
-        "line": 223,
-        "end_line": 230,
+        "line": 224,
+        "end_line": 231,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "EmbedRoutes",
-        "line": 232,
-        "end_line": 248,
+        "line": 233,
+        "end_line": 249,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "renderCabinetActions",
-        "line": 251,
-        "end_line": 251,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "renderCompareSave",
         "line": 252,
         "end_line": 252,
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "renderCompareSave",
+        "line": 253,
+        "end_line": 253,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "AppRoutes",
-        "line": 254,
-        "end_line": 416,
+        "line": 255,
+        "end_line": 418,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "App",
-        "line": 418,
-        "end_line": 424,
+        "line": 420,
+        "end_line": 426,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -474,10 +474,10 @@
         "names": [
           "default"
         ],
-        "line": 418
+        "line": 420
       }
     ],
-    "anonymous_functions": 71
+    "anonymous_functions": 72
   },
   "frontend/src/SpaRoot.jsx": {
     "sha256": "f06df2619a28073c38ba7021f6070257729d8d8887507defa0c2e655aaed9c40",
@@ -2381,18 +2381,18 @@
     "anonymous_functions": 2
   },
   "frontend/src/components/CategoryBlock.jsx": {
-    "sha256": "0e3bd85fce2d807ddabfb580abe6d336220651df2cd79e7a9f2067f72b180731",
+    "sha256": "1447adff5f35fb79d43f65e3ea615829406e9cc776b690deee811d01c9104774",
     "definitions": [
       {
         "name": "CategoryBlock",
-        "line": 63,
-        "end_line": 164,
+        "line": 67,
+        "end_line": 168,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CategoryBlock.countText",
-        "line": 76,
-        "end_line": 79,
+        "line": 80,
+        "end_line": 83,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -2407,31 +2407,31 @@
       },
       {
         "source": "../lib/format",
-        "line": 22
-      },
-      {
-        "source": "../lib/uiTokens",
         "line": 23
       },
       {
-        "source": "../lib/track",
+        "source": "../lib/uiTokens",
         "line": 24
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../lib/track",
         "line": 25
       },
       {
-        "source": "../i18n",
-        "line": 28
+        "source": "../lib/sitePaths",
+        "line": 26
       },
       {
-        "source": "../lib/calcFormat",
+        "source": "../i18n",
         "line": 29
       },
       {
-        "source": "../styles/k6-country.css",
+        "source": "../lib/calcFormat",
         "line": 30
+      },
+      {
+        "source": "../styles/k6-country.css",
+        "line": 31
       }
     ],
     "exports": [
@@ -2439,7 +2439,7 @@
         "names": [
           "default"
         ],
-        "line": 63
+        "line": 67
       }
     ],
     "anonymous_functions": 1
@@ -9898,7 +9898,7 @@
     "anonymous_functions": 13
   },
   "frontend/src/components/Navbar.component.test.jsx": {
-    "sha256": "41b74b110902aa9bb3e09efa6e76c4893d426ba17b2a2e1a5c953a80d9ac6cd1",
+    "sha256": "127508cbfb15adccd6d304e2c90d23e54b766211222c2f43f011322f01bf818a",
     "definitions": [
       {
         "name": "fromTo",
@@ -9969,7 +9969,7 @@
     "anonymous_functions": 28
   },
   "frontend/src/components/Navbar.jsx": {
-    "sha256": "736c47513ca46d75ca361a175ec082394a77e25e3a16f7672c90b23ee78acf4e",
+    "sha256": "40fd114800decaac9bf40e0449c3ae8463b8a776479cb67e48fcd19611955bac",
     "definitions": [
       {
         "name": "revealWhenRendered",
@@ -9991,86 +9991,86 @@
       },
       {
         "name": "CountriesMega",
-        "line": 147,
-        "end_line": 190,
+        "line": 148,
+        "end_line": 191,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "BurgerFeedBadge",
-        "line": 193,
-        "end_line": 196,
+        "line": 194,
+        "end_line": 197,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Navbar",
-        "line": 198,
-        "end_line": 631,
+        "line": 199,
+        "end_line": 632,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Navbar.setMobileOpen",
-        "line": 237,
-        "end_line": 237,
+        "line": 238,
+        "end_line": 238,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.setCalcOpen",
-        "line": 238,
-        "end_line": 241,
+        "line": 239,
+        "end_line": 242,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.open",
-        "line": 250,
-        "end_line": 250,
+        "line": 251,
+        "end_line": 251,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.apply",
-        "line": 264,
-        "end_line": 268,
+        "line": 265,
+        "end_line": 269,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.onDoc",
-        "line": 287,
-        "end_line": 295,
+        "line": 288,
+        "end_line": 296,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.onKey",
-        "line": 296,
-        "end_line": 302,
+        "line": 297,
+        "end_line": 303,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.navItemClass",
-        "line": 324,
-        "end_line": 330,
+        "line": 325,
+        "end_line": 331,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.openMega",
-        "line": 341,
-        "end_line": 344,
+        "line": 342,
+        "end_line": 345,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.closeMega",
-        "line": 345,
-        "end_line": 348,
+        "line": 346,
+        "end_line": 349,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.renderPrimaryLink",
-        "line": 350,
-        "end_line": 387,
+        "line": 351,
+        "end_line": 388,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Navbar.renderLink",
-        "line": 538,
-        "end_line": 556,
+        "line": 539,
+        "end_line": 557,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -10185,7 +10185,7 @@
         "names": [
           "default"
         ],
-        "line": 198
+        "line": 199
       }
     ],
     "anonymous_functions": 40
@@ -12685,60 +12685,60 @@
     "anonymous_functions": 9
   },
   "frontend/src/components/RatingMetricPicker.jsx": {
-    "sha256": "1bf4c970783ffedc98465c14cbab2cdfe2adcf1c271b3aa3b89d47fa3e6314d6",
+    "sha256": "cd681beb03b7c24dacb4888f7b126027e5ffdd8ffe8f4fad212d478c4a46f28b",
     "definitions": [
       {
         "name": "ConceptIcon",
-        "line": 32,
-        "end_line": 35,
+        "line": 34,
+        "end_line": 37,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RatingMetricPicker",
-        "line": 42,
-        "end_line": 200,
+        "line": 44,
+        "end_line": 202,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RatingMetricPicker.nameOf",
-        "line": 56,
-        "end_line": 56,
+        "line": 58,
+        "end_line": 58,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RatingMetricPicker.getSearchItem",
-        "line": 62,
-        "end_line": 62,
+        "line": 64,
+        "end_line": 64,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RatingMetricPicker.outside",
-        "line": 72,
-        "end_line": 72,
+        "line": 74,
+        "end_line": 74,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RatingMetricPicker.key",
-        "line": 73,
-        "end_line": 73,
+        "line": 75,
+        "end_line": 75,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RatingMetricPicker.warm",
-        "line": 94,
-        "end_line": 94,
+        "line": 96,
+        "end_line": 96,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RatingMetricPicker.pick",
-        "line": 95,
-        "end_line": 99,
+        "line": 97,
+        "end_line": 101,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RatingMetricPicker.tile",
-        "line": 101,
-        "end_line": 122,
+        "line": 103,
+        "end_line": 124,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -12801,7 +12801,7 @@
         "names": [
           "default"
         ],
-        "line": 42
+        "line": 44
       }
     ],
     "anonymous_functions": 24
@@ -14611,6 +14611,125 @@
       }
     ],
     "anonymous_functions": 2
+  },
+  "frontend/src/components/TourismFloors.component.test.jsx": {
+    "sha256": "356624c8be732a32115166413b34890cd504020631df539d628ead5b69f45a5c",
+    "definitions": [
+      {
+        "name": "useTourismOverview",
+        "line": 9,
+        "end_line": 9,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "useT",
+        "line": 11,
+        "end_line": 11,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "useLocale",
+        "line": 12,
+        "end_line": 12,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "mount",
+        "line": 41,
+        "end_line": 43,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 3
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 4
+      },
+      {
+        "source": "react-router-dom",
+        "line": 5
+      },
+      {
+        "source": "./TourismFloors",
+        "line": 6
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 10
+  },
+  "frontend/src/components/TourismFloors.jsx": {
+    "sha256": "7c6dbbabcd7aca7aee4be69f81f76df6e51813d49142859a87fd1b506b22f4e5",
+    "definitions": [
+      {
+        "name": "valueDigits",
+        "line": 21,
+        "end_line": 26,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "floorsOf",
+        "line": 28,
+        "end_line": 35,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "TourismJump",
+        "line": 38,
+        "end_line": 55,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "TourismFloors",
+        "line": 57,
+        "end_line": 164,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react-router-dom",
+        "line": 10
+      },
+      {
+        "source": "lucide-react",
+        "line": 11
+      },
+      {
+        "source": "../lib/hooks",
+        "line": 12
+      },
+      {
+        "source": "../lib/format",
+        "line": 13
+      },
+      {
+        "source": "../i18n",
+        "line": 14
+      },
+      {
+        "source": "../styles/t6-tourism.css",
+        "line": 15
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "TourismJump"
+        ],
+        "line": 38
+      },
+      {
+        "names": [
+          "default"
+        ],
+        "line": 57
+      }
+    ],
+    "anonymous_functions": 9
   },
   "frontend/src/components/UnemploymentIndicatorControls.jsx": {
     "sha256": "cb5f15eeac13cacf3a0530dbc2a9cc2e882cee6d795df98ae5643437de3a2021",
@@ -25339,7 +25458,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "91fb6715f4e9d26350d0d297ff4fb1f56a138d6b93872bcd1ce3442e0bf9d8b7",
+    "sha256": "1cb19e9c5265bcf76dcf6f4f8bcd47e51e9457ed1fec5d76f78b43a5a8b16b77",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -25447,7 +25566,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "dfea2ed749273eb0c50457f55fd98ac4a9876a3d7e92095f9843707a0d3c2c13",
+    "sha256": "3a528284e7e18c025a82a7ca50488328d82976e04ca48ca473473daae16f1da1",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -26152,7 +26271,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/lib/api.js": {
-    "sha256": "3c5f1cea5ecab459976c0f708aaa268d8fe78ab9f5073208415092ae9a820177",
+    "sha256": "6d84cd7ad404d5271f56b58383c12f1c5bf6d469f03de50f5b75344f9a8045be",
     "definitions": [
       {
         "name": "hasIdempotencyKey",
@@ -26203,279 +26322,291 @@
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "fetchTourismOverview",
+        "line": 149,
+        "end_line": 150,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "fetchIndicator",
-        "line": 148,
-        "end_line": 149,
+        "line": 152,
+        "end_line": 153,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchIndicatorData",
-        "line": 151,
-        "end_line": 152,
+        "line": 155,
+        "end_line": 156,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchIndicatorStats",
-        "line": 154,
-        "end_line": 155,
+        "line": 158,
+        "end_line": 159,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchForecast",
-        "line": 157,
-        "end_line": 158,
+        "line": 161,
+        "end_line": 162,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchInflation",
-        "line": 160,
-        "end_line": 161,
+        "line": 164,
+        "end_line": 165,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchSystemStatus",
-        "line": 163,
-        "end_line": 164,
+        "line": 167,
+        "end_line": 168,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchCalendarEvents",
-        "line": 166,
-        "end_line": 177,
+        "line": 170,
+        "end_line": 181,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchCalendarUpcoming",
-        "line": 179,
-        "end_line": 187,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "fetchResearch",
-        "line": 190,
+        "line": 183,
         "end_line": 191,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "researchDownloadHref",
+        "name": "fetchResearch",
         "line": 194,
-        "end_line": 194,
+        "end_line": 195,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "fetchResearchArticle",
+        "line": 198,
+        "end_line": 199,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "researchDownloadHref",
+        "line": 202,
+        "end_line": 202,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchCoverage",
-        "line": 196,
-        "end_line": 197,
+        "line": 204,
+        "end_line": 205,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchDashboardSparklines",
-        "line": 199,
-        "end_line": 200,
+        "line": 207,
+        "end_line": 208,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchDemographicsStructure",
-        "line": 202,
-        "end_line": 203,
+        "line": 210,
+        "end_line": 211,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchMe",
-        "line": 206,
-        "end_line": 207,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "registerUser",
-        "line": 209,
-        "end_line": 210,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "loginUser",
-        "line": 212,
-        "end_line": 213,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "logoutUser",
-        "line": 215,
+        "line": 214,
         "end_line": 215,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "logoutAll",
+        "name": "registerUser",
         "line": 217,
-        "end_line": 217,
+        "end_line": 218,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "setPassword",
-        "line": 219,
-        "end_line": 220,
+        "name": "loginUser",
+        "line": 220,
+        "end_line": 221,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "unlinkIdentity",
-        "line": 222,
+        "name": "logoutUser",
+        "line": 223,
         "end_line": 223,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "deleteAccount",
+        "name": "logoutAll",
         "line": 225,
         "end_line": 225,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "submitFeedback",
+        "name": "setPassword",
         "line": 227,
         "end_line": 228,
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "unlinkIdentity",
+        "line": 230,
+        "end_line": 231,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "deleteAccount",
+        "line": 233,
+        "end_line": 233,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "submitFeedback",
+        "line": 235,
+        "end_line": 236,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "submitApiInterest",
-        "line": 234,
-        "end_line": 235,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "updateNewsletter",
-        "line": 238,
-        "end_line": 239,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "verifyEmail",
         "line": 242,
         "end_line": 243,
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "updateNewsletter",
+        "line": 246,
+        "end_line": 247,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "verifyEmail",
+        "line": 250,
+        "end_line": 251,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "resendVerifyEmail",
-        "line": 245,
-        "end_line": 246,
+        "line": 253,
+        "end_line": 254,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "requestPasswordReset",
-        "line": 248,
-        "end_line": 249,
+        "line": 256,
+        "end_line": 257,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "resetPassword",
-        "line": 251,
-        "end_line": 252,
+        "line": 259,
+        "end_line": 260,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchUnsubscribeState",
-        "line": 254,
-        "end_line": 255,
+        "line": 262,
+        "end_line": 263,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "unsubscribeByLink",
-        "line": 257,
-        "end_line": 258,
+        "line": 265,
+        "end_line": 266,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "resubscribeByLink",
-        "line": 260,
-        "end_line": 261,
+        "line": 268,
+        "end_line": 269,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "updateProfile",
-        "line": 263,
-        "end_line": 264,
+        "line": 271,
+        "end_line": 272,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchDownloadQuota",
-        "line": 267,
-        "end_line": 268,
+        "line": 275,
+        "end_line": 276,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "absoluteAuthNext",
-        "line": 275,
-        "end_line": 286,
+        "line": 283,
+        "end_line": 294,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "oauthStartUrl",
-        "line": 290,
-        "end_line": 295,
+        "line": 298,
+        "end_line": 303,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchOAuthProviders",
-        "line": 298,
-        "end_line": 299,
+        "line": 306,
+        "end_line": 307,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "defaultExportHistory",
-        "line": 305,
-        "end_line": 312,
+        "line": 313,
+        "end_line": 320,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "withExportHref",
-        "line": 318,
-        "end_line": 324,
+        "line": 326,
+        "end_line": 332,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "postExportBlob",
-        "line": 330,
-        "end_line": 353,
+        "line": 338,
+        "end_line": 361,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "exportTable",
-        "line": 361,
-        "end_line": 364,
+        "line": 369,
+        "end_line": 372,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "exportGrid",
-        "line": 371,
-        "end_line": 374,
+        "line": 379,
+        "end_line": 382,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchAccountExport",
-        "line": 380,
-        "end_line": 380,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "fetchTopicMailConfig",
-        "line": 387,
+        "line": 388,
         "end_line": 388,
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "fetchTopicMailConfig",
+        "line": 395,
+        "end_line": 396,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "subscribeTopicMail",
-        "line": 390,
-        "end_line": 391,
+        "line": 398,
+        "end_line": 399,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchTopicMailConfirm",
-        "line": 393,
-        "end_line": 394,
+        "line": 401,
+        "end_line": 402,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "confirmTopicMail",
-        "line": 396,
-        "end_line": 397,
+        "line": 404,
+        "end_line": 405,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -26522,270 +26653,282 @@
       },
       {
         "names": [
+          "fetchTourismOverview"
+        ],
+        "line": 149
+      },
+      {
+        "names": [
           "fetchIndicator"
         ],
-        "line": 148
+        "line": 152
       },
       {
         "names": [
           "fetchIndicatorData"
         ],
-        "line": 151
+        "line": 155
       },
       {
         "names": [
           "fetchIndicatorStats"
         ],
-        "line": 154
+        "line": 158
       },
       {
         "names": [
           "fetchForecast"
         ],
-        "line": 157
+        "line": 161
       },
       {
         "names": [
           "fetchInflation"
         ],
-        "line": 160
+        "line": 164
       },
       {
         "names": [
           "fetchSystemStatus"
         ],
-        "line": 163
+        "line": 167
       },
       {
         "names": [
           "fetchCalendarEvents"
         ],
-        "line": 166
+        "line": 170
       },
       {
         "names": [
           "fetchCalendarUpcoming"
         ],
-        "line": 179
+        "line": 183
       },
       {
         "names": [
           "fetchResearch"
         ],
-        "line": 190
+        "line": 194
+      },
+      {
+        "names": [
+          "fetchResearchArticle"
+        ],
+        "line": 198
       },
       {
         "names": [
           "researchDownloadHref"
         ],
-        "line": 194
+        "line": 202
       },
       {
         "names": [
           "fetchCoverage"
         ],
-        "line": 196
+        "line": 204
       },
       {
         "names": [
           "fetchDashboardSparklines"
         ],
-        "line": 199
+        "line": 207
       },
       {
         "names": [
           "fetchDemographicsStructure"
         ],
-        "line": 202
+        "line": 210
       },
       {
         "names": [
           "fetchMe"
         ],
-        "line": 206
+        "line": 214
       },
       {
         "names": [
           "registerUser"
         ],
-        "line": 209
+        "line": 217
       },
       {
         "names": [
           "loginUser"
         ],
-        "line": 212
+        "line": 220
       },
       {
         "names": [
           "logoutUser"
         ],
-        "line": 215
+        "line": 223
       },
       {
         "names": [
           "logoutAll"
         ],
-        "line": 217
+        "line": 225
       },
       {
         "names": [
           "setPassword"
         ],
-        "line": 219
+        "line": 227
       },
       {
         "names": [
           "unlinkIdentity"
         ],
-        "line": 222
+        "line": 230
       },
       {
         "names": [
           "deleteAccount"
         ],
-        "line": 225
+        "line": 233
       },
       {
         "names": [
           "submitFeedback"
         ],
-        "line": 227
+        "line": 235
       },
       {
         "names": [
           "submitApiInterest"
         ],
-        "line": 234
+        "line": 242
       },
       {
         "names": [
           "updateNewsletter"
         ],
-        "line": 238
+        "line": 246
       },
       {
         "names": [
           "verifyEmail"
         ],
-        "line": 242
+        "line": 250
       },
       {
         "names": [
           "resendVerifyEmail"
         ],
-        "line": 245
+        "line": 253
       },
       {
         "names": [
           "requestPasswordReset"
         ],
-        "line": 248
+        "line": 256
       },
       {
         "names": [
           "resetPassword"
         ],
-        "line": 251
+        "line": 259
       },
       {
         "names": [
           "fetchUnsubscribeState"
         ],
-        "line": 254
+        "line": 262
       },
       {
         "names": [
           "unsubscribeByLink"
         ],
-        "line": 257
+        "line": 265
       },
       {
         "names": [
           "resubscribeByLink"
         ],
-        "line": 260
+        "line": 268
       },
       {
         "names": [
           "updateProfile"
         ],
-        "line": 263
+        "line": 271
       },
       {
         "names": [
           "fetchDownloadQuota"
         ],
-        "line": 267
+        "line": 275
       },
       {
         "names": [
           "absoluteAuthNext"
         ],
-        "line": 275
+        "line": 283
       },
       {
         "names": [
           "oauthStartUrl"
         ],
-        "line": 290
+        "line": 298
       },
       {
         "names": [
           "fetchOAuthProviders"
         ],
-        "line": 298
+        "line": 306
       },
       {
         "names": [
           "exportTable"
         ],
-        "line": 361
+        "line": 369
       },
       {
         "names": [
           "exportGrid"
         ],
-        "line": 371
+        "line": 379
       },
       {
         "names": [
           "fetchAccountExport"
         ],
-        "line": 380
+        "line": 388
       },
       {
         "names": [
           "default"
         ],
-        "line": 382
+        "line": 390
       },
       {
         "names": [
           "fetchTopicMailConfig"
         ],
-        "line": 387
+        "line": 395
       },
       {
         "names": [
           "subscribeTopicMail"
         ],
-        "line": 390
+        "line": 398
       },
       {
         "names": [
           "fetchTopicMailConfirm"
         ],
-        "line": 393
+        "line": 401
       },
       {
         "names": [
           "confirmTopicMail"
         ],
-        "line": 396
+        "line": 404
       }
     ],
-    "anonymous_functions": 46
+    "anonymous_functions": 48
   },
   "frontend/src/lib/api.test.js": {
     "sha256": "e44c147b4622217efc3fc2c1d6d9548877028014cb36d7c1b5ee480eddea3328",
@@ -31267,54 +31410,54 @@
     "anonymous_functions": 12
   },
   "frontend/src/lib/categories.js": {
-    "sha256": "801135babb2841ec082a8c8014726bf42a523824663102086c3f470c6ec70c45",
+    "sha256": "0e6884fd41c96ce9ff67851141a26842e3129637d0c5eb83cd924b859794a087",
     "definitions": [
       {
         "name": "getCategoryBySlug",
-        "line": 228,
-        "end_line": 230,
+        "line": 246,
+        "end_line": 248,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "categoryLabel",
-        "line": 233,
-        "end_line": 236,
+        "line": 251,
+        "end_line": 254,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "categoryDescription",
-        "line": 239,
-        "end_line": 242,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "isIndicatorListed",
-        "line": 250,
-        "end_line": 253,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "indicatorCategoryKey",
-        "line": 256,
+        "line": 257,
         "end_line": 260,
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "isIndicatorListed",
+        "line": 268,
+        "end_line": 271,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "indicatorCategoryKey",
+        "line": 274,
+        "end_line": 278,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "displayCategoryLabel",
-        "line": 270,
-        "end_line": 276,
+        "line": 288,
+        "end_line": 294,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "findCategoryByApiLabel",
-        "line": 278,
-        "end_line": 285,
+        "line": 296,
+        "end_line": 303,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countInCategory",
-        "line": 287,
-        "end_line": 292,
+        "line": 305,
+        "end_line": 310,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -31329,61 +31472,61 @@
         "names": [
           "CATEGORIES"
         ],
-        "line": 226
+        "line": 244
       },
       {
         "names": [
           "getCategoryBySlug"
         ],
-        "line": 228
+        "line": 246
       },
       {
         "names": [
           "categoryLabel"
         ],
-        "line": 233
+        "line": 251
       },
       {
         "names": [
           "categoryDescription"
         ],
-        "line": 239
+        "line": 257
       },
       {
         "names": [
           "isIndicatorListed"
         ],
-        "line": 250
+        "line": 268
       },
       {
         "names": [
           "indicatorCategoryKey"
         ],
-        "line": 256
+        "line": 274
       },
       {
         "names": [
           "displayCategoryLabel"
         ],
-        "line": 270
+        "line": 288
       },
       {
         "names": [
           "findCategoryByApiLabel"
         ],
-        "line": 278
+        "line": 296
       },
       {
         "names": [
           "countInCategory"
         ],
-        "line": 287
+        "line": 305
       }
     ],
     "anonymous_functions": 3
   },
   "frontend/src/lib/categories.test.js": {
-    "sha256": "c07311731f0a8a1f8aee7c34fa63459996f8271a135818bf53dc5343480d780b",
+    "sha256": "0bdf1d9fee5b3faa4eff5e9c830edcacd11b7e02d2c4e6b189c2e7474ff5e0f7",
     "definitions": [],
     "imports": [
       {
@@ -38881,7 +39024,7 @@
     "anonymous_functions": 13
   },
   "frontend/src/lib/homeWorkbench.js": {
-    "sha256": "e8df8378dd5a9517670c3ecfd1fa602ef224bd6682d24bd3fcab185d38ac1775",
+    "sha256": "732e78cde7c74a5943a6023ec132dd64e2ea4b08a6a9b8d4bdc4b0159a27a2c2",
     "definitions": [
       {
         "name": "homePulseLabel",
@@ -38897,158 +39040,158 @@
       },
       {
         "name": "homeMapConcepts",
-        "line": 114,
-        "end_line": 118,
+        "line": 118,
+        "end_line": 122,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "resolveHomeConcept",
-        "line": 121,
-        "end_line": 126,
+        "line": 125,
+        "end_line": 130,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "homeConceptLabel",
-        "line": 129,
-        "end_line": 133,
+        "line": 133,
+        "end_line": 137,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryPublicName",
-        "line": 136,
-        "end_line": 142,
+        "line": 140,
+        "end_line": 146,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "conceptColorMode",
-        "line": 151,
-        "end_line": 153,
+        "line": 155,
+        "end_line": 157,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "homeScopeCountriesCount",
-        "line": 172,
-        "end_line": 180,
+        "line": 176,
+        "end_line": 184,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isWeoMapConcept",
-        "line": 211,
-        "end_line": 213,
+        "line": 215,
+        "end_line": 217,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "worldRatingTitle",
-        "line": 266,
-        "end_line": 279,
+        "line": 274,
+        "end_line": 287,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "indexIndicatorsByCode",
-        "line": 291,
-        "end_line": 297,
+        "line": 299,
+        "end_line": 305,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pickIndicatorsByCodes",
-        "line": 299,
-        "end_line": 302,
+        "line": 307,
+        "end_line": 310,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "displayPulseValue",
-        "line": 308,
-        "end_line": 327,
+        "line": 316,
+        "end_line": 335,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "rankHeatmapValues",
-        "line": 329,
-        "end_line": 333,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "heatmapValuesBySlug",
-        "line": 335,
+        "line": 337,
         "end_line": 341,
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "heatmapNameBySlug",
+        "name": "heatmapValuesBySlug",
         "line": 343,
         "end_line": 349,
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "heatmapNameBySlug",
+        "line": 351,
+        "end_line": 357,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "resolveActiveMapYear",
-        "line": 355,
-        "end_line": 375,
+        "line": 363,
+        "end_line": 383,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "worldYearItems",
-        "line": 377,
-        "end_line": 380,
+        "line": 385,
+        "end_line": 388,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "mapSeriesFromSnapshot",
-        "line": 386,
-        "end_line": 415,
+        "line": 394,
+        "end_line": 423,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "resolveHomeMapSeries",
-        "line": 418,
-        "end_line": 421,
+        "line": 426,
+        "end_line": 429,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "defaultSortForConcept",
-        "line": 432,
-        "end_line": 438,
+        "line": 440,
+        "end_line": 446,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "worldRankingFromYearItems",
-        "line": 440,
-        "end_line": 445,
+        "line": 448,
+        "end_line": 453,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "russiaIndicatorCodeForConcept",
-        "line": 447,
-        "end_line": 449,
+        "line": 455,
+        "end_line": 457,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "mapSelectHref",
-        "line": 461,
-        "end_line": 481,
+        "line": 469,
+        "end_line": 489,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "regionRatingCodeForConcept",
-        "line": 483,
-        "end_line": 485,
+        "line": 491,
+        "end_line": 493,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "russiaDeepLinksForConcept",
-        "line": 488,
-        "end_line": 496,
+        "line": 496,
+        "end_line": 504,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "mapSurfaceCountries",
-        "line": 503,
-        "end_line": 519,
+        "line": 511,
+        "end_line": 527,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "withRussiaOnHomeMap",
-        "line": 526,
-        "end_line": 559,
+        "line": 534,
+        "end_line": 567,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -39097,241 +39240,241 @@
         "names": [
           "HOME_MAP_CONCEPT_ORDER"
         ],
-        "line": 88
+        "line": 92
       },
       {
         "names": [
           "DEFAULT_HOME_COUNTRY_CONCEPT"
         ],
-        "line": 99
+        "line": 103
       },
       {
         "names": [
           "HOME_PICKER_PLACEHOLDER"
         ],
-        "line": 105
+        "line": 109
       },
       {
         "names": [
           "homeMapConcepts"
         ],
-        "line": 114
+        "line": 118
       },
       {
         "names": [
           "resolveHomeConcept"
         ],
-        "line": 121
+        "line": 125
       },
       {
         "names": [
           "homeConceptLabel"
         ],
-        "line": 129
+        "line": 133
       },
       {
         "names": [
           "countryPublicName"
         ],
-        "line": 136
+        "line": 140
       },
       {
         "names": [
           "conceptColorMode"
         ],
-        "line": 151
+        "line": 155
       },
       {
         "names": [
           "HOME_RATING_LIMIT"
         ],
-        "line": 159
+        "line": 163
       },
       {
         "names": [
           "HOME_SCOPE_COUNTRIES_FALLBACK"
         ],
-        "line": 166
+        "line": 170
       },
       {
         "names": [
           "homeScopeCountriesCount"
         ],
-        "line": 172
+        "line": 176
       },
       {
         "names": [
           "HOME_MAP_RUSSIA_CONCEPT_CODES"
         ],
-        "line": 189
+        "line": 193
       },
       {
         "names": [
           "WEO_MAP_CONCEPTS"
         ],
-        "line": 204
+        "line": 208
       },
       {
         "names": [
           "isWeoMapConcept"
         ],
-        "line": 211
+        "line": 215
       },
       {
         "names": [
           "WORLD_RANKING_AVERAGE_CONCEPTS"
         ],
-        "line": 221
+        "line": 225
       },
       {
         "names": [
           "WORLD_RANKING_MEDIAN_CONCEPTS"
         ],
-        "line": 229
+        "line": 233
       },
       {
         "names": [
           "WORLD_CONCEPT_REGION_RATING"
         ],
-        "line": 236
+        "line": 240
       },
       {
         "names": [
           "WORLD_RATING_QUERY_NAME_KEYS"
         ],
-        "line": 243
+        "line": 247
       },
       {
         "names": [
           "worldRatingTitle"
         ],
-        "line": 266
+        "line": 274
       },
       {
         "names": [
           "HOME_MAP_RUSSIA_COUNTRY"
         ],
-        "line": 281
+        "line": 289
       },
       {
         "names": [
           "indexIndicatorsByCode"
         ],
-        "line": 291
+        "line": 299
       },
       {
         "names": [
           "pickIndicatorsByCodes"
         ],
-        "line": 299
+        "line": 307
       },
       {
         "names": [
           "displayPulseValue"
         ],
-        "line": 308
+        "line": 316
       },
       {
         "names": [
           "rankHeatmapValues"
         ],
-        "line": 329
+        "line": 337
       },
       {
         "names": [
           "heatmapValuesBySlug"
         ],
-        "line": 335
+        "line": 343
       },
       {
         "names": [
           "heatmapNameBySlug"
         ],
-        "line": 343
+        "line": 351
       },
       {
         "names": [
           "MAP_YEAR_COVERAGE_SHARE"
         ],
-        "line": 352
+        "line": 360
       },
       {
         "names": [
           "MAP_YEAR_MIN_COUNTRIES"
         ],
-        "line": 353
+        "line": 361
       },
       {
         "names": [
           "resolveActiveMapYear"
         ],
-        "line": 355
+        "line": 363
       },
       {
         "names": [
           "worldYearItems"
         ],
-        "line": 377
+        "line": 385
       },
       {
         "names": [
           "mapSeriesFromSnapshot"
         ],
-        "line": 386
+        "line": 394
       },
       {
         "names": [
           "resolveHomeMapSeries"
         ],
-        "line": 418
+        "line": 426
       },
       {
         "names": [
           "defaultSortForConcept"
         ],
-        "line": 432
+        "line": 440
       },
       {
         "names": [
           "worldRankingFromYearItems"
         ],
-        "line": 440
+        "line": 448
       },
       {
         "names": [
           "russiaIndicatorCodeForConcept"
         ],
-        "line": 447
+        "line": 455
       },
       {
         "names": [
           "mapSelectHref"
         ],
-        "line": 461
+        "line": 469
       },
       {
         "names": [
           "regionRatingCodeForConcept"
         ],
-        "line": 483
+        "line": 491
       },
       {
         "names": [
           "russiaDeepLinksForConcept"
         ],
-        "line": 488
+        "line": 496
       },
       {
         "names": [
           "mapSurfaceCountries"
         ],
-        "line": 503
+        "line": 511
       },
       {
         "names": [
           "withRussiaOnHomeMap"
         ],
-        "line": 526
+        "line": 534
       }
     ],
     "anonymous_functions": 18
@@ -39370,156 +39513,168 @@
     "anonymous_functions": 29
   },
   "frontend/src/lib/hooks.js": {
-    "sha256": "28c47cc742b3089880f5af3ee1b665194ad7f3dcc4eb43bfeb880d921106aa71",
+    "sha256": "db6cdd0de9a4e3e0b5851f9b80a7940a666bae830970fc0b2da55d7b8570ff04",
     "definitions": [
       {
         "name": "indicatorsListQueryKey",
-        "line": 18,
-        "end_line": 27,
+        "line": 19,
+        "end_line": 28,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useIndicators",
-        "line": 29,
-        "end_line": 39,
+        "line": 30,
+        "end_line": 40,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useIndicators.queryFn",
-        "line": 34,
-        "end_line": 34,
+        "line": 35,
+        "end_line": 35,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "useTourismOverview",
+        "line": 43,
+        "end_line": 52,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "useTourismOverview.queryFn",
+        "line": 47,
+        "end_line": 47,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useIndicator",
-        "line": 41,
-        "end_line": 50,
+        "line": 54,
+        "end_line": 63,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useIndicator.queryFn",
-        "line": 45,
-        "end_line": 45,
+        "line": 58,
+        "end_line": 58,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useIndicatorData",
-        "line": 52,
-        "end_line": 61,
+        "line": 65,
+        "end_line": 74,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useIndicatorData.queryFn",
-        "line": 56,
-        "end_line": 56,
+        "line": 69,
+        "end_line": 69,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useIndicatorStats",
-        "line": 63,
-        "end_line": 71,
+        "line": 76,
+        "end_line": 84,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useIndicatorStats.queryFn",
-        "line": 66,
-        "end_line": 66,
+        "line": 79,
+        "end_line": 79,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useForecast",
-        "line": 73,
-        "end_line": 82,
+        "line": 86,
+        "end_line": 95,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useForecast.queryFn",
-        "line": 77,
-        "end_line": 77,
+        "line": 90,
+        "end_line": 90,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useInflation",
-        "line": 84,
-        "end_line": 93,
+        "line": 97,
+        "end_line": 106,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useInflation.queryFn",
-        "line": 88,
-        "end_line": 88,
+        "line": 101,
+        "end_line": 101,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useSystemStatus",
-        "line": 95,
-        "end_line": 104,
+        "line": 108,
+        "end_line": 117,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useSystemStatus.queryFn",
-        "line": 98,
-        "end_line": 98,
+        "line": 111,
+        "end_line": 111,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useCalendarEvents",
-        "line": 111,
-        "end_line": 121,
+        "line": 124,
+        "end_line": 134,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useCalendarEvents.queryFn",
-        "line": 115,
-        "end_line": 115,
+        "line": 128,
+        "end_line": 128,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useCoverage",
-        "line": 123,
-        "end_line": 130,
+        "line": 136,
+        "end_line": 143,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useCoverage.queryFn",
-        "line": 126,
-        "end_line": 126,
+        "line": 139,
+        "end_line": 139,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useDashboardSparklines",
-        "line": 132,
-        "end_line": 139,
+        "line": 145,
+        "end_line": 152,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useDashboardSparklines.queryFn",
-        "line": 135,
-        "end_line": 135,
+        "line": 148,
+        "end_line": 148,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useCalendarUpcoming",
-        "line": 141,
-        "end_line": 150,
+        "line": 154,
+        "end_line": 163,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useCalendarUpcoming.queryFn",
-        "line": 145,
-        "end_line": 145,
+        "line": 158,
+        "end_line": 158,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useDemographicsStructure",
-        "line": 152,
-        "end_line": 159,
+        "line": 165,
+        "end_line": 172,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useDemographicsStructure.queryFn",
-        "line": 155,
-        "end_line": 155,
+        "line": 168,
+        "end_line": 168,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -39534,7 +39689,7 @@
       },
       {
         "source": "../i18n",
-        "line": 16
+        "line": 17
       }
     ],
     "exports": [
@@ -39542,79 +39697,85 @@
         "names": [
           "indicatorsListQueryKey"
         ],
-        "line": 18
+        "line": 19
       },
       {
         "names": [
           "useIndicators"
         ],
-        "line": 29
+        "line": 30
+      },
+      {
+        "names": [
+          "useTourismOverview"
+        ],
+        "line": 43
       },
       {
         "names": [
           "useIndicator"
         ],
-        "line": 41
+        "line": 54
       },
       {
         "names": [
           "useIndicatorData"
         ],
-        "line": 52
+        "line": 65
       },
       {
         "names": [
           "useIndicatorStats"
         ],
-        "line": 63
+        "line": 76
       },
       {
         "names": [
           "useForecast"
         ],
-        "line": 73
+        "line": 86
       },
       {
         "names": [
           "useInflation"
         ],
-        "line": 84
+        "line": 97
       },
       {
         "names": [
           "useSystemStatus"
         ],
-        "line": 95
+        "line": 108
       },
       {
         "names": [
           "useCalendarEvents"
         ],
-        "line": 111
+        "line": 124
       },
       {
         "names": [
           "useCoverage"
         ],
-        "line": 123
+        "line": 136
       },
       {
         "names": [
           "useDashboardSparklines"
         ],
-        "line": 132
+        "line": 145
       },
       {
         "names": [
           "useCalendarUpcoming"
         ],
-        "line": 141
+        "line": 154
       },
       {
         "names": [
           "useDemographicsStructure"
         ],
-        "line": 152
+        "line": 165
       }
     ],
     "anonymous_functions": 0
@@ -40230,48 +40391,48 @@
     "anonymous_functions": 40
   },
   "frontend/src/lib/indicatorVariants.js": {
-    "sha256": "95ec60c8f0fee5510692555c2e2097a167f4fe4fb3c8386028621d84443fc089",
+    "sha256": "9bc5d9381ac6306ded0833d51aa55ae6afa31fb8ebf27d4e1764ceb3a164d60f",
     "definitions": [
       {
         "name": "findVariantGroup",
-        "line": 169,
-        "end_line": 171,
+        "line": 389,
+        "end_line": 391,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "lowerFirst",
-        "line": 194,
-        "end_line": 196,
+        "line": 414,
+        "end_line": 416,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isSharedMemberLabel",
-        "line": 199,
-        "end_line": 206,
+        "line": 419,
+        "end_line": 426,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "relatedIndicatorCardCopy",
-        "line": 212,
-        "end_line": 245,
+        "line": 432,
+        "end_line": 465,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isVariantSiblingNavigation",
-        "line": 253,
-        "end_line": 259,
+        "line": 473,
+        "end_line": 479,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "allVariantMemberCodes",
-        "line": 262,
-        "end_line": 264,
+        "line": 482,
+        "end_line": 484,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "indicatorDetailHeaderMobileLines",
-        "line": 271,
-        "end_line": 279,
+        "line": 491,
+        "end_line": 499,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -40292,31 +40453,31 @@
         "names": [
           "findVariantGroup"
         ],
-        "line": 169
+        "line": 389
       },
       {
         "names": [
           "relatedIndicatorCardCopy"
         ],
-        "line": 212
+        "line": 432
       },
       {
         "names": [
           "isVariantSiblingNavigation"
         ],
-        "line": 253
+        "line": 473
       },
       {
         "names": [
           "allVariantMemberCodes"
         ],
-        "line": 262
+        "line": 482
       },
       {
         "names": [
           "indicatorDetailHeaderMobileLines"
         ],
-        "line": 271
+        "line": 491
       }
     ],
     "anonymous_functions": 7
@@ -41037,7 +41198,7 @@
     "anonymous_functions": 6
   },
   "frontend/src/lib/navItems.js": {
-    "sha256": "93975a78493f28af219b7b409b1f8388cdc4b75aa13e59d9ee6368928da33d19",
+    "sha256": "24b351e3d6729d4b96b96d85430024a010e2ccb8364606c095557532e900da7d",
     "definitions": [
       {
         "name": "primaryNav",
@@ -41066,7 +41227,7 @@
       {
         "name": "mobileNavGroups",
         "line": 156,
-        "end_line": 197,
+        "end_line": 202,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -44385,30 +44546,30 @@
     "anonymous_functions": 6
   },
   "frontend/src/lib/ratingConcepts.js": {
-    "sha256": "ea6212cc233d699316782b0a89eefed37e1ba3188fa51b322b2952156d7985a1",
+    "sha256": "16c38b6cddd42c224605d42fe0a7adc17b3adfd030172256082c5af3819c1245",
     "definitions": [
       {
         "name": "ratingIconKey",
-        "line": 56,
-        "end_line": 58,
+        "line": 65,
+        "end_line": 67,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "groupRatingConcepts",
-        "line": 61,
-        "end_line": 74,
+        "line": 70,
+        "end_line": 83,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "quickRatingConcepts",
-        "line": 79,
-        "end_line": 82,
+        "line": 88,
+        "end_line": 91,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ratingHeading",
-        "line": 88,
-        "end_line": 96,
+        "line": 97,
+        "end_line": 105,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -44433,37 +44594,37 @@
         "names": [
           "RATING_ICON_KEYS"
         ],
-        "line": 35
+        "line": 40
       },
       {
         "names": [
           "ratingIconKey"
         ],
-        "line": 56
+        "line": 65
       },
       {
         "names": [
           "groupRatingConcepts"
         ],
-        "line": 61
+        "line": 70
       },
       {
         "names": [
           "RATING_QUICK_SLUGS"
         ],
-        "line": 77
+        "line": 86
       },
       {
         "names": [
           "quickRatingConcepts"
         ],
-        "line": 79
+        "line": 88
       },
       {
         "names": [
           "ratingHeading"
         ],
-        "line": 88
+        "line": 97
       }
     ],
     "anonymous_functions": 8
@@ -48710,7 +48871,7 @@
     "anonymous_functions": 9
   },
   "frontend/src/lib/sitePaths.js": {
-    "sha256": "bead6615cbfdf6e732d8105206079ede8b191171a9bd2b76c2215fbb13ceac1c",
+    "sha256": "8572d61d4015388e8bbada2b062f1786c8a855416b15db87919c64572a2aca31",
     "definitions": [
       {
         "name": "isCurrencyIndicator",
@@ -48755,189 +48916,201 @@
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "researchPath",
+        "line": 106,
+        "end_line": 108,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "researchArticlePath",
+        "line": 110,
+        "end_line": 112,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "countryPath",
-        "line": 105,
-        "end_line": 107,
+        "line": 114,
+        "end_line": 116,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "indicatorPath",
-        "line": 109,
-        "end_line": 111,
+        "line": 118,
+        "end_line": 120,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "indicatorYearPath",
-        "line": 113,
-        "end_line": 115,
+        "line": 122,
+        "end_line": 124,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "categoryPath",
-        "line": 117,
-        "end_line": 119,
+        "line": 126,
+        "end_line": 128,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "russiaHomePath",
-        "line": 121,
-        "end_line": 123,
+        "line": 130,
+        "end_line": 132,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isRussiaSectionPath",
-        "line": 126,
-        "end_line": 131,
+        "line": 135,
+        "end_line": 140,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "russiaIndicatorPath",
-        "line": 133,
-        "end_line": 136,
+        "line": 142,
+        "end_line": 145,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "russiaIndicatorYearPath",
-        "line": 138,
-        "end_line": 141,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "russiaCategoryPath",
-        "line": 143,
-        "end_line": 146,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "russiaCategoriesPath",
-        "line": 148,
+        "line": 147,
         "end_line": 150,
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "regionHubPath",
+        "name": "russiaCategoryPath",
         "line": 152,
-        "end_line": 154,
+        "end_line": 155,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "russiaCategoriesPath",
+        "line": 157,
+        "end_line": 159,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "regionHubPath",
+        "line": 161,
+        "end_line": 163,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryRegionsPath",
-        "line": 156,
-        "end_line": 158,
+        "line": 165,
+        "end_line": 167,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryRegionPath",
-        "line": 160,
-        "end_line": 162,
+        "line": 169,
+        "end_line": 171,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryRegionIndicatorPath",
-        "line": 164,
-        "end_line": 166,
+        "line": 173,
+        "end_line": 175,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryRegionIndicatorYearPath",
-        "line": 168,
-        "end_line": 170,
+        "line": 177,
+        "end_line": 179,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryRegionMapPath",
-        "line": 172,
-        "end_line": 174,
+        "line": 181,
+        "end_line": 183,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryRegionVsPath",
-        "line": 176,
-        "end_line": 180,
+        "line": 185,
+        "end_line": 189,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "regionRatingHubPath",
-        "line": 182,
-        "end_line": 184,
+        "line": 191,
+        "end_line": 193,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "regionPath",
-        "line": 186,
-        "end_line": 188,
+        "line": 195,
+        "end_line": 197,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "regionIndicatorPath",
-        "line": 190,
-        "end_line": 192,
+        "line": 199,
+        "end_line": 201,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "regionMapPath",
-        "line": 194,
-        "end_line": 196,
+        "line": 203,
+        "end_line": 205,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "regionRatingPath",
-        "line": 198,
-        "end_line": 200,
+        "line": 207,
+        "end_line": 209,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "regionVsPath",
-        "line": 202,
-        "end_line": 204,
+        "line": 211,
+        "end_line": 213,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "todayPath",
-        "line": 206,
-        "end_line": 208,
+        "line": 215,
+        "end_line": 217,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "calendarPath",
-        "line": 210,
-        "end_line": 214,
+        "line": 219,
+        "end_line": 223,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "demographicsPath",
-        "line": 216,
-        "end_line": 218,
+        "line": 225,
+        "end_line": 227,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "worldHubPath",
-        "line": 224,
-        "end_line": 226,
+        "line": 233,
+        "end_line": 235,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "worldRatingPath",
-        "line": 231,
-        "end_line": 233,
+        "line": 240,
+        "end_line": 242,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "worldRatingYearPath",
-        "line": 236,
-        "end_line": 241,
+        "line": 245,
+        "end_line": 250,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "worldCountryPath",
-        "line": 244,
-        "end_line": 246,
+        "line": 253,
+        "end_line": 255,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "worldIndicatorPath",
-        "line": 249,
-        "end_line": 251,
+        "line": 258,
+        "end_line": 260,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -48987,195 +49160,207 @@
       },
       {
         "names": [
+          "researchPath"
+        ],
+        "line": 106
+      },
+      {
+        "names": [
+          "researchArticlePath"
+        ],
+        "line": 110
+      },
+      {
+        "names": [
           "countryPath"
         ],
-        "line": 105
+        "line": 114
       },
       {
         "names": [
           "indicatorPath"
         ],
-        "line": 109
+        "line": 118
       },
       {
         "names": [
           "indicatorYearPath"
         ],
-        "line": 113
+        "line": 122
       },
       {
         "names": [
           "categoryPath"
         ],
-        "line": 117
+        "line": 126
       },
       {
         "names": [
           "russiaHomePath"
         ],
-        "line": 121
+        "line": 130
       },
       {
         "names": [
           "isRussiaSectionPath"
         ],
-        "line": 126
+        "line": 135
       },
       {
         "names": [
           "russiaIndicatorPath"
         ],
-        "line": 133
+        "line": 142
       },
       {
         "names": [
           "russiaIndicatorYearPath"
         ],
-        "line": 138
+        "line": 147
       },
       {
         "names": [
           "russiaCategoryPath"
         ],
-        "line": 143
+        "line": 152
       },
       {
         "names": [
           "russiaCategoriesPath"
         ],
-        "line": 148
+        "line": 157
       },
       {
         "names": [
           "regionHubPath"
         ],
-        "line": 152
+        "line": 161
       },
       {
         "names": [
           "countryRegionsPath"
         ],
-        "line": 156
+        "line": 165
       },
       {
         "names": [
           "countryRegionPath"
         ],
-        "line": 160
+        "line": 169
       },
       {
         "names": [
           "countryRegionIndicatorPath"
         ],
-        "line": 164
+        "line": 173
       },
       {
         "names": [
           "countryRegionIndicatorYearPath"
         ],
-        "line": 168
+        "line": 177
       },
       {
         "names": [
           "countryRegionMapPath"
         ],
-        "line": 172
+        "line": 181
       },
       {
         "names": [
           "countryRegionVsPath"
         ],
-        "line": 176
+        "line": 185
       },
       {
         "names": [
           "regionRatingHubPath"
         ],
-        "line": 182
+        "line": 191
       },
       {
         "names": [
           "regionPath"
         ],
-        "line": 186
+        "line": 195
       },
       {
         "names": [
           "regionIndicatorPath"
         ],
-        "line": 190
+        "line": 199
       },
       {
         "names": [
           "regionMapPath"
         ],
-        "line": 194
+        "line": 203
       },
       {
         "names": [
           "regionRatingPath"
         ],
-        "line": 198
+        "line": 207
       },
       {
         "names": [
           "regionVsPath"
         ],
-        "line": 202
+        "line": 211
       },
       {
         "names": [
           "todayPath"
         ],
-        "line": 206
+        "line": 215
       },
       {
         "names": [
           "calendarPath"
         ],
-        "line": 210
+        "line": 219
       },
       {
         "names": [
           "demographicsPath"
         ],
-        "line": 216
+        "line": 225
       },
       {
         "names": [
           "worldHubPath"
         ],
-        "line": 224
+        "line": 233
       },
       {
         "names": [
           "WORLD_RATING_DEFAULT_CONCEPT"
         ],
-        "line": 229
+        "line": 238
       },
       {
         "names": [
           "worldRatingPath"
         ],
-        "line": 231
+        "line": 240
       },
       {
         "names": [
           "worldRatingYearPath"
         ],
-        "line": 236
+        "line": 245
       },
       {
         "names": [
           "worldCountryPath"
         ],
-        "line": 244
+        "line": 253
       },
       {
         "names": [
           "worldIndicatorPath"
         ],
-        "line": 249
+        "line": 258
       }
     ],
     "anonymous_functions": 1
@@ -58448,12 +58633,12 @@
     "anonymous_functions": 7
   },
   "frontend/src/pages/CategoryPage.jsx": {
-    "sha256": "be9df423d8795b08d98a55a0216a96191bdef4d7c60c31e9895fe2362f137d42",
+    "sha256": "23faef4132f9cc1c35bebf9acdb59b34cebdf0eb6e6412cdb24e37ddf3d611bd",
     "definitions": [
       {
         "name": "CategoryPage",
-        "line": 53,
-        "end_line": 315,
+        "line": 54,
+        "end_line": 319,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -58535,48 +58720,52 @@
         "line": 25
       },
       {
-        "source": "../lib/track",
+        "source": "../components/TourismFloors",
         "line": 26
       },
       {
-        "source": "../styles/indicator-russia.css",
+        "source": "../lib/track",
         "line": 27
       },
       {
-        "source": "../styles/x2-indicator.css",
+        "source": "../styles/indicator-russia.css",
         "line": 28
       },
       {
-        "source": "../styles/z8-tools.css",
+        "source": "../styles/x2-indicator.css",
         "line": 29
       },
       {
-        "source": "../styles/k6-country.css",
+        "source": "../styles/z8-tools.css",
         "line": 30
       },
       {
-        "source": "../lib/useScrollDepth",
+        "source": "../styles/k6-country.css",
         "line": 31
       },
       {
-        "source": "../lib/breadcrumbs",
+        "source": "../lib/useScrollDepth",
         "line": 32
       },
       {
-        "source": "../lib/jsonLd",
-        "line": 36
+        "source": "../lib/breadcrumbs",
+        "line": 33
       },
       {
-        "source": "../lib/pageMeta",
+        "source": "../lib/jsonLd",
         "line": 37
       },
       {
-        "source": "../i18n",
+        "source": "../lib/pageMeta",
         "line": 38
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../i18n",
         "line": 39
+      },
+      {
+        "source": "../lib/sitePaths",
+        "line": 40
       }
     ],
     "exports": [
@@ -58584,7 +58773,7 @@
         "names": [
           "default"
         ],
-        "line": 53
+        "line": 54
       }
     ],
     "anonymous_functions": 18
@@ -63511,88 +63700,88 @@
     ],
     "anonymous_functions": 10
   },
-  "frontend/src/pages/ResearchPage.jsx": {
-    "sha256": "ea874050f25039f970ead83c98ff210200d4e1f309967d7a45d9134d106295ab",
+  "frontend/src/pages/ResearchArticlePage.jsx": {
+    "sha256": "ff59108f016a49aaa073be68105fe6ac7c8661e64e99c217479ae209be7d37ea",
     "definitions": [
       {
-        "name": "formatCount",
-        "line": 17,
-        "end_line": 19,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "ReportCard",
-        "line": 21,
-        "end_line": 80,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "ReportCard.onDownload",
+        "name": "ResearchArticlePage",
         "line": 22,
-        "end_line": 22,
+        "end_line": 95,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "ResearchArticlePage.queryFn",
+        "line": 28,
+        "end_line": 28,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "ResearchPage",
-        "line": 86,
-        "end_line": 121,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "ResearchPage.queryFn",
-        "line": 91,
-        "end_line": 91,
+        "name": "ResearchArticlePage.onDownload",
+        "line": 36,
+        "end_line": 36,
         "kind": "ArrowFunctionExpression"
       }
     ],
     "imports": [
       {
-        "source": "@tanstack/react-query",
+        "source": "react-router-dom",
         "line": 1
       },
       {
-        "source": "lucide-react",
+        "source": "@tanstack/react-query",
         "line": 2
       },
       {
-        "source": "../components/Breadcrumbs",
+        "source": "lucide-react",
         "line": 3
       },
       {
-        "source": "../components/Button",
+        "source": "../components/Breadcrumbs",
         "line": 4
       },
       {
-        "source": "../lib/breadcrumbs",
+        "source": "../components/Button",
         "line": 5
       },
       {
-        "source": "../lib/useMeta",
+        "source": "./NotFound",
         "line": 6
       },
       {
-        "source": "../lib/pageMeta",
+        "source": "../lib/useMeta",
         "line": 7
       },
       {
-        "source": "../i18n",
+        "source": "../lib/pageMeta",
         "line": 8
       },
       {
-        "source": "../lib/api",
+        "source": "../lib/breadcrumbs",
         "line": 9
       },
       {
-        "source": "../lib/track",
+        "source": "../lib/sitePaths",
         "line": 10
       },
       {
-        "source": "../styles/w5-pages.css",
+        "source": "../i18n",
         "line": 11
       },
       {
-        "source": "../styles/research.css",
+        "source": "../lib/api",
         "line": 12
+      },
+      {
+        "source": "../lib/track",
+        "line": 13
+      },
+      {
+        "source": "../styles/w5-pages.css",
+        "line": 14
+      },
+      {
+        "source": "../styles/research.css",
+        "line": 15
       }
     ],
     "exports": [
@@ -63600,7 +63789,109 @@
         "names": [
           "default"
         ],
-        "line": 86
+        "line": 22
+      }
+    ],
+    "anonymous_functions": 1
+  },
+  "frontend/src/pages/ResearchPage.jsx": {
+    "sha256": "6e7ac6c003330ba79bc1ce7b9bc7e5b01c7090400562540671bf4f25638c5d67",
+    "definitions": [
+      {
+        "name": "formatCount",
+        "line": 19,
+        "end_line": 21,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "ReportCard",
+        "line": 23,
+        "end_line": 90,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "ReportCard.onDownload",
+        "line": 24,
+        "end_line": 24,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "ResearchPage",
+        "line": 96,
+        "end_line": 131,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "ResearchPage.queryFn",
+        "line": 101,
+        "end_line": 101,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react-router-dom",
+        "line": 1
+      },
+      {
+        "source": "@tanstack/react-query",
+        "line": 2
+      },
+      {
+        "source": "lucide-react",
+        "line": 3
+      },
+      {
+        "source": "../components/Breadcrumbs",
+        "line": 4
+      },
+      {
+        "source": "../components/Button",
+        "line": 5
+      },
+      {
+        "source": "../lib/breadcrumbs",
+        "line": 6
+      },
+      {
+        "source": "../lib/useMeta",
+        "line": 7
+      },
+      {
+        "source": "../lib/pageMeta",
+        "line": 8
+      },
+      {
+        "source": "../i18n",
+        "line": 9
+      },
+      {
+        "source": "../lib/api",
+        "line": 10
+      },
+      {
+        "source": "../lib/sitePaths",
+        "line": 11
+      },
+      {
+        "source": "../lib/track",
+        "line": 12
+      },
+      {
+        "source": "../styles/w5-pages.css",
+        "line": 13
+      },
+      {
+        "source": "../styles/research.css",
+        "line": 14
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "default"
+        ],
+        "line": 96
       }
     ],
     "anonymous_functions": 3

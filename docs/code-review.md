@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `c01d5d028841c8a7ed88f7fe51ae0457aabef0b7`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `9d621e9a229378154c6c725a85bf489cc4429cf2`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2805 |
-| Код, шаблоны и стили | 2265 |
-| Актуальные рецензии без пропусков guard | 2805 |
-| Именованные определения Python/JS: с аннотацией / всего | 18997 / 18997 |
+| Файлы в явно определённом scope | 2918 |
+| Код, шаблоны и стили | 2287 |
+| Актуальные рецензии без пропусков guard | 2918 |
+| Именованные определения Python/JS: с аннотацией / всего | 19339 / 19339 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -124,6 +124,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/alembic/versions/20261119_points_autovacuum.py](../backend/alembic/versions/20261119_points_autovacuum.py) | reviewed | 3/3 | актуально |
 | [backend/alembic/versions/20261119_region_quarterly.py](../backend/alembic/versions/20261119_region_quarterly.py) | reviewed | 2/2 | актуально |
 | [backend/alembic/versions/20261119_world_latest_points.py](../backend/alembic/versions/20261119_world_latest_points.py) | reviewed | 2/2 | актуально |
+| [backend/alembic/versions/20261120_world_tourism_cat.py](../backend/alembic/versions/20261120_world_tourism_cat.py) | reviewed | 2/2 | актуально |
 | [backend/alembic/versions/8524e35ba1ee_init_schema.py](../backend/alembic/versions/8524e35ba1ee_init_schema.py) | reviewed | 2/2 | актуально |
 | [backend/app/__init__.py](../backend/app/__init__.py) | reviewed | 0/0 | актуально |
 | [backend/app/api/__init__.py](../backend/app/api/__init__.py) | reviewed | 0/0 | актуально |
@@ -147,17 +148,18 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/api/push.py](../backend/app/api/push.py) | reviewed | 13/13 | актуально |
 | [backend/app/api/pwa.py](../backend/app/api/pwa.py) | reviewed | 7/7 | актуально |
 | [backend/app/api/regions.py](../backend/app/api/regions.py) | reviewed | 39/39 | актуально |
-| [backend/app/api/research.py](../backend/app/api/research.py) | reviewed | 10/10 | актуально |
+| [backend/app/api/research.py](../backend/app/api/research.py) | reviewed | 14/14 | актуально |
 | [backend/app/api/router.py](../backend/app/api/router.py) | reviewed | 0/0 | актуально |
 | [backend/app/api/search.py](../backend/app/api/search.py) | reviewed | 3/3 | актуально |
-| [backend/app/api/seo_pages.py](../backend/app/api/seo_pages.py) | reviewed | 52/52 | актуально |
+| [backend/app/api/seo_pages.py](../backend/app/api/seo_pages.py) | reviewed | 53/53 | актуально |
 | [backend/app/api/session_replay.py](../backend/app/api/session_replay.py) | reviewed | 10/10 | актуально |
 | [backend/app/api/site_acq.py](../backend/app/api/site_acq.py) | reviewed | 2/2 | актуально |
 | [backend/app/api/sitemap.py](../backend/app/api/sitemap.py) | reviewed | 59/59 | актуально |
 | [backend/app/api/system.py](../backend/app/api/system.py) | reviewed | 7/7 | актуально |
 | [backend/app/api/ticker.py](../backend/app/api/ticker.py) | reviewed | 5/5 | актуально |
 | [backend/app/api/topic_mail.py](../backend/app/api/topic_mail.py) | reviewed | 11/11 | актуально |
-| [backend/app/api/world.py](../backend/app/api/world.py) | reviewed | 66/66 | актуально |
+| [backend/app/api/tourism.py](../backend/app/api/tourism.py) | reviewed | 1/1 | актуально |
+| [backend/app/api/world.py](../backend/app/api/world.py) | reviewed | 67/67 | актуально |
 | [backend/app/api/world_subnational.py](../backend/app/api/world_subnational.py) | reviewed | 19/19 | актуально |
 | [backend/app/assets/fonts/GolosText-OFL.txt](../backend/app/assets/fonts/GolosText-OFL.txt) | reviewed | 0/0 | актуально |
 | [backend/app/assets/fonts/GolosText-Variable.ttf](../backend/app/assets/fonts/GolosText-Variable.ttf) | asset_metadata_reviewed | 0/0 | актуально |
@@ -246,12 +248,41 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/data/regional/indicators.json](../backend/app/data/regional/indicators.json) | data_schema_reviewed | 0/0 | актуально |
 | [backend/app/data/regional/parse_report.json](../backend/app/data/regional/parse_report.json) | reviewed | 0/0 | актуально |
 | [backend/app/data/regional/regions.json](../backend/app/data/regional/regions.json) | reviewed | 0/0 | актуально |
+| [backend/app/data/regional/tourism_seed.csv.gz](../backend/app/data/regional/tourism_seed.csv.gz) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/research_articles/domestic-tourism-russia.json](../backend/app/data/research_articles/domestic-tourism-russia.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/research_articles/foreign-tourists-russia.json](../backend/app/data/research_articles/foreign-tourists-russia.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/research_articles/russians-travel-abroad.json](../backend/app/data/research_articles/russians-travel-abroad.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/research_articles/tourist-tax-russia.json](../backend/app/data/research_articles/tourist-tax-russia.json) | data_schema_reviewed | 0/0 | актуально |
 | [backend/app/data/research_catalog.json](../backend/app/data/research_catalog.json) | reviewed | 0/0 | актуально |
 | [backend/app/data/rosstat_weekly_goods.py](../backend/app/data/rosstat_weekly_goods.py) | reviewed | 6/6 | актуально |
 | [backend/app/data/seo_static/llms.en.txt](../backend/app/data/seo_static/llms.en.txt) | reviewed | 0/0 | актуально |
 | [backend/app/data/seo_static/llms.txt](../backend/app/data/seo_static/llms.txt) | reviewed | 0/0 | актуально |
 | [backend/app/data/seo_static/robots.en.txt](../backend/app/data/seo_static/robots.en.txt) | reviewed | 0/0 | актуально |
 | [backend/app/data/seo_static/robots.txt](../backend/app/data/seo_static/robots.txt) | reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_regional.py](../backend/app/data/tourism_regional.py) | reviewed | 14/14 | актуально |
+| [backend/app/data/tourism_russia.py](../backend/app/data/tourism_russia.py) | reviewed | 21/21 | актуально |
+| [backend/app/data/tourism_snapshots/Poezdki_10-2026.xlsx](../backend/app/data/tourism_snapshots/Poezdki_10-2026.xlsx) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/VDS_ti_OKVED2_vvp.xlsx](../backend/app/data/tourism_snapshots/VDS_ti_OKVED2_vvp.xlsx) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/destinations_russians.csv](../backend/app/data/tourism_snapshots/destinations_russians.csv) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/emiss_31003.json](../backend/app/data/tourism_snapshots/emiss_31003.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/emiss_31313.json](../backend/app/data/tourism_snapshots/emiss_31313.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/emiss_31315.json](../backend/app/data/tourism_snapshots/emiss_31315.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/emiss_31560.json](../backend/app/data/tourism_snapshots/emiss_31560.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/emiss_31579.json](../backend/app/data/tourism_snapshots/emiss_31579.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/emiss_31583.json](../backend/app/data/tourism_snapshots/emiss_31583.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/emiss_31586.json](../backend/app/data/tourism_snapshots/emiss_31586.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/emiss_31587.json](../backend/app/data/tourism_snapshots/emiss_31587.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/emiss_31615.json](../backend/app/data/tourism_snapshots/emiss_31615.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/emiss_37015.json](../backend/app/data/tourism_snapshots/emiss_37015.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/emiss_37019.json](../backend/app/data/tourism_snapshots/emiss_37019.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/emiss_37020.json](../backend/app/data/tourism_snapshots/emiss_37020.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/emiss_37022.json](../backend/app/data/tourism_snapshots/emiss_37022.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/emiss_42101.json](../backend/app/data/tourism_snapshots/emiss_42101.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/emiss_42102.json](../backend/app/data/tourism_snapshots/emiss_42102.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/emiss_42103.json](../backend/app/data/tourism_snapshots/emiss_42103.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/emiss_62301.json](../backend/app/data/tourism_snapshots/emiss_62301.json) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/ipc_spr_09-2026.xlsx](../backend/app/data/tourism_snapshots/ipc_spr_09-2026.xlsx) | data_schema_reviewed | 0/0 | актуально |
+| [backend/app/data/tourism_snapshots/tourism_static.csv](../backend/app/data/tourism_snapshots/tourism_static.csv) | data_schema_reviewed | 0/0 | актуально |
 | [backend/app/data/view_model_families.py](../backend/app/data/view_model_families.py) | reviewed | 39/39 | актуально |
 | [backend/app/data/wages_historical.py](../backend/app/data/wages_historical.py) | reviewed | 1/1 | актуально |
 | [backend/app/data/world_aggregation.py](../backend/app/data/world_aggregation.py) | reviewed | 20/20 | актуально |
@@ -277,6 +308,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/data/world_simple_names.py](../backend/app/data/world_simple_names.py) | reviewed | 2/2 | актуально |
 | [backend/app/data/world_subnational/us.yaml](../backend/app/data/world_subnational/us.yaml) | reviewed | 0/0 | актуально |
 | [backend/app/data/world_superseded.py](../backend/app/data/world_superseded.py) | reviewed | 7/7 | актуально |
+| [backend/app/data/world_tourism_national.csv.gz](../backend/app/data/world_tourism_national.csv.gz) | data_schema_reviewed | 0/0 | актуально |
 | [backend/app/database.py](../backend/app/database.py) | reviewed | 6/6 | актуально |
 | [backend/app/main.py](../backend/app/main.py) | reviewed | 46/46 | актуально |
 | [backend/app/models.py](../backend/app/models.py) | reviewed | 107/107 | актуально |
@@ -343,7 +375,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/cbr_reserves_parser.py](../backend/app/services/cbr_reserves_parser.py) | reviewed | 6/6 | актуально |
 | [backend/app/services/cbr_ruonia_parser.py](../backend/app/services/cbr_ruonia_parser.py) | reviewed | 5/5 | актуально |
 | [backend/app/services/cbr_trade_goods_monthly_parser.py](../backend/app/services/cbr_trade_goods_monthly_parser.py) | reviewed | 7/7 | актуально |
-| [backend/app/services/cbr_trade_services_monthly_parser.py](../backend/app/services/cbr_trade_services_monthly_parser.py) | reviewed | 6/6 | актуально |
+| [backend/app/services/cbr_trade_services_monthly_parser.py](../backend/app/services/cbr_trade_services_monthly_parser.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/channel_author.py](../backend/app/services/channel_author.py) | reviewed | 27/27 | актуально |
 | [backend/app/services/channel_facts.py](../backend/app/services/channel_facts.py) | reviewed | 45/45 | актуально |
 | [backend/app/services/channel_posts.py](../backend/app/services/channel_posts.py) | reviewed | 33/33 | актуально |
@@ -368,6 +400,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/emiss_regional_sets_parser.py](../backend/app/services/emiss_regional_sets_parser.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/emiss_regional_social.py](../backend/app/services/emiss_regional_social.py) | reviewed | 8/8 | актуально |
 | [backend/app/services/emiss_steel_parser.py](../backend/app/services/emiss_steel_parser.py) | reviewed | 4/4 | актуально |
+| [backend/app/services/emiss_tourism_parser.py](../backend/app/services/emiss_tourism_parser.py) | reviewed | 15/15 | актуально |
 | [backend/app/services/emiss_weekly_fuel.py](../backend/app/services/emiss_weekly_fuel.py) | reviewed | 18/18 | актуально |
 | [backend/app/services/eurostat_parser.py](../backend/app/services/eurostat_parser.py) | reviewed | 35/35 | актуально |
 | [backend/app/services/eurostat_rebase.py](../backend/app/services/eurostat_rebase.py) | reviewed | 18/18 | актуально |
@@ -501,6 +534,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/rosstat_ppi_parser.py](../backend/app/services/rosstat_ppi_parser.py) | reviewed | 13/13 | актуально |
 | [backend/app/services/rosstat_science_parser.py](../backend/app/services/rosstat_science_parser.py) | reviewed | 20/20 | актуально |
 | [backend/app/services/rosstat_sdds_fetcher.py](../backend/app/services/rosstat_sdds_fetcher.py) | reviewed | 17/17 | актуально |
+| [backend/app/services/rosstat_tourism_parser.py](../backend/app/services/rosstat_tourism_parser.py) | reviewed | 28/28 | актуально |
 | [backend/app/services/rosstat_weekly_inflation_parser.py](../backend/app/services/rosstat_weekly_inflation_parser.py) | reviewed | 32/32 | актуально |
 | [backend/app/services/rosstat_weekly_price_parser.py](../backend/app/services/rosstat_weekly_price_parser.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/scrape_guard.py](../backend/app/services/scrape_guard.py) | reviewed | 20/20 | актуально |
@@ -520,6 +554,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/search_region_hint.py](../backend/app/services/search_region_hint.py) | reviewed | 3/3 | актуально |
 | [backend/app/services/search_regional_groups.py](../backend/app/services/search_regional_groups.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/search_rewrite.py](../backend/app/services/search_rewrite.py) | reviewed | 14/14 | актуально |
+| [backend/app/services/search_tourism.py](../backend/app/services/search_tourism.py) | reviewed | 0/0 | актуально |
 | [backend/app/services/search_units.py](../backend/app/services/search_units.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/search_unknown_word.py](../backend/app/services/search_unknown_word.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/search_variants.py](../backend/app/services/search_variants.py) | reviewed | 6/6 | актуально |
@@ -536,14 +571,15 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/seo_index_control.py](../backend/app/services/seo_index_control.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/seo_indicator_month.py](../backend/app/services/seo_indicator_month.py) | reviewed | 12/12 | актуально |
 | [backend/app/services/seo_region_compare.py](../backend/app/services/seo_region_compare.py) | reviewed | 5/5 | актуально |
-| [backend/app/services/seo_regional.py](../backend/app/services/seo_regional.py) | reviewed | 24/24 | актуально |
-| [backend/app/services/seo_regional_quarterly.py](../backend/app/services/seo_regional_quarterly.py) | reviewed | 3/3 | актуально |
+| [backend/app/services/seo_regional.py](../backend/app/services/seo_regional.py) | reviewed | 26/26 | актуально |
+| [backend/app/services/seo_regional_quarterly.py](../backend/app/services/seo_regional_quarterly.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/seo_regional_year.py](../backend/app/services/seo_regional_year.py) | reviewed | 10/10 | актуально |
 | [backend/app/services/seo_renderer.py](../backend/app/services/seo_renderer.py) | reviewed | 103/103 | актуально |
-| [backend/app/services/seo_research.py](../backend/app/services/seo_research.py) | reviewed | 2/2 | актуально |
+| [backend/app/services/seo_research.py](../backend/app/services/seo_research.py) | reviewed | 5/5 | актуально |
 | [backend/app/services/seo_today.py](../backend/app/services/seo_today.py) | reviewed | 16/16 | актуально |
+| [backend/app/services/seo_tourism.py](../backend/app/services/seo_tourism.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/seo_weekly_report.py](../backend/app/services/seo_weekly_report.py) | reviewed | 16/16 | актуально |
-| [backend/app/services/seo_world.py](../backend/app/services/seo_world.py) | reviewed | 54/54 | актуально |
+| [backend/app/services/seo_world.py](../backend/app/services/seo_world.py) | reviewed | 55/55 | актуально |
 | [backend/app/services/seo_world_compare.py](../backend/app/services/seo_world_compare.py) | reviewed | 22/22 | актуально |
 | [backend/app/services/seo_world_subnational.py](../backend/app/services/seo_world_subnational.py) | reviewed | 15/15 | актуально |
 | [backend/app/services/seo_world_subnational_compare.py](../backend/app/services/seo_world_subnational_compare.py) | reviewed | 3/3 | актуально |
@@ -555,8 +591,8 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/session_change_log.py](../backend/app/services/session_change_log.py) | reviewed | 10/10 | актуально |
 | [backend/app/services/session_replay.py](../backend/app/services/session_replay.py) | reviewed | 15/15 | актуально |
 | [backend/app/services/signup_attribution.py](../backend/app/services/signup_attribution.py) | reviewed | 11/11 | актуально |
-| [backend/app/services/site_paths.py](../backend/app/services/site_paths.py) | reviewed | 52/52 | актуально |
-| [backend/app/services/site_urls.py](../backend/app/services/site_urls.py) | reviewed | 87/87 | актуально |
+| [backend/app/services/site_paths.py](../backend/app/services/site_paths.py) | reviewed | 54/54 | актуально |
+| [backend/app/services/site_urls.py](../backend/app/services/site_urls.py) | reviewed | 88/88 | актуально |
 | [backend/app/services/sitemap_images.py](../backend/app/services/sitemap_images.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/sitemap_priority.py](../backend/app/services/sitemap_priority.py) | reviewed | 15/15 | актуально |
 | [backend/app/services/sitemap_static.py](../backend/app/services/sitemap_static.py) | reviewed | 23/23 | актуально |
@@ -575,6 +611,8 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/ticker_sources/binance.py](../backend/app/services/ticker_sources/binance.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/ticker_sources/moex_brent.py](../backend/app/services/ticker_sources/moex_brent.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/ticker_sources/moex_iss.py](../backend/app/services/ticker_sources/moex_iss.py) | reviewed | 4/4 | актуально |
+| [backend/app/services/tourism_regional_loader.py](../backend/app/services/tourism_regional_loader.py) | reviewed | 60/60 | актуально |
+| [backend/app/services/tourism_showcase.py](../backend/app/services/tourism_showcase.py) | reviewed | 8/8 | актуально |
 | [backend/app/services/traffic_channel.py](../backend/app/services/traffic_channel.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/ua_parser.py](../backend/app/services/ua_parser.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/upsert.py](../backend/app/services/upsert.py) | reviewed | 9/9 | актуально |
@@ -632,6 +670,8 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/world_subnational_forecast.py](../backend/app/services/world_subnational_forecast.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/world_subnational_ingest.py](../backend/app/services/world_subnational_ingest.py) | reviewed | 27/27 | актуально |
 | [backend/app/services/world_subnational_queries.py](../backend/app/services/world_subnational_queries.py) | reviewed | 7/7 | актуально |
+| [backend/app/services/world_tourism_ingest.py](../backend/app/services/world_tourism_ingest.py) | reviewed | 15/15 | актуально |
+| [backend/app/services/world_tourism_sources.py](../backend/app/services/world_tourism_sources.py) | reviewed | 28/28 | актуально |
 | [backend/app/services/world_view_modes.py](../backend/app/services/world_view_modes.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/yandex_clean_param.py](../backend/app/services/yandex_clean_param.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/yandex_client.py](../backend/app/services/yandex_client.py) | reviewed | 7/7 | актуально |
@@ -646,7 +686,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/tasks/analytics_rollups.py](../backend/app/tasks/analytics_rollups.py) | reviewed | 49/49 | актуально |
 | [backend/app/tasks/analytics_scheduler.py](../backend/app/tasks/analytics_scheduler.py) | reviewed | 22/22 | актуально |
 | [backend/app/tasks/freshness_watchdog.py](../backend/app/tasks/freshness_watchdog.py) | reviewed | 1/1 | актуально |
-| [backend/app/tasks/scheduler.py](../backend/app/tasks/scheduler.py) | reviewed | 35/35 | актуально |
+| [backend/app/tasks/scheduler.py](../backend/app/tasks/scheduler.py) | reviewed | 36/36 | актуально |
 | [backend/app/tasks/session_analysis.py](../backend/app/tasks/session_analysis.py) | reviewed | 5/5 | актуально |
 | [backend/app/tasks/ticker_worker.py](../backend/app/tasks/ticker_worker.py) | reviewed | 6/6 | актуально |
 | [backend/certs/russian_trusted_root_ca_gost_2025.cer](../backend/certs/russian_trusted_root_ca_gost_2025.cer) | asset_metadata_reviewed | 0/0 | актуально |
@@ -668,6 +708,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/scripts/backfill-behavior-channels.py](../backend/scripts/backfill-behavior-channels.py) | reviewed | 1/1 | актуально |
 | [backend/scripts/backfill-metrika-history.py](../backend/scripts/backfill-metrika-history.py) | reviewed | 4/4 | актуально |
 | [backend/scripts/backfill-signup-attribution.py](../backend/scripts/backfill-signup-attribution.py) | reviewed | 1/1 | актуально |
+| [backend/scripts/build_tourism_regional_seed.py](../backend/scripts/build_tourism_regional_seed.py) | reviewed | 1/1 | актуально |
 | [backend/scripts/channel-author-preview.py](../backend/scripts/channel-author-preview.py) | reviewed | 1/1 | актуально |
 | [backend/scripts/check-migration-drift.py](../backend/scripts/check-migration-drift.py) | reviewed | 3/3 | актуально |
 | [backend/scripts/create-admin.py](../backend/scripts/create-admin.py) | reviewed | 1/1 | актуально |
@@ -778,6 +819,25 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/fixtures/world_intl/bis_cbpol_sample.csv](../backend/tests/fixtures/world_intl/bis_cbpol_sample.csv) | reviewed | 0/0 | актуально |
 | [backend/tests/fixtures/world_intl/ilo_youth_sample.csv](../backend/tests/fixtures/world_intl/ilo_youth_sample.csv) | reviewed | 0/0 | актуально |
 | [backend/tests/fixtures/world_intl/wb_gini_sample.json](../backend/tests/fixtures/world_intl/wb_gini_sample.json) | reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/cystat_sample.csv](../backend/tests/fixtures/world_tourism/cystat_sample.csv) | artifact_schema_reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/estat_travel_ru_sample.csv](../backend/tests/fixtures/world_tourism/estat_travel_ru_sample.csv) | artifact_schema_reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/geostat_0505EN0204_sample.xlsx](../backend/tests/fixtures/world_tourism/geostat_0505EN0204_sample.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/imf_bop_sample.csv](../backend/tests/fixtures/world_tourism/imf_bop_sample.csv) | artifact_schema_reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/oecd_df_inbound_sample.csv](../backend/tests/fixtures/world_tourism/oecd_df_inbound_sample.csv) | artifact_schema_reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/oecd_df_key_ind_pc_sample.csv](../backend/tests/fixtures/world_tourism/oecd_df_key_ind_pc_sample.csv) | artifact_schema_reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/pages_sample.html](../backend/tests/fixtures/world_tourism/pages_sample.html) | reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/tidy/armenia/tidy.csv](../backend/tests/fixtures/world_tourism/tidy/armenia/tidy.csv) | artifact_schema_reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/tidy/azerbaijan/tidy.csv](../backend/tests/fixtures/world_tourism/tidy/azerbaijan/tidy.csv) | artifact_schema_reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/tidy/eurostat_by_residence/tidy.csv](../backend/tests/fixtures/world_tourism/tidy/eurostat_by_residence/tidy.csv) | artifact_schema_reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/tidy/india/tidy.csv](../backend/tests/fixtures/world_tourism/tidy/india/tidy.csv) | artifact_schema_reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/tidy/israel/tidy.csv](../backend/tests/fixtures/world_tourism/tidy/israel/tidy.csv) | artifact_schema_reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/tidy/japan/tidy.csv](../backend/tests/fixtures/world_tourism/tidy/japan/tidy.csv) | artifact_schema_reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/tidy/korea/tidy.csv](../backend/tests/fixtures/world_tourism/tidy/korea/tidy.csv) | artifact_schema_reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/tidy/montenegro/tidy.csv](../backend/tests/fixtures/world_tourism/tidy/montenegro/tidy.csv) | artifact_schema_reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/tidy/serbia/tidy.csv](../backend/tests/fixtures/world_tourism/tidy/serbia/tidy.csv) | artifact_schema_reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/tidy/spain/tidy.csv](../backend/tests/fixtures/world_tourism/tidy/spain/tidy.csv) | artifact_schema_reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/tidy/turkey/tidy.csv](../backend/tests/fixtures/world_tourism/tidy/turkey/tidy.csv) | artifact_schema_reviewed | 0/0 | актуально |
+| [backend/tests/fixtures/world_tourism/untourism_sample.xlsx](../backend/tests/fixtures/world_tourism/untourism_sample.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [backend/tests/forecast_strategies/__init__.py](../backend/tests/forecast_strategies/__init__.py) | reviewed | 0/0 | актуально |
 | [backend/tests/forecast_strategies/fixtures/construction_work_series.json](../backend/tests/forecast_strategies/fixtures/construction_work_series.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [backend/tests/forecast_strategies/snapshots/cpi_2025_11.json](../backend/tests/forecast_strategies/snapshots/cpi_2025_11.json) | artifact_schema_reviewed | 0/0 | актуально |
@@ -1040,7 +1100,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_regional_search_metadata.py](../backend/tests/test_regional_search_metadata.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_regional_seed_pg.py](../backend/tests/test_regional_seed_pg.py) | reviewed | 28/28 | актуально |
 | [backend/tests/test_reports_only_role.py](../backend/tests/test_reports_only_role.py) | reviewed | 18/18 | актуально |
-| [backend/tests/test_research.py](../backend/tests/test_research.py) | reviewed | 12/12 | актуально |
+| [backend/tests/test_research.py](../backend/tests/test_research.py) | reviewed | 17/17 | актуально |
 | [backend/tests/test_rollups_history_timeout.py](../backend/tests/test_rollups_history_timeout.py) | reviewed | 15/15 | актуально |
 | [backend/tests/test_rollups_lock.py](../backend/tests/test_rollups_lock.py) | reviewed | 24/24 | актуально |
 | [backend/tests/test_rosstat_fuel_samples.py](../backend/tests/test_rosstat_fuel_samples.py) | reviewed | 16/16 | актуально |
@@ -1175,6 +1235,9 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_ticker_sources.py](../backend/tests/test_ticker_sources.py) | reviewed | 33/33 | актуально |
 | [backend/tests/test_title_uniqueness.py](../backend/tests/test_title_uniqueness.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_topic_mail.py](../backend/tests/test_topic_mail.py) | reviewed | 23/23 | актуально |
+| [backend/tests/test_tourism_regional.py](../backend/tests/test_tourism_regional.py) | reviewed | 45/45 | актуально |
+| [backend/tests/test_tourism_russia.py](../backend/tests/test_tourism_russia.py) | reviewed | 25/25 | актуально |
+| [backend/tests/test_tourism_showcase.py](../backend/tests/test_tourism_showcase.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_unemployment_seo.py](../backend/tests/test_unemployment_seo.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_upsert.py](../backend/tests/test_upsert.py) | reviewed | 12/12 | актуально |
 | [backend/tests/test_us_br_pop_adapter.py](../backend/tests/test_us_br_pop_adapter.py) | reviewed | 11/11 | актуально |
@@ -1248,6 +1311,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_world_statcan_adapter.py](../backend/tests/test_world_statcan_adapter.py) | reviewed | 16/16 | актуально |
 | [backend/tests/test_world_subnational.py](../backend/tests/test_world_subnational.py) | reviewed | 43/43 | актуально |
 | [backend/tests/test_world_superseded.py](../backend/tests/test_world_superseded.py) | reviewed | 13/13 | актуально |
+| [backend/tests/test_world_tourism_sources.py](../backend/tests/test_world_tourism_sources.py) | reviewed | 27/27 | актуально |
 | [backend/tests/test_world_truthfulness.py](../backend/tests/test_world_truthfulness.py) | reviewed | 19/19 | актуально |
 | [backend/tests/test_world_us_bls_bea_adapters.py](../backend/tests/test_world_us_bls_bea_adapters.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_world_value_digits.py](../backend/tests/test_world_value_digits.py) | reviewed | 10/10 | актуально |
@@ -1320,6 +1384,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/adr/0035-telegram-channel-author.md](../docs/adr/0035-telegram-channel-author.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0036-search-index.md](../docs/adr/0036-search-index.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0037-world-latest-points.md](../docs/adr/0037-world-latest-points.md) | reviewed | 0/0 | актуально |
+| [docs/adr/0038-tourism-section.md](../docs/adr/0038-tourism-section.md) | data_schema_reviewed | 0/0 | актуально |
 | [docs/agent-briefs/README.md](../docs/agent-briefs/README.md) | reviewed | 0/0 | актуально |
 | [docs/agent-briefs/hotfix-brief.md](../docs/agent-briefs/hotfix-brief.md) | reviewed | 0/0 | актуально |
 | [docs/agent-briefs/integration-brief.md](../docs/agent-briefs/integration-brief.md) | reviewed | 0/0 | актуально |
@@ -1572,6 +1637,42 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/public/planet/earth_night_2048.webp](../frontend/public/planet/earth_night_2048.webp) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/planet/earth_night_4096.jpg](../frontend/public/planet/earth_night_4096.jpg) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/planet/source-manifest.json](../frontend/public/planet/source-manifest.json) | data_schema_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/domestic-tourism-russia/en-1.webp](../frontend/public/research/articles/domestic-tourism-russia/en-1.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/domestic-tourism-russia/en-2.webp](../frontend/public/research/articles/domestic-tourism-russia/en-2.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/domestic-tourism-russia/en-3.webp](../frontend/public/research/articles/domestic-tourism-russia/en-3.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/domestic-tourism-russia/en-4.webp](../frontend/public/research/articles/domestic-tourism-russia/en-4.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/domestic-tourism-russia/en-5.webp](../frontend/public/research/articles/domestic-tourism-russia/en-5.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/domestic-tourism-russia/ru-1.webp](../frontend/public/research/articles/domestic-tourism-russia/ru-1.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/domestic-tourism-russia/ru-2.webp](../frontend/public/research/articles/domestic-tourism-russia/ru-2.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/domestic-tourism-russia/ru-3.webp](../frontend/public/research/articles/domestic-tourism-russia/ru-3.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/domestic-tourism-russia/ru-4.webp](../frontend/public/research/articles/domestic-tourism-russia/ru-4.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/domestic-tourism-russia/ru-5.webp](../frontend/public/research/articles/domestic-tourism-russia/ru-5.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/foreign-tourists-russia/en-1.webp](../frontend/public/research/articles/foreign-tourists-russia/en-1.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/foreign-tourists-russia/en-2.webp](../frontend/public/research/articles/foreign-tourists-russia/en-2.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/foreign-tourists-russia/en-3.webp](../frontend/public/research/articles/foreign-tourists-russia/en-3.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/foreign-tourists-russia/en-4.webp](../frontend/public/research/articles/foreign-tourists-russia/en-4.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/foreign-tourists-russia/en-5.webp](../frontend/public/research/articles/foreign-tourists-russia/en-5.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/foreign-tourists-russia/ru-1.webp](../frontend/public/research/articles/foreign-tourists-russia/ru-1.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/foreign-tourists-russia/ru-2.webp](../frontend/public/research/articles/foreign-tourists-russia/ru-2.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/foreign-tourists-russia/ru-3.webp](../frontend/public/research/articles/foreign-tourists-russia/ru-3.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/foreign-tourists-russia/ru-4.webp](../frontend/public/research/articles/foreign-tourists-russia/ru-4.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/foreign-tourists-russia/ru-5.webp](../frontend/public/research/articles/foreign-tourists-russia/ru-5.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/russians-travel-abroad/en-1.webp](../frontend/public/research/articles/russians-travel-abroad/en-1.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/russians-travel-abroad/en-2.webp](../frontend/public/research/articles/russians-travel-abroad/en-2.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/russians-travel-abroad/en-3.webp](../frontend/public/research/articles/russians-travel-abroad/en-3.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/russians-travel-abroad/en-4.webp](../frontend/public/research/articles/russians-travel-abroad/en-4.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/russians-travel-abroad/en-5.webp](../frontend/public/research/articles/russians-travel-abroad/en-5.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/russians-travel-abroad/ru-1.webp](../frontend/public/research/articles/russians-travel-abroad/ru-1.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/russians-travel-abroad/ru-2.webp](../frontend/public/research/articles/russians-travel-abroad/ru-2.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/russians-travel-abroad/ru-3.webp](../frontend/public/research/articles/russians-travel-abroad/ru-3.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/russians-travel-abroad/ru-4.webp](../frontend/public/research/articles/russians-travel-abroad/ru-4.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/russians-travel-abroad/ru-5.webp](../frontend/public/research/articles/russians-travel-abroad/ru-5.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/tourist-tax-russia/en-1.webp](../frontend/public/research/articles/tourist-tax-russia/en-1.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/tourist-tax-russia/en-2.webp](../frontend/public/research/articles/tourist-tax-russia/en-2.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/tourist-tax-russia/en-3.webp](../frontend/public/research/articles/tourist-tax-russia/en-3.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/tourist-tax-russia/ru-1.webp](../frontend/public/research/articles/tourist-tax-russia/ru-1.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/tourist-tax-russia/ru-2.webp](../frontend/public/research/articles/tourist-tax-russia/ru-2.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/articles/tourist-tax-russia/ru-3.webp](../frontend/public/research/articles/tourist-tax-russia/ru-3.webp) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/research/covers/forecasteconomy-research-01.webp](../frontend/public/research/covers/forecasteconomy-research-01.webp) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/research/covers/forecasteconomy-research-02.webp](../frontend/public/research/covers/forecasteconomy-research-02.webp) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/research/covers/forecasteconomy-research-03.webp](../frontend/public/research/covers/forecasteconomy-research-03.webp) | asset_metadata_reviewed | 0/0 | актуально |
@@ -1598,6 +1699,10 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/public/research/covers/forecasteconomy-research-24.webp](../frontend/public/research/covers/forecasteconomy-research-24.webp) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/research/covers/forecasteconomy-research-25.webp](../frontend/public/research/covers/forecasteconomy-research-25.webp) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/research/covers/forecasteconomy-research-26.webp](../frontend/public/research/covers/forecasteconomy-research-26.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/covers/forecasteconomy-research-27.webp](../frontend/public/research/covers/forecasteconomy-research-27.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/covers/forecasteconomy-research-28.webp](../frontend/public/research/covers/forecasteconomy-research-28.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/covers/forecasteconomy-research-29.webp](../frontend/public/research/covers/forecasteconomy-research-29.webp) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/covers/forecasteconomy-research-30.webp](../frontend/public/research/covers/forecasteconomy-research-30.webp) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/research/files/forecasteconomy-research-01-lipstick-index.pdf](../frontend/public/research/files/forecasteconomy-research-01-lipstick-index.pdf) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/research/files/forecasteconomy-research-02-engel-law.pdf](../frontend/public/research/files/forecasteconomy-research-02-engel-law.pdf) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/research/files/forecasteconomy-research-03-okun-law.pdf](../frontend/public/research/files/forecasteconomy-research-03-okun-law.pdf) | asset_metadata_reviewed | 0/0 | актуально |
@@ -1624,6 +1729,10 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/public/research/files/forecasteconomy-research-24-shrinkflation.pdf](../frontend/public/research/files/forecasteconomy-research-24-shrinkflation.pdf) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/research/files/forecasteconomy-research-25-taxi-surge-pricing.pdf](../frontend/public/research/files/forecasteconomy-research-25-taxi-surge-pricing.pdf) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/research/files/forecasteconomy-research-26-bank-license-revoked.pdf](../frontend/public/research/files/forecasteconomy-research-26-bank-license-revoked.pdf) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/files/forecasteconomy-research-27-russians-travel-abroad.pdf](../frontend/public/research/files/forecasteconomy-research-27-russians-travel-abroad.pdf) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/files/forecasteconomy-research-28-foreign-tourists-russia.pdf](../frontend/public/research/files/forecasteconomy-research-28-foreign-tourists-russia.pdf) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/files/forecasteconomy-research-29-tourist-tax-russia.pdf](../frontend/public/research/files/forecasteconomy-research-29-tourist-tax-russia.pdf) | asset_metadata_reviewed | 0/0 | актуально |
+| [frontend/public/research/files/forecasteconomy-research-30-domestic-tourism-russia.pdf](../frontend/public/research/files/forecasteconomy-research-30-domestic-tourism-russia.pdf) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/robots.txt](../frontend/public/robots.txt) | reviewed | 0/0 | актуально |
 | [frontend/public/seo-ticker.js](../frontend/public/seo-ticker.js) | reviewed | 5/5 | актуально |
 | [frontend/public/sw.js](../frontend/public/sw.js) | reviewed | 1/1 | актуально |
@@ -1850,6 +1959,8 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/TelemetryCard.jsx](../frontend/src/components/TelemetryCard.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/TopicMailForm.component.test.jsx](../frontend/src/components/TopicMailForm.component.test.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/components/TopicMailForm.jsx](../frontend/src/components/TopicMailForm.jsx) | reviewed | 4/4 | актуально |
+| [frontend/src/components/TourismFloors.component.test.jsx](../frontend/src/components/TourismFloors.component.test.jsx) | reviewed | 4/4 | актуально |
+| [frontend/src/components/TourismFloors.jsx](../frontend/src/components/TourismFloors.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/components/UnemploymentIndicatorControls.jsx](../frontend/src/components/UnemploymentIndicatorControls.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/UnemploymentViewModePicker.jsx](../frontend/src/components/UnemploymentViewModePicker.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/components/UsCatalogNav.jsx](../frontend/src/components/UsCatalogNav.jsx) | reviewed | 1/1 | актуально |
@@ -2017,7 +2128,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/index.css](../frontend/src/index.css) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/absoluteAuthNext.test.js](../frontend/src/lib/absoluteAuthNext.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/accountInitial.js](../frontend/src/lib/accountInitial.js) | reviewed | 1/1 | актуально |
-| [frontend/src/lib/api.js](../frontend/src/lib/api.js) | reviewed | 54/54 | актуально |
+| [frontend/src/lib/api.js](../frontend/src/lib/api.js) | reviewed | 56/56 | актуально |
 | [frontend/src/lib/api.test.js](../frontend/src/lib/api.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/apiErrorMessage.js](../frontend/src/lib/apiErrorMessage.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/apiErrorMessage.test.js](../frontend/src/lib/apiErrorMessage.test.js) | reviewed | 1/1 | актуально |
@@ -2204,7 +2315,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/homeToday.test.js](../frontend/src/lib/homeToday.test.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/homeWorkbench.js](../frontend/src/lib/homeWorkbench.js) | reviewed | 28/28 | актуально |
 | [frontend/src/lib/homeWorkbench.test.js](../frontend/src/lib/homeWorkbench.test.js) | reviewed | 2/2 | актуально |
-| [frontend/src/lib/hooks.js](../frontend/src/lib/hooks.js) | reviewed | 25/25 | актуально |
+| [frontend/src/lib/hooks.js](../frontend/src/lib/hooks.js) | reviewed | 27/27 | актуально |
 | [frontend/src/lib/housingViewModeContent.jsx](../frontend/src/lib/housingViewModeContent.jsx) | reviewed | 9/9 | актуально |
 | [frontend/src/lib/housingViewModeContent.test.js](../frontend/src/lib/housingViewModeContent.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/housingViewModeGroups.js](../frontend/src/lib/housingViewModeGroups.js) | reviewed | 2/2 | актуально |
@@ -2349,7 +2460,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/siteAcq.test.js](../frontend/src/lib/siteAcq.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/siteOrigin.js](../frontend/src/lib/siteOrigin.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/siteOrigin.test.js](../frontend/src/lib/siteOrigin.test.js) | reviewed | 0/0 | актуально |
-| [frontend/src/lib/sitePaths.js](../frontend/src/lib/sitePaths.js) | reviewed | 38/38 | актуально |
+| [frontend/src/lib/sitePaths.js](../frontend/src/lib/sitePaths.js) | reviewed | 40/40 | актуально |
 | [frontend/src/lib/sitePaths.test.js](../frontend/src/lib/sitePaths.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/slugFlags.js](../frontend/src/lib/slugFlags.js) | reviewed | 3/3 | актуально |
 | [frontend/src/lib/sourceLink.js](../frontend/src/lib/sourceLink.js) | reviewed | 2/2 | актуально |
@@ -2546,6 +2657,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/pages/RegionsHome.z5.component.test.jsx](../frontend/src/pages/RegionsHome.z5.component.test.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/pages/Register.component.test.jsx](../frontend/src/pages/Register.component.test.jsx) | reviewed | 7/7 | актуально |
 | [frontend/src/pages/Register.jsx](../frontend/src/pages/Register.jsx) | reviewed | 4/4 | актуально |
+| [frontend/src/pages/ResearchArticlePage.jsx](../frontend/src/pages/ResearchArticlePage.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/pages/ResearchPage.jsx](../frontend/src/pages/ResearchPage.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/pages/RussiaHome.c11f.component.test.jsx](../frontend/src/pages/RussiaHome.c11f.component.test.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/pages/RussiaHome.component.test.jsx](../frontend/src/pages/RussiaHome.component.test.jsx) | reviewed | 5/5 | актуально |
@@ -2655,6 +2767,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/styles/research.css](../frontend/src/styles/research.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/s6-shell.test.js](../frontend/src/styles/s6-shell.test.js) | reviewed | 2/2 | актуально |
 | [frontend/src/styles/shell.css](../frontend/src/styles/shell.css) | reviewed | 0/0 | актуально |
+| [frontend/src/styles/t6-tourism.css](../frontend/src/styles/t6-tourism.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/ui-detail-nav-calendar.css](../frontend/src/styles/ui-detail-nav-calendar.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/w5-pages.css](../frontend/src/styles/w5-pages.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/w5-tools.css](../frontend/src/styles/w5-tools.css) | reviewed | 0/0 | актуально |
