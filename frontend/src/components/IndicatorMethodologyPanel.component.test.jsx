@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
-import { expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { expect, it, vi } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { LocaleProvider } from '../i18n';
 import IndicatorMethodologyPanel from './IndicatorMethodologyPanel';
@@ -83,4 +83,18 @@ it('shows a quiet «how to cite» line with name, source, date and page address 
   expect(line.textContent).toContain('Forecast Economy. Дизельное топливо');
   expect(line.textContent).toContain(`${window.location.origin}${window.location.pathname}`);
   expect(line.textContent).not.toContain('?');
+});
+
+it('«Как цитировать»: данные за квартал и дата обращения, кнопка копирования (круг наблюдателей, №2)', async () => {
+  const writeText = vi.fn().mockResolvedValue();
+  Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+  renderPanel({
+    indicator: { code: 'tour-outbound', name: 'Выезд', source: 'Росстат', frequency: 'quarterly', current_date: '2026-06-01' },
+  });
+  const line = document.querySelector('[data-block="cite"]');
+  expect(line.textContent).toMatch(/данные за II кв\. 2026, дата обращения \d{2}\.\d{2}\.\d{4}/);
+  expect(line.textContent).not.toMatch(/на 1 июня/);
+  fireEvent.click(screen.getByTestId('cite-copy'));
+  await waitFor(() => expect(writeText).toHaveBeenCalledTimes(1));
+  expect(writeText.mock.calls[0][0]).toMatch(/^Forecast Economy\. Выезд: источник данных — Росстат, данные за II кв\. 2026/);
 });

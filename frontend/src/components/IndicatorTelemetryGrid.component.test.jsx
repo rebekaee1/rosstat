@@ -58,7 +58,36 @@ describe('туризм 20.11.2026: карточки сетки в той же е
           viewStats={{ currentValue: 7770.915, previousValue: 5629.931, currentDate: '2026-06-01' }} />
       </LocaleProvider>,
     );
-    expect(screen.getByText(/: 7\.7709/)).toBeTruthy();
+    // Плитки «Текущее значение» больше нет (повтор шапки), предыдущее осталось в тех же единицах.
+    expect(screen.queryByText(/: 7\.7709/)).toBeNull();
     expect(screen.getByText(/: 5\.6299/)).toBeTruthy();
+  });
+});
+
+describe('туризм, круг наблюдателей: плитка «Рост за 10 лет» с базовым периодом', () => {
+  const quarterly = (from, to, f) => {
+    const out = [];
+    for (let y = from; y <= to; y += 1) {
+      for (let m = 1; m <= 10; m += 3) out.push({ date: `${y}-${String(m).padStart(2, '0')}-01`, value: f(y, m) });
+    }
+    return out;
+  };
+  const renderGrid = (points) => render(
+    <LocaleProvider locale="ru">
+      <IndicatorTelemetryGrid indicator={{ frequency: 'quarterly', unit: 'тыс. поездок' }} adj={(x) => x}
+        safeViewMode="level" chartMode="level" points={points}
+        viewStats={{ currentValue: 100, previousValue: 90, currentDate: '2026-04-01' }} />
+    </LocaleProvider>,
+  );
+
+  it('подпись называет базовый квартал: «К II кв. 2016»', () => {
+    renderGrid(quarterly(2015, 2026, () => 100).filter((p) => p.date <= '2026-04-01'));
+    expect(document.body.textContent.replace(/\u00A0/g, ' ')).toContain('К II кв. 2016');
+    expect(screen.queryByText(/Рост за 10/)).toBeNull();
+  });
+
+  it('база почти ноль: плитки нет (не «1 676 %»)', () => {
+    renderGrid(quarterly(2015, 2026, (y, m) => (y === 2016 && m === 4 ? 1 : 100)).filter((p) => p.date <= '2026-04-01'));
+    expect(screen.queryByText(/^К II кв\. 2016/)).toBeNull();
   });
 });

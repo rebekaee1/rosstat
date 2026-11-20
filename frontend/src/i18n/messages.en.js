@@ -4647,4 +4647,11 @@ export default {
   'kt5_st_zero_year': 'no receipts for the year',
   'kt5_st_no_receipts_yet': 'no receipts yet',
   'kt5_st_no_data': 'no data',
+  // ===== Tourism observers round, zone z1 =====
+  "kt1_delta_sameYear": "vs the same period last year",
+  "kt1_tile_toBase": "Since {date}",
+  "kt1_tile_sinceBase": "Growth since {date}",
+  "kt1_cite_copy": "Copy",
+  "kt1_cite_copied": "Copied",
+  "kt1_host_note": "Host-country data",
 };

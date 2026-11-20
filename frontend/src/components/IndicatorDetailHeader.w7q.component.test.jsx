@@ -24,7 +24,8 @@ describe('IndicatorDetailHeader: breadcrumbs while the name is loading', () => {
       loading: false,
     });
     const crumbs = container.querySelector('nav.fe-crumbs');
-    expect(crumbs.textContent).toContain('ВВП в текущих долларах США');
+    // Текущая страница стоит заголовком, в крошках её название не повторяется (круг наблюдателей 20.11.2026).
+    expect(crumbs.textContent).not.toContain('ВВП в текущих долларах США');
     expect(crumbs.textContent).toContain('Россия');
     expect(crumbs.querySelectorAll('.fe-crumbs__ghost')).toHaveLength(0);
   });

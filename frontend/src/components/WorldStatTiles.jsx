@@ -1,6 +1,7 @@
 import { formatDate, formatValue } from '../lib/format';
 import FreshnessBadge from './FreshnessBadge';
-import { glueDate, periodPhrase, sincePhrase } from '../lib/periodPhrase';
+import { dataFreshness } from '../lib/dataFreshness';
+import { glueDate, periodPhrase } from '../lib/periodPhrase';
 import { formatDeltaWithUnit } from '../lib/deltaText';
 import { formatPercentChange, growthDigits } from '../lib/indicatorSummary';
 import { pluralRu } from '../lib/worldApi';
@@ -57,7 +58,9 @@ export function WorldHeroLine({ summary, place, dateFormat, frequency = '' }) {
       {yearChange ? (
         <span className="fe-hero-line__extra">{' '}{t('w6e.hero.yearChange', { change: yearChange })}</span>
       ) : null}
-      {frequency && last?.date ? <FreshnessBadge lastDate={last.date} frequency={frequency} className="z4-fresh--line" /> : null}
+      {/* «Данные до …» у свежего ряда повторяют подпись периода: показываем только предупреждение «Устарело». */}
+      {frequency && last?.date && dataFreshness(last.date, frequency)?.level === 'stale'
+        ? <FreshnessBadge lastDate={last.date} frequency={frequency} className="z4-fresh--line" /> : null}
     </p>
   );
 }
@@ -170,13 +173,15 @@ export default function WorldStatTiles({
         </StatTile>,
       );
     }
-    if (growth) {
+    // Как на странице показателя (№28): база названа в подписи, при почти нулевой базе или пропуске рядом плитки нет.
+    if (growth && summary.growthReliable) {
+      const baseDate = glueDate(formatDate(growth.from.date, dateFormat === 'full' ? 'fullGen' : dateFormat, locale));
+      const exactCase = dateFormat === 'quarterly' || dateFormat === 'annual' || dateFormat === 'day' || dateFormat === 'weekly';
       tiles.push(
         <StatTile
           key="growth"
           index={tiles.length}
-          label={t('w6e.tile.growth', { n: growth.years, word: yearsWord(growth.years) })}
-          note={sincePhrase(t, growth.from.date, dateFormat, locale)}
+          label={t(exactCase ? 'kt1_tile_toBase' : 'kt1_tile_sinceBase', { date: exactCase ? glueDate(formatDate(growth.from.date, dateFormat, locale)) : baseDate })}
         >
           {formatPercentChange(growth.pct, locale, growthDigits(growth.pct)) || t('w6e.delta.flat')}
         </StatTile>,

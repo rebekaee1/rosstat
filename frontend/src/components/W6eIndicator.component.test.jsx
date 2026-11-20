@@ -101,7 +101,7 @@ describe('WorldStatTiles и заголовок со значением', () => {
     expect(text).toContain('трлн $');
     expect(text).toContain('+2,3 %');
     expect(text).toContain('к 2025');
-    expect(text).toContain('Рост за 10 лет');
+    expect(text).toContain('К 2016');
     expect(text).toContain('Место среди стран');
     expect(text).toContain('из 190');
     expect(text).not.toMatch(/Исторический максимум|В среднем|Среднее/);

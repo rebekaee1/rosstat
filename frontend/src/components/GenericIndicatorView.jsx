@@ -253,9 +253,6 @@ export default function GenericIndicatorView({
             polarity={heroPolarity}
             deltaSuffix={heroDeltaSuffix}
             dateFormat={heroDateFormat}
-            related={relatedIndicators}
-            code={code}
-            category={indicator?.category}
           />
         ) : null}
       </IndicatorDetailHeader>

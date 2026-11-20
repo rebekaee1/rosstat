@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { pickPeers } from './indicatorPeers';
+import { pickPeers, rankRelatedIndicators } from './indicatorPeers';
 
 const peers = [
   ['PL', 'poland', 'Польша', 'Poland'], ['DE', 'germany', 'Германия', 'Germany'], ['AT', 'austria', 'Австрия', 'Austria'],
@@ -17,5 +17,20 @@ describe('pickPeers', () => {
     expect(pickPeers(peers, '', 'en', 2).map((p) => p.name)).toEqual(['Brazil', 'France']);
     expect(pickPeers(null, 'x', 'ru')).toEqual([]);
     expect(pickPeers([{ country_slug: 'a' }], 'x', 'ru')).toEqual([]);
+  });
+});
+
+describe('rankRelatedIndicators', () => {
+  it('сначала ряды с общим началом кода, затем та же частота и единица; порядок раздела при равенстве', () => {
+    const cur = { code: 'tour-outbound-trips', frequency: 'quarterly', unit: 'тыс. поездок' };
+    const list = [
+      { code: 'tour-agencies', frequency: 'annual', unit: 'ед.' },
+      { code: 'tour-inbound-trips', frequency: 'quarterly', unit: 'тыс. поездок' },
+      { code: 'tour-outbound-spend', frequency: 'annual', unit: 'млн $' },
+      { code: 'tour-outbound-turkey', frequency: 'quarterly', unit: 'тыс. поездок' },
+    ];
+    expect(rankRelatedIndicators(cur, list).map((i) => i.code))
+      .toEqual(['tour-outbound-turkey', 'tour-outbound-spend', 'tour-inbound-trips', 'tour-agencies']);
+    expect(rankRelatedIndicators(cur, null)).toEqual([]);
   });
 });

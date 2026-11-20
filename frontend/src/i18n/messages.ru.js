@@ -4652,4 +4652,11 @@ export default {
   'kt5_st_zero_year': 'за год поступлений не было',
   'kt5_st_no_receipts_yet': 'поступлений пока нет',
   'kt5_st_no_data': 'нет данных',
+  // ===== Круг наблюдателей «Туризм», зона z1 =====
+  "kt1_delta_sameYear": "к тому же периоду прошлого года",
+  "kt1_tile_toBase": "К {date}",
+  "kt1_tile_sinceBase": "Рост с {date}",
+  "kt1_cite_copy": "Скопировать",
+  "kt1_cite_copied": "Скопировано",
+  "kt1_host_note": "По данным принимающей страны",
 };

@@ -33,6 +33,7 @@ import RelatedIndicators from '../components/RelatedIndicators';
 import { findVariantGroup } from '../lib/indicatorVariants';
 import { chartSeriesForViewMode, heroDeltaSuffixKey } from '../lib/chartSeriesForViewMode';
 import { buildIndicatorSummary, dataDigitsOf } from '../lib/indicatorSummary';
+import { rankRelatedIndicators } from '../lib/indicatorPeers';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { resolveDateFormat } from '../lib/format';
 import useIndicatorViewModeData from '../lib/useIndicatorViewModeData';
@@ -247,9 +248,11 @@ export default function IndicatorDetail() {
 
   const relatedIndicators = useMemo(() => {
     if (!siblings?.length || !indicator) return [];
-    return siblings
-      .filter((s) => s.code !== indicator.code && isIndicatorListed(s) && s.is_active)
-      .slice(0, 6);
+    // «Похожие» по смыслу: общее начало кода (выезд к выезду), та же частота и единица, а не первые шесть из раздела.
+    return rankRelatedIndicators(
+      indicator,
+      siblings.filter((s) => s.code !== indicator.code && isIndicatorListed(s) && s.is_active),
+    ).slice(0, 6);
   }, [siblings, indicator]);
 
   const view = useIndicatorViewModeData({ code, viewMode });
@@ -645,9 +648,6 @@ export default function IndicatorDetail() {
               polarity={heroPolarity}
               deltaSuffix={heroDeltaSuffix}
               dateFormat={heroDateFormat}
-              related={relatedIndicators}
-              code={code}
-              category={indicator?.category}
             />
           </>
         ) : null}
