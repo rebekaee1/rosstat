@@ -17,6 +17,10 @@
 единой точки России (сбой прошлого прогона) и хвост от последнего загруженного года до текущего (если в нём только
 январь — и прошлый год, на ревизии). Сбой сети на одном годе не отменяет остальные: год останется пустым, и
 следующий прогон его повторит. Отсутствие значения в ответе ничего не удаляет.
+
+Три сбоя подряд (20.11.2026) — источник недоступен, а не один год: прогон останавливается, недогруженные годы
+берёт следующий по расписанию. Первый прогон 20.11 после 11 загруженных лет получил 79 отказов подряд, без паузы
+между ними: при отказе цикл продолжал запросы, хотя каждый следующий упирался в тот же сбой транспорта.
 """
 
 from __future__ import annotations
@@ -50,6 +54,7 @@ from app.services.regional_storage import acquire_regional_write_lock, update_re
 logger = logging.getLogger(__name__)
 
 _PAUSE_BETWEEN_REQUESTS = 1.0
+_MAX_FAILURES_IN_ROW = 3     # сбоев подряд — источник недоступен, остальное до следующего прогона
 _KIND_LABELS = {
     "К предыдущему месяцу": spec.KIND_MONTH,
     "К декабрю предыдущего года": spec.KIND_DECEMBER,
@@ -219,28 +224,40 @@ async def run_emiss_regional_cpi_update(
     regions = {slug: rid for slug, rid in (await db.execute(select(Region.slug, Region.id))).all()}
     stats = {"years": 0, "added": 0, "updated": 0, "unparsed": 0}
     failed: list[str] = []
+    in_row = 0
     skipped = [c for c in codes if c not in indicators]
     if skipped:
         # Метаданные пишет seed_regional при старте; до него ряды ждут следующего прогона.
         logger.warning("emiss_regional_cpi: нет метаданных %d рядов, пропуск: %s", len(skipped), skipped[:5])
     for req in REQUESTS:
+        if in_row >= _MAX_FAILURES_IN_ROW:
+            break
         ids = [indicators[s.code].id for s in req.series if s.code in indicators]
         if not ids:
             continue
         loaded = await _loaded_years(db, ids, regions.get("russia"))
         for year in years_to_fetch(req, loaded, today=today):
+            if in_row >= _MAX_FAILURES_IN_ROW:
+                logger.warning("emiss_regional_cpi: %d сбоев подряд — прогон остановлен, остальное в следующий раз",
+                               in_row)
+                break
             try:
                 points = await fetch_year(req, year, territory_ids, dimnames, post_grid=post_grid)
             except EmissCpiFormatError as exc:
                 logger.warning("emiss_regional_cpi: %s", exc)
                 stats["unparsed"] += 1
+                in_row = 0  # источник ответил — это не недоступность
+                await asyncio.sleep(_PAUSE_BETWEEN_REQUESTS)
                 continue
             except RuntimeError as exc:
                 # Сбой сети или доступа на одном годе не отменяет остальные: пустой год следующий прогон
                 # запросит снова (он не попадёт в loaded). В конце прогона — ошибка для алерта.
                 logger.warning("emiss_regional_cpi: %s %d: %s", req.name, year, exc)
                 failed.append(f"{req.name} {year}: {exc}")
+                in_row += 1
+                await asyncio.sleep(_PAUSE_BETWEEN_REQUESTS)
                 continue
+            in_row = 0
             stats["years"] += 1
             by_code: dict[str, list[tuple[int, int, int, float]]] = {}
             for code, slug, period, value in points:
@@ -265,7 +282,8 @@ async def run_emiss_regional_cpi_update(
                         req.name, year, len(points), added, updated)
             await asyncio.sleep(_PAUSE_BETWEEN_REQUESTS)
     if failed:
-        raise RuntimeError(f"не загружено запросов: {len(failed)} (остальные сохранены); первый: {failed[0]}")
+        stopped = " — прогон остановлен, остальное загрузит следующий" if in_row >= _MAX_FAILURES_IN_ROW else ""
+        raise RuntimeError(f"не загружено запросов: {len(failed)} (остальные сохранены){stopped}; первый: {failed[0]}")
     return stats
 
 
