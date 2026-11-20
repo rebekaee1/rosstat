@@ -239,6 +239,7 @@ _KEY_CATEGORY_ORDER = (
     "Бизнес",
     "Общество",
     "Товарные рынки",
+    "Туризм",
 )
 
 
@@ -523,8 +524,18 @@ def _unit_of(ind: WorldIndicator) -> str:
     from app.services.locale import get_locale
 
     if get_locale() == "en":
+        tourism = _tourism_copy_en(ind)
+        if tourism and tourism.get("unit_en"):
+            return tourism["unit_en"]
         return _weo_circle12_unit_en(ind) or public_unit_en(ind.unit_ru, unit_storage=ind.unit)
     return (ind.unit_ru or ind.unit or "").strip()
+
+
+def _tourism_copy_en(ind: WorldIndicator) -> dict[str, str] | None:
+    """Английские описание, методология и единица рядов раздела «Туризм» (в базе тексты только русские)."""
+    from app.services.world_tourism_sources import curated_copy_en
+
+    return curated_copy_en(getattr(ind, "provider", None), getattr(ind, "code", None))
 
 
 def _unit_sfx_of(ind: WorldIndicator) -> str:
@@ -583,6 +594,14 @@ _SOURCE_BY_PROVIDER: dict[str, str] = {
     "ilo": "Международная организация труда",
     "census": "Бюро переписи населения США",
     "ibge": "Бразильский институт географии и статистики (IBGE)",
+    # Раздел «Туризм» (20.11.2026, `world_tourism_sources.SOURCE_BY_PROVIDER`).
+    "imf_bop": "Международный валютный фонд",
+    "untourism": "UN Tourism (Всемирная туристская организация ООН)",
+    "oecd_tourism": "ОЭСР",
+    "eurostat_travel": "Евростат",
+    "cystat": "Статистическая служба Кипра (CYSTAT)",
+    "geostat": "Национальная статистическая служба Грузии (Geostat)",
+    "ktb_tr": "Министерство культуры и туризма Турции",
 }
 
 
@@ -1935,6 +1954,9 @@ async def render_world_indicator_html(
     place = country_label if loc == "en" else prep
 
     desc_text = (indicator.description or "").strip()
+    curated_en = _tourism_copy_en(indicator) if loc == "en" else None
+    if curated_en and curated_en.get("description_en"):
+        desc_text = curated_en["description_en"]
     if loc == "en" and desc_text and any(
         ch in desc_text
         for ch in "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя"
@@ -2041,7 +2063,9 @@ async def render_world_indicator_html(
     )
     if freshness_note is not None:
         paragraphs.insert(1, escape(freshness_note["message"]))
-    if indicator.methodology and indicator.methodology.strip():
+    if loc == "en" and curated_en and curated_en.get("methodology_en"):
+        paragraphs.append(escape(curated_en["methodology_en"]))
+    elif indicator.methodology and indicator.methodology.strip():
         method = indicator.methodology.strip()
         if not (
             loc == "en"

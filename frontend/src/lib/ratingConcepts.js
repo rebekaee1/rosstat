@@ -27,6 +27,11 @@ export const RATING_GROUPS = Object.freeze([
     labelKey: 'w6d.rating.group.people',
     slugs: ['population', 'life-expectancy', 'gini-index', 'income-share-top10', 'poverty-rate'],
   },
+  {
+    id: 'tourism',
+    labelKey: 'w6d.rating.group.tourism',
+    slugs: ['tourist-arrivals', 'outbound-trips', 'tourism-gdp-share', 'tourism-employment-share'],
+  },
 ]);
 
 const OTHER_GROUP = Object.freeze({ id: 'other', labelKey: 'w6d.rating.group.other', slugs: [] });
@@ -51,6 +56,10 @@ export const RATING_ICON_KEYS = Object.freeze({
   'gini-index': 'scale',
   'income-share-top10': 'coins',
   'poverty-rate': 'users',
+  'tourist-arrivals': 'plane',
+  'outbound-trips': 'plane',
+  'tourism-gdp-share': 'palm',
+  'tourism-employment-share': 'briefcase',
 });
 
 export function ratingIconKey(slug) {

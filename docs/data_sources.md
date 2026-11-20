@@ -604,6 +604,42 @@ golden-series теста и фиксации здесь.
   раз не ответил за 30 с, повтор — 200).
 - Тест — `backend/tests/test_world_intl_sources.py` с фикстурами живых ответов `tests/fixtures/world_intl/`.
 
+### Туризм в мире: МВФ, UN Tourism, ОЭСР, Евростат, страны назначения (2026-11-20)
+
+Модули `backend/app/services/world_tourism_sources.py` (ряды, тексты ru/en, разбор файлов) и
+`world_tourism_ingest.py` (запись через общий `world_intl_ingest.upsert_series`, задача `world_tourism_ingest`,
+понедельник 02:55 МСК за флагом `RUSTATS_WORLD_TOURISM_INGEST_ENABLED`, по умолчанию выключен до первой загрузки).
+Раздел страны — `category_ru = "Туризм"` (EN «Tourism»); сюда же переведены наборы Евростата `tour_*`
+(было «Общество»; `CATEGORY_BY_PREFIX` + миграция `20261120_world_tourism_cat`). Собрано агентом a4
+20.11.2026 (`.artifacts/tourism-2026-11-20/a4/raw/`); все адреса, кроме Турции, отвечают с прода (проверено 20.11).
+
+| Издатель (provider) | Адрес | Ряды (код карточки) | Частота, история |
+|---|---|---|---|
+| МВФ, платёжный баланс (`imf_bop`) | `api.imf.org/external/sdmx/2.1/data/IMF.STA,BOP/{ISO3+…}.CD_T+DB_T.SD+SDA+SDB+SDB1+SDB2.USD.Q+A`, заголовок `Accept: application/vnd.sdmx.data+csv` | `{cc}-imf-travel-receipts/-payments` (поездки: траты иностранцев в стране / жителей за рубежом), `-business-`, `-personal-`, `-health-`, `-education-` × `receipts/payments` | квартал (год, если кварталов нет); с 1990; последний — II–III кв. 2026; значения издателя в долларах ÷ 10⁶ |
+| UN Tourism (`untourism`) | архив со страницы `untourism.int/tourism-statistics/tourism-statistics-database` (имя `UN_Tourism_bulk_data_download_MM_YYYY.zip` меняется — ищется на странице) | `{cc}-unt-inbound-tourists`, `-inbound-visitors`, `-inbound-hotel-guests`, `-inbound-hotel-nights`, `-domestic-trips`, `-domestic-hotel-nights`, `-outbound-tourists`, `-outbound-visitors`, `-hotels`, `-hotel-rooms`, `-hotel-beds`, `-hotel-occupancy`, `-hotel-stay`, `-tourism-employment` (тыс. чел.), `{cc}-tourism-gdp-share` (SDG 8.9.1, если нет ОЭСР) | год; 1995–2024 |
+| ОЭСР (`oecd_tourism`) | `sdmx.oecd.org/public/rest/data/OECD.CFE.TOU,DSD_TOURISM_KEY@DF_KEY_IND_PC,/all`; `…DSD_TOURISM_INTER@DF_INBOUND,/.RUS.TOP_MKT....` | `{cc}-tourism-gdp-share`, `{cc}-oecd-tourism-employment-share`, `{cc}-tour-arrivals-russia` (туристы из России; из двух источников страны — более свежий, при равенстве опрос `TDS`) | год; 2008–2025 |
+| Евростат (`eurostat_travel`, отдельный provider, чтобы общий загрузчик Евростата не считал набор своим) | `bop_its6_det/A.MIO_EUR.SD.CRE+DEB.RU.?format=SDMX-CSV` | `{cc}-estat-travel-russia-receipts` (траты жителей России в стране), `-payments` (траты жителей страны в России) | год; 2010–2025; конфиденциальные значения — пропуск |
+| CYSTAT (`cystat`) | PxWeb `cystatdb.cystat.gov.cy/api/v1/en/8.CYSTAT-DB/Tourism/Tourists/Monthly/2021010E.px`, POST `{"query":[],"response":{"format":"csv"}}` | `cy-tour-arrivals-russia`, `cy-tour-arrivals-total` | месяц; 2002-01…2026-10; «u» (ненадёжно) и «...» — пропуск |
+| Geostat (`geostat`) | xlsx `0505EN0204` со страницы `geostat.ge/en/modules/categories/102/inbound-tourism-statistics` | `ge-tour-visits-russia`, `ge-tour-visits-total` — визиты в среднем за месяц квартала, тыс. | квартал; 2014 III…2026 III |
+| Минкультуры и туризма Турции (`ktb_tr`) | годовой пограничный бюллетень xlsx (лист «C-…»); сайт отвечает только мимо VPN, с прода — нет (20.11) | `tr-tour-arrivals-russia`, `tr-tour-arrivals-total` | год; 2010–2025; загрузка файлом `--ktb-file` |
+
+Правила (`world_tourism_ingest.plan_writes`):
+
+- **Один смысл — один ряд у страны.** «Туристы из России»: у Кипра и Турции — национальная служба, ряд ОЭСР не
+  пишется никогда. «Доля туризма в ВВП»: ОЭСР важнее UN Tourism; если ОЭСР в этот прогон не ответила, ряд
+  UN Tourism не пишется (карточка не перескакивает между издателями).
+- **Расходы туристов из архива UN Tourism не берём** — тот же смысл, что поездки МВФ, а МВФ свежее (квартал 2026).
+- **Молчащий ряд не заводится:** последняя точка старше 8 лет (Канада по лечению — 2011).
+- **Россия** в мировом каталоге отсутствует — её строки у МВФ/UN Tourism пропускаются (данные России — ЦБ/Росстат).
+- **Страны без страницы на сайте** (Египет, ОАЭ, Таиланд, Казахстан, Узбекистан, Вьетнам) в этот раз не
+  заводятся: новая страна — это карта, флаг, валюта, национальные ряды и SEO-страницы, а туристских рядов о
+  россиянах у них 1–2. Их цифры о туристах из России (Таиланд — месяц 2025–2026, Узбекистан — год 2014–2025,
+  Казахстан — январь–сентябрь 2026 нарастающим, Египет — ОЭСР 2008–2025) сведены в
+  `.artifacts/tourism-2026-11-20/build/t3-destinations-without-country-page.csv` для раздела «Туризм» России и статей.
+- Понятия рейтинга (годовые): `tourist-arrivals`, `outbound-trips`, `tourism-gdp-share`, `tourism-employment-share`.
+- Тексты карточек на EN — из описания ряда (`curated_copy_en`): в базе мировых рядов английских описаний нет.
+- Тест — `backend/tests/test_world_tourism_sources.py`, фикстуры — выборки из файлов сбора `tests/fixtures/world_tourism/`.
+
 ---
 
 ## Региональный блок — сборник «Регионы России» (ADR-0008, вне ETL)

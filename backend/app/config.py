@@ -815,6 +815,9 @@ class Settings(BaseSettings):
     world_latest_points_hours: str = "4,8-21"
     # Ряды BIS / Всемирного банка / МОТ для стран мира (19.11.2026, `world_intl_ingest`).
     world_intl_ingest_enabled: bool = True
+    # Раздел «Туризм» стран мира: МВФ, UN Tourism, ОЭСР, Евростат, CYSTAT, Geostat (20.11.2026,
+    # `world_tourism_ingest`). Выключено до первой ручной загрузки и приёмки на стенде.
+    world_tourism_ingest_enabled: bool = False
 
     model_config = {"env_prefix": "RUSTATS_", "env_file": ".env", "extra": "ignore"}
 

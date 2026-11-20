@@ -288,6 +288,11 @@ def _indicator_public_unit(indicator: WorldIndicator) -> str:
     ru = (indicator.unit_ru or indicator.unit or "").strip()
     if get_locale() != "en":
         return ru
+    from app.services.world_tourism_sources import curated_copy_en
+
+    tourism = curated_copy_en(getattr(indicator, "provider", None), getattr(indicator, "code", None))
+    if tourism and tourism.get("unit_en"):
+        return tourism["unit_en"]
     weo_unit = _weo_circle12_unit_en(indicator)
     if weo_unit:
         return weo_unit
@@ -765,12 +770,27 @@ _RATING_CATALOG_ORDER: tuple[str, ...] = (
     "gini-index",
     "income-share-top10",
     "poverty-rate",
+    "tourist-arrivals",
+    "outbound-trips",
+    "tourism-gdp-share",
+    "tourism-employment-share",
 )
 
 
 def _rating_catalog_concepts():
     rank = {slug: index for index, slug in enumerate(_RATING_CATALOG_ORDER)}
     return sorted(_rating_concepts(), key=lambda concept: rank.get(concept.slug, len(rank)))
+
+
+def _tourism_or_safe_copy(ind: WorldIndicator, field: str) -> str | None:
+    """Описание/методология карточки; у рядов раздела «Туризм» на EN — английский текст из описания ряда."""
+    if get_locale() == "en":
+        from app.services.world_tourism_sources import curated_copy_en
+
+        curated = curated_copy_en(getattr(ind, "provider", None), getattr(ind, "code", None))
+        if curated and curated.get(f"{field}_en"):
+            return curated[f"{field}_en"]
+    return _locale_safe_copy(getattr(ind, field, None))
 
 
 def _locale_safe_copy(text: str | None) -> str | None:
@@ -2614,8 +2634,8 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
             "category_en": localize_category_name(cat_ru, locale="en"),
             "source": translate_source(ind.source) or ind.source,
             "source_url": ind.source_url,
-            "description": _locale_safe_copy(ind.description),
-            "methodology": _locale_safe_copy(ind.methodology),
+            "description": _tourism_or_safe_copy(ind, "description"),
+            "methodology": _tourism_or_safe_copy(ind, "methodology"),
             "history_start": _fmt_date(ind.history_start),
             "history_end": _fmt_date(ind.history_end),
             "points_count": ind.points_count,

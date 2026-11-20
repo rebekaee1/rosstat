@@ -62,6 +62,10 @@ _LABELS_RU = {
     "poverty-rate": "Крайняя бедность",
     "income-share-top10": "Доходы 10% самых обеспеченных",
     "life-expectancy": "Продолжительность жизни",
+    "tourist-arrivals": "Прибытия иностранных туристов",
+    "outbound-trips": "Выездные туристские поездки",
+    "tourism-gdp-share": "Доля туризма в ВВП",
+    "tourism-employment-share": "Доля туризма в занятости",
 }
 _LABELS_EN = {
     "hicp-index": "Inflation",
@@ -82,6 +86,10 @@ _LABELS_EN = {
     "poverty-rate": "Extreme poverty",
     "income-share-top10": "Income of the richest 10%",
     "life-expectancy": "Life expectancy",
+    "tourist-arrivals": "International tourist arrivals",
+    "outbound-trips": "Outbound tourism trips",
+    "tourism-gdp-share": "Tourism share of GDP",
+    "tourism-employment-share": "Tourism share of employment",
 }
 
 _SCALES_RU = ("тыс.", "млн", "млрд", "трлн")
