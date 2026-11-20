@@ -400,3 +400,16 @@ def test_seasonal_flag_marks_monthly_and_quarterly_flows_for_the_indicator_api()
         assert not cfg[code].get("seasonal"), code
     from app.schemas import IndicatorDetail
     assert "seasonal" in IndicatorDetail.model_fields
+
+
+def test_g1_industries_and_favt_archive_december_is_the_annual_total():
+    static = (SNAP / rt.STATIC_FILE).read_text(encoding="utf-8")
+    get = lambda code: {p.date: p.value for p in rt.parse_static(static, code)}
+    sochi_m = get("tour-airport-monthly-sochi")
+    sochi_y = {d.year: v for d, v in get("tour-airport-annual-sochi").items()}
+    # В архиве ФАВТ декабрь по аэропорту — итог за год: месяц восстановлен, год взят из ячейки декабря.
+    assert sochi_y[2020] == 6505.301 and sum(v for d, v in sochi_m.items() if d.year == 2020) == pytest.approx(6505.301)
+    assert sochi_m[date(2022, 1, 1)] == 658.099 and sochi_m[date(2022, 2, 1)] == 566.716
+    assert len(get("tour-airports-russia-2019")) == 38
+    assert get("tour-gva-hotels-food")[date(2026, 6, 1)] == pytest.approx(613.6247)
+    assert reg.SERIES["tour-turnover-travel-agencies"].source_url.endswith("/57710")

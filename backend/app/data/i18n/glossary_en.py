@@ -26,6 +26,7 @@ GLOSSARY_EN: dict[str, str] = {
     # Туризм (20.11.2026): источники рядов раздела «Туризм».
     "Росстат по данным ФСБ России": "Rosstat, based on FSB border service data",
     "Росавиация (ЕМИСС)": "Federal Air Transport Agency (via EMISS)",
+    "Росавиация (архив отчётов)": "Federal Air Transport Agency (archived reports)",
     "Росавиация; аэропорт и отраслевые рейтинги (вторичные)": "Federal Air Transport Agency; airport and industry rankings (secondary)",
     "ФНС России": "Federal Tax Service of Russia",
     "Федеральное казначейство": "Federal Treasury of Russia",

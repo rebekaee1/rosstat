@@ -298,8 +298,8 @@ tour-airport-annual-sochi;2014;3099.0;аэропорт / отраслевой р
 tour-airport-annual-sochi;2015;4089.327;аэропорт / отраслевой рейтинг (вторичный)
 tour-airport-annual-sochi;2016;5262.754;аэропорт / отраслевой рейтинг (вторичный)
 tour-airport-annual-sochi;2017;5692.0;аэропорт / отраслевой рейтинг (вторичный)
-tour-airport-annual-sochi;2020;12549.051;Росавиация
-tour-airport-annual-sochi;2021;21552.374;Росавиация
+tour-airport-annual-sochi;2020;6505.301;Росавиация
+tour-airport-annual-sochi;2021;11076.621;Росавиация
 tour-airport-annual-sochi;2022;13011.0;аэропорт / отраслевой рейтинг (вторичный)
 tour-airport-annual-sochi;2023;13900.0;аэропорт / отраслевой рейтинг (вторичный)
 tour-airport-annual-sochi;2024;13700.0;аэропорт / отраслевой рейтинг (вторичный)
@@ -314,7 +314,7 @@ tour-airport-annual-kazan;2014;1942.408;аэропорт / отраслевой 
 tour-airport-annual-kazan;2015;1799.267;аэропорт / отраслевой рейтинг (вторичный)
 tour-airport-annual-kazan;2016;1923.223;аэропорт / отраслевой рейтинг (вторичный)
 tour-airport-annual-kazan;2017;2623.423;аэропорт / отраслевой рейтинг (вторичный)
-tour-airport-annual-kazan;2020;4116.221;Росавиация
+tour-airport-annual-kazan;2020;2171.603;Росавиация
 tour-airport-annual-kazan;2022;4018.0;аэропорт / отраслевой рейтинг (вторичный)
 tour-airport-annual-kazan;2023;5168.0;аэропорт / отраслевой рейтинг (вторичный)
 tour-airport-annual-kazan;2024;5370.0;аэропорт / отраслевой рейтинг (вторичный)
@@ -329,8 +329,8 @@ tour-airport-annual-mineralnye-vody;2014;1921.669;аэропорт / отрас�
 tour-airport-annual-mineralnye-vody;2015;1966.492;аэропорт / отраслевой рейтинг (вторичный)
 tour-airport-annual-mineralnye-vody;2016;1731.558;аэропорт / отраслевой рейтинг (вторичный)
 tour-airport-annual-mineralnye-vody;2017;2181.0;аэропорт / отраслевой рейтинг (вторичный)
-tour-airport-annual-mineralnye-vody;2020;3401.94;Росавиация
-tour-airport-annual-mineralnye-vody;2021;6225.054;Росавиация
+tour-airport-annual-mineralnye-vody;2020;1797.989;Росавиация
+tour-airport-annual-mineralnye-vody;2021;3204.709;Росавиация
 tour-airport-annual-mineralnye-vody;2022;4080.0;аэропорт / отраслевой рейтинг (вторичный)
 tour-airport-annual-mineralnye-vody;2023;4790.0;аэропорт / отраслевой рейтинг (вторичный)
 tour-airport-annual-mineralnye-vody;2024;4860.0;аэропорт / отраслевой рейтинг (вторичный)
@@ -351,8 +351,8 @@ tour-airport-annual-kaliningrad;2014;1460.054;аэропорт / отрасле�
 tour-airport-annual-kaliningrad;2015;1542.36;аэропорт / отраслевой рейтинг (вторичный)
 tour-airport-annual-kaliningrad;2016;1570.854;аэропорт / отраслевой рейтинг (вторичный)
 tour-airport-annual-kaliningrad;2017;1788.097;аэропорт / отраслевой рейтинг (вторичный)
-tour-airport-annual-kaliningrad;2020;4063.004;Росавиация
-tour-airport-annual-kaliningrad;2021;7630.731;Росавиация
+tour-airport-annual-kaliningrad;2020;2117.931;Росавиация
+tour-airport-annual-kaliningrad;2021;3910.846;Росавиация
 tour-airport-annual-kaliningrad;2022;3742.387;аэропорт / отраслевой рейтинг (вторичный)
 tour-airport-annual-kaliningrad;2023;4300.0;аэропорт / отраслевой рейтинг (вторичный)
 tour-airport-annual-kaliningrad;2024;4800.0;аэропорт / отраслевой рейтинг (вторичный)
@@ -859,3 +859,865 @@ tour-hist-outbound-japan;2005;164.0;Росстат, ежегодники 2003–
 tour-hist-outbound-japan;2006;149.0;Росстат, ежегодники 2003–2014 (ФСБ России)
 tour-hist-outbound-japan;2007;161.0;Росстат, ежегодники 2003–2014 (ФСБ России)
 tour-hist-outbound-japan;2008;139.0;Росстат, ежегодники 2003–2014 (ФСБ России)
+tour-gva-hotels-food;2011-03-01;98.3422;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2011-06-01;114.143;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2011-09-01;124.6545;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2011-12-01;130.1338;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2012-03-01;112.8354;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2012-06-01;127.708;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2012-09-01;141.8242;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2012-12-01;149.7873;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2013-03-01;116.9165;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2013-06-01;135.958;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2013-09-01;148.4715;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2013-12-01;154.9431;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2014-03-01;129.0478;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2014-06-01;147.6195;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2014-09-01;162.669;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2014-12-01;167.3571;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2015-03-01;146.3808;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2015-06-01;161.9045;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2015-09-01;179.4456;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2015-12-01;178.6981;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2016-03-01;149.3585;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2016-06-01;172.2868;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2016-09-01;192.7484;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2016-12-01;188.2757;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2017-03-01;154.9638;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2017-06-01;180.7996;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2017-09-01;208.8233;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2017-12-01;200.1144;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2018-03-01;171.948;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2018-06-01;204.585;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2018-09-01;238.8441;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2018-12-01;221.7794;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2019-03-01;191.5786;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2019-06-01;223.868;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2019-09-01;259.0219;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2019-12-01;244.7303;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2020-03-01;193.3963;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2020-06-01;101.3295;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2020-09-01;204.9077;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2020-12-01;197.6165;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2021-03-01;198.9507;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2021-06-01;250.201;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2021-09-01;299.5408;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2021-12-01;270.855;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2022-03-01;238.9853;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2022-06-01;282.7707;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2022-09-01;361.4407;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2022-12-01;323.056;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2023-03-01;297.8095;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2023-06-01;346.7864;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2023-09-01;413.5521;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2023-12-01;405.0946;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2024-03-01;369.1002;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2024-06-01;440.4278;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2024-09-01;539.634;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2024-12-01;515.9717;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2025-03-01;437.3516;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2025-06-01;536.948;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2025-09-01;648.0364;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2025-12-01;625.3863;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2026-03-01;497.7868;ЕМИСС (Росстат), 58250
+tour-gva-hotels-food;2026-06-01;613.6247;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2011-03-01;92.8557;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2011-06-01;96.3835;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2011-09-01;97.5736;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2011-12-01;100.414;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2012-03-01;106.569;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2012-06-01;111.5856;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2012-09-01;114.5438;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2012-12-01;117.2198;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2013-03-01;122.3501;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2013-06-01;127.5612;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2013-09-01;129.6345;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2013-12-01;133.1997;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2014-03-01;137.3444;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2014-06-01;145.0519;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2014-09-01;147.8872;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2014-12-01;153.7571;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2015-03-01;158.1736;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2015-06-01;166.494;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2015-09-01;169.7664;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2015-12-01;174.7512;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2016-03-01;164.0694;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2016-06-01;171.6091;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2016-09-01;175.4721;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2016-12-01;176.8673;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2017-03-01;184.3901;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2017-06-01;195.058;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2017-09-01;199.5532;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2017-12-01;198.4835;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2018-03-01;213.8341;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2018-06-01;225.3134;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2018-09-01;230.0324;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2018-12-01;231.1927;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2019-03-01;222.0595;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2019-06-01;240.5563;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2019-09-01;253.3973;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2019-12-01;264.0362;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2020-03-01;231.4058;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2020-06-01;186.3332;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2020-09-01;238.375;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2020-12-01;252.5217;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2021-03-01;259.5013;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2021-06-01;278.311;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2021-09-01;282.5823;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2021-12-01;322.0047;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2022-03-01;338.5738;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2022-06-01;363.737;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2022-09-01;396.1046;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2022-12-01;450.9098;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2023-03-01;361.7366;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2023-06-01;395.0087;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2023-09-01;446.2881;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2023-12-01;537.7245;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2024-03-01;441.6555;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2024-06-01;469.7919;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2024-09-01;527.5421;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2024-12-01;618.5245;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2025-03-01;506.7536;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2025-06-01;544.4699;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2025-09-01;601.6385;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2025-12-01;686.9294;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2026-03-01;560.7124;ЕМИСС (Росстат), 58250
+tour-gva-culture-leisure;2026-06-01;604.0307;ЕМИСС (Росстат), 58250
+tour-turnover-hotels;2017-01-01;9.883;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2017-02-01;10.4123;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2017-03-01;11.6771;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2017-04-01;12.5265;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2017-05-01;13.0404;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2017-06-01;16.5725;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2017-07-01;15.3479;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2017-08-01;15.4963;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2017-09-01;15.4112;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2017-10-01;14.3685;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2017-11-01;17.9393;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2017-12-01;14.849;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2018-01-01;13.1284;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2018-02-01;14.7438;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2018-03-01;13.8864;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2018-04-01;14.3437;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2018-05-01;17.2442;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2018-06-01;25.0712;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2018-07-01;25.1692;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2018-08-01;19.7153;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2018-09-01;18.8905;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2018-10-01;15.7377;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2018-11-01;14.3421;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2018-12-01;14.9877;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2019-01-01;13.8502;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2019-02-01;13.9836;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2019-03-01;15.3179;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2019-04-01;15.9796;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2019-05-01;16.5517;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2019-06-01;24.0363;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2019-07-01;19.8931;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2019-08-01;20.9909;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2019-09-01;20.0613;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2019-10-01;18.6279;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2019-11-01;16.508;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2019-12-01;17.5483;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2020-01-01;18.6696;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2020-02-01;18.2851;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2020-03-01;14.7886;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2020-04-01;5.3277;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2020-05-01;5.5294;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2020-06-01;7.2849;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2020-07-01;14.5339;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2020-08-01;17.0333;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2020-09-01;16.2761;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2020-10-01;14.3695;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2020-11-01;11.7008;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2020-12-01;13.2095;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2021-01-01;16.6858;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2021-02-01;17.4942;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2021-03-01;19.5022;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2021-04-01;20.748;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2021-05-01;22.2263;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2021-06-01;26.5736;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2021-07-01;25.0109;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2021-08-01;26.1235;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2021-09-01;24.8914;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2021-10-01;24.0985;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2021-11-01;20.0304;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2021-12-01;27.3546;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2022-01-01;27.7479;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2022-02-01;21.4113;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2022-03-01;21.0991;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2022-04-01;20.2952;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2022-05-01;22.8043;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2022-06-01;28.3417;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2022-07-01;30.6764;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2022-08-01;33.3007;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2022-09-01;28.6401;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2022-10-01;25.6253;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2022-11-01;26.1174;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2022-12-01;28.4702;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2023-01-01;26.6571;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2023-02-01;28.0562;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2023-03-01;28.437;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2023-04-01;27.3627;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2023-05-01;28.4492;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2023-06-01;41.7254;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2023-07-01;34.3156;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2023-08-01;37.287;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2023-09-01;33.5262;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2023-10-01;32.7565;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2023-11-01;32.8311;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2023-12-01;36.2852;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2024-01-01;36.8441;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2024-02-01;37.93;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2024-03-01;37.3384;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2024-04-01;35.4191;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2024-05-01;36.1686;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2024-06-01;43.0399;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2024-07-01;44.0857;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2024-08-01;45.764;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2024-09-01;41.3259;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2024-10-01;41.2861;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2024-11-01;38.6808;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2024-12-01;43.5472;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2025-01-01;45.0745;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2025-02-01;44.1778;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2025-03-01;44.4687;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2025-04-01;44.8277;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2025-05-01;47.4719;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2025-06-01;52.7926;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2025-07-01;56.9658;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2025-08-01;58.4229;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2025-09-01;52.7604;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2025-10-01;47.6808;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2025-11-01;44.1274;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2025-12-01;48.9773;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2026-01-01;53.7662;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2026-02-01;49.5081;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2026-03-01;50.7315;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2026-04-01;48.0329;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2026-05-01;47.656;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2026-06-01;53.9128;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2026-07-01;55.1223;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2026-08-01;57.2723;ЕМИСС (Росстат), 57710
+tour-turnover-hotels;2026-09-01;51.5084;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2017-01-01;2.2359;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2017-02-01;2.4571;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2017-03-01;3.2851;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2017-04-01;3.0541;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2017-05-01;5.0468;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2017-06-01;7.0537;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2017-07-01;6.8099;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2017-08-01;8.566;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2017-09-01;7.4034;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2017-10-01;4.637;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2017-11-01;3.6722;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2017-12-01;4.1296;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2018-01-01;3.7632;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2018-02-01;3.7109;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2018-03-01;3.6073;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2018-04-01;3.8741;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2018-05-01;5.4699;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2018-06-01;7.0499;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2018-07-01;6.9644;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2018-08-01;7.0961;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2018-09-01;8.695;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2018-10-01;5.3839;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2018-11-01;5.0769;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2018-12-01;5.9009;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2019-01-01;4.6102;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2019-02-01;5.3177;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2019-03-01;5.3778;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2019-04-01;6.7;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2019-05-01;7.0105;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2019-06-01;10.0923;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2019-07-01;29.769;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2019-08-01;12.7489;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2019-09-01;13.1713;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2019-10-01;8.7624;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2019-11-01;5.7798;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2019-12-01;8.2408;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2020-01-01;15.9291;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2020-02-01;20.1015;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2020-03-01;14.7861;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2020-04-01;4.1977;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2020-05-01;4.4879;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2020-06-01;6.1965;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2020-07-01;10.5243;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2020-08-01;13.5513;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2020-09-01;17.165;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2020-10-01;15.0314;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2020-11-01;11.8381;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2020-12-01;12.2499;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2021-01-01;13.7338;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2021-02-01;14.2351;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2021-03-01;14.613;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2021-04-01;16.4234;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2021-05-01;16.4495;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2021-06-01;19.5387;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2021-07-01;19.5994;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2021-08-01;32.6258;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2021-09-01;36.0684;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2021-10-01;36.9572;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2021-11-01;28.9489;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2021-12-01;19.1956;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2022-01-01;12.3574;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2022-02-01;11.9702;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2022-03-01;10.3177;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2022-04-01;9.5823;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2022-05-01;11.804;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2022-06-01;20.946;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2022-07-01;22.2891;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2022-08-01;22.0922;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2022-09-01;21.1439;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2022-10-01;16.9075;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2022-11-01;14.9084;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2022-12-01;16.6397;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2023-01-01;11.9918;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2023-02-01;12.8542;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2023-03-01;15.5006;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2023-04-01;14.0894;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2023-05-01;15.623;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2023-06-01;19.3718;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2023-07-01;28.4772;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2023-08-01;23.7922;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2023-09-01;28.4372;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2023-10-01;22.8014;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2023-11-01;18.0751;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2023-12-01;20.284;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2024-01-01;14.7821;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2024-02-01;16.0444;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2024-03-01;23.4006;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2024-04-01;20.8348;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2024-05-01;22.7933;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2024-06-01;27.4086;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2024-07-01;27.6346;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2024-08-01;24.7353;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2024-09-01;24.9674;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2024-10-01;26.2162;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2024-11-01;24.0214;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2024-12-01;23.9938;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2025-01-01;19.4769;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2025-02-01;20.1648;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2025-03-01;23.3604;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2025-04-01;25.2486;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2025-05-01;30.8796;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2025-06-01;36.6797;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2025-07-01;43.1273;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2025-08-01;42.2986;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2025-09-01;43.045;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2025-10-01;32.7245;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2025-11-01;28.2082;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2025-12-01;31.6446;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2026-01-01;26.5234;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2026-02-01;25.5517;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2026-03-01;24.4503;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2026-04-01;25.0273;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2026-05-01;29.8298;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2026-06-01;31.2555;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2026-07-01;43.2085;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2026-08-01;45.6852;ЕМИСС (Росстат), 57710
+tour-turnover-travel-agencies;2026-09-01;32.4543;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2017-01-01;65.3282;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2017-02-01;61.6837;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2017-03-01;80.3147;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2017-04-01;81.8714;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2017-05-01;86.7359;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2017-06-01;92.5971;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2017-07-01;92.0858;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2017-08-01;95.5107;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2017-09-01;97.8087;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2017-10-01;98.0241;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2017-11-01;109.5903;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2017-12-01;112.1499;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2018-01-01;95.6822;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2018-02-01;95.4098;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2018-03-01;97.1313;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2018-04-01;102.1368;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2018-05-01;103.5766;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2018-06-01;112.7873;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2018-07-01;113.0963;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2018-08-01;105.735;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2018-09-01;109.174;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2018-10-01;107.1545;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2018-11-01;102.4248;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2018-12-01;108.0912;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2019-01-01;91.9224;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2019-02-01;96.0837;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2019-03-01;108.4911;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2019-04-01;109.4473;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2019-05-01;111.5973;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2019-06-01;119.4168;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2019-07-01;117.7806;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2019-08-01;127.548;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2019-09-01;120.6371;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2019-10-01;118.1409;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2019-11-01;111.5871;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2019-12-01;116.5576;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2020-01-01;116.4047;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2020-02-01;112.2881;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2020-03-01;105.2034;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2020-04-01;57.238;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2020-05-01;59.2141;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2020-06-01;71.7368;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2020-07-01;91.6594;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2020-08-01;101.3327;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2020-09-01;108.8673;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2020-10-01;108.1026;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2020-11-01;97.1481;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2020-12-01;103.8355;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2021-01-01;132.6578;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2021-02-01;133.4907;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2021-03-01;153.187;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2021-04-01;153.3651;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2021-05-01;163.6694;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2021-06-01;167.33;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2021-07-01;166.6202;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2021-08-01;177.0388;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2021-09-01;181.6946;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2021-10-01;172.2076;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2021-11-01;156.0049;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2021-12-01;186.1973;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2022-01-01;164.913;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2022-02-01;155.8365;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2022-03-01;152.9783;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2022-04-01;140.5197;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2022-05-01;144.4653;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2022-06-01;155.686;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2022-07-01;163.5558;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2022-08-01;174.7103;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2022-09-01;177.8574;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2022-10-01;177.2441;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2022-11-01;173.653;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2022-12-01;181.6893;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2023-01-01;181.5158;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2023-02-01;176.7258;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2023-03-01;196.8;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2023-04-01;192.5024;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2023-05-01;199.2425;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2023-06-01;209.0563;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2023-07-01;200.0659;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2023-08-01;207.2652;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2023-09-01;210.6925;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2023-10-01;203.8142;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2023-11-01;197.4339;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2023-12-01;210.0482;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2024-01-01;214.8685;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2024-02-01;234.9418;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2024-03-01;250.7103;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2024-04-01;231.5102;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2024-05-01;235.8716;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2024-06-01;241.7106;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2024-07-01;248.6914;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2024-08-01;253.9754;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2024-09-01;249.6159;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2024-10-01;240.8858;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2024-11-01;236.0315;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2024-12-01;256.4219;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2025-01-01;225.1947;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2025-02-01;239.2519;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2025-03-01;254.9238;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2025-04-01;261.5302;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2025-05-01;264.393;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2025-06-01;267.2729;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2025-07-01;299.7139;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2025-08-01;307.7241;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2025-09-01;298.1347;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2025-10-01;308.6218;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2025-11-01;293.8186;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2025-12-01;317.7768;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2026-01-01;309.5846;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2026-02-01;303.3554;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2026-03-01;326.5067;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2026-04-01;318.9233;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2026-05-01;323.3885;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2026-06-01;327.589;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2026-07-01;345.0152;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2026-08-01;353.3881;ЕМИСС (Росстат), 57710
+tour-turnover-hotels-food;2026-09-01;355.9633;ЕМИСС (Росстат), 57710
+tour-workers-hotels;2017-01-01;93.9634;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2017-02-01;96.6289;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2017-03-01;95.8094;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2017-04-01;97.0243;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2017-05-01;99.5588;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2017-06-01;103.5041;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2017-07-01;103.3203;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2017-08-01;103.6227;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2017-09-01;102.1656;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2017-10-01;103.495;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2017-11-01;101.141;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2017-12-01;101.036;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2018-01-01;116.2356;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2018-02-01;115.4572;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2018-03-01;115.7463;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2018-04-01;112.631;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2018-05-01;113.2248;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2018-06-01;113.7123;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2018-07-01;113.7498;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2018-08-01;112.7318;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2018-09-01;110.8776;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2018-10-01;109.6114;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2018-11-01;109.2151;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2018-12-01;109.0046;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2019-01-01;113.404;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2019-02-01;116.8931;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2019-03-01;117.7653;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2019-04-01;117.6013;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2019-05-01;118.0178;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2019-06-01;118.7397;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2019-07-01;118.4862;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2019-08-01;119.0985;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2019-09-01;117.9647;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2019-10-01;115.595;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2019-11-01;115.7538;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2019-12-01;115.816;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2020-01-01;121.5234;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2020-02-01;123.4381;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2020-03-01;121.8754;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2020-04-01;111.7819;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2020-05-01;108.1437;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2020-06-01;105.444;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2020-07-01;105.128;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2020-08-01;104.35;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2020-09-01;104.5102;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2020-10-01;103.0504;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2020-11-01;101.7533;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2020-12-01;102.2908;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2021-01-01;105.722;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2021-02-01;105.6521;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2021-03-01;107.1609;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2021-04-01;108.5182;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2021-05-01;109.9542;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2021-06-01;111.0019;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2021-07-01;110.9234;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2021-08-01;111.8299;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2021-09-01;110.5138;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2021-10-01;109.4562;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2021-11-01;108.8534;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2021-12-01;109.6299;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2022-01-01;110.8382;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2022-02-01;112.8446;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2022-03-01;113.8636;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2022-04-01;113.5239;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2022-05-01;113.9278;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2022-06-01;115.2192;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2022-07-01;113.6392;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2022-08-01;113.1885;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2022-09-01;112.3485;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2022-10-01;111.826;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2022-11-01;111.8739;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2022-12-01;112.6955;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2023-01-01;115.6796;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2023-02-01;117.6847;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2023-03-01;116.2035;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2023-04-01;118.3974;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2023-05-01;117.6847;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2023-06-01;119.1763;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2023-07-01;119.5568;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2023-08-01;118.5555;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2023-09-01;117.5913;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2023-10-01;116.3069;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2023-11-01;115.9779;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2023-12-01;117.2555;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2024-01-01;120.9563;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2024-02-01;124.1808;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2024-03-01;124.6921;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2024-04-01;124.9816;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2024-05-01;124.2988;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2024-06-01;124.2572;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2024-07-01;124.5266;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2024-08-01;124.6059;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2024-09-01;124.7064;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2024-10-01;124.0274;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2024-11-01;124.7326;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2024-12-01;125.7476;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2025-01-01;128.8646;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2025-02-01;126.2983;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2025-03-01;126.7289;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2025-04-01;128.0974;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2025-05-01;129.3135;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2025-06-01;130.2923;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2025-07-01;131.5336;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2025-08-01;130.942;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2025-09-01;129.2384;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2025-10-01;129.1975;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2025-11-01;128.9546;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2025-12-01;129.7406;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2026-01-01;133.7077;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2026-02-01;134.5133;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2026-03-01;135.4273;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2026-04-01;136.3016;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2026-05-01;136.2891;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2026-06-01;136.7875;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2026-07-01;135.1534;ЕМИСС (Росстат), 57848
+tour-workers-hotels;2026-08-01;134.8782;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2017-01-01;42.6024;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2017-02-01;42.6349;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2017-03-01;41.4505;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2017-04-01;48.9643;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2017-05-01;53.6476;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2017-06-01;54.8406;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2017-07-01;55.9873;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2017-08-01;55.6152;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2017-09-01;54.1933;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2017-10-01;49.885;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2017-11-01;48.082;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2017-12-01;48.559;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2018-01-01;50.4312;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2018-02-01;60.3647;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2018-03-01;61.2455;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2018-04-01;62.9416;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2018-05-01;64.1108;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2018-06-01;65.6224;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2018-07-01;66.3537;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2018-08-01;66.3514;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2018-09-01;64.7558;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2018-10-01;62.6749;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2018-11-01;61.2607;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2018-12-01;60.6713;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2019-01-01;60.3329;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2019-02-01;58.7803;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2019-03-01;59.1283;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2019-04-01;59.3025;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2019-05-01;63.0755;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2019-06-01;62.5616;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2019-07-01;63.1213;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2019-08-01;63.4542;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2019-09-01;62.2514;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2019-10-01;59.91;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2019-11-01;58.9873;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2019-12-01;58.8004;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2020-01-01;58.6492;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2020-02-01;56.9945;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2020-03-01;56.5805;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2020-04-01;55.2448;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2020-05-01;55.4286;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2020-06-01;56.0059;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2020-07-01;55.002;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2020-08-01;53.486;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2020-09-01;52.5749;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2020-10-01;52.6894;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2020-11-01;52.6086;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2020-12-01;52.5971;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2021-01-01;51.9086;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2021-02-01;51.3212;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2021-03-01;52.2616;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2021-04-01;55.5107;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2021-05-01;55.1952;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2021-06-01;57.0435;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2021-07-01;60.3363;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2021-08-01;59.7472;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2021-09-01;57.1368;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2021-10-01;55.0598;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2021-11-01;54.5263;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2021-12-01;55.5895;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2022-01-01;56.8381;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2022-02-01;51.182;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2022-03-01;47.2864;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2022-04-01;45.9918;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2022-05-01;46.7779;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2022-06-01;47.2085;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2022-07-01;47.2333;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2022-08-01;47.1683;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2022-09-01;46.5648;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2022-10-01;46.283;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2022-11-01;46.0327;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2022-12-01;45.9373;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2023-01-01;45.1958;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2023-02-01;42.9501;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2023-03-01;42.9783;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2023-04-01;44.1038;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2023-05-01;44.9241;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2023-06-01;45.7484;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2023-07-01;44.4883;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2023-08-01;44.6853;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2023-09-01;43.8728;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2023-10-01;43.5872;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2023-11-01;42.7063;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2023-12-01;42.7298;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2024-01-01;42.4331;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2024-02-01;43.2804;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2024-03-01;42.847;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2024-04-01;43.1776;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2024-05-01;44.0724;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2024-06-01;44.3056;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2024-07-01;44.2592;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2024-08-01;44.3137;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2024-09-01;43.6942;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2024-10-01;44.5688;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2024-11-01;44.1003;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2024-12-01;43.755;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2025-01-01;43.6383;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2025-02-01;46.292;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2025-03-01;46.3707;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2025-04-01;46.7344;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2025-05-01;47.4318;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2025-06-01;47.5113;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2025-07-01;47.8089;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2025-08-01;48.212;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2025-09-01;47.7199;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2025-10-01;47.567;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2025-11-01;47.0048;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2025-12-01;46.8584;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2026-01-01;47.5656;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2026-02-01;48.6711;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2026-03-01;48.7704;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2026-04-01;49.5926;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2026-05-01;50.7685;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2026-06-01;51.2808;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2026-07-01;51.6731;ЕМИСС (Росстат), 57848
+tour-workers-travel-agencies;2026-08-01;51.4039;ЕМИСС (Росстат), 57848
+tour-invest-hotels;2017;15.1068;ЕМИСС (Росстат), 59084
+tour-invest-hotels;2018;22.414;ЕМИСС (Росстат), 59084
+tour-invest-hotels;2019;25.1917;ЕМИСС (Росстат), 59084
+tour-invest-hotels;2020;31.7861;ЕМИСС (Росстат), 59084
+tour-invest-hotels;2021;43.5131;ЕМИСС (Росстат), 59084
+tour-invest-hotels;2022;48.8057;ЕМИСС (Росстат), 59084
+tour-invest-hotels;2023;56.7305;ЕМИСС (Росстат), 59084
+tour-invest-hotels;2024;90.5298;ЕМИСС (Росстат), 59084
+tour-invest-hotels;2025;131.1663;ЕМИСС (Росстат), 59084
+tour-invest-hotels-food;2017;42.7272;ЕМИСС (Росстат), 59084
+tour-invest-hotels-food;2018;58.8635;ЕМИСС (Росстат), 59084
+tour-invest-hotels-food;2019;54.7326;ЕМИСС (Росстат), 59084
+tour-invest-hotels-food;2020;63.2879;ЕМИСС (Росстат), 59084
+tour-invest-hotels-food;2021;79.4527;ЕМИСС (Росстат), 59084
+tour-invest-hotels-food;2022;84.336;ЕМИСС (Росстат), 59084
+tour-invest-hotels-food;2023;115.6712;ЕМИСС (Росстат), 59084
+tour-invest-hotels-food;2024;153.0307;ЕМИСС (Росстат), 59084
+tour-invest-hotels-food;2025;218.9984;ЕМИСС (Росстат), 59084
+tour-invest-travel-agencies;2017;0.3279;ЕМИСС (Росстат), 59084
+tour-invest-travel-agencies;2018;1.6748;ЕМИСС (Росстат), 59084
+tour-invest-travel-agencies;2019;0.4844;ЕМИСС (Росстат), 59084
+tour-invest-travel-agencies;2020;0.8955;ЕМИСС (Росстат), 59084
+tour-invest-travel-agencies;2021;0.5784;ЕМИСС (Росстат), 59084
+tour-invest-travel-agencies;2022;0.8735;ЕМИСС (Росстат), 59084
+tour-invest-travel-agencies;2023;1.8867;ЕМИСС (Росстат), 59084
+tour-invest-travel-agencies;2024;3.5584;ЕМИСС (Росстат), 59084
+tour-invest-travel-agencies;2025;2.3382;ЕМИСС (Росстат), 59084
+tour-airports-russia-2019;2019-01-01;14411.176;Росавиация (архив)
+tour-airports-russia-2019;2019-02-01;13022.868;Росавиация (архив)
+tour-airports-russia-2019;2019-03-01;15498.872;Росавиация (архив)
+tour-airports-russia-2019;2019-04-01;16341.867;Росавиация (архив)
+tour-airports-russia-2019;2019-05-01;18670.209;Росавиация (архив)
+tour-airports-russia-2019;2019-06-01;21532.813;Росавиация (архив)
+tour-airports-russia-2019;2019-07-01;24442.389;Росавиация (архив)
+tour-airports-russia-2019;2019-08-01;24882.283;Росавиация (архив)
+tour-airports-russia-2019;2019-09-01;21846.587;Росавиация (архив)
+tour-airports-russia-2019;2019-10-01;18937.308;Росавиация (архив)
+tour-airports-russia-2019;2019-11-01;15674.768;Росавиация (архив)
+tour-airports-russia-2019;2019-12-01;15630.067;Росавиация (архив)
+tour-airports-russia-2019;2020-01-01;15396.933;Росавиация (архив)
+tour-airports-russia-2019;2020-02-01;13970.398;Росавиация (архив)
+tour-airports-russia-2019;2020-03-01;11566.49;Росавиация (архив)
+tour-airports-russia-2019;2020-04-01;1470.021;Росавиация (архив)
+tour-airports-russia-2019;2020-05-01;1893.574;Росавиация (архив)
+tour-airports-russia-2019;2020-06-01;5659.67;Росавиация (архив)
+tour-airports-russia-2019;2020-07-01;13486.523;Росавиация (архив)
+tour-airports-russia-2019;2020-08-01;18054.916;Росавиация (архив)
+tour-airports-russia-2019;2020-09-01;16474.703;Росавиация (архив)
+tour-airports-russia-2019;2020-10-01;12667.982;Росавиация (архив)
+tour-airports-russia-2019;2020-11-01;9008.644;Росавиация (архив)
+tour-airports-russia-2019;2020-12-01;9912.96;Росавиация (архив)
+tour-airports-russia-2019;2021-01-01;10645.168;Росавиация (архив)
+tour-airports-russia-2019;2021-02-01;9647.483;Росавиация (архив)
+tour-airports-russia-2019;2021-03-01;12371.423;Росавиация (архив)
+tour-airports-russia-2019;2021-04-01;13620.353;Росавиация (архив)
+tour-airports-russia-2019;2021-05-01;16755.715;Росавиация (архив)
+tour-airports-russia-2019;2021-06-01;21065.924;Росавиация (архив)
+tour-airports-russia-2019;2021-07-01;24105.224;Росавиация (архив)
+tour-airports-russia-2019;2021-08-01;25309.348;Росавиация (архив)
+tour-airports-russia-2019;2021-09-01;22057.355;Росавиация (архив)
+tour-airports-russia-2019;2021-10-01;19218.834;Росавиация (архив)
+tour-airports-russia-2019;2021-11-01;14839.382;Росавиация (архив)
+tour-airports-russia-2019;2021-12-01;15138.461;Росавиация (архив)
+tour-airports-russia-2019;2022-01-01;14818.753;Росавиация (архив)
+tour-airports-russia-2019;2022-02-01;11875.18;Росавиация (архив)
+tour-airport-monthly-sochi;2020-01-01;465.792;Росавиация (архив)
+tour-airport-monthly-sochi;2020-02-01;455.961;Росавиация (архив)
+tour-airport-monthly-sochi;2020-03-01;23.789;Росавиация (архив)
+tour-airport-monthly-sochi;2020-04-01;14.874;Росавиация (архив)
+tour-airport-monthly-sochi;2020-05-01;210.232;Росавиация (архив)
+tour-airport-monthly-sochi;2020-06-01;963.984;Росавиация (архив)
+tour-airport-monthly-sochi;2020-07-01;1194.772;Росавиация (архив)
+tour-airport-monthly-sochi;2020-08-01;1092.436;Росавиация (архив)
+tour-airport-monthly-sochi;2020-09-01;747.386;Росавиация (архив)
+tour-airport-monthly-sochi;2020-10-01;425.516;Росавиация (архив)
+tour-airport-monthly-sochi;2020-11-01;449.008;Росавиация (архив)
+tour-airport-monthly-sochi;2020-12-01;461.551;Росавиация (архив)
+tour-airport-monthly-sochi;2021-01-01;579.979;Росавиация (архив)
+tour-airport-monthly-sochi;2021-02-01;736.917;Росавиация (архив)
+tour-airport-monthly-sochi;2021-03-01;770.188;Росавиация (архив)
+tour-airport-monthly-sochi;2021-04-01;970.255;Росавиация (архив)
+tour-airport-monthly-sochi;2021-05-01;1311.952;Росавиация (архив)
+tour-airport-monthly-sochi;2021-06-01;1434.945;Росавиация (архив)
+tour-airport-monthly-sochi;2021-07-01;1446.45;Росавиация (архив)
+tour-airport-monthly-sochi;2021-08-01;1261.086;Росавиация (архив)
+tour-airport-monthly-sochi;2021-09-01;868.313;Росавиация (архив)
+tour-airport-monthly-sochi;2021-10-01;562.486;Росавиация (архив)
+tour-airport-monthly-sochi;2021-11-01;533.182;Росавиация (архив)
+tour-airport-monthly-sochi;2021-12-01;600.868;Росавиация (архив)
+tour-airport-monthly-sochi;2022-01-01;658.099;Росавиация (архив)
+tour-airport-monthly-sochi;2022-02-01;566.716;Росавиация (архив)
+tour-airport-monthly-kazan;2020-01-01;207.705;Росавиация (архив)
+tour-airport-monthly-kazan;2020-02-01;167.255;Росавиация (архив)
+tour-airport-monthly-kazan;2020-03-01;12.072;Росавиация (архив)
+tour-airport-monthly-kazan;2020-04-01;19.605;Росавиация (архив)
+tour-airport-monthly-kazan;2020-05-01;85.302;Росавиация (архив)
+tour-airport-monthly-kazan;2020-06-01;197.558;Росавиация (архив)
+tour-airport-monthly-kazan;2020-07-01;257.536;Росавиация (архив)
+tour-airport-monthly-kazan;2020-08-01;334.77;Росавиация (архив)
+tour-airport-monthly-kazan;2020-09-01;301.645;Росавиация (архив)
+tour-airport-monthly-kazan;2020-10-01;185.424;Росавиация (архив)
+tour-airport-monthly-kazan;2020-11-01;175.746;Росавиация (архив)
+tour-airport-monthly-kazan;2020-12-01;226.985;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2020-01-01;176.489;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2020-02-01;169.068;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2020-03-01;31.799;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2020-04-01;34.808;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2020-05-01;109.688;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2020-06-01;169.27;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2020-07-01;217.166;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2020-08-01;200.514;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2020-09-01;186.458;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2020-10-01;146.477;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2020-11-01;162.214;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2020-12-01;194.038;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2021-01-01;172.32;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2021-02-01;213.393;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2021-03-01;239.88;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2021-04-01;278.076;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2021-05-01;303.617;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2021-06-01;337.208;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2021-07-01;338.32;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2021-08-01;322.715;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2021-09-01;320.754;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2021-10-01;247.143;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2021-11-01;246.919;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2021-12-01;184.364;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2022-01-01;267.424;Росавиация (архив)
+tour-airport-monthly-mineralnye-vody;2022-02-01;223.969;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2020-01-01;154.796;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2020-02-01;143.782;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2020-03-01;22.511;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2020-04-01;26.397;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2020-05-01;84.658;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2020-06-01;281.099;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2020-07-01;382.01;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2020-08-01;301.702;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2020-09-01;223.246;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2020-10-01;165.544;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2020-11-01;159.328;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2020-12-01;172.858;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2021-01-01;153.143;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2021-02-01;215.082;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2021-03-01;267.473;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2021-04-01;376.693;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2021-05-01;441.23;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2021-06-01;491.213;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2021-07-01;507.658;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2021-08-01;409.151;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2021-09-01;353.566;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2021-10-01;265.861;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2021-11-01;238.815;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2021-12-01;190.961;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2022-01-01;250.631;Росавиация (архив)
+tour-airport-monthly-kaliningrad;2022-02-01;182.302;Росавиация (архив)

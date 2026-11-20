@@ -21044,6 +21044,123 @@
     "unit": "тыс. чел.",
     "variantAxis": null
   },
+  "tour-airports-russia-2019": {
+    "base": "tour-airports-russia-2019",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-airports-russia-2019",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airports-russia-2019-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airports-russia-2019-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-airports-russia-2019-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airports-russia-2019-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airports-russia-2019-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airports-russia-2019-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airports-russia-2019-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-airports-russia-2019-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Пассажиропоток аэропортов России до 2022 года",
+    "template": "T6",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
   "tour-dest-abkhazia": {
     "base": "tour-dest-abkhazia",
     "defaultMode": "level",
@@ -22279,6 +22396,180 @@
       }
     ],
     "name": "Добавленная стоимость туристской индустрии",
+    "template": "T9",
+    "unit": "млрд руб.",
+    "variantAxis": null
+  },
+  "tour-gva-culture-leisure": {
+    "base": "tour-gva-culture-leisure",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-gva-culture-leisure",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-gva-culture-leisure-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-gva-culture-leisure-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-gva-culture-leisure-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-gva-culture-leisure-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-gva-culture-leisure-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Добавленная стоимость культуры, спорта и досуга",
+    "template": "T9",
+    "unit": "млрд руб.",
+    "variantAxis": null
+  },
+  "tour-gva-hotels-food": {
+    "base": "tour-gva-hotels-food",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-gva-hotels-food",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": true,
+        "label": "По кварталам",
+        "mode": "level",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-gva-hotels-food-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-gva-hotels-food-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-gva-hotels-food-yoy",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-gva-hotels-food-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-gva-hotels-food-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Добавленная стоимость гостиниц и общепита",
     "template": "T9",
     "unit": "млрд руб.",
     "variantAxis": null
@@ -27038,6 +27329,177 @@
     "unit": "тыс. поездок",
     "variantAxis": null
   },
+  "tour-invest-hotels": {
+    "base": "tour-invest-hotels",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-invest-hotels",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-invest-hotels-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-invest-hotels-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Инвестиции в гостиницы",
+    "template": "T10",
+    "unit": "млрд руб.",
+    "variantAxis": null
+  },
+  "tour-invest-hotels-food": {
+    "base": "tour-invest-hotels-food",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-invest-hotels-food",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-invest-hotels-food-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-invest-hotels-food-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Инвестиции в гостиницы и общепит",
+    "template": "T10",
+    "unit": "млрд руб.",
+    "variantAxis": null
+  },
+  "tour-invest-travel-agencies": {
+    "base": "tour-invest-travel-agencies",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-invest-travel-agencies",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-invest-travel-agencies-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-invest-travel-agencies-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Инвестиции турагентств и туроператоров",
+    "template": "T10",
+    "unit": "млрд руб.",
+    "variantAxis": null
+  },
   "tour-new-hotel-beds": {
     "base": "tour-new-hotel-beds",
     "defaultMode": "level",
@@ -30129,6 +30591,591 @@
     "name": "Траты россиян в личных поездках за границу",
     "template": "T9",
     "unit": "млн $",
+    "variantAxis": null
+  },
+  "tour-turnover-hotels": {
+    "base": "tour-turnover-hotels",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-turnover-hotels",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-turnover-hotels-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-turnover-hotels-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-turnover-hotels-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-turnover-hotels-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-turnover-hotels-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-turnover-hotels-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-turnover-hotels-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-turnover-hotels-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Оборот гостиниц",
+    "template": "T6",
+    "unit": "млрд руб.",
+    "variantAxis": null
+  },
+  "tour-turnover-hotels-food": {
+    "base": "tour-turnover-hotels-food",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-turnover-hotels-food",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-turnover-hotels-food-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-turnover-hotels-food-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-turnover-hotels-food-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-turnover-hotels-food-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-turnover-hotels-food-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-turnover-hotels-food-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-turnover-hotels-food-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-turnover-hotels-food-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Оборот гостиниц и общепита",
+    "template": "T6",
+    "unit": "млрд руб.",
+    "variantAxis": null
+  },
+  "tour-turnover-travel-agencies": {
+    "base": "tour-turnover-travel-agencies",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "flow",
+        "label": "За период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-turnover-travel-agencies",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "flow",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-turnover-travel-agencies-sum-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "flow",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "sum-quarter",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-turnover-travel-agencies-sum-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "flow",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "sum-year",
+        "unit": "млрд руб."
+      },
+      {
+        "code": "tour-turnover-travel-agencies-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-turnover-travel-agencies-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-turnover-travel-agencies-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-turnover-travel-agencies-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-turnover-travel-agencies-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-turnover-travel-agencies-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Оборот турагентств и туроператоров",
+    "template": "T6",
+    "unit": "млрд руб.",
+    "variantAxis": null
+  },
+  "tour-workers-hotels": {
+    "base": "tour-workers-hotels",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "avg",
+        "label": "Средняя за период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-workers-hotels",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "avg",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-workers-hotels-avg-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "avg",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "avg-quarter",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-workers-hotels-avg-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "avg",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "avg-year",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-workers-hotels-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-workers-hotels-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-workers-hotels-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-workers-hotels-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-workers-hotels-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-workers-hotels-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Работники гостиниц",
+    "template": "T8",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-workers-travel-agencies": {
+    "base": "tour-workers-travel-agencies",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "avg",
+        "label": "Средняя за период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-workers-travel-agencies",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "avg",
+        "isNative": true,
+        "label": "По месяцам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-workers-travel-agencies-avg-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "avg",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "avg-quarter",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-workers-travel-agencies-avg-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "avg",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "avg-year",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-workers-travel-agencies-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "tour-workers-travel-agencies-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "tour-workers-travel-agencies-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-workers-travel-agencies-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "tour-workers-travel-agencies-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "tour-workers-travel-agencies-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Работники турагентств и туроператоров",
+    "template": "T8",
+    "unit": "тыс. чел.",
     "variantAxis": null
   },
   "trade-balance": {
