@@ -222,3 +222,27 @@ describe('круг наблюдателей «Туризм»: сезонные �
     expect(splitHostCountryNote(undefined)).toEqual({ host: false, rest: '' });
   });
 });
+
+describe('одна точность числа в шапке и плитках (правки 20 и 38)', () => {
+  const series = (values) => values.map((value, i) => ({ date: `2025-${String(i + 1).padStart(2, '0')}-01`, value }));
+
+  it('счётная единица: «тыс. поездок» по порядку величины точек, без «847,69»', () => {
+    const s = buildIndicatorSummary({ points: series([812.4, 830.1, 847.69]), frequency: 'monthly', unit: 'тыс. поездок', dataDigits: 2 });
+    expect(s.shown.text).toBe('848');
+    expect(s.prevShown.text).toBe('830');
+  });
+
+  it('целые точки: без дроби', () => {
+    const s = buildIndicatorSummary({ points: series([410, 420, 435]), frequency: 'monthly', unit: 'тыс. прибытий', dataDigits: 2 });
+    expect(s.shown.text).toBe('435');
+  });
+
+  it('проценты, рубли, индексы не меняются', () => {
+    const pct = buildIndicatorSummary({ points: series([61.25, 62.5, 63.75]), frequency: 'monthly', unit: '%', dataDigits: 2 });
+    expect(pct.shown.text).toBe('63,75');
+    const rub = buildIndicatorSummary({ points: series([812.4, 830.1, 847.69]), frequency: 'monthly', unit: 'руб.', dataDigits: 2 });
+    expect(rub.shown.text).toBe('847,69');
+    const idx = buildIndicatorSummary({ points: series([101.2, 102.4, 103.6]), frequency: 'monthly', unit: 'индекс', dataDigits: 1 });
+    expect(idx.shown.digits).toBe(1);
+  });
+});

@@ -5,7 +5,8 @@
  * (процент, индекс, обычная величина) решает, какие плитки показывать: рост за 10 лет, место среди стран,
  * разброс за 10 лет. Здесь только чистые функции без React: их проверяют тестами.
  */
-import { formatValue } from './format';
+import { chartValueDigits, formatValue } from './format';
+import { valueDigitsFor } from './seriesDigits';
 
 const NBSP = ' ';
 const MINUS = '−';
@@ -334,7 +335,11 @@ export function buildIndicatorSummary({
   const prevRow = valid.length > 1 ? valid[valid.length - 2] : null;
   const prev = prevRow ? { value: Number(prevRow.value), date: prevRow.date } : null;
   const kind = unitKind(unit, modeType);
-  const shown = formatTileValue(last.value, unit, { dataDigits, locale });
+  // Счётные единицы («тыс. поездок») без своей настройки: точность по фактическим точкам, как в таблице и на графике (правки 20, 38).
+  // Проценты, рубли, индексы и известные единицы остаются как были: valueDigitsFor возвращает для них прежнюю настройку.
+  const countDigits = valueDigitsFor(unit, valid.map((point) => point.value), modeType);
+  const seriesDigits = countDigits !== chartValueDigits(unit, modeType) ? countDigits : dataDigits;
+  const shown = formatTileValue(last.value, unit, { dataDigits: seriesDigits, locale });
   // Предыдущее значение показываем в тех же единицах, что и текущее: «30,8 трлн» рядом с «29,3 трлн», а не «29 298 млрд».
   const prevShown = prev
     ? (shown.compacted
@@ -342,7 +347,7 @@ export function buildIndicatorSummary({
         ...shown,
         text: formatValue(prev.value / shown.div, shown.digits, locale),
       }
-      : formatTileValue(prev.value, unit, { dataDigits, locale }))
+      : formatTileValue(prev.value, unit, { dataDigits: seriesDigits, locale }))
     : null;
   const fmt = (v) => formatValue(Number(v) / shown.div, shown.digits, locale);
   const changeAbs = prev ? last.value - prev.value : null;
