@@ -55,7 +55,7 @@ fi
 "${SSH[@]}" "cd $APP_DIR && docker compose up -d backend scheduler frontend 2>&1 | tail -4"
 
 # 3. Готовность и дымовая проверка по локальному порту и по туннелю.
-for i in $(seq 1 40); do
+for i in $(seq 1 100); do  # до ~10 мин: полный seed после роста реестра (21.11.2026)
   code="$("${SSH[@]}" "curl -s -m 5 -o /dev/null -w '%{http_code}' http://127.0.0.1/api/v1/health/ready" || true)"
   [[ "$code" == "200" ]] && break
   sleep 6
@@ -67,4 +67,4 @@ echo "ready: $code"
 URL="$("${SSH[@]}" "cat /root/fe-demo-tunnel.url 2>/dev/null || true")"
 echo "туннель: ${URL:-не найден}"
 "${SSH[@]}" "cd $APP_DIR && docker compose ps --format 'table {{.Service}}\t{{.Status}}'"
-[[ "$code" == "200" ]] || { echo "Backend не стал готов за 4 минуты — смотри docker compose logs backend." >&2; exit 1; }
+[[ "$code" == "200" ]] || { echo "Backend не стал готов за 10 минут — смотри docker compose logs backend." >&2; exit 1; }

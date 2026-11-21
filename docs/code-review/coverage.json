@@ -18485,7 +18485,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "800c27e39c5b0133228e308697afe39863273744a2e17b5ec990c0dcf00b5551",
+      "sha256": "51122be21faddfc9728a46cc2579e1d33513754836d171dfcc00dd898967686e",
       "bytes": 6021692,
       "lines": 207331,
       "code": false,
@@ -36906,9 +36906,9 @@
     },
     {
       "path": "scripts/deploy.sh",
-      "sha256": "d26cd4e4dab8d4d8295ecae583916356e9e69d8cad31d8631f8b132f68da7f79",
-      "bytes": 40360,
-      "lines": 713,
+      "sha256": "b436f0ae36904ceed4101774fcb064ff11f85c2bda949264b2ca6aed17ce5abc",
+      "bytes": 40655,
+      "lines": 715,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -38180,8 +38180,8 @@
     },
     {
       "path": "scripts/test-server/deploy.sh",
-      "sha256": "8c739e3d8a1e807637e13f51eeffd4bf7b9fd390366adbe54071770493fafb44",
-      "bytes": 5487,
+      "sha256": "4225fabb2c557df24470da743ce0e22e274180031d0c40fed99a191f098ed0d4",
+      "bytes": 5575,
       "lines": 70,
       "code": true,
       "status": "reviewed",
@@ -38388,13 +38388,13 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "58269834a4562acadaa66e1ffea521f38a3bfca3bc9dde4e52799e798048345e",
+  "ledger_sha256": "fdff2b088328850d4950f0cfa48010f31dda5154ab66659586b50530b82a690e",
   "javascript_inventory_sha256": "89ead2af4bd2e1582f7eddc084688d8d06fcd0915366bc7766a105da5cda9014",
-  "baseline_commit": "7a3b752c63daedac0dc457d435ad65a0622dfaad",
+  "baseline_commit": "050a25eb4538bbb04e398602bacf8baf4aae19c5",
   "branch": "int/2026-11-20-tourism",
   "unstaged_at_capture": [
-    "CONTEXT.md",
-    "README.md",
-    "docs/data_sources.md"
+    "docs/indicator-index.json",
+    "scripts/deploy.sh",
+    "scripts/test-server/deploy.sh"
   ]
 }

@@ -1,16 +1,16 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "7a3b752c63daedac0dc457d435ad65a0622dfaad",
+  "baseline_commit": "050a25eb4538bbb04e398602bacf8baf4aae19c5",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
-    "CONTEXT.md",
-    "README.md",
     "docs/code-review/coverage.json",
     "docs/code-review/graph-omission-classification-2026-09-30.json",
     "docs/code-review/materials-2026-09-30.json",
     "docs/code-review/reviews.jsonl",
-    "docs/data_sources.md"
+    "docs/indicator-index.json",
+    "scripts/deploy.sh",
+    "scripts/test-server/deploy.sh"
   ],
   "untracked_at_capture": [],
   "stats": {
@@ -2171,7 +2171,7 @@
     {"path": "docs/enterprise_resilience.md", "kind": "document", "bytes": 109681, "lines": 456, "sha256": "6d250966fd19627854f4f4383227308d35d07e0fc871086c828abf7d648cdb40", "symlink": false, "nodes": 28, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/indexnow-sitemap-backfill-plan.md", "kind": "document", "bytes": 15833, "lines": 204, "sha256": "18fb9f7b8891299a5a4acebf9770af9ec82d6c8fa60e4fd62743c757c7f93339", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-family-playbook.md", "kind": "document", "bytes": 48077, "lines": 618, "sha256": "b8a95b1db788429b05b6100d371a871e2fe338366fa8908eba7c0450727023ad", "symlink": false, "nodes": 60, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
-    {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 6021692, "lines": 207331, "sha256": "800c27e39c5b0133228e308697afe39863273744a2e17b5ec990c0dcf00b5551", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 6021692, "lines": 207331, "sha256": "51122be21faddfc9728a46cc2579e1d33513754836d171dfcc00dd898967686e", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-index.md", "kind": "document", "bytes": 286554, "lines": 2953, "sha256": "bf27861dec32409c1a7de52e093596103831dbd3743c6039f9a8a6a743c33f83", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-unknowns.md", "kind": "document", "bytes": 86504, "lines": 247, "sha256": "b9ee1a5299231a6e06723f761ef7b15d51e65482301877953d78af63d5e80fcb", "symlink": false, "nodes": 17, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-workflow.md", "kind": "document", "bytes": 11924, "lines": 111, "sha256": "850a062686dbafd8c6047c9f015043ada0378d27d6c2f89ea3ed2026416f1a97", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -3588,7 +3588,7 @@
     {"path": "scripts/db-cleanup-perf-batch3.sh", "kind": "code", "bytes": 6400, "lines": 121, "sha256": "63d6e6c114818f1240caec6bfb099d8dd4fe18c601dff96825e53afddfe585c7", "symlink": false, "nodes": 3, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/db-roles.sh", "kind": "code", "bytes": 3419, "lines": 48, "sha256": "16656b82d1f8d84213e83ce54d43056d1b64cf519b8a952de26755abe7af9d63", "symlink": false, "nodes": 5, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/db-roles.sql", "kind": "code", "bytes": 2636, "lines": 36, "sha256": "301fdabdf6772f8f7c0839271c2ae2075425c8ac09de35afe2ab43e8524db17a", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
-    {"path": "scripts/deploy.sh", "kind": "code", "bytes": 40360, "lines": 713, "sha256": "d26cd4e4dab8d4d8295ecae583916356e9e69d8cad31d8631f8b132f68da7f79", "symlink": false, "nodes": 18, "extraction": "nodes", "layer": "operations", "semantic_evidence": true, "semantic_current": false},
+    {"path": "scripts/deploy.sh", "kind": "code", "bytes": 40655, "lines": 715, "sha256": "b436f0ae36904ceed4101774fcb064ff11f85c2bda949264b2ca6aed17ce5abc", "symlink": false, "nodes": 18, "extraction": "nodes", "layer": "operations", "semantic_evidence": true, "semantic_current": false},
     {"path": "scripts/dev/check-raster-dpr.py", "kind": "code", "bytes": 14827, "lines": 303, "sha256": "56f2ba832a6c0687233006fa4ff944a07949ac2852514ff4f819096283db7d98", "symlink": false, "nodes": 15, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/dev/generate-brand-image.py", "kind": "code", "bytes": 5195, "lines": 95, "sha256": "6ff60ac6fbf3778f90b1bdf9338618b8e71c5241d0114202532fd9a0e6109dec", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/dev/layout-sweep.mjs", "kind": "code", "bytes": 18633, "lines": 319, "sha256": "7e385f65eac022f1b56765a9259a445658779f5190542cb7894b958afbb34edc", "symlink": false, "nodes": 18, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
@@ -3686,7 +3686,7 @@
     {"path": "scripts/ssr-link-audit.py", "kind": "code", "bytes": 8847, "lines": 180, "sha256": "7e64371967aaedfce9f7d21d05af4c71c69d1942ef5a289c1766a886e11138be", "symlink": false, "nodes": 12, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/sync-local-from-prod.py", "kind": "code", "bytes": 4307, "lines": 134, "sha256": "ce71271a04d7a745fab23a6c26e0dedfcfa6283d44007b81ef922adf51cc5756", "symlink": false, "nodes": 8, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/test-crawler-routing.py", "kind": "code", "bytes": 9645, "lines": 174, "sha256": "b7f3955526c41c797fcf0e6aa5357eaf4abbe0de0bb07c0edb43b24868f41fd0", "symlink": false, "nodes": 8, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
-    {"path": "scripts/test-server/deploy.sh", "kind": "code", "bytes": 5487, "lines": 70, "sha256": "8c739e3d8a1e807637e13f51eeffd4bf7b9fd390366adbe54071770493fafb44", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
+    {"path": "scripts/test-server/deploy.sh", "kind": "code", "bytes": 5575, "lines": 70, "sha256": "4225fabb2c557df24470da743ce0e22e274180031d0c40fed99a191f098ed0d4", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/test-server/docker-compose.override.yml", "kind": "asset/data/config", "bytes": 1654, "lines": 36, "sha256": "02a2f2cc05a893d01fb4410bf332d9e3a41ca25b35cabfe0fdf0f6f82628a16c", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/test-server/env.additions", "kind": "asset/data/config", "bytes": 286, "lines": 6, "sha256": "166833c5e7363b4cf8e1083b7782dde29a969a3fee0de63ede3b3d680721fe59", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "operations", "semantic_evidence": false, "semantic_current": null},
     {"path": "scripts/test-server/loadtest.py", "kind": "code", "bytes": 6376, "lines": 120, "sha256": "7f4bc03b4ae5410ffb5ee53e533d520f06e53b7ddb44e58c47513b50a0f81c4f", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "operations", "semantic_evidence": false, "semantic_current": null},

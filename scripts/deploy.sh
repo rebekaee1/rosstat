@@ -446,15 +446,17 @@ ensure_frontend_running() {
 }
 ensure_frontend_running
 
-echo "==> waiting for readiness (до 300s: миграции + seed)"
+# 21.11.2026: раздел «Туризм» удвоил реестр (seed 2646 рядов); полный прогон seed при смене хеша
+# на стенде шёл ~3 м 50 с + регионы и календарь ~1 мин — 300 с не хватало. Ждём до 600 с.
+echo "==> waiting for readiness (до 600s: миграции + seed)"
 ready=""
-for _ in $(seq 1 60); do
+for _ in $(seq 1 120); do
   if curl -sf http://localhost:8000/api/v1/health/ready >/dev/null 2>&1; then
     ready=1; break
   fi
   sleep 5
 done
-[ -n "$ready" ] || { echo "FAIL: backend не стал ready за 300s"; docker compose logs backend --tail=50; rollback; }
+[ -n "$ready" ] || { echo "FAIL: backend не стал ready за 600s"; docker compose logs backend --tail=50; rollback; }
 
 # perf batch 2: scheduler (фоновые джобы) стартует после healthy backend;
 # его readiness включает проверку живого APScheduler.

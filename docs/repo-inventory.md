@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2659  ·  **Строк:** 1 661 038  ·  **Токенов (≈):** 16 231 525
+**Файлов:** 2659  ·  **Строк:** 1 661 040  ·  **Токенов (≈):** 16 231 587
 
 ## По верхним папкам
 
@@ -22,7 +22,7 @@
 | `docs` | 155 | 1 015 987 | 8 831 667 |
 | `frontend` | 1119 | 212 555 | 2 290 287 |
 | `mcp` | 3 | 158 | 1 120 |
-| `scripts` | 145 | 25 756 | 320 256 |
+| `scripts` | 145 | 25 758 | 320 318 |
 
 ## Все файлы (по убыванию токенов)
 
@@ -178,12 +178,12 @@
 | `backend/app/services/derived_ops.py` | 840 | 8 754 |
 | `backend/app/services/imf_weo_adapter.py` | 943 | 8 740 |
 | `backend/app/data/research_articles/foreign-tourists-russia.json` | 102 | 8 726 |
+| `scripts/deploy.sh` | 715 | 8 717 |
 | `backend/tests/fixtures/cbr_regional_rates/data_34_russia.json` | 1 | 8 712 |
 | `frontend/src/styles/k3-shell.css` | 750 | 8 712 |
 | `backend/tests/fixtures/cbr_regional_rates/data_39_cfo.json` | 1 | 8 708 |
 | `backend/tests/fixtures/cbr_regional_rates/data_34_nenetskiy-ao.json` | 1 | 8 706 |
 | `frontend/src/i18n/viewModeContent.en.js` | 901 | 8 696 |
-| `scripts/deploy.sh` | 713 | 8 670 |
 | `backend/app/services/channel_posts.py` | 730 | 8 654 |
 | `docs/indicator-family-playbook.md` | 618 | 8 645 |
 | `scripts/build-mechanism-inventory.py` | 492 | 8 645 |
@@ -1469,6 +1469,7 @@
 | `backend/app/services/region_compare_data.py` | 122 | 1 120 |
 | `frontend/src/lib/searchGroups.test.js` | 87 | 1 120 |
 | `frontend/src/components/IndicatorTelemetryGrid.component.test.jsx` | 93 | 1 119 |
+| `scripts/test-server/deploy.sh` | 70 | 1 119 |
 | `frontend/src/lib/sitePaths.test.js` | 98 | 1 118 |
 | `backend/tests/test_pulse_calendar_unconfirmed.py` | 77 | 1 117 |
 | `frontend/src/lib/searchFilters.test.js` | 71 | 1 117 |
@@ -1482,7 +1483,6 @@
 | `backend/app/services/export_grid.py` | 114 | 1 105 |
 | `backend/tests/test_download_paths.py` | 100 | 1 104 |
 | `scripts/emiss/test_grid_to_series.py` | 93 | 1 104 |
-| `scripts/test-server/deploy.sh` | 70 | 1 104 |
 | `backend/app/services/identity/service.py` | 118 | 1 100 |
 | `backend/app/data/eurostat_country_visibility.py` | 119 | 1 099 |
 | `backend/tests/test_emiss_income_parser.py` | 85 | 1 099 |

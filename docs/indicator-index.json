@@ -26084,22 +26084,17 @@
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 518,
+          "line": 520,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 570,
+          "line": 572,
           "kind": "other"
         },
         {
           "file": "scripts/deploy.sh",
-          "line": 604,
-          "kind": "other"
-        },
-        {
-          "file": "scripts/deploy.sh",
-          "line": 605,
+          "line": 606,
           "kind": "other"
         },
         {
@@ -26115,6 +26110,11 @@
         {
           "file": "scripts/deploy.sh",
           "line": 611,
+          "kind": "other"
+        },
+        {
+          "file": "scripts/deploy.sh",
+          "line": 613,
           "kind": "other"
         },
         {
