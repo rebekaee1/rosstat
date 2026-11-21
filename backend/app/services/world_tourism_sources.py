@@ -489,6 +489,8 @@ RZS_PROVIDER = "rzs_serbia"
 INE_PROVIDER = "ine_spain"
 ESTAT_RES_PROVIDER = "eurostat_residence"
 NBS_CN_PROVIDER = "nbs_china_yearbook"
+CYSTAT_HIST_PROVIDER = "cystat_annual"
+GE_BORDER_PROVIDER = "ge_mineconomy"
 
 NATIONAL_SOURCES = {
     KTB_PROVIDER: ("Министерство культуры и туризма Турции", "https://yigm.ktb.gov.tr/TR-249704/aylik-bultenler.html"),
@@ -502,6 +504,9 @@ NATIONAL_SOURCES = {
     RZS_PROVIDER: ("Республиканское статистическое управление Сербии", "https://opendata.stat.gov.rs/"),
     INE_PROVIDER: ("Национальный институт статистики Испании (INE)", "https://www.ine.es/"),
     NBS_CN_PROVIDER: ("Национальное бюро статистики Китая", "https://www.stats.gov.cn/sj/ndsj/"),
+    CYSTAT_HIST_PROVIDER: ("Статистическая служба Кипра (CYSTAT)",
+                           "https://cystatdb.cystat.gov.cy/pxweb/en/8.CYSTAT-DB/8.CYSTAT-DB__Tourism__Tourists__Annual/"),
+    GE_BORDER_PROVIDER: ("Министерство экономики Грузии (пограничный учёт МВД)", "https://www.economy.ge/"),
     ESTAT_RES_PROVIDER: ("Евростат", "https://ec.europa.eu/eurostat/databrowser/view/tour_occ_ninraw/default/table"),
 }
 SOURCE_BY_PROVIDER.update({key: value[0] for key, value in NATIONAL_SOURCES.items()})
@@ -551,7 +556,7 @@ _KTB_ORIGINS: tuple[tuple[str, tuple[str, ...], str, str], ...] = (
     ("sa", ("SUUDIARABISTAN",), "Саудовской Аравии", "Saudi Arabia"),
     ("it", ("ITALYA",), "Италии", "Italy"),
     ("kz", ("KAZAKISTAN",), "Казахстана", "Kazakhstan"),
-    ("by", ("BEYAZRUSYA",), "Беларуси", "Belarus"),
+    ("by", ("BEYAZRUSYA", "BELARUS"), "Беларуси", "Belarus"),
 )
 
 
@@ -566,6 +571,7 @@ class TidySpec:
     series: TourismSeries
     scale: float = 1.0
     cumulative: bool = False  # «2026-01..2026-09» нарастающим итогом → значение квартала
+    years: tuple[int, int] | None = None  # только эти годы (смена охвата: СССР/СНГ до 1997, Россия с 1998)
 
 
 def _ru_arrivals(provider: str, freq: str, what_ru: str, what_en: str, m_ru: str, m_en: str) -> TourismSeries:
@@ -669,7 +675,101 @@ def _acc(provider: str, freq: str, nights: bool, m_ru: str, m_en: str, *, prefix
                 unit_en="nights" if nights else "people")
 
 
+
+# --- История (сбор g4): годовые бюллетени Турции 1973–2025, CYSTAT с 1980, пограничный учёт Грузии 2010–2014 ---
+_KTB_Y_RU = ("Министерство культуры и туризма Турции, годовые пограничные бюллетени: въезды иностранцев по "
+             "гражданству. 1973–1983 — распознанные сканы, сверены с суммами по месяцам и с бюллетенями соседних "
+             "лет; 1984–2015 — таблицы министерства; с 2016 — сумма месячных бюллетеней.")
+_KTB_Y_EN = ("Ministry of Culture and Tourism of Türkiye, annual border bulletins: foreign arrivals by nationality. "
+             "1973–1983 from recognised scans, checked against monthly sums and adjacent bulletins; 1984–2015 from "
+             "ministry tables; since 2016 the sum of monthly bulletins.")
+_USSR_TR_RU = (" До 1991 года — граждане СССР, в 1992–1997 годах — все страны СНГ вместе: Россию министерство "
+               "отдельно не выделяло. С 1998 года — отдельный ряд «Туристы из России»; падение 1997→1998 — смена "
+               "учёта, а не спад потока.")
+_USSR_TR_EN = (" Until 1991 — citizens of the USSR, 1992–1997 — all CIS countries together: Russia was not shown "
+               "separately. From 1998 see «Tourist arrivals from Russia»; the 1997→1998 drop is a change in "
+               "coverage, not in the flow.")
+KTB_RU_ANNUAL = _nat(KTB_PROVIDER, "tour-arrivals-russia-annual", "annual", "Туристы из России за год",
+                     "Tourist arrivals from Russia, annual", "Сколько граждан России въехало в страну",
+                     "How many Russian citizens entered the country",
+                     _KTB_Y_RU + " Россия отдельно — с 1998 года; раньше см. ряд «Туристы из СССР и стран СНГ».",
+                     _KTB_Y_EN + " Russia is shown separately from 1998; earlier see the USSR/CIS series.")
+KTB_USSR_CIS = _nat(KTB_PROVIDER, "tour-arrivals-ussr-cis", "annual", "Туристы из СССР и стран СНГ (1973–1997)",
+                    "Arrivals from the USSR and CIS (1973–1997)", "Сколько граждан СССР, затем стран СНГ въехало в страну",
+                    "How many citizens of the USSR, later of the CIS, entered the country",
+                    _KTB_Y_RU + _USSR_TR_RU, _KTB_Y_EN + _USSR_TR_EN,
+                    keywords="туристы из СССР {country}, туристы из СНГ {country}, история турпотока {country}")
+KTB_TOTAL_ANNUAL = _nat(KTB_PROVIDER, "tour-arrivals-total-annual", "annual", "Иностранные посетители за год",
+                        "Foreign visitor arrivals, annual", "Сколько иностранцев въехало в страну",
+                        "How many foreigners entered the country", _KTB_Y_RU, _KTB_Y_EN, keywords=_TOTAL_KEYWORDS)
+_KEY_ORIGINS = {"us": "A.B.D", "de": "ALMANYA", "bg": "BULGARİSTAN", "fr": "FRANSA", "nl": "HOLLANDA",
+                "uk": "İNGİLTERE", "ir": "İRAN"}
+_ORIGIN_NAMES = {code: (name_ru, name_en) for code, _labels, name_ru, name_en in _KTB_ORIGINS}
+KTB_ORIGIN_ANNUAL = tuple(
+    (label, _nat(KTB_PROVIDER, f"tour-arrivals-{code}-annual", "annual", f"Туристы из {_ORIGIN_NAMES[code][0]} за год",
+                 f"Tourist arrivals from {_ORIGIN_NAMES[code][1]}, annual",
+                 f"Сколько граждан {_ORIGIN_NAMES[code][0]} въехало в страну",
+                 f"How many citizens of {_ORIGIN_NAMES[code][1]} entered the country",
+                 _KTB_Y_RU + (" До 1990 года — ФРГ." if code == "de" else ""),
+                 _KTB_Y_EN + (" Until 1990 — West Germany." if code == "de" else ""),
+                 keywords=f"туристы из {_ORIGIN_NAMES[code][0]} {{country}}"))
+    for code, label in _KEY_ORIGINS.items()
+)
+_CY_Y_RU = ("Статистическая служба Кипра, годовая таблица туристов по стране постоянного проживания (с 1980 "
+            "года). Сумма месяцев помесячного ряда отличается от годовой таблицы на единицы человек.")
+_CY_Y_EN = ("Statistical Service of Cyprus, annual table of tourists by country of usual residence (since 1980). "
+            "Monthly sums differ from the annual table by a few people.")
+CY_RU_ANNUAL = _nat(CYSTAT_HIST_PROVIDER, "tour-arrivals-russia-annual", "annual", "Туристы из России за год",
+                    "Tourist arrivals from Russia, annual", "Сколько туристов из России приехало в страну",
+                    "How many tourists from Russia arrived",
+                    _CY_Y_RU + " Россия отдельно — с 1998 года; раньше см. ряд «Туристы из СССР и бывшего СССР».",
+                    _CY_Y_EN + " Russia is shown separately from 1998; earlier see the USSR series.")
+CY_USSR = _nat(CYSTAT_HIST_PROVIDER, "tour-arrivals-ussr-cis", "annual", "Туристы из СССР и бывшего СССР (1980–1997)",
+               "Arrivals from the USSR and former USSR (1980–1997)",
+               "Сколько туристов из СССР, затем из России и стран бывшего СССР приехало в страну",
+               "How many tourists from the USSR, later from Russia and the former USSR, arrived",
+               _CY_Y_RU + " 1980–1985 и 1990 — СССР; 1994–1997 — Россия вместе со странами бывшего СССР; за "
+               "1986–1989 и 1991–1993 разбивки нет. С 1998 года — отдельный ряд «Туристы из России».",
+               _CY_Y_EN + " 1980–1985 and 1990 — USSR; 1994–1997 — Russia together with the former USSR; no "
+               "detail for 1986–1989 and 1991–1993. From 1998 see «Tourist arrivals from Russia».",
+               keywords="туристы из СССР {country}, история турпотока {country}")
+CY_TOTAL_ANNUAL = _nat(CYSTAT_HIST_PROVIDER, "tour-arrivals-total-annual", "annual", "Прибытия туристов за год",
+                       "Tourist arrivals, annual", "Сколько иностранных туристов приехало в страну",
+                       "How many foreign tourists arrived", _CY_Y_RU, _CY_Y_EN, keywords=_TOTAL_KEYWORDS)
+_GE_B_RU = ("Министерство экономики Грузии по пограничному учёту МВД: прибытия нерезидентов, каждый въезд "
+            "отдельно. Это не обследование Geostat (ряд «Визиты граждан России»): определения разные, ряды не "
+            "складываются. Учёт по странам опубликован за 2010–2014 годы.")
+_GE_B_EN = ("Ministry of Economy of Georgia, from Interior Ministry border records: non-resident arrivals, each "
+            "entry counted. This is not the Geostat survey (Visits by citizens of Russia); definitions differ, "
+            "the series are not combined. Country detail is published for 2010–2014.")
+GE_RU_BORDER = _nat(GE_BORDER_PROVIDER, "tour-arrivals-russia-border", "annual",
+                    "Прибытия из России по пограничному учёту (2012–2014)",
+                    "Arrivals from Russia, border records (2012–2014)", "Сколько раз граждане России въезжали в страну",
+                    "How many times Russian citizens entered the country", _GE_B_RU, _GE_B_EN)
+GE_TOTAL_BORDER = _nat(GE_BORDER_PROVIDER, "tour-arrivals-total-border", "annual",
+                       "Прибытия нерезидентов по пограничному учёту (2010–2014)",
+                       "Non-resident arrivals, border records (2010–2014)", "Сколько раз нерезиденты въезжали в страну",
+                       "How many times non-residents entered the country", _GE_B_RU, _GE_B_EN,
+                       keywords=_TOTAL_KEYWORDS)
+
 TIDY_SPECS: tuple[TidySpec, ...] = (
+    # История Турции (g4) идёт раньше текущих бюллетеней (c5): на стыке 2014–2015 значения совпадают, остаётся c5.
+    TidySpec("TR", "turkey_m2001", "foreign_arrivals_month", ("RUSYAFED", "RUSYA"), KTB_RU_ARRIVALS),
+    TidySpec("TR", "turkey_m2001", "foreign_arrivals_month", ("YABANCITOPLAM",), KTB_TOTAL_ARRIVALS),
+    *(TidySpec("TR", "turkey_m2001", "foreign_arrivals_month", labels, series) for labels, series in KTB_ORIGIN_SERIES),
+    TidySpec("TR", "turkey_mtotal", "foreign_arrivals_month", ("YABANCITOPLAM",), KTB_TOTAL_ARRIVALS),
+    TidySpec("TR", "turkey_key", "foreign_arrivals_year", ("RUSSIA/USSR",), KTB_RU_ANNUAL, years=(1998, 2100)),
+    TidySpec("TR", "turkey_key", "foreign_arrivals_year", ("RUSSIA/USSR",), KTB_USSR_CIS, years=(1900, 1997)),
+    TidySpec("TR", "turkey_key", "foreign_arrivals_year", ("YABANCITOPLAM",), KTB_TOTAL_ANNUAL),
+    *(TidySpec("TR", "turkey_key", "foreign_arrivals_year", (label,), series) for label, series in KTB_ORIGIN_ANNUAL),
+    TidySpec("CY", "cy_hist", "прибытия туристов", ("Россия",), CY_RU_ANNUAL),
+    TidySpec("CY", "cy_hist", "прибытия туристов", ("СССР", "Россия и страны бывшего СССР"), CY_USSR,
+             years=(1900, 1997)),
+    TidySpec("CY", "cy_hist", "прибытия туристов", ("всего",), CY_TOTAL_ANNUAL),
+    TidySpec("GE", "ge_border", "международные прибытия нерезидентов (пограничный учёт МВД Грузии)", ("Россия",),
+             GE_RU_BORDER),
+    TidySpec("GE", "ge_border", "международные прибытия нерезидентов (пограничный учёт МВД Грузии)",
+             ("все страны",), GE_TOTAL_BORDER),
     TidySpec("TR", "turkey", "foreign_arrivals_month", ("RUSYAFED", "RUSYA"), KTB_RU_ARRIVALS),
     TidySpec("TR", "turkey", "foreign_arrivals_month", ("YABANCITOPLAM",), KTB_TOTAL_ARRIVALS),
     *(TidySpec("TR", "turkey", "foreign_arrivals_month", labels, series) for labels, series in KTB_ORIGIN_SERIES),
@@ -765,7 +865,14 @@ TIDY_SPECS: tuple[TidySpec, ...] = (
 )
 TIDY_PROVIDERS = tuple(dict.fromkeys(spec.series.provider for spec in TIDY_SPECS))
 # Папка → файл таблицы сбора (c5 — `<папка>/tidy.csv`; годовые таблицы JNTO сбора g3 — свой файл).
-TIDY_FILES = {"japan_annual": "japan/tidy_annual.csv"}
+TIDY_FILES = {
+    "japan_annual": "japan/tidy_annual.csv",
+    "turkey_m2001": "turkey/tidy_monthly_2001_2015_digital.csv",
+    "turkey_mtotal": "turkey/tidy_monthly_total_1984_2000_digital.csv",
+    "turkey_key": "turkey/stitched_key_annual_1973_2025.csv",
+    "cy_hist": "cy_arrivals_russia_annual/tidy.csv",
+    "ge_border": "ge_arrivals_russia/tidy.csv",
+}
 
 
 def tidy_file(folder: str) -> str:
@@ -1113,36 +1220,42 @@ def _cumulative_to_quarters(points: list[tuple[str, float]]) -> list[tuple[date,
 
 def parse_tidy_csv(text: str, specs: Iterable[TidySpec]) -> Parsed:
     """Таблица сбора `country;period;origin;indicator;value` → ряды по описаниям `TidySpec`."""
-    wanted: dict[tuple[str, str], TidySpec] = {}
+    wanted: dict[tuple[str, str], list[TidySpec]] = {}
     for spec in specs:
         for origin in spec.origins:
-            wanted[(spec.indicator, _origin_key(origin))] = spec
+            wanted.setdefault((spec.indicator, _origin_key(origin)), []).append(spec)
     raw: dict[tuple[str, str], list] = {}
     cumulative: dict[tuple[str, str], list] = {}
     for row in csv.DictReader(io.StringIO(text.lstrip("﻿")), delimiter=";"):
-        spec = wanted.get(((row.get("indicator") or "").strip(), _origin_key(row.get("origin") or "")))
-        if spec is None:
-            continue
-        country = spec.country
-        if country == "*":
-            geo = (row.get("country") or "").strip().upper()
-            country = ESTAT_GEO_TO_CATALOG.get(geo, geo)
-            if country not in M49_TO_CATALOG.values():
-                continue
-        value = _num(row.get("value"))
-        if value is None:
-            continue
-        key = (spec.series.code_suffix, country)
-        if spec.cumulative:
-            cumulative.setdefault(key, []).append((row.get("period") or "", value * spec.scale))
-            continue
-        parsed = _period(row.get("period") or "")
-        if parsed is None or parsed[1] != spec.series.frequency:
-            continue
-        raw.setdefault(key, []).append((parsed[0], value * spec.scale))
+        for spec in wanted.get(((row.get("indicator") or "").strip(), _origin_key(row.get("origin") or "")), ()):
+            _tidy_row(spec, row, raw, cumulative)
     for key, points in cumulative.items():
         raw.setdefault(key, []).extend(_cumulative_to_quarters(points))
     return _finish(raw)
+
+
+def _tidy_row(spec: TidySpec, row: dict, raw: dict, cumulative: dict) -> None:
+    if spec.years is not None:
+        year = str(row.get("period") or "")[:4]
+        if not year.isdigit() or not spec.years[0] <= int(year) <= spec.years[1]:
+            return
+    country = spec.country
+    if country == "*":
+        geo = (row.get("country") or "").strip().upper()
+        country = ESTAT_GEO_TO_CATALOG.get(geo, geo)
+        if country not in M49_TO_CATALOG.values():
+            return
+    value = _num(row.get("value"))
+    if value is None:
+        return
+    key = (spec.series.code_suffix, country)
+    if spec.cumulative:
+        cumulative.setdefault(key, []).append((row.get("period") or "", value * spec.scale))
+        return
+    parsed = _period(row.get("period") or "")
+    if parsed is None or parsed[1] != spec.series.frequency:
+        return
+    raw.setdefault(key, []).append((parsed[0], value * spec.scale))
 
 
 PROVIDERS = NETWORK_SOURCE_PROVIDERS + TIDY_PROVIDERS

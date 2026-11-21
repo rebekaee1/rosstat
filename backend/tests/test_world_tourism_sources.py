@@ -275,7 +275,7 @@ def test_repository_snapshot_feeds_national_series_without_files():
     assert SNAPSHOT_PATH.stat().st_size < 2_000_000
     turkey, _ = fetch_tidy(src.KTB_PROVIDER)
     assert dict(turkey[("tour-arrivals-russia", "TR")])[date(2026, 9, 1)] == 979647.0
-    assert len(turkey) == 19
+    assert len(turkey) == 29  # 19 помесячных + 10 годовых (история 1973–2025)
     armenia, _ = fetch_tidy(src.ARMSTAT_PROVIDER)
     assert dict(armenia[("tour-arrivals-russia", "AM")])[date(2026, 7, 1)] == 704935.0 - 416743.0
     eurostat, _ = fetch_tidy(src.ESTAT_RES_PROVIDER)
@@ -322,3 +322,35 @@ def test_host_country_note_on_destination_series():
     assert src.KTB_RU_ARRIVALS.description_en.startswith("Host-country data.")
     assert src.OECD_RU_ARRIVALS.description_ru.startswith("По данным принимающей страны.")
     assert not src.ESTAT_RU_DEBIT.description_ru.startswith("По данным")  # траты жителей страны в России
+
+
+def test_snapshot_turkey_history_keeps_ussr_cis_apart_from_russia():
+    from app.services.world_tourism_ingest import fetch_tidy
+
+    turkey, _ = fetch_tidy(src.KTB_PROVIDER)
+    russia_annual = dict(turkey[("tour-arrivals-russia-annual", "TR")])
+    ussr_cis = dict(turkey[("tour-arrivals-ussr-cis", "TR")])
+    # До 1997 — СССР, затем СНГ целиком; Россия отдельно — с 1998: ряды не пересекаются.
+    assert min(russia_annual).year == 1998 and max(ussr_cis).year == 1997
+    assert ussr_cis[date(1973, 1, 1)] == 1285.0 and ussr_cis[date(1997, 1, 1)] == 1513566.0
+    assert russia_annual[date(1998, 1, 1)] == 676183.0 and russia_annual[date(2025, 1, 1)] == 6903981.0
+    assert "смена" in src.KTB_USSR_CIS.methodology_ru and "coverage" in src.KTB_USSR_CIS.methodology_en
+    # Помесячно: Россия и гражданства — с 2001 года без пропусков, всего — с 1984 года.
+    monthly = turkey[("tour-arrivals-russia", "TR")]
+    assert monthly[0][0] == date(2001, 1, 1) and len(monthly) == 309
+    assert turkey[("tour-arrivals-total", "TR")][0][0] == date(1984, 1, 1)
+    assert turkey[("tour-arrivals-de-annual", "TR")][0][0] == date(1973, 1, 1)
+
+
+def test_snapshot_cyprus_since_1980_and_georgia_border_records_apart():
+    from app.services.world_tourism_ingest import fetch_tidy
+
+    cyprus, _ = fetch_tidy(src.CYSTAT_HIST_PROVIDER)
+    assert cyprus[("tour-arrivals-total-annual", "CY")][0][0] == date(1980, 1, 1)
+    ussr = dict(cyprus[("tour-arrivals-ussr-cis", "CY")])
+    assert date(1980, 1, 1) in ussr and date(1997, 1, 1) in ussr and date(2000, 1, 1) not in ussr
+    assert min(dict(cyprus[("tour-arrivals-russia-annual", "CY")])).year == 1998
+    georgia, _ = fetch_tidy(src.GE_BORDER_PROVIDER)
+    assert dict(georgia[("tour-arrivals-russia-border", "GE")])[date(2013, 1, 1)] == 767396.0
+    # Пограничный учёт — свой код, не ряд визитов Geostat.
+    assert all(suffix != "tour-visits-russia" for suffix, _ in georgia)

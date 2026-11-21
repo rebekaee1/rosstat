@@ -13,7 +13,7 @@
 Национальные службы стран назначения (Турция, Армения, Азербайджан, Индия, Израиль, Япония, Корея, Черногория,
 Сербия, Испания) и Евростат «ночёвки по стране проживания» берутся из снимка `app/data/world_tourism_national.csv.gz`
 — нужные строки таблиц сбора c5 20.11.2026: их сайты отдают файлы с плавающими именами, часть не отвечает с прода
-(Турция). Обновление — новый сбор, `--build-snapshot <c5/raw>,<g3/raw>`, коммит снимка.
+(Турция). Обновление — новый сбор, `--build-snapshot <c5/raw>,<g3/raw>,<g4>,<g4/hist>`, коммит снимка.
 
 Запуск::
 
@@ -25,7 +25,8 @@
     docker compose exec backend python -m app.services.world_tourism_ingest --raw-dir /tmp/tourism-raw
     # пересобрать снимок национальных служб из таблиц сбора (на Mac, затем коммит)
     python -m app.services.world_tourism_ingest --build-snapshot \
-        .artifacts/tourism-2026-11-20/c5/raw,.artifacts/tourism-2026-11-20/g3/raw
+        .artifacts/tourism-2026-11-20/c5/raw,.artifacts/tourism-2026-11-20/g3/raw,\
+.artifacts/tourism-2026-11-20/g4,.artifacts/tourism-2026-11-20/g4/hist
 """
 
 from __future__ import annotations
@@ -45,6 +46,7 @@ from app.database import async_session
 from app.models import WorldCountry, WorldDatasetState, WorldIngestDatasetLog, WorldIngestRun
 from app.services import world_tourism_sources as src
 from app.services.world_intl_ingest import _now, upsert_series
+from app.services.world_intl_sources import dedupe_points
 
 logger = logging.getLogger(__name__)
 
@@ -139,7 +141,9 @@ def fetch_tidy(provider: str, tidy_dir: Path | None = None) -> tuple[src.Parsed,
             text = (tidy_dir / src.tidy_file(folder)).read_text(encoding="utf-8-sig")
         else:
             text = snapshot_table(snapshot, folder)
-        parsed.update(src.parse_tidy_csv(text, [spec for spec in specs if spec.folder == folder]))
+        for key, points in src.parse_tidy_csv(text, [spec for spec in specs if spec.folder == folder]).items():
+            # Папки истории идут раньше текущих: на общих датах остаётся значение более позднего сбора.
+            parsed[key] = dedupe_points(parsed.get(key, []) + points)
     return parsed, {}
 
 
