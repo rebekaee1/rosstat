@@ -285,7 +285,7 @@
     },
     {
       "path": "CONTEXT.md",
-      "sha256": "2cf8224075123bf52ba413ccd59c7d5e53703e29d313f17a8ea5f515177aa5b0",
+      "sha256": "cba5e996166b072c289673c087b76691e557ad2c3f5a42e406a9ef12608e116b",
       "bytes": 254643,
       "lines": 1335,
       "code": false,
@@ -311,7 +311,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "2c20c4368746a9e765817d0e201623bc838f216d6bcb7660e2938dab3f0b6a07",
+      "sha256": "9a9655c572b3da1d46cab82cd9bbe226326177c280d8e933271d99ca85e69089",
       "bytes": 24721,
       "lines": 273,
       "code": false,
@@ -17965,7 +17965,7 @@
     },
     {
       "path": "docs/data_sources.md",
-      "sha256": "16439e78c7f4c3264f2e06a54b92f49f4074b86e82da76e61f43e8eb884acba2",
+      "sha256": "7f9dfa3d16cc4607f82e75b8a191a70631978f55290f0665b83e04eea291a9fc",
       "bytes": 282802,
       "lines": 1466,
       "code": false,
@@ -38388,15 +38388,13 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "92425a5bf10f8c7b91170ba5d6441608a995348a18e896e365b8ffaaaf0903be",
+  "ledger_sha256": "58269834a4562acadaa66e1ffea521f38a3bfca3bc9dde4e52799e798048345e",
   "javascript_inventory_sha256": "89ead2af4bd2e1582f7eddc084688d8d06fcd0915366bc7766a105da5cda9014",
-  "baseline_commit": "b6ffbbab7a2f7fa5e9dcc7bbaedf6753b510ba5b",
+  "baseline_commit": "7a3b752c63daedac0dc457d435ad65a0622dfaad",
   "branch": "int/2026-11-20-tourism",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/indicator-index.json",
-    "docs/indicator-index.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "CONTEXT.md",
+    "README.md",
+    "docs/data_sources.md"
   ]
 }

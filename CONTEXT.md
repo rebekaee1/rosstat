@@ -85,10 +85,10 @@ unknown commit outcome, DB0 outage и 4-vCPU capacity остаются отде�
 | [`docs/workflow.md`](docs/workflow.md) | Модель работы, локальный dev, прод-деплой, smoke C |
 | [`docs/search.md`](docs/search.md) | Поисковое намерение, федеративное discovery, области локальных полей, покрытие, состояния и границы исторической телеметрии |
 | [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md) | Rate-limit, CSP, asset-hash trap, бэкапы, чеклист канарейки |
-| [`docs/data_sources.md`](docs/data_sources.md) | Точная карта «индикатор → файл/endpoint» для всех 304 source-индикаторов. Single source of truth — обязательно обновлять при правке источника |
+| [`docs/data_sources.md`](docs/data_sources.md) | Точная карта «индикатор → файл/endpoint» для всех 553 source-индикаторов. Single source of truth — обязательно обновлять при правке источника |
 | `backend/app/services/*_parser.py` docstrings | Parser internals (CBR / Минфин / Rosstat): source URL, лист, row/col mapping, `model_config_json` schema, traps. Канонично живёт рядом с кодом |
 | [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/) | Инвентарь Yandex API (Metrika, Webmaster) + статус реализации |
-| [`docs/adr/0001`](docs/adr/0001-derived-indicators-engine-shape.md) | Engine shape: 855 derived через `DERIVED_SPECS` (44 ручных + 1448 generic) + 28 чистых ops |
+| [`docs/adr/0001`](docs/adr/0001-derived-indicators-engine-shape.md) | Engine shape: 855 derived через `DERIVED_SPECS` (44 ручных + 2049 generic) + 28 чистых ops |
 | [`docs/adr/0002`](docs/adr/0002-derived-always-reflects-source.md) | Инвариант: derived всегда отражает source (`bulk_upsert` идемпотентен) |
 | [`docs/adr/0003`](docs/adr/0003-seo-single-source-server-rendered.md) | SEO single-source: backend SSR через `__spa-index.html` + Vite asset discovery |
 | [`docs/adr/0004`](docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md) | Rosstat русский canonical, SDDS English deprecated. Pilot: gdp-nominal end-to-end 2026-05-10 |
@@ -241,7 +241,7 @@ ADR и истории, проверку producer/consumer и актуализа�
   - `seo_blocks` — JSON-массив `{title, body}` дополнительных секций под графиком.
   - `is_listed` — boolean: показывать ли карточку индикатора в листинге категории. По умолчанию `true`. `false` — карточка скрыта из листинга, но ряд должен оставаться достижим через generic sibling, variant, frequency switcher или bespoke resolve (anti-orphan); один из вариантов — `VariantGroupPicker` внутри родительского индикатора (например, `cpi-food-quarterly` скрыт, виден только при выборе «Состав индекса → продовольственные → квартально» на странице `cpi`).
 
-Хранится в таблице `Indicator`. **Текущее количество (2026-11-19):** 1796 рядов в seed; точное число — в `seed_data.py` и `/api/v1/system/status`. Из них 304 source-индикаторов (через 41 парсер-типов) и 1492 derived (через `DERIVED_SPECS`: 44 ручных + 1448 сгенерированных generic view-mode-семьями, см. `view_model_families.py`).
+Хранится в таблице `Indicator`. **Текущее количество (2026-11-19):** 2646 рядов в seed; точное число — в `seed_data.py` и `/api/v1/system/status`. Из них 553 source-индикаторов (через 47 парсер-типов) и 2093 derived (через `DERIVED_SPECS`: 44 ручных + 2049 сгенерированных generic view-mode-семьями, см. `view_model_families.py`).
 
 ### DataPoint
 
@@ -267,7 +267,7 @@ ADR и истории, проверку producer/consumer и актуализа�
 
 Конкретная реализация ETL для одного формата источника. Базовый класс `BaseParser` (`backend/app/services/base_parser.py`) — **template-method**: финальный `run()` оркеструет fetch → parse → validate → upsert → forecast retrain → cache invalidate в одном месте. Дочерние классы реализуют `_fetch_and_parse(db, indicator, cfg, fetch_log) -> (points, source_url)` (обязательно) + опциональные hooks `_validate(points, cfg)`, `_post_upsert(...)`, `_handle_forecasts(...)`. Это устранило ~1100 строк boilerplate, унифицировало статусы `fetch_log` и каскад retrain'а.
 
-**Текущее количество (2026-11-18):** 41 парсер-типов в `PARSER_REGISTRY` (см. `rosstat_cpi_parser.py`, регистрируется как singleton-импорт из исторических соображений — артефакт). Включают Rosstat-парсеры (`rosstat_*_parser.py`, в т.ч. demo/ind/science/fixed_assets/weekly_price), CBR (`cbr_*_parser.py` + `cbr_keyrate.py` helper), Минфин (`minfin_budget_parser.py`), Binance (`BinanceBtcUsdtParser`, BTC/ETH/SOL), MOEX (`MoexIndexParser` — индексы и товарные, `BrentDailyFredParser` — legacy-имя, источник MOEX ISS), FRED-CSV (`fred_csv` — публичные ряды первоисточников без ключа: спотовый Brent Управления энергетической информации США, индекс доллара и доходность десятилетних госбумаг Федрезерва). Два типа зарегистрированы, но в seed не используются (задел, не удалять без ревизии прод-БД): `cbr_dataservice_sum`, `cbr_monetary_html`. Файл `rosstat_sdds_fetcher.py` существует, но в PARSER_REGISTRY не зарегистрирован — deprecated (ADR-0004). Один парсер обычно обслуживает несколько индикаторов одного источника: CbrFxParser → 3 валюты; RosstatCpiParser → 4 листа CPI; CbrDataServiceParser → 16+ ставок и агрегатов ЦБ.
+**Текущее количество (2026-11-18):** 47 парсер-типов в `PARSER_REGISTRY` (см. `rosstat_cpi_parser.py`, регистрируется как singleton-импорт из исторических соображений — артефакт). Включают Rosstat-парсеры (`rosstat_*_parser.py`, в т.ч. demo/ind/science/fixed_assets/weekly_price), CBR (`cbr_*_parser.py` + `cbr_keyrate.py` helper), Минфин (`minfin_budget_parser.py`), Binance (`BinanceBtcUsdtParser`, BTC/ETH/SOL), MOEX (`MoexIndexParser` — индексы и товарные, `BrentDailyFredParser` — legacy-имя, источник MOEX ISS), FRED-CSV (`fred_csv` — публичные ряды первоисточников без ключа: спотовый Brent Управления энергетической информации США, индекс доллара и доходность десятилетних госбумаг Федрезерва). Два типа зарегистрированы, но в seed не используются (задел, не удалять без ревизии прод-БД): `cbr_dataservice_sum`, `cbr_monetary_html`. Файл `rosstat_sdds_fetcher.py` существует, но в PARSER_REGISTRY не зарегистрирован — deprecated (ADR-0004). Один парсер обычно обслуживает несколько индикаторов одного источника: CbrFxParser → 3 валюты; RosstatCpiParser → 4 листа CPI; CbrDataServiceParser → 16+ ставок и агрегатов ЦБ.
 
 ### Derived indicator
 
@@ -286,7 +286,7 @@ ADR и истории, проверку producer/consumer и актуализа�
 - `quarterly_avg`, `rolling_avg` — для unemployment.
 - `wages_real` — особая, 2 источника (`wages-nominal`, `cpi`).
 
-Реестр спецификаций (`calculation_engine.DERIVED_SPECS`) — **1492 entries** (44 ручных + 785 из `view_model_families.iter_derived_specs()`). Ручное ядро:
+Реестр спецификаций (`calculation_engine.DERIVED_SPECS`) — **2093 entries** (44 ручных + 785 из `view_model_families.iter_derived_specs()`). Ручное ядро:
 
 - **CPI семейство:** `inflation-quarterly` ← `cpi`, `inflation-annual` ← `cpi`, и аналоги для `cpi-food/nonfood/services` (8 spec'ов).
 - **PPI:** `ppi-yoy`, `ppi-annual`.

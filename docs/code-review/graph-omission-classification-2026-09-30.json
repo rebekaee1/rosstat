@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "terrain_sha256": "7a0c7091b5d70da8e2558dc4efd0dc8845b6ded9ba364715e822483b4c152944",
+  "terrain_sha256": "8b998c1fb0dc2056940ab4bdbfbbf313b8f6afdfe971315613b0f79f076607f4",
   "extraction_sha256": "e650653d1ada102aacc2d571df4a3f8b65af5bee5c87f382b35ed3468ab74d21",
-  "terrain_baseline_commit": "b6ffbbab7a2f7fa5e9dcc7bbaedf6753b510ba5b",
+  "terrain_baseline_commit": "7a3b752c63daedac0dc457d435ad65a0622dfaad",
   "counts": {
     "external_or_unresolved_file": 3647,
     "missing_endpoint": 5289
