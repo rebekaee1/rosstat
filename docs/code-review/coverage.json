@@ -30,8 +30,8 @@
       "data_schema_reviewed": 38,
       "reviewed": 2583
     },
-    "definitions": 19572,
-    "annotated_definitions": 19572,
+    "definitions": 19575,
+    "annotated_definitions": 19575,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -2937,8 +2937,8 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "sha256": "503c0d01ad7ce0f0d02d08cb30983eec3ca47a1201274c2b73ac64026a1bc79a",
-      "bytes": 132060,
+      "sha256": "0ad5f60d46c7eb1640b68b01e88de00130973f88ab628ef055cb827102500e51",
+      "bytes": 132106,
       "lines": 1433,
       "code": true,
       "status": "reviewed",
@@ -7539,15 +7539,15 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "sha256": "fe7de97f34de32318d6b7be7c23eb8e3c192cd1798c56e6439c6b3798fe5bce2",
-      "bytes": 91699,
-      "lines": 1621,
+      "sha256": "37a5ac63d3f0d97a0389a36c71669303c331a369fc1f4b6137fbd7da507442b8",
+      "bytes": 93060,
+      "lines": 1639,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 71,
-      "annotated_definitions": 71,
+      "definitions": 73,
+      "annotated_definitions": 73,
       "missing_definitions": []
     },
     {
@@ -15677,15 +15677,15 @@
     },
     {
       "path": "backend/tests/test_tourism_regional.py",
-      "sha256": "9ee2fd56472159b6b62cb831ec632080ae7ff24b84444bfd71d88d851315cfa5",
-      "bytes": 45325,
-      "lines": 754,
+      "sha256": "7c19e235ade8bea35a4deafd4a3e761a9dea2f2987ddcf86cbff79d263ba5f1e",
+      "bytes": 46107,
+      "lines": 768,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 70,
-      "annotated_definitions": 70,
+      "definitions": 71,
+      "annotated_definitions": 71,
       "missing_definitions": []
     },
     {
@@ -18485,7 +18485,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "51122be21faddfc9728a46cc2579e1d33513754836d171dfcc00dd898967686e",
+      "sha256": "64d76ff9bd25ef7302978da4d7c1128a39b0d6b25de537c42031335da13bc6e4",
       "bytes": 6021692,
       "lines": 207331,
       "code": false,
@@ -18550,9 +18550,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "ce0336a50af1a30891e756ce93b7f57b5a8aa18231c664584b50f40068753617",
-      "bytes": 15675269,
-      "lines": 466326,
+      "sha256": "bb5d53c5719ca377ecd5b64bde8d2418e0dd0c1e6fceb1a4055c8a9a7c956e7a",
+      "bytes": 15676012,
+      "lines": 466353,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -18563,7 +18563,7 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "f4a104713e149ec01317640a66e65c50e17e8ba07da9b816eaa6fec0ac2c9285",
+      "sha256": "945ad2cef4143319fc2bc82708d9b878b0c760fb5c0e2b6e18a2ba41c6e7e6e1",
       "bytes": 810902,
       "lines": 4497,
       "code": false,
@@ -38388,13 +38388,13 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "fdff2b088328850d4950f0cfa48010f31dda5154ab66659586b50530b82a690e",
+  "ledger_sha256": "4f5edb758e775631d54d58ec983e8c45aae80a27941e82a90562590ac0af0d8a",
   "javascript_inventory_sha256": "89ead2af4bd2e1582f7eddc084688d8d06fcd0915366bc7766a105da5cda9014",
-  "baseline_commit": "050a25eb4538bbb04e398602bacf8baf4aae19c5",
+  "baseline_commit": "1543240b652516dfe7c969938f7820596fcfbb5e",
   "branch": "int/2026-11-20-tourism",
   "unstaged_at_capture": [
     "docs/indicator-index.json",
-    "scripts/deploy.sh",
-    "scripts/test-server/deploy.sh"
+    "docs/mechanism-inventory.json",
+    "docs/mechanism-inventory.md"
   ]
 }

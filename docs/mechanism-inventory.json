@@ -820,7 +820,7 @@
     },
     {
       "path": "backend/app/data/tourism_regional.py",
-      "sha256": "503c0d01ad7ce0f0d02d08cb30983eec3ca47a1201274c2b73ac64026a1bc79a",
+      "sha256": "0ad5f60d46c7eb1640b68b01e88de00130973f88ab628ef055cb827102500e51",
       "lines": 1433
     },
     {
@@ -2550,8 +2550,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "sha256": "fe7de97f34de32318d6b7be7c23eb8e3c192cd1798c56e6439c6b3798fe5bce2",
-      "lines": 1621
+      "sha256": "37a5ac63d3f0d97a0389a36c71669303c331a369fc1f4b6137fbd7da507442b8",
+      "lines": 1639
     },
     {
       "path": "backend/app/services/tourism_showcase.py",
@@ -47094,8 +47094,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 574,
-      "end_line": 574,
+      "line": 589,
+      "end_line": 589,
       "owner": "_get_sync",
       "conditions": [
         "'rosstat.gov.ru' in url"
@@ -51311,6 +51311,15 @@
       ],
       "call": "m.start()",
       "symbol": "app.services.telegram_text.m.start"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 389,
+      "end_line": 389,
+      "owner": "parse_indicator_page",
+      "conditions": [],
+      "call": "m_end.start()",
+      "symbol": "app.services.tourism_regional_loader.m_end.start"
     },
     {
       "path": "backend/app/tasks/ticker_worker.py",
@@ -100752,8 +100761,8 @@
       "entries": [],
       "expression": "(TSeries('tour-oborot-gostinicy-mes', 'monthly', 'Оборот гостиниц за месяц', 'Hotel turnover per month', 'миллионов рублей', 'RUB million', _TURNOVER_RU, _TURNOVER_EN, 'emiss', '6.tm40', scale=THOUSAND, first_year=2017, emiss=Emiss(57710, 'тысяча рублей', periods='month', match=((_LARGE_SMALL, _HOTELS),)), keywords='выручка гостиниц, оборот гостиничного бизнеса'), TSeries('tour-oborot-turagentstva-mes', 'monthly', 'Оборот турагентств и туроператоров за месяц', 'Travel agency and tour operator turnover per month', 'миллионов рублей', 'RUB million', _TURNOVER_RU, _TURNOVER_EN, 'emiss', '6.tm41', scale=THOUSAND, first_year=2017, emiss=Emiss(57710, 'тысяча рублей', periods='month', match=((_LARGE_SMALL, _AGENCIES),)), keywords='выручка турагентств, оборот туроператоров'), TSeries('obshchepit-oborot-organizaciy-mes', 'monthly', 'Оборот организаций общепита за месяц', \"Food service companies' turnover per month\", 'миллионов рублей', 'RUB million', _TURNOVER_RU, _TURNOVER_EN, 'emiss', '15.tm2', section=SECTION_TRADE, scale=THOUSAND, first_year=2017, emiss=Emiss(57710, 'тысяча рублей', periods='month', match=((_LARGE_SMALL, _FOOD),))), TSeries('tour-rabotniki-gostinicy-mes', 'monthly', 'Работники гостиниц', 'Hotel employees', 'тысяч человек', 'thousand people', _STAFF_RU, _STAFF_EN, 'emiss', '6.tm42', scale=THOUSAND, first_year=2017, emiss=Emiss(57848, 'человек', periods='month', match=((_HOTELS,),)), keywords='сколько работает в гостиницах, занятость в туризме'), TSeries('tour-rabotniki-turagentstva-mes', 'monthly', 'Работники турагентств и туроператоров', 'Travel agency and tour operator employees', 'тысяч человек', 'thousand people', _STAFF_RU, _STAFF_EN, 'emiss', '6.tm43', scale=THOUSAND, first_year=2017, emiss=Emiss(57848, 'человек', periods='month', match=((_AGENCIES,),))), TSeries('tour-investicii-gostinicy', 'annual', 'Инвестиции в гостиницы', 'Investment in hotels', 'миллионов рублей', 'RUB million', _INVEST_RU, _INVEST_EN, 'emiss', '6.t160', scale=THOUSAND, first_",
       "expression_truncated": true,
-      "expression_chars": 4012,
-      "ast_sha256": "809e009674ddba1e9c8ae1a75b63d7919aca24f89bbd09a49f27c13e7121b7df",
+      "expression_chars": 4058,
+      "ast_sha256": "378e9e1ade738d187a83d6b1a1bfd7981b2bb53fd9f9fdc9214ef3a7023ccf97",
       "runtime_expansion": false
     },
     {
@@ -144235,8 +144244,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 235,
-      "end_line": 235,
+      "line": 237,
+      "end_line": 237,
       "owner": "<module>",
       "conditions": [],
       "name": "_STRUCTURAL",
@@ -144252,8 +144261,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 236,
-      "end_line": 236,
+      "line": 238,
+      "end_line": 238,
       "owner": "<module>",
       "conditions": [],
       "name": "_TOTAL",
@@ -144269,8 +144278,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 316,
-      "end_line": 316,
+      "line": 318,
+      "end_line": 318,
       "owner": "<module>",
       "conditions": [],
       "name": "_CELL",
@@ -144286,8 +144295,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 352,
-      "end_line": 352,
+      "line": 354,
+      "end_line": 354,
       "owner": "<module>",
       "conditions": [],
       "name": "_JS_ESCAPE",
@@ -144303,8 +144312,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 501,
-      "end_line": 501,
+      "line": 516,
+      "end_line": 516,
       "owner": "<module>",
       "conditions": [],
       "name": "_QUARTER",
@@ -144320,8 +144329,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 502,
-      "end_line": 502,
+      "line": 517,
+      "end_line": 517,
       "owner": "<module>",
       "conditions": [],
       "name": "_ROMAN",
@@ -144371,8 +144380,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 503,
-      "end_line": 508,
+      "line": 518,
+      "end_line": 523,
       "owner": "<module>",
       "conditions": [],
       "name": "_CBR_CODES",
@@ -144454,8 +144463,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 599,
-      "end_line": 599,
+      "line": 614,
+      "end_line": 614,
       "owner": "<module>",
       "conditions": [],
       "name": "_TURPOTOK_SHEET",
@@ -144471,8 +144480,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 600,
-      "end_line": 601,
+      "line": 615,
+      "end_line": 616,
       "owner": "<module>",
       "conditions": [],
       "name": "_TURPOTOK_CODES",
@@ -144522,8 +144531,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 602,
-      "end_line": 602,
+      "line": 617,
+      "end_line": 617,
       "owner": "<module>",
       "conditions": [],
       "name": "_YTD_QUARTER",
@@ -144573,8 +144582,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 680,
-      "end_line": 680,
+      "line": 695,
+      "end_line": 695,
       "owner": "<module>",
       "conditions": [],
       "name": "_FNS_ZIP",
@@ -144590,8 +144599,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 754,
-      "end_line": 754,
+      "line": 769,
+      "end_line": 769,
       "owner": "<module>",
       "conditions": [],
       "name": "_TURPOTOK_LINK",
@@ -144607,8 +144616,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 774,
-      "end_line": 774,
+      "line": 789,
+      "end_line": 789,
       "owner": "<module>",
       "conditions": [],
       "name": "_ACTIVE",
@@ -144624,8 +144633,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 832,
-      "end_line": 860,
+      "line": 847,
+      "end_line": 875,
       "owner": "<module>",
       "conditions": [],
       "name": "INN_REGION",
@@ -145363,8 +145372,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 967,
-      "end_line": 967,
+      "line": 982,
+      "end_line": 982,
       "owner": "<module>",
       "conditions": [],
       "name": "_PRICE_SHEET",
@@ -145380,8 +145389,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 968,
-      "end_line": 973,
+      "line": 983,
+      "end_line": 988,
       "owner": "<module>",
       "conditions": [],
       "name": "_PRICE_OWN",
@@ -145415,8 +145424,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1020,
-      "end_line": 1028,
+      "line": 1035,
+      "end_line": 1043,
       "owner": "<module>",
       "conditions": [],
       "name": "_TUR_RUS",
@@ -145466,8 +145475,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1076,
-      "end_line": 1110,
+      "line": 1091,
+      "end_line": 1125,
       "owner": "<module>",
       "conditions": [],
       "name": "TOCHNO",
@@ -145645,8 +145654,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1144,
-      "end_line": 1145,
+      "line": 1159,
+      "end_line": 1160,
       "owner": "<module>",
       "conditions": [],
       "name": "_PART",
@@ -145662,8 +145671,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1146,
-      "end_line": 1146,
+      "line": 1161,
+      "end_line": 1161,
       "owner": "<module>",
       "conditions": [],
       "name": "_DOUBTFUL",
@@ -145679,8 +145688,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1225,
-      "end_line": 1225,
+      "line": 1240,
+      "end_line": 1240,
       "owner": "<module>",
       "conditions": [],
       "name": "_MONTH_RE",
@@ -145696,8 +145705,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1273,
-      "end_line": 1273,
+      "line": 1288,
+      "end_line": 1288,
       "owner": "<module>",
       "conditions": [],
       "name": "_MSP_CODE",
@@ -145713,8 +145722,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1274,
-      "end_line": 1276,
+      "line": 1289,
+      "end_line": 1291,
       "owner": "<module>",
       "conditions": [],
       "name": "_MSP_SERIES",
@@ -198360,8 +198369,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 989,
-      "end_line": 989,
+      "line": 1004,
+      "end_line": 1004,
       "owner": "price_points",
       "conditions": [],
       "operation": "update",
@@ -198374,8 +198383,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1424,
-      "end_line": 1424,
+      "line": 1439,
+      "end_line": 1439,
       "owner": "write_points",
       "conditions": [],
       "operation": "set",
@@ -198388,8 +198397,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1425,
-      "end_line": 1425,
+      "line": 1440,
+      "end_line": 1440,
       "owner": "write_points",
       "conditions": [],
       "operation": "set",
@@ -198444,8 +198453,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 660,
-      "end_line": 660,
+      "line": 675,
+      "end_line": 675,
       "owner": "fns_tax_points",
       "conditions": [],
       "operation": "add",
@@ -198458,8 +198467,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1127,
-      "end_line": 1127,
+      "line": 1142,
+      "end_line": 1142,
       "owner": "tochno_points",
       "conditions": [],
       "operation": "add",
@@ -198472,8 +198481,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1266,
-      "end_line": 1266,
+      "line": 1281,
+      "end_line": 1281,
       "owner": "g1_points",
       "conditions": [],
       "operation": "add",
@@ -198486,8 +198495,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1370,
-      "end_line": 1371,
+      "line": 1385,
+      "end_line": 1386,
       "owner": "ensure_indicators",
       "conditions": [],
       "operation": "execute",
@@ -198500,8 +198509,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1413,
-      "end_line": 1414,
+      "line": 1428,
+      "end_line": 1429,
       "owner": "write_points",
       "conditions": [
         "external"
@@ -198516,8 +198525,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 293,
-      "end_line": 293,
+      "line": 295,
+      "end_line": 295,
       "owner": "emiss_points",
       "conditions": [],
       "operation": "add",
@@ -198530,8 +198539,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 745,
-      "end_line": 745,
+      "line": 760,
+      "end_line": 760,
       "owner": "fetch_fns",
       "conditions": [],
       "operation": "set",
@@ -198544,8 +198553,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1179,
-      "end_line": 1179,
+      "line": 1194,
+      "end_line": 1194,
       "owner": "regional_flow_points",
       "conditions": [],
       "operation": "set",
@@ -198558,8 +198567,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1366,
-      "end_line": 1367,
+      "line": 1381,
+      "end_line": 1382,
       "owner": "ensure_indicators",
       "conditions": [],
       "operation": "execute",
@@ -198572,8 +198581,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1379,
-      "end_line": 1382,
+      "line": 1394,
+      "end_line": 1397,
       "owner": "ensure_indicators",
       "conditions": [],
       "operation": "execute",
@@ -198586,8 +198595,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1456,
-      "end_line": 1456,
+      "line": 1471,
+      "end_line": 1471,
       "owner": "write_points",
       "conditions": [],
       "operation": "commit",
@@ -198600,8 +198609,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1573,
-      "end_line": 1573,
+      "line": 1591,
+      "end_line": 1591,
       "owner": "_apply_seed_once",
       "conditions": [],
       "operation": "cache_get",
@@ -198614,8 +198623,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1579,
-      "end_line": 1579,
+      "line": 1597,
+      "end_line": 1597,
       "owner": "_apply_seed_once",
       "conditions": [],
       "operation": "cache_set",
@@ -198628,8 +198637,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1442,
-      "end_line": 1442,
+      "line": 1457,
+      "end_line": 1457,
       "owner": "write_points",
       "conditions": [],
       "operation": "update",
@@ -198642,8 +198651,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1443,
-      "end_line": 1443,
+      "line": 1458,
+      "end_line": 1458,
       "owner": "write_points",
       "conditions": [],
       "operation": "update",
@@ -198656,8 +198665,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1454,
-      "end_line": 1455,
+      "line": 1469,
+      "end_line": 1470,
       "owner": "write_points",
       "conditions": [
         "touched"
@@ -198672,8 +198681,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1458,
-      "end_line": 1458,
+      "line": 1473,
+      "end_line": 1473,
       "owner": "write_points",
       "conditions": [],
       "operation": "rollback",
@@ -198686,8 +198695,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 638,
-      "end_line": 638,
+      "line": 653,
+      "end_line": 653,
       "owner": "turpotok_points",
       "conditions": [
         "value is not None and value > 0"
@@ -198702,8 +198711,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1067,
-      "end_line": 1067,
+      "line": 1082,
+      "end_line": 1082,
       "owner": "tur_rus_points",
       "conditions": [
         "value is not None and value >= 0"
@@ -198718,8 +198727,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1383,
-      "end_line": 1385,
+      "line": 1398,
+      "end_line": 1400,
       "owner": "ensure_indicators",
       "conditions": [],
       "operation": "execute",
@@ -198732,8 +198741,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1408,
-      "end_line": 1408,
+      "line": 1423,
+      "end_line": 1423,
       "owner": "write_points",
       "conditions": [],
       "operation": "execute",
@@ -198746,8 +198755,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1446,
-      "end_line": 1446,
+      "line": 1461,
+      "end_line": 1461,
       "owner": "write_points",
       "conditions": [
         "batches % _COMMIT_EVERY == 0"
@@ -198762,8 +198771,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1370,
-      "end_line": 1370,
+      "line": 1385,
+      "end_line": 1385,
       "owner": "ensure_indicators",
       "conditions": [],
       "operation": "update",
@@ -198776,8 +198785,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1413,
-      "end_line": 1414,
+      "line": 1428,
+      "end_line": 1429,
       "owner": "write_points",
       "conditions": [
         "external"
@@ -198792,8 +198801,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1439,
-      "end_line": 1439,
+      "line": 1454,
+      "end_line": 1454,
       "owner": "write_points",
       "conditions": [],
       "operation": "execute",
@@ -198806,8 +198815,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1366,
-      "end_line": 1366,
+      "line": 1381,
+      "end_line": 1381,
       "owner": "ensure_indicators",
       "conditions": [],
       "operation": "update",
@@ -198820,8 +198829,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1454,
-      "end_line": 1454,
+      "line": 1469,
+      "end_line": 1469,
       "owner": "write_points",
       "conditions": [
         "touched"
@@ -327641,8 +327650,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1402,
-      "end_line": 1402,
+      "line": 1417,
+      "end_line": 1417,
       "owner": "write_points",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -327650,8 +327659,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1403,
-      "end_line": 1403,
+      "line": 1418,
+      "end_line": 1418,
       "owner": "write_points",
       "conditions": [],
       "symbol": "app.models.RegionQuarterlyPoint",
@@ -327659,8 +327668,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1404,
-      "end_line": 1404,
+      "line": 1419,
+      "end_line": 1419,
       "owner": "write_points",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -327668,8 +327677,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1377,
-      "end_line": 1377,
+      "line": 1392,
+      "end_line": 1392,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -327677,8 +327686,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1473,
-      "end_line": 1473,
+      "line": 1488,
+      "end_line": 1488,
       "owner": "_last_years",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -327686,8 +327695,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1473,
-      "end_line": 1473,
+      "line": 1488,
+      "end_line": 1488,
       "owner": "_last_years",
       "conditions": [],
       "symbol": "app.models.RegionQuarterlyPoint",
@@ -327695,8 +327704,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1474,
-      "end_line": 1474,
+      "line": 1489,
+      "end_line": 1489,
       "owner": "_last_years",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -327704,8 +327713,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1370,
-      "end_line": 1370,
+      "line": 1385,
+      "end_line": 1385,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code.in_",
@@ -327713,8 +327722,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1371,
-      "end_line": 1371,
+      "line": 1386,
+      "end_line": 1386,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed.is_",
@@ -327722,8 +327731,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1408,
-      "end_line": 1408,
+      "line": 1423,
+      "end_line": 1423,
       "owner": "write_points",
       "conditions": [],
       "symbol": "app.models.Region.slug",
@@ -327731,8 +327740,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1408,
-      "end_line": 1408,
+      "line": 1423,
+      "end_line": 1423,
       "owner": "write_points",
       "conditions": [],
       "symbol": "app.models.Region.id",
@@ -327740,8 +327749,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1367,
-      "end_line": 1367,
+      "line": 1382,
+      "end_line": 1382,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -327749,8 +327758,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1370,
-      "end_line": 1370,
+      "line": 1385,
+      "end_line": 1385,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -327758,8 +327767,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1370,
-      "end_line": 1370,
+      "line": 1385,
+      "end_line": 1385,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -327767,8 +327776,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1371,
-      "end_line": 1371,
+      "line": 1386,
+      "end_line": 1386,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed",
@@ -327776,8 +327785,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1384,
-      "end_line": 1384,
+      "line": 1399,
+      "end_line": 1399,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code.in_",
@@ -327785,8 +327794,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1408,
-      "end_line": 1408,
+      "line": 1423,
+      "end_line": 1423,
       "owner": "write_points",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -327794,8 +327803,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1408,
-      "end_line": 1408,
+      "line": 1423,
+      "end_line": 1423,
       "owner": "write_points",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -327803,244 +327812,12 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1476,
-      "end_line": 1476,
+      "line": 1491,
+      "end_line": 1491,
       "owner": "_last_years",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
       "expression": "RegionIndicator.code"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1366,
-      "end_line": 1366,
-      "owner": "ensure_indicators",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1367,
-      "end_line": 1367,
-      "owner": "ensure_indicators",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1370,
-      "end_line": 1370,
-      "owner": "ensure_indicators",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1371,
-      "end_line": 1371,
-      "owner": "ensure_indicators",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1384,
-      "end_line": 1384,
-      "owner": "ensure_indicators",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator.code",
-      "expression": "RegionIndicator.code"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1384,
-      "end_line": 1384,
-      "owner": "ensure_indicators",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator.id",
-      "expression": "RegionIndicator.id"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1384,
-      "end_line": 1384,
-      "owner": "ensure_indicators",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator.code",
-      "expression": "RegionIndicator.code"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1454,
-      "end_line": 1454,
-      "owner": "write_points",
-      "conditions": [
-        "touched"
-      ],
-      "symbol": "app.models.RegionIndicator.id.in_",
-      "expression": "RegionIndicator.id.in_"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1476,
-      "end_line": 1476,
-      "owner": "_last_years",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1476,
-      "end_line": 1476,
-      "owner": "_last_years",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1367,
-      "end_line": 1367,
-      "owner": "ensure_indicators",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator.code",
-      "expression": "RegionIndicator.code"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1384,
-      "end_line": 1384,
-      "owner": "ensure_indicators",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1384,
-      "end_line": 1384,
-      "owner": "ensure_indicators",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1384,
-      "end_line": 1384,
-      "owner": "ensure_indicators",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1414,
-      "end_line": 1414,
-      "owner": "write_points",
-      "conditions": [
-        "external"
-      ],
-      "symbol": "app.models.RegionIndicator.code.in_",
-      "expression": "RegionIndicator.code.in_"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1454,
-      "end_line": 1454,
-      "owner": "write_points",
-      "conditions": [
-        "touched"
-      ],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1454,
-      "end_line": 1454,
-      "owner": "write_points",
-      "conditions": [
-        "touched"
-      ],
-      "symbol": "app.models.RegionIndicator.id",
-      "expression": "RegionIndicator.id"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1476,
-      "end_line": 1476,
-      "owner": "_last_years",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator.id",
-      "expression": "RegionIndicator.id"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1367,
-      "end_line": 1367,
-      "owner": "ensure_indicators",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1413,
-      "end_line": 1413,
-      "owner": "write_points",
-      "conditions": [
-        "external"
-      ],
-      "symbol": "app.models.RegionIndicator.code",
-      "expression": "RegionIndicator.code"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1413,
-      "end_line": 1413,
-      "owner": "write_points",
-      "conditions": [
-        "external"
-      ],
-      "symbol": "app.models.RegionIndicator.id",
-      "expression": "RegionIndicator.id"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1414,
-      "end_line": 1414,
-      "owner": "write_points",
-      "conditions": [
-        "external"
-      ],
-      "symbol": "app.models.RegionIndicator.code",
-      "expression": "RegionIndicator.code"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1454,
-      "end_line": 1454,
-      "owner": "write_points",
-      "conditions": [
-        "touched"
-      ],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1476,
-      "end_line": 1476,
-      "owner": "_last_years",
-      "conditions": [],
-      "symbol": "app.models.RegionIndicator",
-      "expression": "RegionIndicator"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
@@ -328053,8 +327830,240 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1413,
-      "end_line": 1413,
+      "line": 1382,
+      "end_line": 1382,
+      "owner": "ensure_indicators",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1385,
+      "end_line": 1385,
+      "owner": "ensure_indicators",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1386,
+      "end_line": 1386,
+      "owner": "ensure_indicators",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1399,
+      "end_line": 1399,
+      "owner": "ensure_indicators",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.code",
+      "expression": "RegionIndicator.code"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1399,
+      "end_line": 1399,
+      "owner": "ensure_indicators",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.id",
+      "expression": "RegionIndicator.id"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1399,
+      "end_line": 1399,
+      "owner": "ensure_indicators",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.code",
+      "expression": "RegionIndicator.code"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1469,
+      "end_line": 1469,
+      "owner": "write_points",
+      "conditions": [
+        "touched"
+      ],
+      "symbol": "app.models.RegionIndicator.id.in_",
+      "expression": "RegionIndicator.id.in_"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1491,
+      "end_line": 1491,
+      "owner": "_last_years",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1491,
+      "end_line": 1491,
+      "owner": "_last_years",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1382,
+      "end_line": 1382,
+      "owner": "ensure_indicators",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.code",
+      "expression": "RegionIndicator.code"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1399,
+      "end_line": 1399,
+      "owner": "ensure_indicators",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1399,
+      "end_line": 1399,
+      "owner": "ensure_indicators",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1399,
+      "end_line": 1399,
+      "owner": "ensure_indicators",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1429,
+      "end_line": 1429,
+      "owner": "write_points",
+      "conditions": [
+        "external"
+      ],
+      "symbol": "app.models.RegionIndicator.code.in_",
+      "expression": "RegionIndicator.code.in_"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1469,
+      "end_line": 1469,
+      "owner": "write_points",
+      "conditions": [
+        "touched"
+      ],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1469,
+      "end_line": 1469,
+      "owner": "write_points",
+      "conditions": [
+        "touched"
+      ],
+      "symbol": "app.models.RegionIndicator.id",
+      "expression": "RegionIndicator.id"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1491,
+      "end_line": 1491,
+      "owner": "_last_years",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.id",
+      "expression": "RegionIndicator.id"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1382,
+      "end_line": 1382,
+      "owner": "ensure_indicators",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1428,
+      "end_line": 1428,
+      "owner": "write_points",
+      "conditions": [
+        "external"
+      ],
+      "symbol": "app.models.RegionIndicator.code",
+      "expression": "RegionIndicator.code"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1428,
+      "end_line": 1428,
+      "owner": "write_points",
+      "conditions": [
+        "external"
+      ],
+      "symbol": "app.models.RegionIndicator.id",
+      "expression": "RegionIndicator.id"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1429,
+      "end_line": 1429,
+      "owner": "write_points",
+      "conditions": [
+        "external"
+      ],
+      "symbol": "app.models.RegionIndicator.code",
+      "expression": "RegionIndicator.code"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1469,
+      "end_line": 1469,
+      "owner": "write_points",
+      "conditions": [
+        "touched"
+      ],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1491,
+      "end_line": 1491,
+      "owner": "_last_years",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1396,
+      "end_line": 1396,
+      "owner": "ensure_indicators",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1428,
+      "end_line": 1428,
       "owner": "write_points",
       "conditions": [
         "external"
@@ -328064,8 +328073,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1413,
-      "end_line": 1413,
+      "line": 1428,
+      "end_line": 1428,
       "owner": "write_points",
       "conditions": [
         "external"
@@ -328075,8 +328084,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1414,
-      "end_line": 1414,
+      "line": 1429,
+      "end_line": 1429,
       "owner": "write_points",
       "conditions": [
         "external"
@@ -398894,7 +398903,7 @@
     {
       "path": "backend/app/services/tourism_regional_loader.py",
       "line": 157,
-      "end_line": 172,
+      "end_line": 174,
       "owner": "<module>",
       "conditions": [],
       "name": "period_index",
@@ -398902,8 +398911,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 175,
-      "end_line": 188,
+      "line": 177,
+      "end_line": 190,
       "owner": "<module>",
       "conditions": [],
       "name": "Collector",
@@ -398911,8 +398920,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 191,
-      "end_line": 215,
+      "line": 193,
+      "end_line": 217,
       "owner": "<module>",
       "conditions": [],
       "name": "finalize",
@@ -398920,8 +398929,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 218,
-      "end_line": 219,
+      "line": 220,
+      "end_line": 221,
       "owner": "<module>",
       "conditions": [],
       "name": "to_points",
@@ -398929,8 +398938,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 227,
-      "end_line": 232,
+      "line": 229,
+      "end_line": 234,
       "owner": "<module>",
       "conditions": [],
       "name": "EmissRow",
@@ -398938,8 +398947,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 239,
-      "end_line": 252,
+      "line": 241,
+      "end_line": 254,
       "owner": "<module>",
       "conditions": [],
       "name": "_matches",
@@ -398947,8 +398956,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 255,
-      "end_line": 298,
+      "line": 257,
+      "end_line": 300,
       "owner": "<module>",
       "conditions": [],
       "name": "emiss_points",
@@ -398956,8 +398965,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 301,
-      "end_line": 313,
+      "line": 303,
+      "end_line": 315,
       "owner": "<module>",
       "conditions": [],
       "name": "rows_from_csv",
@@ -398965,8 +398974,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 319,
-      "end_line": 344,
+      "line": 321,
+      "end_line": 346,
       "owner": "<module>",
       "conditions": [],
       "name": "rows_from_grid",
@@ -398974,8 +398983,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 355,
-      "end_line": 364,
+      "line": 357,
+      "end_line": 366,
       "owner": "<module>",
       "conditions": [],
       "name": "_js_unescape",
@@ -398983,8 +398992,26 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 367,
-      "end_line": 391,
+      "line": 369,
+      "end_line": 370,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "EmissPageError",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 373,
+      "end_line": 374,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "EmissNoPeriods",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 377,
+      "end_line": 406,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_indicator_page",
@@ -398992,8 +399019,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 394,
-      "end_line": 399,
+      "line": 409,
+      "end_line": 414,
       "owner": "<module>",
       "conditions": [],
       "name": "territory_dim_of",
@@ -399001,8 +399028,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 402,
-      "end_line": 434,
+      "line": 417,
+      "end_line": 449,
       "owner": "<module>",
       "conditions": [],
       "name": "build_grid_params",
@@ -399010,8 +399037,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 437,
-      "end_line": 448,
+      "line": 452,
+      "end_line": 463,
       "owner": "<module>",
       "conditions": [],
       "name": "series_for_unit",
@@ -399019,8 +399046,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 451,
-      "end_line": 463,
+      "line": 466,
+      "end_line": 478,
       "owner": "<module>",
       "conditions": [],
       "name": "_fetch_page_sync",
@@ -399028,8 +399055,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 466,
-      "end_line": 494,
+      "line": 481,
+      "end_line": 509,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_emiss_dataset",
@@ -399037,8 +399064,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 511,
-      "end_line": 558,
+      "line": 526,
+      "end_line": 573,
       "owner": "<module>",
       "conditions": [],
       "name": "cbr_points",
@@ -399046,8 +399073,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 561,
-      "end_line": 564,
+      "line": 576,
+      "end_line": 579,
       "owner": "<module>",
       "conditions": [],
       "name": "drop_zero_series",
@@ -399055,8 +399082,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 567,
-      "end_line": 582,
+      "line": 582,
+      "end_line": 597,
       "owner": "<module>",
       "conditions": [],
       "name": "_get_sync",
@@ -399064,8 +399091,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 585,
-      "end_line": 593,
+      "line": 600,
+      "end_line": 608,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_cbr",
@@ -399073,8 +399100,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 605,
-      "end_line": 642,
+      "line": 620,
+      "end_line": 657,
       "owner": "<module>",
       "conditions": [],
       "name": "turpotok_points",
@@ -399082,8 +399109,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 649,
-      "end_line": 665,
+      "line": 664,
+      "end_line": 680,
       "owner": "<module>",
       "conditions": [],
       "name": "fns_tax_points",
@@ -399091,8 +399118,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 668,
-      "end_line": 676,
+      "line": 683,
+      "end_line": 691,
       "owner": "<module>",
       "conditions": [],
       "name": "fns_rows_from_csv",
@@ -399100,8 +399127,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 683,
-      "end_line": 689,
+      "line": 698,
+      "end_line": 704,
       "owner": "<module>",
       "conditions": [],
       "name": "fns_zip_month",
@@ -399109,8 +399136,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 692,
-      "end_line": 731,
+      "line": 707,
+      "end_line": 746,
       "owner": "<module>",
       "conditions": [],
       "name": "fns_zip_rows",
@@ -399118,8 +399145,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 734,
-      "end_line": 750,
+      "line": 749,
+      "end_line": 765,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_fns",
@@ -399127,8 +399154,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 757,
-      "end_line": 767,
+      "line": 772,
+      "end_line": 782,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_turpotok",
@@ -399136,8 +399163,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 777,
-      "end_line": 796,
+      "line": 792,
+      "end_line": 811,
       "owner": "<module>",
       "conditions": [],
       "name": "fsa_points",
@@ -399145,8 +399172,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 799,
-      "end_line": 826,
+      "line": 814,
+      "end_line": 841,
       "owner": "<module>",
       "conditions": [],
       "name": "_fsa_records_sync",
@@ -399154,8 +399181,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 863,
-      "end_line": 871,
+      "line": 878,
+      "end_line": 886,
       "owner": "<module>",
       "conditions": [],
       "name": "turagent_points",
@@ -399163,8 +399190,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 874,
-      "end_line": 883,
+      "line": 889,
+      "end_line": 898,
       "owner": "<module>",
       "conditions": [],
       "name": "touroperator_points",
@@ -399172,8 +399199,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 892,
-      "end_line": 917,
+      "line": 907,
+      "end_line": 932,
       "owner": "<module>",
       "conditions": [],
       "name": "_efrt_sync",
@@ -399181,8 +399208,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 920,
-      "end_line": 923,
+      "line": 935,
+      "end_line": 938,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_efrt",
@@ -399190,8 +399217,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 930,
-      "end_line": 943,
+      "line": 945,
+      "end_line": 958,
       "owner": "<module>",
       "conditions": [],
       "name": "sber_points",
@@ -399199,8 +399226,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 951,
-      "end_line": 964,
+      "line": 966,
+      "end_line": 979,
       "owner": "<module>",
       "conditions": [],
       "name": "kurort_points",
@@ -399208,8 +399235,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 976,
-      "end_line": 977,
+      "line": 991,
+      "end_line": 992,
       "owner": "<module>",
       "conditions": [],
       "name": "_price_key",
@@ -399217,8 +399244,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 980,
-      "end_line": 1017,
+      "line": 995,
+      "end_line": 1032,
       "owner": "<module>",
       "conditions": [],
       "name": "price_points",
@@ -399226,8 +399253,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1031,
-      "end_line": 1071,
+      "line": 1046,
+      "end_line": 1086,
       "owner": "<module>",
       "conditions": [],
       "name": "tur_rus_points",
@@ -399235,8 +399262,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1113,
-      "end_line": 1131,
+      "line": 1128,
+      "end_line": 1146,
       "owner": "<module>",
       "conditions": [],
       "name": "tochno_points",
@@ -399244,8 +399271,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1134,
-      "end_line": 1139,
+      "line": 1149,
+      "end_line": 1154,
       "owner": "<module>",
       "conditions": [],
       "name": "occupancy_points",
@@ -399253,8 +399280,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1149,
-      "end_line": 1155,
+      "line": 1164,
+      "end_line": 1170,
       "owner": "<module>",
       "conditions": [],
       "name": "_flow_kind",
@@ -399262,8 +399289,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1158,
-      "end_line": 1194,
+      "line": 1173,
+      "end_line": 1209,
       "owner": "<module>",
       "conditions": [],
       "name": "regional_flow_points",
@@ -399271,8 +399298,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1197,
-      "end_line": 1220,
+      "line": 1212,
+      "end_line": 1235,
       "owner": "<module>",
       "conditions": [],
       "name": "moscow_points",
@@ -399280,8 +399307,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1228,
-      "end_line": 1270,
+      "line": 1243,
+      "end_line": 1285,
       "owner": "<module>",
       "conditions": [],
       "name": "g1_points",
@@ -399289,8 +399316,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1279,
-      "end_line": 1313,
+      "line": 1294,
+      "end_line": 1328,
       "owner": "<module>",
       "conditions": [],
       "name": "msp_points",
@@ -399298,8 +399325,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1319,
-      "end_line": 1327,
+      "line": 1334,
+      "end_line": 1342,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_prices",
@@ -399307,8 +399334,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1334,
-      "end_line": 1345,
+      "line": 1349,
+      "end_line": 1360,
       "owner": "<module>",
       "conditions": [],
       "name": "write_seed",
@@ -399316,8 +399343,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1348,
-      "end_line": 1352,
+      "line": 1363,
+      "end_line": 1367,
       "owner": "<module>",
       "conditions": [],
       "name": "read_seed",
@@ -399325,8 +399352,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1355,
-      "end_line": 1385,
+      "line": 1370,
+      "end_line": 1400,
       "owner": "<module>",
       "conditions": [],
       "name": "ensure_indicators",
@@ -399334,8 +399361,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1391,
-      "end_line": 1462,
+      "line": 1406,
+      "end_line": 1477,
       "owner": "<module>",
       "conditions": [],
       "name": "write_points",
@@ -399343,8 +399370,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1465,
-      "end_line": 1481,
+      "line": 1480,
+      "end_line": 1496,
       "owner": "<module>",
       "conditions": [],
       "name": "_last_years",
@@ -399352,8 +399379,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1484,
-      "end_line": 1490,
+      "line": 1499,
+      "end_line": 1505,
       "owner": "<module>",
       "conditions": [],
       "name": "plan_years",
@@ -399361,8 +399388,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1493,
-      "end_line": 1552,
+      "line": 1508,
+      "end_line": 1570,
       "owner": "<module>",
       "conditions": [],
       "name": "run_tourism_regional_update",
@@ -399370,8 +399397,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1555,
-      "end_line": 1559,
+      "line": 1573,
+      "end_line": 1577,
       "owner": "<module>",
       "conditions": [],
       "name": "_fsa_live",
@@ -399379,8 +399406,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1562,
-      "end_line": 1582,
+      "line": 1580,
+      "end_line": 1600,
       "owner": "<module>",
       "conditions": [],
       "name": "_apply_seed_once",
@@ -399388,8 +399415,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1585,
-      "end_line": 1606,
+      "line": 1603,
+      "end_line": 1624,
       "owner": "<module>",
       "conditions": [],
       "name": "tourism_regional_job",
@@ -399415,8 +399442,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 178,
-      "end_line": 179,
+      "line": 180,
+      "end_line": 181,
       "owner": "Collector",
       "conditions": [],
       "name": "__init__",
@@ -399424,8 +399451,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 181,
-      "end_line": 185,
+      "line": 183,
+      "end_line": 187,
       "owner": "Collector",
       "conditions": [],
       "name": "add",
@@ -399433,8 +399460,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 187,
-      "end_line": 188,
+      "line": 189,
+      "end_line": 190,
       "owner": "Collector",
       "conditions": [],
       "name": "raw",
@@ -399442,8 +399469,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 360,
-      "end_line": 362,
+      "line": 362,
+      "end_line": 364,
       "owner": "_js_unescape",
       "conditions": [],
       "name": "one",
@@ -399451,8 +399478,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 385,
-      "end_line": 389,
+      "line": 400,
+      "end_line": 404,
       "owner": "parse_indicator_page",
       "conditions": [],
       "name": "_str",
@@ -399460,8 +399487,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 701,
-      "end_line": 705,
+      "line": 716,
+      "end_line": 720,
       "owner": "fns_zip_rows",
       "conditions": [],
       "name": "name",
@@ -399469,8 +399496,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1504,
-      "end_line": 1506,
+      "line": 1519,
+      "end_line": 1521,
       "owner": "run_tourism_regional_update",
       "conditions": [],
       "name": "_db",
@@ -399478,8 +399505,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1508,
-      "end_line": 1509,
+      "line": 1523,
+      "end_line": 1524,
       "owner": "run_tourism_regional_update",
       "conditions": [],
       "name": "write",
@@ -399487,8 +399514,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1612,
-      "end_line": 1619,
+      "line": 1630,
+      "end_line": 1637,
       "owner": "<module>",
       "conditions": [
         "__name__ == '__main__'"
@@ -446607,8 +446634,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1372,
-      "end_line": 1372,
+      "line": 1387,
+      "end_line": 1387,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES"
@@ -446647,136 +446674,136 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 364,
-      "end_line": 364,
+      "line": 366,
+      "end_line": 366,
       "owner": "_js_unescape",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._JS_ESCAPE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 614,
-      "end_line": 614,
+      "line": 629,
+      "end_line": 629,
       "owner": "turpotok_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._TURPOTOK_CODES"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 662,
-      "end_line": 662,
+      "line": 677,
+      "end_line": 677,
       "owner": "fns_tax_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 664,
-      "end_line": 664,
+      "line": 679,
+      "end_line": 679,
       "owner": "fns_tax_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 738,
-      "end_line": 738,
+      "line": 753,
+      "end_line": 753,
       "owner": "fetch_fns",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._FNS_ZIP"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 760,
-      "end_line": 760,
+      "line": 775,
+      "end_line": 775,
       "owner": "fetch_turpotok",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._TURPOTOK_LINK"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 794,
-      "end_line": 794,
+      "line": 809,
+      "end_line": 809,
       "owner": "fsa_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 795,
-      "end_line": 795,
+      "line": 810,
+      "end_line": 810,
       "owner": "fsa_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 871,
-      "end_line": 871,
+      "line": 886,
+      "end_line": 886,
       "owner": "turagent_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 883,
-      "end_line": 883,
+      "line": 898,
+      "end_line": 898,
       "owner": "touroperator_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 943,
-      "end_line": 943,
+      "line": 958,
+      "end_line": 958,
       "owner": "sber_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 964,
-      "end_line": 964,
+      "line": 979,
+      "end_line": 979,
       "owner": "kurort_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1038,
-      "end_line": 1038,
+      "line": 1053,
+      "end_line": 1053,
       "owner": "tur_rus_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._TUR_RUS"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1139,
-      "end_line": 1139,
+      "line": 1154,
+      "end_line": 1154,
       "owner": "occupancy_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1217,
-      "end_line": 1217,
+      "line": 1232,
+      "end_line": 1232,
       "owner": "moscow_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1250,
-      "end_line": 1250,
+      "line": 1265,
+      "end_line": 1265,
       "owner": "g1_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1365,
-      "end_line": 1365,
+      "line": 1380,
+      "end_line": 1380,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.data.tourism_regional.RENAMED"
@@ -446799,8 +446826,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 165,
-      "end_line": 165,
+      "line": 167,
+      "end_line": 167,
       "owner": "period_index",
       "conditions": [
         "kind == 'month'"
@@ -446809,99 +446836,91 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 540,
-      "end_line": 540,
+      "line": 555,
+      "end_line": 555,
       "owner": "cbr_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._QUARTER"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 541,
-      "end_line": 541,
+      "line": 556,
+      "end_line": 556,
       "owner": "cbr_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._CBR_CODES"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 557,
-      "end_line": 557,
+      "line": 572,
+      "end_line": 572,
       "owner": "cbr_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 611,
-      "end_line": 611,
+      "line": 626,
+      "end_line": 626,
       "owner": "turpotok_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._TURPOTOK_SHEET"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 641,
-      "end_line": 641,
+      "line": 656,
+      "end_line": 656,
       "owner": "turpotok_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 786,
-      "end_line": 786,
+      "line": 801,
+      "end_line": 801,
       "owner": "fsa_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._ACTIVE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 993,
-      "end_line": 993,
+      "line": 1008,
+      "end_line": 1008,
       "owner": "price_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._PRICE_SHEET"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1070,
-      "end_line": 1070,
+      "line": 1085,
+      "end_line": 1085,
       "owner": "tur_rus_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1130,
-      "end_line": 1130,
+      "line": 1145,
+      "end_line": 1145,
       "owner": "tochno_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1194,
-      "end_line": 1194,
+      "line": 1209,
+      "end_line": 1209,
       "owner": "regional_flow_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1219,
-      "end_line": 1219,
+      "line": 1234,
+      "end_line": 1234,
       "owner": "moscow_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
-    },
-    {
-      "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1254,
-      "end_line": 1254,
-      "owner": "g1_points",
-      "conditions": [],
-      "symbol": "app.services.tourism_regional_loader._MONTH_RE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
@@ -446909,36 +446928,44 @@
       "end_line": 1269,
       "owner": "g1_points",
       "conditions": [],
+      "symbol": "app.services.tourism_regional_loader._MONTH_RE"
+    },
+    {
+      "path": "backend/app/services/tourism_regional_loader.py",
+      "line": 1284,
+      "end_line": 1284,
+      "owner": "g1_points",
+      "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1287,
-      "end_line": 1287,
+      "line": 1302,
+      "end_line": 1302,
       "owner": "msp_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._MSP_SERIES"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1294,
-      "end_line": 1294,
+      "line": 1309,
+      "end_line": 1309,
       "owner": "msp_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._MSP_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1312,
-      "end_line": 1312,
+      "line": 1327,
+      "end_line": 1327,
       "owner": "msp_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1417,
-      "end_line": 1417,
+      "line": 1432,
+      "end_line": 1432,
       "owner": "write_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
@@ -446969,32 +446996,32 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 254,
+      "end_line": 254,
       "owner": "_matches",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._TOTAL"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 332,
-      "end_line": 332,
+      "line": 334,
+      "end_line": 334,
       "owner": "rows_from_grid",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._CELL"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 415,
-      "end_line": 415,
+      "line": 430,
+      "end_line": 430,
       "owner": "build_grid_params",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._STRUCTURAL"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 542,
-      "end_line": 542,
+      "line": 557,
+      "end_line": 557,
       "owner": "cbr_points",
       "conditions": [
         "m and (kind, current) in _CBR_CODES"
@@ -447003,40 +447030,40 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 867,
-      "end_line": 867,
+      "line": 882,
+      "end_line": 882,
       "owner": "turagent_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader.INN_REGION"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 879,
-      "end_line": 879,
+      "line": 894,
+      "end_line": 894,
       "owner": "touroperator_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader.INN_REGION"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1115,
-      "end_line": 1115,
+      "line": 1130,
+      "end_line": 1130,
       "owner": "tochno_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader.TOCHNO"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1168,
-      "end_line": 1168,
+      "line": 1183,
+      "end_line": 1183,
       "owner": "regional_flow_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._PART"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1296,
-      "end_line": 1296,
+      "line": 1311,
+      "end_line": 1311,
       "owner": "msp_points",
       "conditions": [
         "cm"
@@ -447045,8 +447072,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1409,
-      "end_line": 1409,
+      "line": 1424,
+      "end_line": 1424,
       "owner": "write_points",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES_BY_CODE"
@@ -447061,8 +447088,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 165,
-      "end_line": 165,
+      "line": 167,
+      "end_line": 167,
       "owner": "period_index",
       "conditions": [
         "kind == 'month'"
@@ -447071,8 +447098,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 171,
-      "end_line": 171,
+      "line": 173,
+      "end_line": 173,
       "owner": "period_index",
       "conditions": [
         "kind == 'ytd'",
@@ -447082,16 +447109,16 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 426,
-      "end_line": 426,
+      "line": 441,
+      "end_line": 441,
       "owner": "build_grid_params",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._TOTAL"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 542,
-      "end_line": 542,
+      "line": 557,
+      "end_line": 557,
       "owner": "cbr_points",
       "conditions": [
         "m and (kind, current) in _CBR_CODES"
@@ -447100,8 +447127,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 626,
-      "end_line": 626,
+      "line": 641,
+      "end_line": 641,
       "owner": "turpotok_points",
       "conditions": [
         "not (m.group(1) == '1' and t == YEAR_TITLE)"
@@ -447110,16 +447137,16 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 989,
-      "end_line": 989,
+      "line": 1004,
+      "end_line": 1004,
       "owner": "price_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._PRICE_OWN"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1301,
-      "end_line": 1301,
+      "line": 1316,
+      "end_line": 1316,
       "owner": "msp_points",
       "conditions": [
         "slug"
@@ -447128,8 +447155,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 171,
-      "end_line": 171,
+      "line": 173,
+      "end_line": 173,
       "owner": "period_index",
       "conditions": [
         "kind == 'ytd'",
@@ -447139,16 +447166,16 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 329,
-      "end_line": 329,
+      "line": 331,
+      "end_line": 331,
       "owner": "rows_from_grid",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._STRUCTURAL"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 627,
-      "end_line": 627,
+      "line": 642,
+      "end_line": 642,
       "owner": "turpotok_points",
       "conditions": [
         "not (m.group(1) == '1' and t == YEAR_TITLE)",
@@ -447158,24 +447185,24 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1174,
-      "end_line": 1174,
+      "line": 1189,
+      "end_line": 1189,
       "owner": "regional_flow_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._DOUBTFUL"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 521,
-      "end_line": 521,
+      "line": 536,
+      "end_line": 536,
       "owner": "cbr_points",
       "conditions": [],
       "symbol": "app.services.tourism_regional_loader._QUARTER"
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1370,
-      "end_line": 1370,
+      "line": 1385,
+      "end_line": 1385,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.data.tourism_regional.RETIRED"
@@ -447190,8 +447217,8 @@
     },
     {
       "path": "backend/app/services/tourism_regional_loader.py",
-      "line": 1384,
-      "end_line": 1384,
+      "line": 1399,
+      "end_line": 1399,
       "owner": "ensure_indicators",
       "conditions": [],
       "symbol": "app.data.tourism_regional.SERIES"

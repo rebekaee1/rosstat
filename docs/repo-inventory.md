@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2659  ·  **Строк:** 1 661 040  ·  **Токенов (≈):** 16 231 587
+**Файлов:** 2659  ·  **Строк:** 1 661 099  ·  **Токенов (≈):** 16 232 205
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 938 | 68 403 |
 | `.github` | 3 | 315 | 3 245 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 1202 | 401 655 | 4 688 649 |
+| `backend` | 1202 | 401 687 | 4 689 082 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 21 | 1 582 | 26 611 |
-| `docs` | 155 | 1 015 987 | 8 831 667 |
+| `docs` | 155 | 1 016 014 | 8 831 852 |
 | `frontend` | 1119 | 212 555 | 2 290 287 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 145 | 25 758 | 320 318 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 466 326 | 3 836 671 |
+| `docs/mechanism-inventory.json` | 466 353 | 3 836 856 |
 | `docs/client-mechanism-inventory.json` | 278 853 | 1 972 159 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -73,7 +73,7 @@
 | `backend/app/services/public_bot.py` | 2 093 | 27 781 |
 | `backend/app/main.py` | 2 440 | 27 238 |
 | `backend/app/services/seo_regional.py` | 2 417 | 25 566 |
-| `backend/app/data/tourism_regional.py` | 1 433 | 25 371 |
+| `backend/app/data/tourism_regional.py` | 1 433 | 25 382 |
 | `backend/tests/fixtures/emiss_producer_prices/dataGrid_57608_2026-11-19.json` | 1 | 24 114 |
 | `backend/tests/fixtures/emiss_regional_cpi/dataGrid_2026-11-19.json` | 2 329 | 23 463 |
 | `backend/app/services/seo_world.py` | 2 394 | 23 398 |
@@ -84,8 +84,8 @@
 | `backend/app/data/i18n/seo_en.py` | 1 794 | 20 692 |
 | `backend/tests/fixtures/emiss_producer_prices/dataGrid_57609_2026-11-19.json` | 1 | 20 405 |
 | `backend/app/services/world_tourism_sources.py` | 1 265 | 20 170 |
+| `backend/app/services/tourism_regional_loader.py` | 1 639 | 20 090 |
 | `frontend/src/components/PlanetView.component.test.jsx` | 1 273 | 20 075 |
-| `backend/app/services/tourism_regional_loader.py` | 1 621 | 19 840 |
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
 | `backend/app/services/search_intent.py` | 1 287 | 19 380 |
 | `backend/app/data/eurostat_codelists_en.json` | 1 438 | 19 191 |
@@ -151,9 +151,9 @@
 | `backend/app/services/pulse_report.py` | 799 | 10 414 |
 | `frontend/src/lib/indicatorVariants.js` | 635 | 10 311 |
 | `frontend/src/index.css` | 1 043 | 10 264 |
+| `backend/tests/test_tourism_regional.py` | 768 | 10 158 |
 | `docker-compose.yml` | 656 | 10 143 |
 | `docs/research/_fpsr_raw/agent01.json` | 779 | 10 111 |
-| `backend/tests/test_tourism_regional.py` | 754 | 9 986 |
 | `scripts/build-design-review.mjs` | 407 | 9 931 |
 | `backend/app/services/search_language.py` | 419 | 9 776 |
 | `backend/app/services/eurostat_parser.py` | 1 009 | 9 773 |

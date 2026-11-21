@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `050a25eb4538bbb04e398602bacf8baf4aae19c5`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `1543240b652516dfe7c969938f7820596fcfbb5e`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2950 |
 | Код, шаблоны и стили | 2318 |
 | Актуальные рецензии без пропусков guard | 2950 |
-| Именованные определения Python/JS: с аннотацией / всего | 19572 / 19572 |
+| Именованные определения Python/JS: с аннотацией / всего | 19575 / 19575 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -615,7 +615,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/ticker_sources/moex_brent.py](../backend/app/services/ticker_sources/moex_brent.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/ticker_sources/moex_iss.py](../backend/app/services/ticker_sources/moex_iss.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/tourism_regional_api.py](../backend/app/services/tourism_regional_api.py) | reviewed | 3/3 | актуально |
-| [backend/app/services/tourism_regional_loader.py](../backend/app/services/tourism_regional_loader.py) | reviewed | 71/71 | актуально |
+| [backend/app/services/tourism_regional_loader.py](../backend/app/services/tourism_regional_loader.py) | reviewed | 73/73 | актуально |
 | [backend/app/services/tourism_showcase.py](../backend/app/services/tourism_showcase.py) | reviewed | 15/15 | актуально |
 | [backend/app/services/traffic_channel.py](../backend/app/services/traffic_channel.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/ua_parser.py](../backend/app/services/ua_parser.py) | reviewed | 1/1 | актуально |
@@ -1241,7 +1241,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_ticker_sources.py](../backend/tests/test_ticker_sources.py) | reviewed | 33/33 | актуально |
 | [backend/tests/test_title_uniqueness.py](../backend/tests/test_title_uniqueness.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_topic_mail.py](../backend/tests/test_topic_mail.py) | reviewed | 23/23 | актуально |
-| [backend/tests/test_tourism_regional.py](../backend/tests/test_tourism_regional.py) | reviewed | 70/70 | актуально |
+| [backend/tests/test_tourism_regional.py](../backend/tests/test_tourism_regional.py) | reviewed | 71/71 | актуально |
 | [backend/tests/test_tourism_russia.py](../backend/tests/test_tourism_russia.py) | reviewed | 32/32 | актуально |
 | [backend/tests/test_tourism_showcase.py](../backend/tests/test_tourism_showcase.py) | reviewed | 17/17 | актуально |
 | [backend/tests/test_unemployment_seo.py](../backend/tests/test_unemployment_seo.py) | reviewed | 4/4 | актуально |
