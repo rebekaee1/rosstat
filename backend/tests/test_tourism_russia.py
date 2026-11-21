@@ -362,7 +362,7 @@ def test_g2_g3_history_airports_and_replaced_sri_lanka():
 def test_border_history_country_slices_and_macao_year_to_date():
     static = (SNAP / rt.STATIC_FILE).read_text(encoding="utf-8")
     turkey = {p.date.year: p.value for p in rt.parse_static(static, "tour-hist-outbound-turkey")}
-    assert min(turkey) == 2002 and max(turkey) == 2013
+    assert min(turkey) == 2002 and max(turkey) == 2014  # g4: Росстат 2014 года
     assert "другой учёт" in reg.SERIES["tour-hist-outbound-turkey"].methodology
     dest = (SNAP / rt.DESTINATIONS_FILE).read_text(encoding="utf-8")
     assert [p.value for p in rt.parse_destination(dest, "MO", "annual")] == [4.112, 39.584]
@@ -413,3 +413,16 @@ def test_g1_industries_and_favt_archive_december_is_the_annual_total():
     assert len(get("tour-airports-russia-2019")) == 38
     assert get("tour-gva-hotels-food")[date(2026, 6, 1)] == pytest.approx(613.6247)
     assert reg.SERIES["tour-turnover-travel-agencies"].source_url.endswith("/57710")
+
+
+def test_g4_history_rostourism_fill_and_thailand_back_to_2008():
+    static = (SNAP / rt.STATIC_FILE).read_text(encoding="utf-8")
+    get = lambda code: {p.date.year: p.value for p in rt.parse_static(static, code)}
+    assert get("tour-hist-outbound")[2014] == 37752 and get("tour-hist-outbound")[2009] == 21641
+    # Хорватии нет у Росстата — годы 2007–2014 из отчётов Ростуризма (поездки → тыс.).
+    croatia = get("tour-hist-outbound-croatia")
+    assert sorted(croatia)[:2] == [2003, 2007] and len(croatia) == 9  # 2003 — Росстат (68 стран), 2007+ — Ростуризм
+    assert get("tour-hist-hotels-count")[1970] == 3549 and get("tour-hist-resorts-count")[1939] == 1838
+    dest = (SNAP / rt.DESTINATIONS_FILE).read_text(encoding="utf-8")
+    th = {p.date.year: p.value for p in rt.parse_destination(dest, "TH-A", "annual")}
+    assert th[2008] == 319.587 and th[2024] == 1745.327 and "по гражданству" in reg.SERIES["tour-dest-thailand-annual"].description

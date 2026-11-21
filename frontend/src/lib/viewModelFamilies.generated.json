@@ -22142,6 +22142,63 @@
     "unit": "тыс. чел.",
     "variantAxis": null
   },
+  "tour-dest-thailand-annual": {
+    "base": "tour-dest-thailand-annual",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-dest-thailand-annual",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-dest-thailand-annual-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-dest-thailand-annual-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Прибытия россиян: Таиланд (данные страны, по годам)",
+    "template": "T10",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
   "tour-dest-uzbekistan": {
     "base": "tour-dest-uzbekistan",
     "defaultMode": "level",
@@ -22616,6 +22673,120 @@
     "unit": "%",
     "variantAxis": null
   },
+  "tour-hist-hotels-beds": {
+    "base": "tour-hist-hotels-beds",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-hotels-beds",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. мест"
+      },
+      {
+        "code": "tour-hist-hotels-beds-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-hotels-beds-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Места в гостиницах до 2014 года",
+    "template": "T10",
+    "unit": "тыс. мест",
+    "variantAxis": null
+  },
+  "tour-hist-hotels-count": {
+    "base": "tour-hist-hotels-count",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-hotels-count",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "ед."
+      },
+      {
+        "code": "tour-hist-hotels-count-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-hotels-count-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Число гостиниц до 2014 года",
+    "template": "T10",
+    "unit": "ед.",
+    "variantAxis": null
+  },
   "tour-hist-inbound": {
     "base": "tour-hist-inbound",
     "defaultMode": "level",
@@ -22673,6 +22844,63 @@
     "unit": "тыс. поездок",
     "variantAxis": null
   },
+  "tour-hist-inbound-australia": {
+    "base": "tour-hist-inbound-australia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound-australia",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-australia-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-australia-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд в Россию до 2014 года: Австралия",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
   "tour-hist-inbound-austria": {
     "base": "tour-hist-inbound-austria",
     "defaultMode": "level",
@@ -22726,6 +22954,63 @@
       }
     ],
     "name": "Въезд в Россию до 2014 года: Австрия",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-inbound-bulgaria": {
+    "base": "tour-hist-inbound-bulgaria",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound-bulgaria",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-bulgaria-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-bulgaria-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд в Россию до 2014 года: Болгария",
     "template": "T10",
     "unit": "тыс. поездок",
     "variantAxis": null
@@ -22840,6 +23125,291 @@
       }
     ],
     "name": "Въезд в Россию до 2014 года: Китай",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-inbound-croatia": {
+    "base": "tour-hist-inbound-croatia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound-croatia",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-croatia-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-croatia-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд в Россию до 2014 года: Хорватия",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-inbound-cuba": {
+    "base": "tour-hist-inbound-cuba",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound-cuba",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-cuba-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-cuba-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд в Россию до 2014 года: Куба",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-inbound-cyprus": {
+    "base": "tour-hist-inbound-cyprus",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound-cyprus",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-cyprus-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-cyprus-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд в Россию до 2014 года: Кипр",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-inbound-czechia": {
+    "base": "tour-hist-inbound-czechia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound-czechia",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-czechia-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-czechia-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд в Россию до 2014 года: Чехия",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-inbound-egypt": {
+    "base": "tour-hist-inbound-egypt",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound-egypt",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-egypt-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-egypt-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд в Россию до 2014 года: Египет",
     "template": "T10",
     "unit": "тыс. поездок",
     "variantAxis": null
@@ -23068,6 +23638,177 @@
       }
     ],
     "name": "Въезд в Россию до 2014 года: Германия",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-inbound-greece": {
+    "base": "tour-hist-inbound-greece",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound-greece",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-greece-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-greece-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд в Россию до 2014 года: Греция",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-inbound-hungary": {
+    "base": "tour-hist-inbound-hungary",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound-hungary",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-hungary-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-hungary-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд в Россию до 2014 года: Венгрия",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-inbound-india": {
+    "base": "tour-hist-inbound-india",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound-india",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-india-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-india-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд в Россию до 2014 года: Индия",
     "template": "T10",
     "unit": "тыс. поездок",
     "variantAxis": null
@@ -23585,6 +24326,63 @@
     "unit": "тыс. поездок",
     "variantAxis": null
   },
+  "tour-hist-inbound-philippines": {
+    "base": "tour-hist-inbound-philippines",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound-philippines",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-philippines-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-philippines-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд в Россию до 2014 года: Филиппины",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
   "tour-hist-inbound-poland": {
     "base": "tour-hist-inbound-poland",
     "defaultMode": "level",
@@ -23638,6 +24436,120 @@
       }
     ],
     "name": "Въезд в Россию до 2014 года: Польша",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-inbound-romania": {
+    "base": "tour-hist-inbound-romania",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound-romania",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-romania-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-romania-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд в Россию до 2014 года: Румыния",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-inbound-slovakia": {
+    "base": "tour-hist-inbound-slovakia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound-slovakia",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-slovakia-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-slovakia-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд в Россию до 2014 года: Словакия",
     "template": "T10",
     "unit": "тыс. поездок",
     "variantAxis": null
@@ -23756,6 +24668,120 @@
     "unit": "тыс. поездок",
     "variantAxis": null
   },
+  "tour-hist-inbound-switzerland": {
+    "base": "tour-hist-inbound-switzerland",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound-switzerland",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-switzerland-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-switzerland-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд в Россию до 2014 года: Швейцария",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-inbound-thailand": {
+    "base": "tour-hist-inbound-thailand",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound-thailand",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-thailand-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-thailand-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд в Россию до 2014 года: Таиланд",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
   "tour-hist-inbound-tourism": {
     "base": "tour-hist-inbound-tourism",
     "defaultMode": "level",
@@ -23813,6 +24839,63 @@
     "unit": "тыс. поездок",
     "variantAxis": null
   },
+  "tour-hist-inbound-tunisia": {
+    "base": "tour-hist-inbound-tunisia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound-tunisia",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-tunisia-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-tunisia-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд в Россию до 2014 года: Тунис",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
   "tour-hist-inbound-turkey": {
     "base": "tour-hist-inbound-turkey",
     "defaultMode": "level",
@@ -23866,6 +24949,63 @@
       }
     ],
     "name": "Въезд в Россию до 2014 года: Турция",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-inbound-uae": {
+    "base": "tour-hist-inbound-uae",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-inbound-uae",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-inbound-uae-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-inbound-uae-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Въезд в Россию до 2014 года: ОАЭ",
     "template": "T10",
     "unit": "тыс. поездок",
     "variantAxis": null
@@ -24155,6 +25295,63 @@
     "unit": "тыс. поездок",
     "variantAxis": null
   },
+  "tour-hist-outbound-canada": {
+    "base": "tour-hist-outbound-canada",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-outbound-canada",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-outbound-canada-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-outbound-canada-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Выезд россиян до 2014 года: Канада",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
   "tour-hist-outbound-china": {
     "base": "tour-hist-outbound-china",
     "defaultMode": "level",
@@ -24208,6 +25405,120 @@
       }
     ],
     "name": "Выезд россиян до 2014 года: Китай",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-outbound-croatia": {
+    "base": "tour-hist-outbound-croatia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-outbound-croatia",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-outbound-croatia-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-outbound-croatia-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Выезд россиян до 2014 года: Хорватия",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-outbound-cuba": {
+    "base": "tour-hist-outbound-cuba",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-outbound-cuba",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-outbound-cuba-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-outbound-cuba-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Выезд россиян до 2014 года: Куба",
     "template": "T10",
     "unit": "тыс. поездок",
     "variantAxis": null
@@ -24668,6 +25979,63 @@
     "unit": "тыс. поездок",
     "variantAxis": null
   },
+  "tour-hist-outbound-hungary": {
+    "base": "tour-hist-outbound-hungary",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-outbound-hungary",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-outbound-hungary-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-outbound-hungary-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Выезд россиян до 2014 года: Венгрия",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
   "tour-hist-outbound-israel": {
     "base": "tour-hist-outbound-israel",
     "defaultMode": "level",
@@ -24839,6 +26207,120 @@
     "unit": "тыс. поездок",
     "variantAxis": null
   },
+  "tour-hist-outbound-jordan": {
+    "base": "tour-hist-outbound-jordan",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-outbound-jordan",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-outbound-jordan-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-outbound-jordan-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Выезд россиян до 2014 года: Иордания",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-outbound-korea": {
+    "base": "tour-hist-outbound-korea",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-outbound-korea",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-outbound-korea-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-outbound-korea-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Выезд россиян до 2014 года: Республика Корея",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
   "tour-hist-outbound-latvia": {
     "base": "tour-hist-outbound-latvia",
     "defaultMode": "level",
@@ -24953,6 +26435,177 @@
     "unit": "тыс. поездок",
     "variantAxis": null
   },
+  "tour-hist-outbound-malta": {
+    "base": "tour-hist-outbound-malta",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-outbound-malta",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-outbound-malta-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-outbound-malta-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Выезд россиян до 2014 года: Мальта",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-outbound-netherlands": {
+    "base": "tour-hist-outbound-netherlands",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-outbound-netherlands",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-outbound-netherlands-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-outbound-netherlands-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Выезд россиян до 2014 года: Нидерланды",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-outbound-norway": {
+    "base": "tour-hist-outbound-norway",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-outbound-norway",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-outbound-norway-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-outbound-norway-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Выезд россиян до 2014 года: Норвегия",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
   "tour-hist-outbound-poland": {
     "base": "tour-hist-outbound-poland",
     "defaultMode": "level",
@@ -25010,6 +26663,120 @@
     "unit": "тыс. поездок",
     "variantAxis": null
   },
+  "tour-hist-outbound-romania": {
+    "base": "tour-hist-outbound-romania",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-outbound-romania",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-outbound-romania-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-outbound-romania-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Выезд россиян до 2014 года: Румыния",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-outbound-slovakia": {
+    "base": "tour-hist-outbound-slovakia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-outbound-slovakia",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-outbound-slovakia-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-outbound-slovakia-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Выезд россиян до 2014 года: Словакия",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
   "tour-hist-outbound-spain": {
     "base": "tour-hist-outbound-spain",
     "defaultMode": "level",
@@ -25063,6 +26830,63 @@
       }
     ],
     "name": "Выезд россиян до 2014 года: Испания",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-outbound-sweden": {
+    "base": "tour-hist-outbound-sweden",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-outbound-sweden",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-outbound-sweden-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-outbound-sweden-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Выезд россиян до 2014 года: Швеция",
     "template": "T10",
     "unit": "тыс. поездок",
     "variantAxis": null
@@ -25234,6 +27058,63 @@
       }
     ],
     "name": "Выезд россиян за рубеж с целью туризма до 2014 года",
+    "template": "T10",
+    "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-outbound-tunisia": {
+    "base": "tour-hist-outbound-tunisia",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-outbound-tunisia",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. поездок"
+      },
+      {
+        "code": "tour-hist-outbound-tunisia-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-outbound-tunisia-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Выезд россиян до 2014 года: Тунис",
     "template": "T10",
     "unit": "тыс. поездок",
     "variantAxis": null
@@ -25464,6 +27345,291 @@
     "name": "Выезд россиян до 2014 года: США",
     "template": "T10",
     "unit": "тыс. поездок",
+    "variantAxis": null
+  },
+  "tour-hist-resorts-beds": {
+    "base": "tour-hist-resorts-beds",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-resorts-beds",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. мест"
+      },
+      {
+        "code": "tour-hist-resorts-beds-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-resorts-beds-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Места в санаториях и организациях отдыха до 2013 года",
+    "template": "T10",
+    "unit": "тыс. мест",
+    "variantAxis": null
+  },
+  "tour-hist-resorts-count": {
+    "base": "tour-hist-resorts-count",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-resorts-count",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "ед."
+      },
+      {
+        "code": "tour-hist-resorts-count-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-resorts-count-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Санатории и организации отдыха до 2013 года",
+    "template": "T10",
+    "unit": "ед.",
+    "variantAxis": null
+  },
+  "tour-hist-resorts-served": {
+    "base": "tour-hist-resorts-served",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-resorts-served",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. чел."
+      },
+      {
+        "code": "tour-hist-resorts-served-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-resorts-served-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Отдохнувшие в санаториях и организациях отдыха до 2013 года",
+    "template": "T10",
+    "unit": "тыс. чел.",
+    "variantAxis": null
+  },
+  "tour-hist-sanatoria-beds": {
+    "base": "tour-hist-sanatoria-beds",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-sanatoria-beds",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "тыс. мест"
+      },
+      {
+        "code": "tour-hist-sanatoria-beds-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-sanatoria-beds-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Койки в санаториях до 2011 года",
+    "template": "T10",
+    "unit": "тыс. мест",
+    "variantAxis": null
+  },
+  "tour-hist-sanatoria-count": {
+    "base": "tour-hist-sanatoria-count",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "Уровень",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": true
+      },
+      {
+        "id": "index",
+        "label": "Индекс",
+        "leaf": true
+      }
+    ],
+    "modes": [
+      {
+        "code": "tour-hist-sanatoria-count",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": true,
+        "label": "По годам",
+        "mode": "level",
+        "unit": "ед."
+      },
+      {
+        "code": "tour-hist-sanatoria-count-yoy",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "tour-hist-sanatoria-count-index",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "index",
+        "isNative": false,
+        "label": "Индекс",
+        "mode": "index",
+        "unit": "индекс"
+      }
+    ],
+    "name": "Число санаториев до 2011 года",
+    "template": "T10",
+    "unit": "ед.",
     "variantAxis": null
   },
   "tour-hotel-beds": {
