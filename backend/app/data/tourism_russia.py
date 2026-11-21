@@ -731,6 +731,7 @@ DEST_URLS = {
     "AE-AZ": "https://dct.gov.ae/en/",
     "AE-DU-RU": "https://www.dubaidet.gov.ae/en/research-and-insights/",
     "AB": "https://cgsra.org/media/files/25.pdf",
+    "TH-A": "https://www.mots.go.th/news/category/411",
     "MO": "https://dataplus.macaotourism.gov.mo/Publication/document/ENG/Book/VAHightlights/",
     "MO-YTD": "https://dataplus.macaotourism.gov.mo/Publication/document/ENG/Book/VAHightlights/",
 }
@@ -739,7 +740,7 @@ DESTINATIONS: tuple[tuple[str, str, str, str, str, str, str, str, str], ...] = (
     # slug, iso2, вид периода, частота, страна (вин.), страна en, источник, период для описания, слово «прибытия»
     ("egypt", "EG", "annual", "annual", "Египет", "Egypt", "ОЭСР по данным Египта", "с 2008 года", "Туристы из России"),
     ("thailand", "TH", "monthly", "monthly", "Таиланд", "Thailand", "Министерство туризма и спорта Таиланда",
-     "с 2025 года", "Туристы-граждане России"),
+     "за 2013 и 2016 годы и с 2025 года", "Туристы-граждане России"),
     ("uzbekistan", "UZ", "annual", "annual", "Узбекистан", "Uzbekistan", "Нацкомстат Узбекистана", "с 2014 года",
      "Граждане России, въехавшие с туристскими целями"),
     ("kazakhstan", "KZ", "ytd_quarterly", "quarterly", "Казахстан", "Kazakhstan",
@@ -799,6 +800,9 @@ DESTINATIONS: tuple[tuple[str, str, str, str, str, str, str, str, str], ...] = (
     ("dubai-russia", "AE-DU-RU", "annual", "annual", "Дубай (ОАЭ)", "Dubai (UAE)",
      "Департамент экономики и туризма Дубая", "за 2019 год (позже Дубай Россию отдельно не публикует)",
      "Гости с ночёвкой из России", None, "Дубай: Россия, 2019"),
+    ("thailand-annual", "TH-A", "annual", "annual", "Таиланд", "Thailand", "Министерство туризма и спорта Таиланда",
+     "с 2008 года; до 2022 года — по стране проживания, с 2023 года — по гражданству",
+     "Туристы из России", "T10", "Таиланд по годам"),
     ("macao", "MO", "annual", "annual", "Макао", "Macao", "Управление по туризму Макао",
      "только за 2020 и 2025 годы (полные годы, которые удалось найти)", "Гости — граждане России", None, "Макао"),
     ("macao-ytd", "MO-YTD", "monthly", "monthly", "Макао", "Macao", "Управление по туризму Макао",
@@ -825,6 +829,8 @@ def _dest_series() -> list[TourSeries]:
         if slug == "macao-ytd":
             name = "Прибытия россиян: Макао (данные страны, с начала года)"
             name_en = "Russian arrivals in Macao (destination data, year to date)"
+        if slug == "thailand-annual":
+            name, name_en = "Прибытия россиян: Таиланд (данные страны, по годам)", "Russian arrivals in Thailand, annual"
         if slug.endswith("-monthly"):
             name, name_en = name.replace("(данные страны)", "(данные страны, по месяцам)"), name_en + ", monthly"
         meth, meth_en = _M_DEST, _M_DEST_EN
@@ -960,34 +966,52 @@ def _hc(rows):
     return tuple((slug, ru, en, gen, "T10" if n >= 5 else None) for slug, ru, en, gen, n in rows)
 
 
+_HIST_INFO = {
+    "austria": ("Австрия", "Austria", "Австрии"), "uk": ("Великобритания", "United Kingdom", "Великобритании"),
+    "germany": ("Германия", "Germany", "Германии"), "israel": ("Израиль", "Israel", "Израиля"),
+    "italy": ("Италия", "Italy", "Италии"), "china": ("Китай", "China", "Китая"), "latvia": ("Латвия", "Latvia", "Латвии"),
+    "lithuania": ("Литва", "Lithuania", "Литвы"), "mongolia": ("Монголия", "Mongolia", "Монголии"),
+    "netherlands": ("Нидерланды", "Netherlands", "Нидерландов"), "poland": ("Польша", "Poland", "Польши"),
+    "korea": ("Республика Корея", "South Korea", "Кореи"), "usa": ("США", "United States", "США"),
+    "turkey": ("Турция", "Turkey", "Турции"), "finland": ("Финляндия", "Finland", "Финляндии"),
+    "france": ("Франция", "France", "Франции"), "sweden": ("Швеция", "Sweden", "Швеции"),
+    "estonia": ("Эстония", "Estonia", "Эстонии"), "japan": ("Япония", "Japan", "Японии"),
+    "spain": ("Испания", "Spain", "Испании"), "norway": ("Норвегия", "Norway", "Норвегии"),
+    "canada": ("Канада", "Canada", "Канады"), "switzerland": ("Швейцария", "Switzerland", "Швейцарии"),
+    "india": ("Индия", "India", "Индии"), "bulgaria": ("Болгария", "Bulgaria", "Болгарии"),
+    "australia": ("Австралия", "Australia", "Австралии"), "hungary": ("Венгрия", "Hungary", "Венгрии"),
+    "greece": ("Греция", "Greece", "Греции"), "egypt": ("Египет", "Egypt", "Египта"), "cyprus": ("Кипр", "Cyprus", "Кипра"),
+    "cuba": ("Куба", "Cuba", "Кубы"), "uae": ("ОАЭ", "United Arab Emirates", "ОАЭ"),
+    "romania": ("Румыния", "Romania", "Румынии"), "slovakia": ("Словакия", "Slovakia", "Словакии"),
+    "thailand": ("Таиланд", "Thailand", "Таиланда"), "tunisia": ("Тунис", "Tunisia", "Туниса"),
+    "philippines": ("Филиппины", "Philippines", "Филиппин"), "croatia": ("Хорватия", "Croatia", "Хорватии"),
+    "czechia": ("Чехия", "Czechia", "Чехии"), "jordan": ("Иордания", "Jordan", "Иордании"),
+    "malaysia": ("Малайзия", "Malaysia", "Малайзии"), "malta": ("Мальта", "Malta", "Мальты"),
+    "serbia": ("Сербия", "Serbia", "Сербии"),
+}
+
+
+def _hc(rows):
+    return tuple((slug, *_HIST_INFO[slug], "T10" if n >= 5 else None) for slug, n in rows)
+
+
+# Страны, бывшие в таблицах не меньше трёх лет (g2 + g4, число лет — из снимка 21.11.2026).
 HIST_INBOUND = _hc((
-    ("germany", "Германия", "Germany", "Германии", 11), ("finland", "Финляндия", "Finland", "Финляндии", 11),
-    ("china", "Китай", "China", "Китая", 11), ("usa", "США", "United States", "США", 11),
-    ("poland", "Польша", "Poland", "Польши", 11), ("estonia", "Эстония", "Estonia", "Эстонии", 11),
-    ("latvia", "Латвия", "Latvia", "Латвии", 11), ("lithuania", "Литва", "Lithuania", "Литвы", 11),
-    ("uk", "Великобритания", "United Kingdom", "Великобритании", 11), ("italy", "Италия", "Italy", "Италии", 11),
-    ("france", "Франция", "France", "Франции", 11), ("turkey", "Турция", "Turkey", "Турции", 11),
-    ("japan", "Япония", "Japan", "Японии", 11), ("korea", "Республика Корея", "South Korea", "Кореи", 11),
-    ("mongolia", "Монголия", "Mongolia", "Монголии", 11), ("israel", "Израиль", "Israel", "Израиля", 11),
-    ("netherlands", "Нидерланды", "Netherlands", "Нидерландов", 11), ("sweden", "Швеция", "Sweden", "Швеции", 11),
-    ("austria", "Австрия", "Austria", "Австрии", 11), ("spain", "Испания", "Spain", "Испании", 10),
-    ("norway", "Норвегия", "Norway", "Норвегии", 8), ("canada", "Канада", "Canada", "Канады", 5),
-    ("india", "Индия", "India", "Индии", 3), ("switzerland", "Швейцария", "Switzerland", "Швейцарии", 3),
+    ("germany", 12), ("finland", 12), ("china", 12), ("usa", 12), ("poland", 12), ("estonia", 12), ("latvia", 12),
+    ("lithuania", 12), ("uk", 12), ("italy", 12), ("france", 12), ("turkey", 12), ("japan", 12), ("korea", 12),
+    ("mongolia", 12), ("israel", 12), ("netherlands", 12), ("sweden", 12), ("austria", 12), ("spain", 11),
+    ("norway", 11), ("canada", 9), ("switzerland", 8), ("india", 7), ("bulgaria", 6), ("australia", 5),
+    ("hungary", 5), ("greece", 5), ("egypt", 5), ("cyprus", 5), ("cuba", 5), ("uae", 5), ("romania", 5),
+    ("slovakia", 5), ("thailand", 5), ("tunisia", 5), ("philippines", 5), ("croatia", 5), ("czechia", 5),
+    ("jordan", 4), ("malaysia", 4), ("malta", 4), ("serbia", 3),
 ))
 HIST_OUTBOUND = _hc((
-    ("turkey", "Турция", "Turkey", "Турции", 12), ("egypt", "Египет", "Egypt", "Египта", 12),
-    ("china", "Китай", "China", "Китая", 12), ("finland", "Финляндия", "Finland", "Финляндии", 12),
-    ("germany", "Германия", "Germany", "Германии", 12), ("spain", "Испания", "Spain", "Испании", 12),
-    ("italy", "Италия", "Italy", "Италии", 12), ("greece", "Греция", "Greece", "Греции", 12),
-    ("uae", "ОАЭ", "United Arab Emirates", "ОАЭ", 12), ("cyprus", "Кипр", "Cyprus", "Кипра", 12),
-    ("bulgaria", "Болгария", "Bulgaria", "Болгарии", 12), ("france", "Франция", "France", "Франции", 12),
-    ("poland", "Польша", "Poland", "Польши", 12), ("estonia", "Эстония", "Estonia", "Эстонии", 12),
-    ("latvia", "Латвия", "Latvia", "Латвии", 12), ("lithuania", "Литва", "Lithuania", "Литвы", 12),
-    ("uk", "Великобритания", "United Kingdom", "Великобритании", 12), ("usa", "США", "United States", "США", 12),
-    ("czechia", "Чехия", "Czechia", "Чехии", 10), ("thailand", "Таиланд", "Thailand", "Таиланда", 8),
-    ("switzerland", "Швейцария", "Switzerland", "Швейцарии", 8), ("japan", "Япония", "Japan", "Японии", 7),
-    ("israel", "Израиль", "Israel", "Израиля", 6), ("austria", "Австрия", "Austria", "Австрии", 5),
-    ("korea", "Республика Корея", "South Korea", "Кореи", 4),
+    ("turkey", 13), ("egypt", 13), ("china", 13), ("finland", 13), ("germany", 13), ("spain", 13), ("italy", 13),
+    ("greece", 13), ("uae", 13), ("cyprus", 13), ("bulgaria", 13), ("france", 13), ("poland", 13), ("estonia", 13),
+    ("latvia", 13), ("lithuania", 13), ("uk", 13), ("usa", 13), ("switzerland", 13), ("japan", 13), ("korea", 12),
+    ("czechia", 12), ("israel", 10), ("thailand", 10), ("austria", 9), ("hungary", 9), ("canada", 9), ("cuba", 9),
+    ("netherlands", 9), ("norway", 9), ("romania", 9), ("slovakia", 9), ("tunisia", 9), ("croatia", 9),
+    ("sweden", 9), ("jordan", 8), ("malta", 8), ("australia", 4), ("philippines", 4), ("malaysia", 3),
 ))
 
 
@@ -1113,22 +1137,22 @@ def _static_series() -> list[TourSeries]:
     for code, name, name_en, desc, desc_en, listed in (
         ("tour-hist-inbound", "Въезд иностранцев в Россию до 2014 года", "Foreign arrivals in Russia before 2014",
          "Сколько раз иностранцы из стран дальнего зарубежья въезжали в Россию за год, с любыми целями, тысяч "
-         "поездок. 1993–2013 годы.", "Entries of citizens of non-CIS countries, all purposes, thousand.", True),
+         "поездок. 1993–2014 годы.", "Entries of citizens of non-CIS countries, all purposes, thousand.", True),
         ("tour-hist-inbound-tourism", "Въезд иностранцев в Россию с целью туризма до 2014 года",
          "Foreign tourist arrivals in Russia before 2014",
          "Сколько раз иностранцы из стран дальнего зарубежья въезжали в Россию с целью «туризм», тысяч поездок. "
-         "1993–2013 годы.", "Entries for tourism by citizens of non-CIS countries, thousand.", False),
+         "1993–2014 годы.", "Entries for tourism by citizens of non-CIS countries, thousand.", False),
         ("tour-hist-outbound", "Выезд россиян за рубеж до 2014 года", "Russian departures abroad before 2014",
          "Сколько раз россияне выезжали в страны дальнего зарубежья за год, с любыми целями, тысяч поездок. "
-         "1993–2013 годы.", "Departures of Russians to non-CIS countries, all purposes, thousand.", True),
+         "1993–2014 годы.", "Departures of Russians to non-CIS countries, all purposes, thousand.", True),
         ("tour-hist-outbound-tourism", "Выезд россиян за рубеж с целью туризма до 2014 года",
          "Russian tourist departures abroad before 2014",
          "Сколько раз россияне выезжали в страны дальнего зарубежья с целью «туризм», тысяч поездок. "
-         "1993–2013 годы.", "Departures of Russians for tourism to non-CIS countries, thousand.", False),
+         "1993–2014 годы.", "Departures of Russians for tourism to non-CIS countries, thousand.", False),
     ):
         out.append(_s(code, name, name_en, "тыс. поездок", "thousand trips", "annual", SRC_FSB, BOOK_URL, S, {},
                       desc, desc_en, _M_HIST, _M_HIST_EN, "история туризма, выезд за границу 1990-е, 2000-е",
-                      "Росстата по годам 1993–2013", family="T10", listed=listed))
+                      "Росстата по годам 1993–2014", family="T10", listed=listed))
     _M_AIRPORT_ANNUAL = (
         "Годовой пассажиропоток (улетевшие и прилетевшие) собран из двух видов источников. 2020–2021 годы — сумма "
         "месяцев из отчётов Росавиации; Росавиация публиковала данные по аэропортам до февраля 2022 года и сейчас "
@@ -1145,20 +1169,23 @@ def _static_series() -> list[TourSeries]:
                 name = f"Въезд в Россию до 2014 года: {country}"
                 name_en = f"Arrivals in Russia before 2014: {country_en}"
                 desc = (f"Сколько раз граждане страны {country} въезжали в Россию за год, с любыми целями, тысяч "
-                        "поездок. 2002–2013 годы, в которые страна была в таблице ежегодника.")
+                        "поездок. 2002–2014 годы, в которые страна была в таблице.")
                 desc_en = f"Entries to Russia by citizens of {country_en}, all purposes, thousand. 2002-2013."
                 kws = f"иностранцы {gen} в России, туристы {gen}, история туризма"
             else:
                 name = f"Выезд россиян до 2014 года: {country}"
                 name_en = f"Russian departures before 2014: {country_en}"
                 desc = (f"Сколько раз россияне выезжали в страну {country} за год, с любыми целями, тысяч поездок. "
-                        "2002–2013 годы, в которые страна была в таблице ежегодника.")
+                        "2002–2014 годы, в которые страна была в таблице.")
                 desc_en = f"Departures of Russians to {country_en}, all purposes, thousand. 2002-2013."
                 kws = f"россияне в {country}, поездки {country}, история выездного туризма"
             out.append(_s(f"tour-hist-{direction}-{slug}", name, name_en, "тыс. поездок", "thousand trips", "annual",
                           SRC_FSB, BOOK_URL, S, {}, desc, desc_en,
-                          _M_HIST + " По странам ежегодники дают 22–23 ведущие страны с 2002 года; въезда по странам "
-                          "за 2012 год в сборнике нет.", _M_HIST_EN, kws, "Росстата по годам 2002–2013",
+                          _M_HIST + " По странам ежегодники Росстата дают 20–24 ведущие страны с 2002 года (в 2003 "
+                          "году — 68 стран); годы и страны, которых у Росстата нет, дополнены отчётами Ростуризма за "
+                          "2007–2014 годы по тем же сведениям пограничной службы. Сверка 561 общего значения: 558 "
+                          "совпали в пределах 1 %. Въезда по странам за 2012 год нет.", _M_HIST_EN, kws,
+                          "Росстата и Ростуризма по годам 2002–2014",
                           family=family, listed=False))
     for slug, short, short_en, listed in (("sochi", "Сочи", "Sochi", True), ("kazan", "Казань", "Kazan", False),
                                           ("mineralnye-vody", "Минеральные Воды", "Mineralnye Vody", False),
@@ -1266,6 +1293,48 @@ def _static_series() -> list[TourSeries]:
                       f"Departing and arriving passengers at {short_en} airport per month, thousand. 2020 - Feb 2022.",
                       _M_FAVT_ARCHIVE, _M_FAVT_ARCHIVE_EN, f"аэропорт {short}, пассажиропоток {short} по месяцам",
                       "Росавиации", listed=False))
+    # g4, 21.11.2026: гостиницы и санатории до 2013 года — ежегодники Росстата (копии web.archive.org).
+    _M_ACC_HIST = (
+        "Старые таблицы ежегодников Росстата и «России в цифрах». Охват другой, чем у годовых рядов с 2002 года: "
+        "«гостиницы и аналогичные средства размещения» — без баз отдыха и санаториев, «санаторно-курортные "
+        "организации и организации отдыха» — вместе с базами и турбазами. Поэтому это отдельные ряды, а не "
+        "продолжение современных. Число гостиниц за 1993 год (6 258) выпадает из ряда — так в источнике, вероятно, "
+        "другой охват. Где значения расходились в разных изданиях, взято более позднее издание. " + _M_STATIC
+    )
+    _M_ACC_HIST_EN = ("Old Rosstat yearbook tables with a different coverage from the post-2002 series, kept "
+                      "separate.")
+    for code, name, name_en, unit, unit_en, desc, desc_en, listed in (
+        ("tour-hist-hotels-count", "Число гостиниц до 2014 года", "Number of hotels before 2014", "ед.", "units",
+         "Сколько было гостиниц и аналогичных средств размещения в России на конец года: 1970, 1975, 1980, 1985, "
+         "1990 и 1993–2013 годы.", "Number of hotels and similar establishments in Russia at year end, 1970-2013.",
+         True),
+        ("tour-hist-hotels-beds", "Места в гостиницах до 2014 года", "Hotel bed places before 2014", "тыс. мест",
+         "thousand bed places", "Сколько мест было в гостиницах и аналогичных средствах размещения, тысяч: 1970–2013 "
+         "годы.", "Bed places in hotels and similar establishments, thousand, 1970-2013.", False),
+        ("tour-hist-resorts-count", "Санатории и организации отдыха до 2013 года",
+         "Health resorts and holiday organisations before 2013", "ед.", "units",
+         "Сколько было санаторно-курортных организаций и организаций отдыха (санатории, профилактории, дома отдыха, "
+         "базы и турбазы): с 1939 года.", "Number of health resort and holiday organisations, since 1939.", True),
+        ("tour-hist-resorts-beds", "Места в санаториях и организациях отдыха до 2013 года",
+         "Places in health resorts and holiday organisations before 2013", "тыс. мест", "thousand bed places",
+         "Сколько мест (коек) было в санаторно-курортных организациях и организациях отдыха, тысяч: с 1939 года.",
+         "Places in health resort and holiday organisations, thousand, since 1939.", False),
+        ("tour-hist-resorts-served", "Отдохнувшие в санаториях и организациях отдыха до 2013 года",
+         "People served by health resorts and holiday organisations before 2013", "тыс. чел.", "thousand people",
+         "Сколько человек обслужили санаторно-курортные организации и организации отдыха за год, тысяч: 1992, 1995, "
+         "2000–2012 годы. Это шире, чем «Размещённые в санаториях»: сюда входят дома отдыха и базы.",
+         "People served by health resort and holiday organisations, thousand, 1992-2012.", False),
+        ("tour-hist-sanatoria-count", "Число санаториев до 2011 года", "Number of sanatoria before 2011", "ед.",
+         "units", "Сколько было санаториев и пансионатов с лечением: с 1939 года.",
+         "Number of sanatoria and boarding houses with treatment, since 1939.", False),
+        ("tour-hist-sanatoria-beds", "Койки в санаториях до 2011 года", "Sanatorium beds before 2011", "тыс. мест",
+         "thousand bed places", "Сколько коек было в санаториях и пансионатах с лечением, тысяч: с 1939 года.",
+         "Beds in sanatoria and boarding houses with treatment, thousand, since 1939.", False),
+    ):
+        out.append(_s(code, name, name_en, unit, unit_en, "annual", SRC_ROSSTAT,
+                      "https://web.archive.org/web/2025/https://rosstat.gov.ru/folder/210/document/12994", S, {},
+                      desc, desc_en, _M_ACC_HIST, _M_ACC_HIST_EN, "история гостиниц, санатории в СССР, гостиницы 1970",
+                      "Росстата", family="T10", listed=listed))
     for code, name, name_en, unit, unit_en, desc, desc_en, kw, listed, fam in book_rows:
         out.append(_s(code, name, name_en, unit, unit_en, "annual", SRC_ROSSTAT, BOOK_URL, S, {},
                       desc + " Данные 2014–2023 годов." if code != "tour-hotel-workers" else desc + " 2019–2023.",
@@ -1374,12 +1443,12 @@ VARIANT_GROUPS: tuple[tuple[str, str, tuple[tuple[str, str, str], ...]], ...] = 
         ("tour-airport-monthly-kaliningrad", "Калининград по месяцам", "Kaliningrad, monthly"),
         ("tour-airports-russia-2019", "Все аэропорты 2019–2022", "All airports 2019-2022"),
     )),
-    ("tourHistOutbound", "Выезд россиян 1993–2013 по странам", (
+    ("tourHistOutbound", "Выезд россиян 1993–2014 по странам", (
         ("tour-hist-outbound", "Все страны", "All countries"),
         ("tour-hist-outbound-tourism", "С целью туризма", "For tourism"),
         *((f"tour-hist-outbound-{c[0]}", c[1], c[2]) for c in HIST_OUTBOUND),
     )),
-    ("tourHistInbound", "Въезд иностранцев 1993–2013 по странам", (
+    ("tourHistInbound", "Въезд иностранцев 1993–2014 по странам", (
         ("tour-hist-inbound", "Все страны", "All countries"),
         ("tour-hist-inbound-tourism", "С целью туризма", "For tourism"),
         *((f"tour-hist-inbound-{c[0]}", c[1], c[2]) for c in HIST_INBOUND),
@@ -1396,6 +1465,8 @@ VARIANT_GROUPS: tuple[tuple[str, str, tuple[tuple[str, str, str], ...]], ...] = 
         ("tour-hotel-beds", "Места", "Bed places"),
         ("tour-hotel-revenue", "Доходы", "Revenue"),
         ("tour-hotel-workers", "Работники", "Employees"),
+        ("tour-hist-hotels-count", "Гостиницы с 1970", "Hotels since 1970"),
+        ("tour-hist-hotels-beds", "Места с 1970", "Bed places since 1970"),
         ("tour-new-hotel-beds", "Новые места", "New bed places"),
     )),
     ("tourCpiTrips", "Цены на поездки и экскурсии", tuple(
@@ -1432,6 +1503,11 @@ VARIANT_GROUPS: tuple[tuple[str, str, tuple[tuple[str, str, str], ...]], ...] = 
         ("tour-sanatorium-guests", "Размещённые", "Guests"),
         ("tour-sanatorium-nights", "Ночёвки", "Nights"),
         ("tour-sanatorium-revenue", "Доходы", "Revenue"),
+        ("tour-hist-resorts-count", "Организации с 1939", "Organisations since 1939"),
+        ("tour-hist-resorts-beds", "Места с 1939", "Places since 1939"),
+        ("tour-hist-resorts-served", "Отдохнувшие 1992–2012", "Served 1992-2012"),
+        ("tour-hist-sanatoria-count", "Санатории с 1939", "Sanatoria since 1939"),
+        ("tour-hist-sanatoria-beds", "Койки с 1939", "Beds since 1939"),
     )),
 )
 
