@@ -72,6 +72,7 @@ GLOSSARY_EN: dict[str, str] = {
     "Национальная туристическая организация Японии (JNTO)": "Japan National Tourism Organization (JNTO)",
     "Корейская организация туризма": "Korea Tourism Organization",
     "Национальное бюро статистики Китая": "National Bureau of Statistics of China",
+    "Министерство экономики Грузии (пограничный учёт МВД)": "Ministry of Economy of Georgia (Interior Ministry border records)",
     "Статистическое управление Черногории (Monstat)": "Statistical Office of Montenegro (Monstat)",
     "Республиканское статистическое управление Сербии": "Statistical Office of the Republic of Serbia",
     "Национальный институт статистики Испании (INE)": "National Statistics Institute of Spain (INE)",

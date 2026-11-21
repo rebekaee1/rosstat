@@ -613,6 +613,8 @@ _SOURCE_BY_PROVIDER: dict[str, str] = {
     "ine_spain": "Национальный институт статистики Испании (INE)",
     "eurostat_residence": "Евростат",
     "nbs_china_yearbook": "Национальное бюро статистики Китая",
+    "cystat_annual": "Статистическая служба Кипра (CYSTAT)",
+    "ge_mineconomy": "Министерство экономики Грузии (пограничный учёт МВД)",
 }
 
 
