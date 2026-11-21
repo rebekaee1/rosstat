@@ -161,6 +161,8 @@ def period_index(title: str, kind: str) -> int | None:
         return 0 if t == YEAR_TITLE else None
     if kind == "dec":  # год как нарастающий итог «январь-декабрь» (оборот общепита 31258)
         return 0 if t == "январь-декабрь" else None
+    if kind == "year_or_dec":  # годовое значение под любой из двух подписей (инвестиции 59084)
+        return 0 if t in (YEAR_TITLE, "январь-декабрь") else None
     if kind == "month":
         return MONTHS.index(t) + 1 if t in MONTHS else None
     if kind == "ytd":
@@ -286,7 +288,7 @@ def emiss_points(
                 continue
             if s.emiss.periods != "ytd" and value == 0 and s.layer != "annual":
                 continue
-            period = row.year if kind in ("year", "dec") else row.year * 100 + idx
+            period = row.year if kind in ("year", "dec", "year_or_dec") else row.year * 100 + idx
             if s.layer == "monthly" and period > today.year * 100 + today.month:
                 continue
             rank = alt_rank * 10 + (russia_rank(row.territory, row.year) if slug == "russia" else 0) + (5 if spare else 0)
@@ -364,14 +366,27 @@ def _js_unescape(text: str) -> str:
     return _JS_ESCAPE.sub(one, text)
 
 
+class EmissPageError(ValueError):
+    """Вместо страницы набора пришло что-то другое: набор ждёт следующего прогона."""
+
+
+class EmissNoPeriods(ValueError):
+    """На странице набора нет периодов ряда (например, годового значения) — не сбой, набор пропускается."""
+
+
 def parse_indicator_page(page: str) -> dict:
     """Страница набора → {'filters': {dim: {'title', 'values': {oid: title}}}, 'unit', 'title'}.
 
     Справочник измерений лежит в JS-объекте ``filters: {…}`` перед ``left_columns``; ключи без кавычек, строки в
     одинарных кавычках с ``\\uXXXX`` (так разбирал рабочий скрипт сбора 20.11.2026).
     """
-    start = page.index("filters: {") + len("filters: ")
-    end = page.index("left_columns:", start)
+    m_start = re.search(r"filters\s*:\s*\{", page)
+    m_end = re.search(r"left_columns\s*:", page[m_start.end():]) if m_start else None
+    if not m_start or not m_end:
+        # Стенд 21.11.2026 (42105, 62073): вместо витрины пришла другая страница — вход, заглушка, ограничение.
+        raise EmissPageError("страница набора без справочника измерений (вход, заглушка или ограничение fedstat)")
+    start = m_start.end() - 1
+    end = m_start.end() + m_end.start()
     js = page[start:end].rstrip().rstrip(",")
     js = re.sub(r"([{,\s])([A-Za-z_0-9]+):", lambda m: f'{m.group(1)}"{m.group(2)}":', js)
     js = re.sub(r"'((?:[^'\\]|\\.)*)'", lambda m: json.dumps(_js_unescape(m.group(1))), js)
@@ -410,7 +425,7 @@ def build_grid_params(
     periods = {oid: t for oid, t in filters.get("33560", {}).get("values", {}).items()
                if any(period_index(t, k) is not None for k in kinds)}
     if not periods:
-        raise ValueError(f"ЕМИСС {dataset}: на странице нет нужных периодов")
+        raise EmissNoPeriods(f"ЕМИСС {dataset}: на странице нет нужных периодов")
     wanted = [w for s in series_list for alt in s.emiss.match for w in alt]
     other = [d for d in filters if d not in _STRUCTURAL and d != tdim]
     selected: list[str] = [f"0_{dataset}", *(f"30611_{oid}" for oid in filters.get("30611", {}).get("values", {}))]
@@ -1521,6 +1536,9 @@ async def run_tourism_regional_update(
                     total = {k: total[k] + got[k] for k in total}
                     await asyncio.sleep(0.6 if post_grid is None else 0)
                 stats[f"emiss_{dataset}"] = total
+            except EmissNoPeriods as exc:
+                logger.info("tourism_regional: %s — пропуск", exc)
+                stats[f"emiss_{dataset}"] = "нет периодов ряда на странице"
             except Exception as exc:  # noqa: BLE001 — набор ждёт следующего прогона (403 fedstat и т. п.)
                 logger.warning("tourism_regional: ЕМИСС %s: %s", dataset, exc)
                 stats["failed"].append(f"ЕМИСС {dataset}: {str(exc)[:120]}")
