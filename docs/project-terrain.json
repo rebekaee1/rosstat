@@ -1,16 +1,14 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "1543240b652516dfe7c969938f7820596fcfbb5e",
+  "baseline_commit": "53d0b267d84e4d44c0ada0c794f0908dbbc0f42f",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
+    "docker-compose.yml",
     "docs/code-review/coverage.json",
     "docs/code-review/graph-omission-classification-2026-09-30.json",
     "docs/code-review/materials-2026-09-30.json",
-    "docs/code-review/reviews.jsonl",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/code-review/reviews.jsonl"
   ],
   "untracked_at_capture": [],
   "stats": {
@@ -2045,7 +2043,7 @@
     {"path": "backend/tests/test_zone_i_sources.py", "kind": "code", "bytes": 17621, "lines": 356, "sha256": "aaab6903fafc51a781fbf9448f9025cb917727bb6e36a6b11607eb943ce9ea48", "symlink": false, "nodes": 33, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "clickhouse/low-memory-users.xml", "kind": "asset/data/config", "bytes": 788, "lines": 13, "sha256": "080f86dcb363402e39661016991bd3476b535dc80bc6984dc2111e046a62cbff", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "clickhouse/low-memory.xml", "kind": "asset/data/config", "bytes": 1507, "lines": 24, "sha256": "bcc85a0843dec3a7afb3d5ed811535527dbdec50d231159563d27ff794635803", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
-    {"path": "deploy/approved-shas.txt", "kind": "asset/data/config", "bytes": 37370, "lines": 206, "sha256": "108c64d55ddb975ee6a133dca996243fdb786607771269b3520cbcb17bda8cde", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
+    {"path": "deploy/approved-shas.txt", "kind": "asset/data/config", "bytes": 38077, "lines": 207, "sha256": "db14e8fbe0bc86d9bb4aab38d74b768d5ab3153949cc0af6ec32a891b350171d", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "deploy/crawler-status.sh", "kind": "code", "bytes": 1629, "lines": 27, "sha256": "ea82bf493bad414d81eddc88dd381e7961ff80ba28dce7460c5e9726875afda7", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "deploy/fail2ban-install.sh", "kind": "code", "bytes": 2999, "lines": 68, "sha256": "2ee43268ca7d9bafa8b54e47a3e2ff10ecc66d36df380d5abd986a999aa06771", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "deploy/fail2ban/fail2ban.local", "kind": "asset/data/config", "bytes": 630, "lines": 8, "sha256": "b618bb47f654280eee2ce8206e0ab2fe5883453c46271416e21571cdcbc69973", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
@@ -2066,7 +2064,7 @@
     {"path": "deploy/tor-http-bridge/tor-http-bridge.service", "kind": "asset/data/config", "bytes": 789, "lines": 25, "sha256": "cfdbd3377fe177d4542cb5847d01dffd293d72b8e8b3de4050b5fba8d4894acc", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "deploy/tor-http-bridge/tor_http_bridge.py", "kind": "code", "bytes": 5979, "lines": 160, "sha256": "d91f97a2f078821687ff96e7654ff40baa2780347248072c2780bf4c03349b25", "symlink": false, "nodes": 13, "extraction": "nodes", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "deploy/verify-bot-defense-live.sh", "kind": "code", "bytes": 7136, "lines": 93, "sha256": "127ce372a98bb54122e169de34d08863e90af78916407f5e5ff4a18d7ee06f59", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docker-compose.yml", "kind": "asset/data/config", "bytes": 47897, "lines": 656, "sha256": "eca81f7ddcf0750c5bbbe19197b0e5766f61bd49ea253c23208d07a0b2cf9a16", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docker-compose.yml", "kind": "asset/data/config", "bytes": 48295, "lines": 659, "sha256": "f6cad4d25bc6cd09e259058189337580d8bcb43a351392c4453f4c57e1012b62", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/adr/0001-derived-indicators-engine-shape.md", "kind": "document", "bytes": 21518, "lines": 158, "sha256": "9162d486eb7855105951ac04a901a00924889ea74f80ac31d38277ca226f9f35", "symlink": false, "nodes": 13, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/adr/0002-derived-always-reflects-source.md", "kind": "document", "bytes": 15266, "lines": 136, "sha256": "477aecee55c0a5ed9ef663dc6901eeb8d3f593c450449b53395e4a951310587b", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": true},
     {"path": "docs/adr/0003-seo-single-source-server-rendered.md", "kind": "document", "bytes": 30975, "lines": 250, "sha256": "41d79a1c483ff5e4d77592778d9877897f6f22f482fe3563a18b9f3c50aa6da2", "symlink": false, "nodes": 9, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},

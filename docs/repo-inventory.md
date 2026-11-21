@@ -7,18 +7,18 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2659  ·  **Строк:** 1 661 099  ·  **Токенов (≈):** 16 232 205
+**Файлов:** 2659  ·  **Строк:** 1 661 103  ·  **Токенов (≈):** 16 232 391
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 8 | 2 938 | 68 403 |
+| `(root)` | 8 | 2 941 | 68 472 |
 | `.github` | 3 | 315 | 3 245 |
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 1202 | 401 687 | 4 689 082 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 21 | 1 582 | 26 611 |
+| `deploy` | 21 | 1 583 | 26 728 |
 | `docs` | 155 | 1 016 014 | 8 831 852 |
 | `frontend` | 1119 | 212 555 | 2 290 287 |
 | `mcp` | 3 | 158 | 1 120 |
@@ -151,8 +151,8 @@
 | `backend/app/services/pulse_report.py` | 799 | 10 414 |
 | `frontend/src/lib/indicatorVariants.js` | 635 | 10 311 |
 | `frontend/src/index.css` | 1 043 | 10 264 |
+| `docker-compose.yml` | 659 | 10 212 |
 | `backend/tests/test_tourism_regional.py` | 768 | 10 158 |
-| `docker-compose.yml` | 656 | 10 143 |
 | `docs/research/_fpsr_raw/agent01.json` | 779 | 10 111 |
 | `scripts/build-design-review.mjs` | 407 | 9 931 |
 | `backend/app/services/search_language.py` | 419 | 9 776 |
@@ -243,11 +243,11 @@
 | `backend/tests/fixtures/emiss_regional_social/dataGrid_57824_vsego_2026-11-19.json` | 766 | 7 157 |
 | `backend/app/core/cache.py` | 747 | 7 145 |
 | `docs/research/_fpsr_raw/agent07.json` | 581 | 7 138 |
+| `deploy/approved-shas.txt` | 207 | 7 105 |
 | `frontend/src/components/Navbar.jsx` | 632 | 7 080 |
 | `backend/tests/fixtures/fns_msp/statistics-proc_10.11.2025.json` | 1 025 | 7 044 |
 | `scripts/build-project-terrain.py` | 478 | 7 043 |
 | `frontend/src/pages/WorldRegionIndicatorPage.jsx` | 620 | 6 999 |
-| `deploy/approved-shas.txt` | 206 | 6 988 |
 | `backend/app/services/world_adapters/nbs_stats.py` | 802 | 6 971 |
 | `frontend/src/components/RegionsMap.jsx` | 626 | 6 968 |
 | `frontend/src/styles/z1-tokens.css` | 480 | 6 938 |

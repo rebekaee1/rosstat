@@ -16847,9 +16847,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "108c64d55ddb975ee6a133dca996243fdb786607771269b3520cbcb17bda8cde",
-      "bytes": 37370,
-      "lines": 206,
+      "sha256": "db14e8fbe0bc86d9bb4aab38d74b768d5ab3153949cc0af6ec32a891b350171d",
+      "bytes": 38077,
+      "lines": 207,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -17120,9 +17120,9 @@
     },
     {
       "path": "docker-compose.yml",
-      "sha256": "eca81f7ddcf0750c5bbbe19197b0e5766f61bd49ea253c23208d07a0b2cf9a16",
-      "bytes": 47897,
-      "lines": 656,
+      "sha256": "f6cad4d25bc6cd09e259058189337580d8bcb43a351392c4453f4c57e1012b62",
+      "bytes": 48295,
+      "lines": 659,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -38388,13 +38388,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "4f5edb758e775631d54d58ec983e8c45aae80a27941e82a90562590ac0af0d8a",
+  "ledger_sha256": "eef16b6b2419c796ceb4cb7c631a73a2aefa414f0cbae90dc1a163f805b5fb09",
   "javascript_inventory_sha256": "89ead2af4bd2e1582f7eddc084688d8d06fcd0915366bc7766a105da5cda9014",
-  "baseline_commit": "1543240b652516dfe7c969938f7820596fcfbb5e",
+  "baseline_commit": "53d0b267d84e4d44c0ada0c794f0908dbbc0f42f",
   "branch": "int/2026-11-20-tourism",
   "unstaged_at_capture": [
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docker-compose.yml"
   ]
 }
