@@ -26,8 +26,11 @@ Connect timeout and host breaker (2026-10-08): 07.10 rosstat.gov.ru 8 ч не
 from __future__ import annotations
 
 import contextvars
+import fcntl
 import http.client
 import logging
+import os
+import tempfile
 import threading
 import time
 from typing import Any
@@ -265,6 +268,68 @@ def resolve_etl_socks_url() -> str | None:
     return socks or None
 
 
+# ЕМИСС (fedstat.ru), 21.11.2026: с 20.11 fedstat отвечает 403 и адресу боевого, и релею; тестовый стенд он пускает.
+# `RUSTATS_EMISS_PROXY_URL` — отдельный выход только для fedstat (прокси на стенде, открыт только адресу боевого и
+# только для fedstat.ru). Запросы к fedstat идут сразу через него, без прямой попытки и без релея/Tor: лишние 403
+# сами по себе похожи на перебор и продлевают бан. Пауза между запросами к fedstat — общая для всех процессов
+# контейнера (файл-замок), `RUSTATS_EMISS_MIN_INTERVAL_SECONDS`: бан 20.11 пришёл после ~50 запросов подряд без пауз.
+_EMISS_HOST = "fedstat.ru"
+
+
+def _is_emiss_host(host: str) -> bool:
+    return host == _EMISS_HOST or host.endswith("." + _EMISS_HOST)
+
+
+def resolve_emiss_proxy_url() -> str | None:
+    """Отдельный выход для fedstat.ru; пусто — обычная цепочка (прямо → HTTP-прокси → SOCKS)."""
+    from app.config import settings
+
+    url = (getattr(settings, "emiss_proxy_url", "") or "").strip()
+    return url or None
+
+
+def _emiss_min_interval() -> float:
+    from app.config import settings
+
+    try:
+        return max(0.0, float(getattr(settings, "emiss_min_interval_seconds", 3.0)))
+    except (TypeError, ValueError):
+        return 3.0
+
+
+_EMISS_THROTTLE_FILE = os.path.join(tempfile.gettempdir(), "fe-emiss-throttle")
+_emiss_thread_lock = threading.Lock()
+
+
+def emiss_throttle() -> float:
+    """Выдержать паузу между запросами к fedstat во всех процессах контейнера. Возвращает, сколько ждали (с)."""
+    interval = _emiss_min_interval()
+    if interval <= 0:
+        return 0.0
+    with _emiss_thread_lock:
+        with open(_EMISS_THROTTLE_FILE, "a+") as fh:
+            fcntl.flock(fh, fcntl.LOCK_EX)
+            try:
+                fh.seek(0)
+                raw = fh.read().strip()
+                try:
+                    last = float(raw) if raw else 0.0
+                except ValueError:
+                    last = 0.0
+                wait = last + interval - time.time()
+                if wait > 0:
+                    time.sleep(min(wait, interval))
+                else:
+                    wait = 0.0
+                fh.seek(0)
+                fh.truncate()
+                fh.write(f"{time.time():.3f}")
+                fh.flush()
+            finally:
+                fcntl.flock(fh, fcntl.LOCK_UN)
+    return max(0.0, wait)
+
+
 def _proxy_dict(url: str) -> dict[str, str]:
     return {"http": url, "https": url}
 
@@ -298,6 +363,11 @@ class ProxyFallbackSession(requests.Session):
         if "_proxy_hop" in kwargs or kwargs.get("proxies"):
             return self._request_hop(method, url, **kwargs)
         host = _host(url)
+        if host and _is_emiss_host(host):
+            emiss_throttle()
+            emiss_resp = self._via_emiss_proxy(method, url, kwargs)
+            if emiss_resp is not None:
+                return emiss_resp
         detoured = self._try_detour(method, url, host, kwargs)
         if detoured is not None:
             return detoured
@@ -343,6 +413,36 @@ class ProxyFallbackSession(requests.Session):
         # 404 при переборе имён файлов — норма; сбой источника — 5xx и бан-статусы.
         if resp.status_code >= 500 or resp.status_code in _PROXY_FALLBACK_STATUSES:
             record_fetch_issue(f"{host or url}: HTTP {resp.status_code}")
+        return resp
+
+    def _via_emiss_proxy(
+        self, method: str, url: str, kwargs: dict[str, Any],
+    ) -> requests.Response | None:
+        """fedstat через отдельный выход (`RUSTATS_EMISS_PROXY_URL`). None — выхода нет или он не принял соединение.
+
+        Ответ fedstat через выход (в том числе 403) возвращается как есть: перебор остальных хопов только добавил бы
+        отказов. Медленный ответ и обрыв хостом уходят наружу как в обычной цепочке (`ReadTimeout`, `HostDisconnected`).
+        """
+        emiss = resolve_emiss_proxy_url()
+        if not emiss:
+            return None
+        hop_kwargs = {k: v for k, v in kwargs.items() if k != "proxies"}
+        try:
+            resp = self._request_hop(
+                method, url, _proxy_hop=len(self._fallback_urls()), proxies=_proxy_dict(emiss), **hop_kwargs,
+            )
+        except requests.ReadTimeout:
+            raise
+        except _PROXY_FALLBACK_EXC as exc:
+            if _host_dropped(exc):
+                raise HostDisconnected(f"{_host(url)} closed the connection without a response via EMISS proxy") from exc
+            logger.warning(
+                "ETL %s %s: EMISS proxy unreachable (%s) — falling back to the usual chain",
+                method, url, type(exc).__name__,
+            )
+            return None
+        if resp.status_code in _PROXY_FALLBACK_STATUSES or resp.status_code >= 500:
+            record_fetch_issue(f"{_host(url)}: HTTP {resp.status_code} via EMISS proxy")
         return resp
 
     def _try_detour(

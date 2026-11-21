@@ -7357,7 +7357,21 @@
           "setting": "world_tourism_ingest_enabled",
           "default": false,
           "passed_by_compose": true,
-          "effect": "регистрирует еженедельную задачу world_tourism_ingest (пн, час world_eurostat_ingest_hour=2, минута 55, МСК; locked_job ttl 3600 с): МВФ, UN Tourism, ОЭСР, Евростат, CYSTAT, Geostat + снимок национальных служб. Без флага задачи нет; ручной запуск python -m app.services.world_tourism_ingest работает всегда. Передаётся в контейнеры через environment docker-compose с f7889cb0 (${RUSTATS_WORLD_TOURISM_INGEST_ENABLED:-false}); до этой правки значение .env хоста не доходило"
+          "effect": "регистрирует еженедельную задачу world_tourism_ingest (пн, час world_eurostat_ingest_hour=2, минута 55, МСК; locked_job ttl 3600 с): МВФ, UN Tourism, ОЭСР, Евростат, CYSTAT, Geostat + снимок национальных служб. Без флага задачи нет; ручной запуск python -m app.services.world_tourism_ingest работает всегда. Передаётся в контейнеры через environment docker-compose с f7889cb0 (${RUSTATS_WORLD_TOURISM_INGEST_ENABLED:-false}); до этой правки значение .env хоста не доходило. На боевом включено 21.11.2026 после выпуска 53d0b267 (копия .env /root/backup/env-before-world-tourism-*)"
+        },
+        {
+          "env": "RUSTATS_EMISS_PROXY_URL",
+          "setting": "emiss_proxy_url",
+          "default": "",
+          "passed_by_compose": true,
+          "effect": "21.11.2026: отдельный выход только для fedstat.ru — HTTP-прокси tinyproxy на тестовом стенде 176.57.220.170:8899 (фильтр ^(www\\.)?fedstat\\.ru$, Allow и ufw только 201.51.11.170). Запросы к fedstat идут сразу через него, без прямой попытки и без релея/Tor; при отказе выхода — обычная цепочка. Причина: с 20.11 fedstat отвечает 403 адресу боевого и релею, стенд пропускает. Пусто = обычная цепочка."
+        },
+        {
+          "env": "RUSTATS_EMISS_MIN_INTERVAL_SECONDS",
+          "setting": "emiss_min_interval_seconds",
+          "default": 3.0,
+          "passed_by_compose": true,
+          "effect": "пауза между запросами к fedstat во всех процессах контейнера (файл-замок в tempdir); бан 20.11 пришёл после ~50 запросов подряд без пауз. 0 — без паузы (тесты)."
         }
       ],
       "scheduled_jobs": [

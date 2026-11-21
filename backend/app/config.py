@@ -563,6 +563,10 @@ class Settings(BaseSettings):
     # SOCKS (например host Tor): после direct и HTTP-прокси. Prod Docker →
     # socks5h://172.18.0.1:9050 (Tor SocksPort на gateway rosstat_default). Нужен PySocks.
     etl_socks_proxy_url: str = ""
+    # ЕМИСС (21.11.2026): отдельный выход только для fedstat.ru (HTTP-прокси на тестовом стенде, открыт только адресу
+    # боевого). Пусто — обычная цепочка. Пауза между запросами к fedstat во всех процессах контейнера, секунды.
+    emiss_proxy_url: str = ""
+    emiss_min_interval_seconds: float = 3.0
     # Потолок времени одного ежедневного ETL (секунды): после него оставшиеся
     # индикаторы пропускаются и названы в итоговом сообщении. 07.10.2026 выгрузка
     # шла 9 часов из-за недоступного rosstat.gov.ru. 0 = без потолка.

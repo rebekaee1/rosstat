@@ -2,6 +2,8 @@
 
 from unittest.mock import MagicMock, patch
 
+import time
+
 import requests
 from urllib3.util.retry import Retry
 
@@ -399,3 +401,102 @@ def test_host_dropped_is_found_only_by_remote_disconnected():
     assert http_client._host_dropped(_host_dropped_via_proxy())
     assert not http_client._host_dropped(requests.exceptions.ProxyError("Cannot connect to proxy: refused"))
     assert not http_client._host_dropped(requests.exceptions.ConnectTimeout("relay silent"))
+
+
+# ── ЕМИСС: отдельный выход и пауза (21.11.2026) ─────────────────────────────
+
+
+def test_emiss_goes_straight_via_emiss_proxy(monkeypatch):
+    """fedstat при заданном RUSTATS_EMISS_PROXY_URL идёт сразу через него: без прямой попытки и без релея/Tor."""
+    from app.config import settings
+    from app.services import http_client as hc
+
+    monkeypatch.setattr(settings, "emiss_proxy_url", "http://stand:8899")
+    calls: list = []
+
+    def fake_request(self, method, url, proxies=None, **kw):
+        calls.append(proxies)
+        r = requests.Response()
+        r.status_code = 200
+        r._content = b"ok"
+        return r
+
+    monkeypatch.setattr(requests.Session, "request", fake_request)
+    s = hc.ProxyFallbackSession(proxy_url="http://relay:1", socks_url="socks5h://tor:9050")
+    resp = s.get("https://www.fedstat.ru/indicator/31448")
+    assert resp.status_code == 200
+    assert calls == [{"http": "http://stand:8899", "https": "http://stand:8899"}]
+
+
+def test_emiss_403_via_emiss_proxy_is_not_retried_elsewhere(monkeypatch):
+    """403 через выход ЕМИСС возвращается как есть: перебор релея и Tor только умножил бы отказы."""
+    from app.config import settings
+    from app.services import http_client as hc
+
+    monkeypatch.setattr(settings, "emiss_proxy_url", "http://stand:8899")
+    calls: list = []
+
+    def fake_request(self, method, url, proxies=None, **kw):
+        calls.append(proxies)
+        r = requests.Response()
+        r.status_code = 403
+        return r
+
+    monkeypatch.setattr(requests.Session, "request", fake_request)
+    s = hc.ProxyFallbackSession(proxy_url="http://relay:1", socks_url="socks5h://tor:9050")
+    assert s.get("https://www.fedstat.ru/indicator/31448").status_code == 403
+    assert len(calls) == 1
+
+
+def test_emiss_proxy_down_falls_back_to_usual_chain(monkeypatch):
+    """Выход ЕМИСС не принял соединение — обычная цепочка (прямо → релей → Tor)."""
+    from app.config import settings
+    from app.services import http_client as hc
+
+    monkeypatch.setattr(settings, "emiss_proxy_url", "http://stand:8899")
+    calls: list = []
+
+    def fake_request(self, method, url, proxies=None, **kw):
+        calls.append(proxies)
+        if proxies and "stand" in proxies.get("https", ""):
+            raise requests.exceptions.ProxyError("stand down")
+        r = requests.Response()
+        r.status_code = 200
+        return r
+
+    monkeypatch.setattr(requests.Session, "request", fake_request)
+    s = hc.ProxyFallbackSession(proxy_url="http://relay:1")
+    assert s.get("https://www.fedstat.ru/indicator/31448").status_code == 200
+    assert calls[0]["https"] == "http://stand:8899" and calls[1] is None
+
+
+def test_other_hosts_ignore_emiss_proxy(monkeypatch):
+    """Выход ЕМИСС только для fedstat.ru: остальные хосты идут прежней цепочкой."""
+    from app.config import settings
+    from app.services import http_client as hc
+
+    monkeypatch.setattr(settings, "emiss_proxy_url", "http://stand:8899")
+    calls: list = []
+
+    def fake_request(self, method, url, proxies=None, **kw):
+        calls.append(proxies)
+        r = requests.Response()
+        r.status_code = 200
+        return r
+
+    monkeypatch.setattr(requests.Session, "request", fake_request)
+    hc.ProxyFallbackSession(proxy_url="http://relay:1").get("https://www.cbr.ru/")
+    assert calls == [None]
+
+
+def test_emiss_throttle_spaces_requests(monkeypatch, tmp_path):
+    """Пауза между запросами к fedstat общая для процессов (файл-замок): второй запрос ждёт остаток интервала."""
+    from app.config import settings
+    from app.services import http_client as hc
+
+    monkeypatch.setattr(settings, "emiss_min_interval_seconds", 0.3)
+    monkeypatch.setattr(hc, "_EMISS_THROTTLE_FILE", str(tmp_path / "throttle"))
+    assert hc.emiss_throttle() == 0.0
+    t0 = time.time()
+    waited = hc.emiss_throttle()
+    assert waited > 0.1 and time.time() - t0 >= 0.2

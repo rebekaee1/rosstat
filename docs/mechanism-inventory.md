@@ -8,15 +8,15 @@
 - HTTP reachable paths: **209**
 - ORM tables: **100**
 - DTO schemas (own fields + resolved inherited bases): **55**
-- Settings fields: **363**
-- Settings reads: **931**
+- Settings fields: **365**
+- Settings reads: **933**
 - Direct environment reads: **36**
 - Jobs: **84**
 - Middleware: **6**
-- Registry declarations: **1911**
-- Registry references: **3614**
+- Registry declarations: **1912**
+- Registry references: **3617**
 - Migration operations: **579**
-- Candidate effects: **3626**
+- Candidate effects: **3627**
 - Unresolved syntax: **6**
 - MCP tools: **7**
 
@@ -2432,119 +2432,121 @@ Relationships: `[]`
 | RUSTATS_OPENROUTER_PROXY_URL | str = '' | 7 | [backend/app/config.py:558](../backend/app/config.py#L558) |
 | RUSTATS_ETL_HTTP_PROXY_URL | str = '' | 1 | [backend/app/config.py:562](../backend/app/config.py#L562) |
 | RUSTATS_ETL_SOCKS_PROXY_URL | str = '' | 1 | [backend/app/config.py:565](../backend/app/config.py#L565) |
-| RUSTATS_ETL_JOB_MAX_SECONDS | int = 7200 | 2 | [backend/app/config.py:569](../backend/app/config.py#L569) |
-| RUSTATS_FRESHNESS_WATCHDOG_ENABLED | bool = False | 2 | [backend/app/config.py:574](../backend/app/config.py#L574) |
-| RUSTATS_FRESHNESS_WATCHDOG_MIN_STALE | int = 25 | 1 | [backend/app/config.py:575](../backend/app/config.py#L575) |
-| RUSTATS_FRESHNESS_WATCHDOG_CRON_HOUR | int = 10 | 1 | [backend/app/config.py:576](../backend/app/config.py#L576) |
-| RUSTATS_FRESHNESS_WATCHDOG_CRON_MINUTE | int = 30 | 1 | [backend/app/config.py:577](../backend/app/config.py#L577) |
-| RUSTATS_TELEGRAM_POLLER_ENABLED | bool = False | 1 | [backend/app/config.py:579](../backend/app/config.py#L579) |
-| RUSTATS_PUBLIC_BOT_ENABLED | bool = False | 8 | [backend/app/config.py:583](../backend/app/config.py#L583) |
-| RUSTATS_PUBLIC_BOT_TOKEN | str = '' | 7 | [backend/app/config.py:586](../backend/app/config.py#L586) |
-| RUSTATS_PUBLIC_BOT_USERNAME | str = 'ForecastEconomyBot' | 3 | [backend/app/config.py:588](../backend/app/config.py#L588) |
-| RUSTATS_PUBLIC_BOT_GROUP_URL | str = '' | 3 | [backend/app/config.py:591](../backend/app/config.py#L591) |
-| RUSTATS_PUBLIC_BOT_LLM_ENABLED | bool = False | 10 | [backend/app/config.py:594](../backend/app/config.py#L594) |
-| RUSTATS_PUBLIC_BOT_LLM_MODEL | str = 'anthropic/claude-sonnet-5.5' | 3 | [backend/app/config.py:597](../backend/app/config.py#L597) |
-| RUSTATS_PUBLIC_BOT_LLM_DAILY_LIMIT | int = 40 | 1 | [backend/app/config.py:598](../backend/app/config.py#L598) |
-| RUSTATS_PUBLIC_BOT_NOTIFY_FROM_HOUR | int = 9 | 1 | [backend/app/config.py:600](../backend/app/config.py#L600) |
-| RUSTATS_PUBLIC_BOT_NOTIFY_TO_HOUR | int = 21 | 1 | [backend/app/config.py:601](../backend/app/config.py#L601) |
-| RUSTATS_PUBLIC_BOT_SITE_AUTOSUBSCRIBE | bool = False | 1 | [backend/app/config.py:605](../backend/app/config.py#L605) |
-| RUSTATS_CHANNEL_CHAT_ID | str = '@forecasteconomy' | 5 | [backend/app/config.py:609](../backend/app/config.py#L609) |
-| RUSTATS_CHANNEL_STATS_ENABLED | bool = False | 3 | [backend/app/config.py:611](../backend/app/config.py#L611) |
-| RUSTATS_CHANNEL_STATS_CRON_HOUR | int = 8 | 2 | [backend/app/config.py:612](../backend/app/config.py#L612) |
-| RUSTATS_CHANNEL_STATS_CRON_MINUTE | int = 40 | 2 | [backend/app/config.py:613](../backend/app/config.py#L613) |
-| RUSTATS_CHANNEL_AUTHOR_ENABLED | bool = False | 5 | [backend/app/config.py:616](../backend/app/config.py#L616) |
-| RUSTATS_CHANNEL_AUTHOR_MODEL | str = 'anthropic/claude-opus-5.5' | 1 | [backend/app/config.py:619](../backend/app/config.py#L619) |
-| RUSTATS_CHANNEL_AUTHOR_EFFORT | str = 'medium' | 1 | [backend/app/config.py:620](../backend/app/config.py#L620) |
-| RUSTATS_CHANNEL_AUTHOR_TONE | str = 'between' | 2 | [backend/app/config.py:621](../backend/app/config.py#L621) |
-| RUSTATS_CHANNEL_AUTHOR_WEB_ENABLED | bool = True | 2 | [backend/app/config.py:622](../backend/app/config.py#L622) |
-| RUSTATS_CHANNEL_AUTHOR_WEB_ENGINE | str = 'auto' | 1 | [backend/app/config.py:623](../backend/app/config.py#L623) |
-| RUSTATS_CHANNEL_AUTHOR_WEB_MODEL | str = 'anthropic/claude-haiku-5.5' | 1 | [backend/app/config.py:625](../backend/app/config.py#L625) |
-| RUSTATS_CHANNEL_AUTHOR_WEB_MAX_SEARCHES | int = 4 | 1 | [backend/app/config.py:626](../backend/app/config.py#L626) |
-| RUSTATS_CHANNEL_AUTHOR_DAILY_HOUR | int = 9 | 2 | [backend/app/config.py:627](../backend/app/config.py#L627) |
-| RUSTATS_CHANNEL_AUTHOR_DAILY_MINUTE | int = 30 | 2 | [backend/app/config.py:628](../backend/app/config.py#L628) |
-| RUSTATS_CHANNEL_AUTHOR_DAILY_USD_LIMIT | float = 3.0 | 1 | [backend/app/config.py:629](../backend/app/config.py#L629) |
-| RUSTATS_CHANNEL_PLAN_ENABLED | bool = False | 2 | [backend/app/config.py:631](../backend/app/config.py#L631) |
-| RUSTATS_CHANNEL_REVIEW_CHAT_IDS | str = '' | 1 | [backend/app/config.py:634](../backend/app/config.py#L634) |
-| RUSTATS_CHANNEL_PUBLISH_ENABLED | bool = False | 3 | [backend/app/config.py:636](../backend/app/config.py#L636) |
-| RUSTATS_CHANNEL_POST_HOUR_MSK | int = 10 | 1 | [backend/app/config.py:637](../backend/app/config.py#L637) |
-| RUSTATS_CHANNEL_BOT_TOKEN | str = '' | 3 | [backend/app/config.py:638](../backend/app/config.py#L638) |
-| RUSTATS_API_INTEREST_ENABLED | bool = False | 2 | [backend/app/config.py:644](../backend/app/config.py#L644) |
-| RUSTATS_ACQ_SITE_LINE_ENABLED | bool = False | 1 | [backend/app/config.py:651](../backend/app/config.py#L651) |
-| RUSTATS_ACQ_SITE_LINE_TOPICS | str = 'inflation,gold,keyrate,deposit,mortgage,usd,eur' | 1 | [backend/app/config.py:652](../backend/app/config.py#L652) |
-| RUSTATS_ACQ_SITE_FIRST_SCREEN_ENABLED | bool = False | 1 | [backend/app/config.py:653](../backend/app/config.py#L653) |
-| RUSTATS_CABINET_ENABLED | bool = True | 6 | [backend/app/config.py:662](../backend/app/config.py#L662) |
-| RUSTATS_PWA_ENABLED | bool = True | 3 | [backend/app/config.py:669](../backend/app/config.py#L669) |
-| RUSTATS_PWA_INSTALL_PROMPT_ENABLED | bool = True | 1 | [backend/app/config.py:670](../backend/app/config.py#L670) |
-| RUSTATS_WELCOME_ENABLED | bool = False | 1 | [backend/app/config.py:676](../backend/app/config.py#L676) |
-| RUSTATS_PUSH_SUBSCRIBE_ENABLED | bool = False | 2 | [backend/app/config.py:687](../backend/app/config.py#L687) |
-| RUSTATS_PUSH_SEND_ENABLED | bool = False | 2 | [backend/app/config.py:688](../backend/app/config.py#L688) |
-| RUSTATS_PUSH_DRY_RUN | bool = True | 1 | [backend/app/config.py:689](../backend/app/config.py#L689) |
-| RUSTATS_VAPID_PUBLIC_KEY | str = '' | 3 | [backend/app/config.py:690](../backend/app/config.py#L690) |
-| RUSTATS_VAPID_PRIVATE_KEY | str = '' | 2 | [backend/app/config.py:691](../backend/app/config.py#L691) |
-| RUSTATS_VAPID_SUBJECT | str = '' | 2 | [backend/app/config.py:692](../backend/app/config.py#L692) |
-| RUSTATS_MAIL_ENABLED | bool = False | 15 | [backend/app/config.py:704](../backend/app/config.py#L704) |
-| RUSTATS_MAIL_SMTP_HOST | str = 'smtp.yandex.ru' | 5 | [backend/app/config.py:705](../backend/app/config.py#L705) |
-| RUSTATS_MAIL_SMTP_PORT | int = 465 | 4 | [backend/app/config.py:706](../backend/app/config.py#L706) |
-| RUSTATS_MAIL_SMTP_SECURITY | str = 'ssl' | 3 | [backend/app/config.py:707](../backend/app/config.py#L707) |
-| RUSTATS_MAIL_SMTP_USER | str = '' | 14 | [backend/app/config.py:708](../backend/app/config.py#L708) |
-| RUSTATS_MAIL_SMTP_PASSWORD | str = '' | 9 | [backend/app/config.py:709](../backend/app/config.py#L709) |
-| RUSTATS_MAIL_SMTP_TIMEOUT_SECONDS | float = 20.0 | 1 | [backend/app/config.py:710](../backend/app/config.py#L710) |
-| RUSTATS_MAIL_FROM_ADDRESS | str = '' | 3 | [backend/app/config.py:711](../backend/app/config.py#L711) |
-| RUSTATS_MAIL_FROM_NAME | str = 'Forecast Economy' | 2 | [backend/app/config.py:712](../backend/app/config.py#L712) |
-| RUSTATS_MAIL_REPLY_TO | str = 'info@forecasteconomy.com' | 4 | [backend/app/config.py:713](../backend/app/config.py#L713) |
-| RUSTATS_MAIL_ALLOWLIST | str = 'rebeka.ee@yandex.ru' | 1 | [backend/app/config.py:714](../backend/app/config.py#L714) |
-| RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS | bool = False | 6 | [backend/app/config.py:715](../backend/app/config.py#L715) |
-| RUSTATS_MAIL_TRACKING_ENABLED | bool = False | 5 | [backend/app/config.py:718](../backend/app/config.py#L718) |
-| RUSTATS_MAIL_TRACKING_OPEN_PIXEL | bool = False | 3 | [backend/app/config.py:722](../backend/app/config.py#L722) |
-| RUSTATS_MAIL_REPORT_ENABLED | bool = False | 5 | [backend/app/config.py:724](../backend/app/config.py#L724) |
-| RUSTATS_MAIL_REPORT_HOUR_MSK | int = 9 | 3 | [backend/app/config.py:725](../backend/app/config.py#L725) |
-| RUSTATS_MAIL_REPORT_MINUTE | int = 20 | 3 | [backend/app/config.py:726](../backend/app/config.py#L726) |
-| RUSTATS_MAIL_TOKEN_SECRET | str = '' | 7 | [backend/app/config.py:729](../backend/app/config.py#L729) |
-| RUSTATS_MAIL_CAMPAIGN_MAX_PER_RUN | int = 250 | 2 | [backend/app/config.py:732](../backend/app/config.py#L732) |
-| RUSTATS_MAIL_CAMPAIGN_PAUSE_SECONDS | float = 4.0 | 2 | [backend/app/config.py:733](../backend/app/config.py#L733) |
-| RUSTATS_MAIL_LINK_ORIGIN_RU | str = '' | 2 | [backend/app/config.py:736](../backend/app/config.py#L736) |
-| RUSTATS_MAIL_LINK_ORIGIN_EN | str = '' | 1 | [backend/app/config.py:737](../backend/app/config.py#L737) |
-| RUSTATS_MAIL_BULK_SMTP_HOST | str = '' | 3 | [backend/app/config.py:741](../backend/app/config.py#L741) |
-| RUSTATS_MAIL_BULK_SMTP_PORT | int = 587 | 1 | [backend/app/config.py:742](../backend/app/config.py#L742) |
-| RUSTATS_MAIL_BULK_SMTP_SECURITY | str = 'starttls' | 1 | [backend/app/config.py:743](../backend/app/config.py#L743) |
-| RUSTATS_MAIL_BULK_SMTP_USER | str = '' | 1 | [backend/app/config.py:744](../backend/app/config.py#L744) |
-| RUSTATS_MAIL_BULK_SMTP_PASSWORD | str = '' | 1 | [backend/app/config.py:745](../backend/app/config.py#L745) |
-| RUSTATS_MAIL_BULK_FROM_ADDRESS | str = '' | 1 | [backend/app/config.py:746](../backend/app/config.py#L746) |
-| RUSTATS_MAIL_BOUNCE_POLL_ENABLED | bool = False | 4 | [backend/app/config.py:750](../backend/app/config.py#L750) |
-| RUSTATS_MAIL_IMAP_HOST | str = 'imap.yandex.ru' | 3 | [backend/app/config.py:751](../backend/app/config.py#L751) |
-| RUSTATS_MAIL_IMAP_PORT | int = 993 | 3 | [backend/app/config.py:752](../backend/app/config.py#L752) |
-| RUSTATS_MAIL_WATCH_DIGEST_ENABLED | bool = False | 5 | [backend/app/config.py:755](../backend/app/config.py#L755) |
-| RUSTATS_MAIL_WATCH_DIGEST_HOUR_MSK | int = 10 | 3 | [backend/app/config.py:756](../backend/app/config.py#L756) |
-| RUSTATS_TOPIC_MAIL_ENABLED | bool = False | 2 | [backend/app/config.py:762](../backend/app/config.py#L762) |
-| RUSTATS_NEWSLETTER_PERSONAL_ENABLED | bool = False | 1 | [backend/app/config.py:770](../backend/app/config.py#L770) |
-| RUSTATS_NEWSLETTER_PERSONAL_BEHAVIOR_SIGNALS | bool = False | 2 | [backend/app/config.py:771](../backend/app/config.py#L771) |
-| RUSTATS_NEWSLETTER_PERSONAL_CLICK_TOKEN | bool = False | 1 | [backend/app/config.py:772](../backend/app/config.py#L772) |
-| RUSTATS_NEWSLETTER_PERSONAL_HOLDOUT_PCT | int = 0 | 1 | [backend/app/config.py:774](../backend/app/config.py#L774) |
-| RUSTATS_NEWSLETTER_PERSONAL_SUBJECT_AB_PCT | int = 50 | 1 | [backend/app/config.py:776](../backend/app/config.py#L776) |
-| RUSTATS_NEWSLETTER_PERSONAL_SKIP_FORECASTS | str = '' | 1 | [backend/app/config.py:778](../backend/app/config.py#L778) |
-| RUSTATS_NEWSLETTER_PERSONAL_BUILD_ENABLED | bool = False | 1 | [backend/app/config.py:780](../backend/app/config.py#L780) |
-| RUSTATS_NEWSLETTER_PERSONAL_BUILD_WEEKDAY | str = 'thu' | 2 | [backend/app/config.py:781](../backend/app/config.py#L781) |
-| RUSTATS_NEWSLETTER_PERSONAL_BUILD_HOUR_MSK | int = 7 | 2 | [backend/app/config.py:782](../backend/app/config.py#L782) |
-| RUSTATS_NEWSLETTER_PERSONAL_BUILD_MINUTE | int = 40 | 2 | [backend/app/config.py:783](../backend/app/config.py#L783) |
-| RUSTATS_NEWSLETTER_PERSONAL_ISSUE_PATH | str = '' | 1 | [backend/app/config.py:785](../backend/app/config.py#L785) |
-| RUSTATS_NEWSLETTER_PERSONAL_AGGREGATES_HOUR_MSK | int = 0 | 2 | [backend/app/config.py:787](../backend/app/config.py#L787) |
-| RUSTATS_NEWSLETTER_PERSONAL_AGGREGATES_MINUTE | int = 40 | 2 | [backend/app/config.py:788](../backend/app/config.py#L788) |
-| RUSTATS_NEWSLETTER_PERSONAL_SEND_START_HOUR | int = 8 | 1 | [backend/app/config.py:790](../backend/app/config.py#L790) |
-| RUSTATS_NEWSLETTER_PERSONAL_SEND_END_HOUR | int = 21 | 1 | [backend/app/config.py:791](../backend/app/config.py#L791) |
-| RUSTATS_NEWSLETTER_PERSONAL_MIN_DAYS_BETWEEN | int = 6 | 1 | [backend/app/config.py:793](../backend/app/config.py#L793) |
-| RUSTATS_NEWSLETTER_PERSONAL_DORMANT_ENABLED | bool = False | 1 | [backend/app/config.py:795](../backend/app/config.py#L795) |
-| RUSTATS_NEWSLETTER_PERSONAL_DORMANT_DAYS | int = 60 | 1 | [backend/app/config.py:796](../backend/app/config.py#L796) |
-| RUSTATS_NEWSLETTER_PERSONAL_BATCH_SIZE | int = 100 | 1 | [backend/app/config.py:798](../backend/app/config.py#L798) |
-| RUSTATS_NEWSLETTER_PERSONAL_BATCH_PAUSE_SECONDS | float = 0.5 | 1 | [backend/app/config.py:799](../backend/app/config.py#L799) |
-| RUSTATS_ADMIN_EMAILS | str = 'admin_forecasteconomy@forecasteconomy.com' | 3 | [backend/app/config.py:803](../backend/app/config.py#L803) |
-| RUSTATS_WORLD_LATEST_POINTS_ENABLED | bool = False | 3 | [backend/app/config.py:810](../backend/app/config.py#L810) |
-| RUSTATS_WORLD_LATEST_POINTS_CHUNK | int = 1000 | 1 | [backend/app/config.py:811](../backend/app/config.py#L811) |
-| RUSTATS_WORLD_LATEST_POINTS_CHUNKS_PER_RUN | int = 6 | 1 | [backend/app/config.py:812](../backend/app/config.py#L812) |
-| RUSTATS_WORLD_LATEST_POINTS_RUN_SECONDS | float = 240.0 | 1 | [backend/app/config.py:813](../backend/app/config.py#L813) |
-| RUSTATS_WORLD_LATEST_POINTS_RESWEEP_DAYS | int = 7 | 1 | [backend/app/config.py:814](../backend/app/config.py#L814) |
-| RUSTATS_WORLD_LATEST_POINTS_HOURS | str = '4,8-21' | 1 | [backend/app/config.py:815](../backend/app/config.py#L815) |
-| RUSTATS_WORLD_INTL_INGEST_ENABLED | bool = True | 1 | [backend/app/config.py:817](../backend/app/config.py#L817) |
-| RUSTATS_WORLD_TOURISM_INGEST_ENABLED | bool = False | 1 | [backend/app/config.py:820](../backend/app/config.py#L820) |
+| RUSTATS_EMISS_PROXY_URL | str = '' | 1 | [backend/app/config.py:568](../backend/app/config.py#L568) |
+| RUSTATS_EMISS_MIN_INTERVAL_SECONDS | float = 3.0 | 1 | [backend/app/config.py:569](../backend/app/config.py#L569) |
+| RUSTATS_ETL_JOB_MAX_SECONDS | int = 7200 | 2 | [backend/app/config.py:573](../backend/app/config.py#L573) |
+| RUSTATS_FRESHNESS_WATCHDOG_ENABLED | bool = False | 2 | [backend/app/config.py:578](../backend/app/config.py#L578) |
+| RUSTATS_FRESHNESS_WATCHDOG_MIN_STALE | int = 25 | 1 | [backend/app/config.py:579](../backend/app/config.py#L579) |
+| RUSTATS_FRESHNESS_WATCHDOG_CRON_HOUR | int = 10 | 1 | [backend/app/config.py:580](../backend/app/config.py#L580) |
+| RUSTATS_FRESHNESS_WATCHDOG_CRON_MINUTE | int = 30 | 1 | [backend/app/config.py:581](../backend/app/config.py#L581) |
+| RUSTATS_TELEGRAM_POLLER_ENABLED | bool = False | 1 | [backend/app/config.py:583](../backend/app/config.py#L583) |
+| RUSTATS_PUBLIC_BOT_ENABLED | bool = False | 8 | [backend/app/config.py:587](../backend/app/config.py#L587) |
+| RUSTATS_PUBLIC_BOT_TOKEN | str = '' | 7 | [backend/app/config.py:590](../backend/app/config.py#L590) |
+| RUSTATS_PUBLIC_BOT_USERNAME | str = 'ForecastEconomyBot' | 3 | [backend/app/config.py:592](../backend/app/config.py#L592) |
+| RUSTATS_PUBLIC_BOT_GROUP_URL | str = '' | 3 | [backend/app/config.py:595](../backend/app/config.py#L595) |
+| RUSTATS_PUBLIC_BOT_LLM_ENABLED | bool = False | 10 | [backend/app/config.py:598](../backend/app/config.py#L598) |
+| RUSTATS_PUBLIC_BOT_LLM_MODEL | str = 'anthropic/claude-sonnet-5.5' | 3 | [backend/app/config.py:601](../backend/app/config.py#L601) |
+| RUSTATS_PUBLIC_BOT_LLM_DAILY_LIMIT | int = 40 | 1 | [backend/app/config.py:602](../backend/app/config.py#L602) |
+| RUSTATS_PUBLIC_BOT_NOTIFY_FROM_HOUR | int = 9 | 1 | [backend/app/config.py:604](../backend/app/config.py#L604) |
+| RUSTATS_PUBLIC_BOT_NOTIFY_TO_HOUR | int = 21 | 1 | [backend/app/config.py:605](../backend/app/config.py#L605) |
+| RUSTATS_PUBLIC_BOT_SITE_AUTOSUBSCRIBE | bool = False | 1 | [backend/app/config.py:609](../backend/app/config.py#L609) |
+| RUSTATS_CHANNEL_CHAT_ID | str = '@forecasteconomy' | 5 | [backend/app/config.py:613](../backend/app/config.py#L613) |
+| RUSTATS_CHANNEL_STATS_ENABLED | bool = False | 3 | [backend/app/config.py:615](../backend/app/config.py#L615) |
+| RUSTATS_CHANNEL_STATS_CRON_HOUR | int = 8 | 2 | [backend/app/config.py:616](../backend/app/config.py#L616) |
+| RUSTATS_CHANNEL_STATS_CRON_MINUTE | int = 40 | 2 | [backend/app/config.py:617](../backend/app/config.py#L617) |
+| RUSTATS_CHANNEL_AUTHOR_ENABLED | bool = False | 5 | [backend/app/config.py:620](../backend/app/config.py#L620) |
+| RUSTATS_CHANNEL_AUTHOR_MODEL | str = 'anthropic/claude-opus-5.5' | 1 | [backend/app/config.py:623](../backend/app/config.py#L623) |
+| RUSTATS_CHANNEL_AUTHOR_EFFORT | str = 'medium' | 1 | [backend/app/config.py:624](../backend/app/config.py#L624) |
+| RUSTATS_CHANNEL_AUTHOR_TONE | str = 'between' | 2 | [backend/app/config.py:625](../backend/app/config.py#L625) |
+| RUSTATS_CHANNEL_AUTHOR_WEB_ENABLED | bool = True | 2 | [backend/app/config.py:626](../backend/app/config.py#L626) |
+| RUSTATS_CHANNEL_AUTHOR_WEB_ENGINE | str = 'auto' | 1 | [backend/app/config.py:627](../backend/app/config.py#L627) |
+| RUSTATS_CHANNEL_AUTHOR_WEB_MODEL | str = 'anthropic/claude-haiku-5.5' | 1 | [backend/app/config.py:629](../backend/app/config.py#L629) |
+| RUSTATS_CHANNEL_AUTHOR_WEB_MAX_SEARCHES | int = 4 | 1 | [backend/app/config.py:630](../backend/app/config.py#L630) |
+| RUSTATS_CHANNEL_AUTHOR_DAILY_HOUR | int = 9 | 2 | [backend/app/config.py:631](../backend/app/config.py#L631) |
+| RUSTATS_CHANNEL_AUTHOR_DAILY_MINUTE | int = 30 | 2 | [backend/app/config.py:632](../backend/app/config.py#L632) |
+| RUSTATS_CHANNEL_AUTHOR_DAILY_USD_LIMIT | float = 3.0 | 1 | [backend/app/config.py:633](../backend/app/config.py#L633) |
+| RUSTATS_CHANNEL_PLAN_ENABLED | bool = False | 2 | [backend/app/config.py:635](../backend/app/config.py#L635) |
+| RUSTATS_CHANNEL_REVIEW_CHAT_IDS | str = '' | 1 | [backend/app/config.py:638](../backend/app/config.py#L638) |
+| RUSTATS_CHANNEL_PUBLISH_ENABLED | bool = False | 3 | [backend/app/config.py:640](../backend/app/config.py#L640) |
+| RUSTATS_CHANNEL_POST_HOUR_MSK | int = 10 | 1 | [backend/app/config.py:641](../backend/app/config.py#L641) |
+| RUSTATS_CHANNEL_BOT_TOKEN | str = '' | 3 | [backend/app/config.py:642](../backend/app/config.py#L642) |
+| RUSTATS_API_INTEREST_ENABLED | bool = False | 2 | [backend/app/config.py:648](../backend/app/config.py#L648) |
+| RUSTATS_ACQ_SITE_LINE_ENABLED | bool = False | 1 | [backend/app/config.py:655](../backend/app/config.py#L655) |
+| RUSTATS_ACQ_SITE_LINE_TOPICS | str = 'inflation,gold,keyrate,deposit,mortgage,usd,eur' | 1 | [backend/app/config.py:656](../backend/app/config.py#L656) |
+| RUSTATS_ACQ_SITE_FIRST_SCREEN_ENABLED | bool = False | 1 | [backend/app/config.py:657](../backend/app/config.py#L657) |
+| RUSTATS_CABINET_ENABLED | bool = True | 6 | [backend/app/config.py:666](../backend/app/config.py#L666) |
+| RUSTATS_PWA_ENABLED | bool = True | 3 | [backend/app/config.py:673](../backend/app/config.py#L673) |
+| RUSTATS_PWA_INSTALL_PROMPT_ENABLED | bool = True | 1 | [backend/app/config.py:674](../backend/app/config.py#L674) |
+| RUSTATS_WELCOME_ENABLED | bool = False | 1 | [backend/app/config.py:680](../backend/app/config.py#L680) |
+| RUSTATS_PUSH_SUBSCRIBE_ENABLED | bool = False | 2 | [backend/app/config.py:691](../backend/app/config.py#L691) |
+| RUSTATS_PUSH_SEND_ENABLED | bool = False | 2 | [backend/app/config.py:692](../backend/app/config.py#L692) |
+| RUSTATS_PUSH_DRY_RUN | bool = True | 1 | [backend/app/config.py:693](../backend/app/config.py#L693) |
+| RUSTATS_VAPID_PUBLIC_KEY | str = '' | 3 | [backend/app/config.py:694](../backend/app/config.py#L694) |
+| RUSTATS_VAPID_PRIVATE_KEY | str = '' | 2 | [backend/app/config.py:695](../backend/app/config.py#L695) |
+| RUSTATS_VAPID_SUBJECT | str = '' | 2 | [backend/app/config.py:696](../backend/app/config.py#L696) |
+| RUSTATS_MAIL_ENABLED | bool = False | 15 | [backend/app/config.py:708](../backend/app/config.py#L708) |
+| RUSTATS_MAIL_SMTP_HOST | str = 'smtp.yandex.ru' | 5 | [backend/app/config.py:709](../backend/app/config.py#L709) |
+| RUSTATS_MAIL_SMTP_PORT | int = 465 | 4 | [backend/app/config.py:710](../backend/app/config.py#L710) |
+| RUSTATS_MAIL_SMTP_SECURITY | str = 'ssl' | 3 | [backend/app/config.py:711](../backend/app/config.py#L711) |
+| RUSTATS_MAIL_SMTP_USER | str = '' | 14 | [backend/app/config.py:712](../backend/app/config.py#L712) |
+| RUSTATS_MAIL_SMTP_PASSWORD | str = '' | 9 | [backend/app/config.py:713](../backend/app/config.py#L713) |
+| RUSTATS_MAIL_SMTP_TIMEOUT_SECONDS | float = 20.0 | 1 | [backend/app/config.py:714](../backend/app/config.py#L714) |
+| RUSTATS_MAIL_FROM_ADDRESS | str = '' | 3 | [backend/app/config.py:715](../backend/app/config.py#L715) |
+| RUSTATS_MAIL_FROM_NAME | str = 'Forecast Economy' | 2 | [backend/app/config.py:716](../backend/app/config.py#L716) |
+| RUSTATS_MAIL_REPLY_TO | str = 'info@forecasteconomy.com' | 4 | [backend/app/config.py:717](../backend/app/config.py#L717) |
+| RUSTATS_MAIL_ALLOWLIST | str = 'rebeka.ee@yandex.ru' | 1 | [backend/app/config.py:718](../backend/app/config.py#L718) |
+| RUSTATS_MAIL_ALLOW_ALL_RECIPIENTS | bool = False | 6 | [backend/app/config.py:719](../backend/app/config.py#L719) |
+| RUSTATS_MAIL_TRACKING_ENABLED | bool = False | 5 | [backend/app/config.py:722](../backend/app/config.py#L722) |
+| RUSTATS_MAIL_TRACKING_OPEN_PIXEL | bool = False | 3 | [backend/app/config.py:726](../backend/app/config.py#L726) |
+| RUSTATS_MAIL_REPORT_ENABLED | bool = False | 5 | [backend/app/config.py:728](../backend/app/config.py#L728) |
+| RUSTATS_MAIL_REPORT_HOUR_MSK | int = 9 | 3 | [backend/app/config.py:729](../backend/app/config.py#L729) |
+| RUSTATS_MAIL_REPORT_MINUTE | int = 20 | 3 | [backend/app/config.py:730](../backend/app/config.py#L730) |
+| RUSTATS_MAIL_TOKEN_SECRET | str = '' | 7 | [backend/app/config.py:733](../backend/app/config.py#L733) |
+| RUSTATS_MAIL_CAMPAIGN_MAX_PER_RUN | int = 250 | 2 | [backend/app/config.py:736](../backend/app/config.py#L736) |
+| RUSTATS_MAIL_CAMPAIGN_PAUSE_SECONDS | float = 4.0 | 2 | [backend/app/config.py:737](../backend/app/config.py#L737) |
+| RUSTATS_MAIL_LINK_ORIGIN_RU | str = '' | 2 | [backend/app/config.py:740](../backend/app/config.py#L740) |
+| RUSTATS_MAIL_LINK_ORIGIN_EN | str = '' | 1 | [backend/app/config.py:741](../backend/app/config.py#L741) |
+| RUSTATS_MAIL_BULK_SMTP_HOST | str = '' | 3 | [backend/app/config.py:745](../backend/app/config.py#L745) |
+| RUSTATS_MAIL_BULK_SMTP_PORT | int = 587 | 1 | [backend/app/config.py:746](../backend/app/config.py#L746) |
+| RUSTATS_MAIL_BULK_SMTP_SECURITY | str = 'starttls' | 1 | [backend/app/config.py:747](../backend/app/config.py#L747) |
+| RUSTATS_MAIL_BULK_SMTP_USER | str = '' | 1 | [backend/app/config.py:748](../backend/app/config.py#L748) |
+| RUSTATS_MAIL_BULK_SMTP_PASSWORD | str = '' | 1 | [backend/app/config.py:749](../backend/app/config.py#L749) |
+| RUSTATS_MAIL_BULK_FROM_ADDRESS | str = '' | 1 | [backend/app/config.py:750](../backend/app/config.py#L750) |
+| RUSTATS_MAIL_BOUNCE_POLL_ENABLED | bool = False | 4 | [backend/app/config.py:754](../backend/app/config.py#L754) |
+| RUSTATS_MAIL_IMAP_HOST | str = 'imap.yandex.ru' | 3 | [backend/app/config.py:755](../backend/app/config.py#L755) |
+| RUSTATS_MAIL_IMAP_PORT | int = 993 | 3 | [backend/app/config.py:756](../backend/app/config.py#L756) |
+| RUSTATS_MAIL_WATCH_DIGEST_ENABLED | bool = False | 5 | [backend/app/config.py:759](../backend/app/config.py#L759) |
+| RUSTATS_MAIL_WATCH_DIGEST_HOUR_MSK | int = 10 | 3 | [backend/app/config.py:760](../backend/app/config.py#L760) |
+| RUSTATS_TOPIC_MAIL_ENABLED | bool = False | 2 | [backend/app/config.py:766](../backend/app/config.py#L766) |
+| RUSTATS_NEWSLETTER_PERSONAL_ENABLED | bool = False | 1 | [backend/app/config.py:774](../backend/app/config.py#L774) |
+| RUSTATS_NEWSLETTER_PERSONAL_BEHAVIOR_SIGNALS | bool = False | 2 | [backend/app/config.py:775](../backend/app/config.py#L775) |
+| RUSTATS_NEWSLETTER_PERSONAL_CLICK_TOKEN | bool = False | 1 | [backend/app/config.py:776](../backend/app/config.py#L776) |
+| RUSTATS_NEWSLETTER_PERSONAL_HOLDOUT_PCT | int = 0 | 1 | [backend/app/config.py:778](../backend/app/config.py#L778) |
+| RUSTATS_NEWSLETTER_PERSONAL_SUBJECT_AB_PCT | int = 50 | 1 | [backend/app/config.py:780](../backend/app/config.py#L780) |
+| RUSTATS_NEWSLETTER_PERSONAL_SKIP_FORECASTS | str = '' | 1 | [backend/app/config.py:782](../backend/app/config.py#L782) |
+| RUSTATS_NEWSLETTER_PERSONAL_BUILD_ENABLED | bool = False | 1 | [backend/app/config.py:784](../backend/app/config.py#L784) |
+| RUSTATS_NEWSLETTER_PERSONAL_BUILD_WEEKDAY | str = 'thu' | 2 | [backend/app/config.py:785](../backend/app/config.py#L785) |
+| RUSTATS_NEWSLETTER_PERSONAL_BUILD_HOUR_MSK | int = 7 | 2 | [backend/app/config.py:786](../backend/app/config.py#L786) |
+| RUSTATS_NEWSLETTER_PERSONAL_BUILD_MINUTE | int = 40 | 2 | [backend/app/config.py:787](../backend/app/config.py#L787) |
+| RUSTATS_NEWSLETTER_PERSONAL_ISSUE_PATH | str = '' | 1 | [backend/app/config.py:789](../backend/app/config.py#L789) |
+| RUSTATS_NEWSLETTER_PERSONAL_AGGREGATES_HOUR_MSK | int = 0 | 2 | [backend/app/config.py:791](../backend/app/config.py#L791) |
+| RUSTATS_NEWSLETTER_PERSONAL_AGGREGATES_MINUTE | int = 40 | 2 | [backend/app/config.py:792](../backend/app/config.py#L792) |
+| RUSTATS_NEWSLETTER_PERSONAL_SEND_START_HOUR | int = 8 | 1 | [backend/app/config.py:794](../backend/app/config.py#L794) |
+| RUSTATS_NEWSLETTER_PERSONAL_SEND_END_HOUR | int = 21 | 1 | [backend/app/config.py:795](../backend/app/config.py#L795) |
+| RUSTATS_NEWSLETTER_PERSONAL_MIN_DAYS_BETWEEN | int = 6 | 1 | [backend/app/config.py:797](../backend/app/config.py#L797) |
+| RUSTATS_NEWSLETTER_PERSONAL_DORMANT_ENABLED | bool = False | 1 | [backend/app/config.py:799](../backend/app/config.py#L799) |
+| RUSTATS_NEWSLETTER_PERSONAL_DORMANT_DAYS | int = 60 | 1 | [backend/app/config.py:800](../backend/app/config.py#L800) |
+| RUSTATS_NEWSLETTER_PERSONAL_BATCH_SIZE | int = 100 | 1 | [backend/app/config.py:802](../backend/app/config.py#L802) |
+| RUSTATS_NEWSLETTER_PERSONAL_BATCH_PAUSE_SECONDS | float = 0.5 | 1 | [backend/app/config.py:803](../backend/app/config.py#L803) |
+| RUSTATS_ADMIN_EMAILS | str = 'admin_forecasteconomy@forecasteconomy.com' | 3 | [backend/app/config.py:807](../backend/app/config.py#L807) |
+| RUSTATS_WORLD_LATEST_POINTS_ENABLED | bool = False | 3 | [backend/app/config.py:814](../backend/app/config.py#L814) |
+| RUSTATS_WORLD_LATEST_POINTS_CHUNK | int = 1000 | 1 | [backend/app/config.py:815](../backend/app/config.py#L815) |
+| RUSTATS_WORLD_LATEST_POINTS_CHUNKS_PER_RUN | int = 6 | 1 | [backend/app/config.py:816](../backend/app/config.py#L816) |
+| RUSTATS_WORLD_LATEST_POINTS_RUN_SECONDS | float = 240.0 | 1 | [backend/app/config.py:817](../backend/app/config.py#L817) |
+| RUSTATS_WORLD_LATEST_POINTS_RESWEEP_DAYS | int = 7 | 1 | [backend/app/config.py:818](../backend/app/config.py#L818) |
+| RUSTATS_WORLD_LATEST_POINTS_HOURS | str = '4,8-21' | 1 | [backend/app/config.py:819](../backend/app/config.py#L819) |
+| RUSTATS_WORLD_INTL_INGEST_ENABLED | bool = True | 1 | [backend/app/config.py:821](../backend/app/config.py#L821) |
+| RUSTATS_WORLD_TOURISM_INGEST_ENABLED | bool = False | 1 | [backend/app/config.py:824](../backend/app/config.py#L824) |
 
 ## Registries and declarations
 
@@ -3392,11 +3394,12 @@ Relationships: `[]`
 | app.services.goal_taxonomy.EVENT_GROUPS | Dict | GROUP_DOWNLOAD, GROUP_WALL, GROUP_COMPARE, GROUP_CALC, GROUP_SHARE, GROUP_FAVORITE, GROUP_SUBSCRIBE, GROUP_LANGUAGE, GROUP_FRONT_ERROR, GROUP_AUTH_ERROR | [backend/app/services/goal_taxonomy.py:264](../backend/app/services/goal_taxonomy.py#L264) |
 | app.services.goal_taxonomy.GROUP_LABELS_RU | Dict | GROUP_DOWNLOAD, GROUP_WALL, GROUP_COMPARE, GROUP_CALC, GROUP_SHARE, GROUP_FAVORITE, GROUP_SUBSCRIBE, GROUP_LANGUAGE, GROUP_FRONT_ERROR, GROUP_AUTH_ERROR | [backend/app/services/goal_taxonomy.py:294](../backend/app/services/goal_taxonomy.py#L294) |
 | app.services.goal_taxonomy.REPORT_GROUPS | Tuple | sequence/source expression | [backend/app/services/goal_taxonomy.py:308](../backend/app/services/goal_taxonomy.py#L308) |
-| app.services.http_client._RETRY_STRATEGY | Call | computed source expression | [backend/app/services/http_client.py:47](../backend/app/services/http_client.py#L47) |
-| app.services.http_client._PROXY_FALLBACK_STATUSES | Call | computed source expression | [backend/app/services/http_client.py:55](../backend/app/services/http_client.py#L55) |
-| app.services.http_client._PROXY_FALLBACK_EXC | Tuple | sequence/source expression | [backend/app/services/http_client.py:56](../backend/app/services/http_client.py#L56) |
-| app.services.http_client._MAINTENANCE_HOSTS | Tuple | sequence/source expression | [backend/app/services/http_client.py:64](../backend/app/services/http_client.py#L64) |
-| app.services.http_client._MAINTENANCE_MARKERS | Tuple | sequence/source expression | [backend/app/services/http_client.py:65](../backend/app/services/http_client.py#L65) |
+| app.services.http_client._RETRY_STRATEGY | Call | computed source expression | [backend/app/services/http_client.py:50](../backend/app/services/http_client.py#L50) |
+| app.services.http_client._PROXY_FALLBACK_STATUSES | Call | computed source expression | [backend/app/services/http_client.py:58](../backend/app/services/http_client.py#L58) |
+| app.services.http_client._PROXY_FALLBACK_EXC | Tuple | sequence/source expression | [backend/app/services/http_client.py:59](../backend/app/services/http_client.py#L59) |
+| app.services.http_client._MAINTENANCE_HOSTS | Tuple | sequence/source expression | [backend/app/services/http_client.py:67](../backend/app/services/http_client.py#L67) |
+| app.services.http_client._MAINTENANCE_MARKERS | Tuple | sequence/source expression | [backend/app/services/http_client.py:68](../backend/app/services/http_client.py#L68) |
+| app.services.http_client._EMISS_THROTTLE_FILE | Call | computed source expression | [backend/app/services/http_client.py:300](../backend/app/services/http_client.py#L300) |
 | app.services.http_error_monitor._RULES | Dict | KIND_ERROR, KIND_SHED | [backend/app/services/http_error_monitor.py:80](../backend/app/services/http_error_monitor.py#L80) |
 | app.services.hypotheses_triage.ACTIONS | Tuple | sequence/source expression | [backend/app/services/hypotheses_triage.py:34](../backend/app/services/hypotheses_triage.py#L34) |
 | app.services.hypotheses_triage._PLAN_ACTIONS | Dict | 'close_duplicate' | [backend/app/services/hypotheses_triage.py:35](../backend/app/services/hypotheses_triage.py#L35) |

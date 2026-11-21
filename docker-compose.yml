@@ -293,6 +293,10 @@ services:
       # 20.11.2026, ADR-0038: еженедельная загрузка туризма стран мира (МВФ, UN Tourism, ОЭСР, Евростат,
       # национальные службы) в scheduler. Выключено до первой ручной загрузки после выпуска.
       RUSTATS_WORLD_TOURISM_INGEST_ENABLED: ${RUSTATS_WORLD_TOURISM_INGEST_ENABLED:-false}
+      # 21.11.2026: отдельный выход только для fedstat.ru (прокси на тестовом стенде, открыт только адресу боевого)
+      # и пауза между запросами к fedstat во всех процессах контейнера. Пусто — обычная цепочка.
+      RUSTATS_EMISS_PROXY_URL: ${RUSTATS_EMISS_PROXY_URL:-}
+      RUSTATS_EMISS_MIN_INTERVAL_SECONDS: ${RUSTATS_EMISS_MIN_INTERVAL_SECONDS:-3}
       # Круг 13, R-BRENT: живая нефть Brent с Мосбиржи в ленте. ВЫКЛЮЧЕНО до договора с биржей (бесплатные данные ISS
       # разрешены только «для ознакомления»). Включать только после подписания; нужен процесс scheduler (читает общий env).
       RUSTATS_MOEX_BRENT_LIVE_ENABLED: ${RUSTATS_MOEX_BRENT_LIVE_ENABLED:-false}

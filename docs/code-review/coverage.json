@@ -30,8 +30,8 @@
       "data_schema_reviewed": 38,
       "reviewed": 2583
     },
-    "definitions": 19575,
-    "annotated_definitions": 19575,
+    "definitions": 19590,
+    "annotated_definitions": 19590,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -1936,9 +1936,9 @@
     },
     {
       "path": "backend/app/config.py",
-      "sha256": "7dd6c012ade6f59d8a686ac188bb4c56e58ad006427232ddef37c6bd661d4b55",
-      "bytes": 71696,
-      "lines": 845,
+      "sha256": "e969dee680d2a38b9f29dccfe90e58a8709044c96d14451684e461b09440db7d",
+      "bytes": 72148,
+      "lines": 849,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -5251,15 +5251,15 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "sha256": "5306917b7f6a3483f886ce55638c4ad9612683db4d6cf95c61e420156cfb92a2",
-      "bytes": 26033,
-      "lines": 544,
+      "sha256": "c55399c2a93d4efb3c3bd19f9b2bce68f6b0e073e5a0fff0b006c561931523df",
+      "bytes": 30729,
+      "lines": 644,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 32,
-      "annotated_definitions": 32,
+      "definitions": 37,
+      "annotated_definitions": 37,
       "missing_definitions": []
     },
     {
@@ -9333,15 +9333,15 @@
     },
     {
       "path": "backend/tests/conftest.py",
-      "sha256": "aebba651c97b98b2259015d413af9aebc4022166e145b60150ba5ee353f51026",
-      "bytes": 7957,
-      "lines": 191,
+      "sha256": "950d395afd0492e28be6767126fd5dcd97ed9a9f702ab50437b63d075f213fbd",
+      "bytes": 8437,
+      "lines": 200,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 18,
-      "annotated_definitions": 18,
+      "definitions": 19,
+      "annotated_definitions": 19,
       "missing_definitions": []
     },
     {
@@ -12752,15 +12752,15 @@
     },
     {
       "path": "backend/tests/test_http_client.py",
-      "sha256": "0ea451f99840106bf18660009a51d33294ecd8db0c69f40ae2bc6599cceccd45",
-      "bytes": 15469,
-      "lines": 401,
+      "sha256": "4484a4f10c39d4d1fb0151a0db8689115330aefe7d28c51f515dc1d5991f8c59",
+      "bytes": 19761,
+      "lines": 502,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 42,
-      "annotated_definitions": 42,
+      "definitions": 51,
+      "annotated_definitions": 51,
       "missing_definitions": []
     },
     {
@@ -17120,9 +17120,9 @@
     },
     {
       "path": "docker-compose.yml",
-      "sha256": "f6cad4d25bc6cd09e259058189337580d8bcb43a351392c4453f4c57e1012b62",
-      "bytes": 48295,
-      "lines": 659,
+      "sha256": "10633d0a6a03cd7a14af73452d0ef64556c6bbde945a5c7d6f18a14296105c65",
+      "bytes": 48788,
+      "lines": 663,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -18485,7 +18485,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "64d76ff9bd25ef7302978da4d7c1128a39b0d6b25de537c42031335da13bc6e4",
+      "sha256": "8bbc5b5805a3dee6392c8af05d4c285930628d222f9d6ea18111ae2ccc0810b2",
       "bytes": 6021692,
       "lines": 207331,
       "code": false,
@@ -18550,9 +18550,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "bb5d53c5719ca377ecd5b64bde8d2418e0dd0c1e6fceb1a4055c8a9a7c956e7a",
-      "bytes": 15676012,
-      "lines": 466353,
+      "sha256": "e607b046b10672ca8b288dfccfc6e5240f1b06d551a173dc169791155d4e4680",
+      "bytes": 15680104,
+      "lines": 466495,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -18563,9 +18563,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "945ad2cef4143319fc2bc82708d9b878b0c760fb5c0e2b6e18a2ba41c6e7e6e1",
-      "bytes": 810902,
-      "lines": 4497,
+      "sha256": "d940e32842848caa5cf9fbb6954be02c0acad0262c3e4d82da681c6c68ba67af",
+      "bytes": 811299,
+      "lines": 4500,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -19226,9 +19226,9 @@
     },
     {
       "path": "docs/runtime-inventory.json",
-      "sha256": "994ee41c546b799a7fbe74fcd6eceff0053c79350e499197c97d07930568cb0b",
-      "bytes": 252353,
-      "lines": 7390,
+      "sha256": "7eeed7a20a98b9496ac7f2253751cf4fb08dc53454b6a88ba711dad68b3af40c",
+      "bytes": 253771,
+      "lines": 7404,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -38388,11 +38388,19 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "eef16b6b2419c796ceb4cb7c631a73a2aefa414f0cbae90dc1a163f805b5fb09",
+  "ledger_sha256": "9989a05c8028a022eb6b95b7d2bb05ed1326582abf24b2ef6d0ea80334a86e6c",
   "javascript_inventory_sha256": "89ead2af4bd2e1582f7eddc084688d8d06fcd0915366bc7766a105da5cda9014",
-  "baseline_commit": "53d0b267d84e4d44c0ada0c794f0908dbbc0f42f",
+  "baseline_commit": "0545843e7c48f485185fe69b7769adf84b19b70b",
   "branch": "int/2026-11-20-tourism",
   "unstaged_at_capture": [
-    "docker-compose.yml"
+    "backend/app/config.py",
+    "backend/app/services/http_client.py",
+    "backend/tests/conftest.py",
+    "backend/tests/test_http_client.py",
+    "docker-compose.yml",
+    "docs/indicator-index.json",
+    "docs/mechanism-inventory.json",
+    "docs/mechanism-inventory.md",
+    "docs/runtime-inventory.json"
   ]
 }

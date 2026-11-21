@@ -14,6 +14,15 @@ from fastapi.testclient import TestClient
 
 
 @pytest.fixture(autouse=True)
+def _no_emiss_pause(monkeypatch: pytest.MonkeyPatch):
+    """Пауза между запросами к fedstat (21.11.2026) в тестах не нужна: сеть подменена, а 3 с на запрос растянули бы прогон."""
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "emiss_min_interval_seconds", 0.0, raising=False)
+    monkeypatch.setattr(settings, "emiss_proxy_url", "", raising=False)
+
+
+@pytest.fixture(autouse=True)
 def _mute_telegram(monkeypatch: pytest.MonkeyPatch):
     """Тесты герметичны: Telegram не дёргаем НИКОГДА.
 

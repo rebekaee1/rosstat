@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `53d0b267d84e4d44c0ada0c794f0908dbbc0f42f`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `0545843e7c48f485185fe69b7769adf84b19b70b`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2950 |
 | Код, шаблоны и стили | 2318 |
 | Актуальные рецензии без пропусков guard | 2950 |
-| Именованные определения Python/JS: с аннотацией / всего | 19575 / 19575 |
+| Именованные определения Python/JS: с аннотацией / всего | 19590 / 19590 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -439,7 +439,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/goal_taxonomy.py](../backend/app/services/goal_taxonomy.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/gsc_client.py](../backend/app/services/gsc_client.py) | reviewed | 16/16 | актуально |
 | [backend/app/services/host_pressure.py](../backend/app/services/host_pressure.py) | reviewed | 14/14 | актуально |
-| [backend/app/services/http_client.py](../backend/app/services/http_client.py) | reviewed | 32/32 | актуально |
+| [backend/app/services/http_client.py](../backend/app/services/http_client.py) | reviewed | 37/37 | актуально |
 | [backend/app/services/http_error_monitor.py](../backend/app/services/http_error_monitor.py) | reviewed | 11/11 | актуально |
 | [backend/app/services/hypotheses_triage.py](../backend/app/services/hypotheses_triage.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/i18n_display.py](../backend/app/services/i18n_display.py) | reviewed | 1/1 | актуально |
@@ -753,7 +753,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/scripts/world-forecast-rollback.sql](../backend/scripts/world-forecast-rollback.sql) | reviewed | 0/0 | актуально |
 | [backend/seed_data.py](../backend/seed_data.py) | reviewed | 13/13 | актуально |
 | [backend/seed_regional.py](../backend/seed_regional.py) | reviewed | 7/7 | актуально |
-| [backend/tests/conftest.py](../backend/tests/conftest.py) | reviewed | 18/18 | актуально |
+| [backend/tests/conftest.py](../backend/tests/conftest.py) | reviewed | 19/19 | актуально |
 | [backend/tests/fixtures/calendar/bea_schedule_2026-11-14.ics](../backend/tests/fixtures/calendar/bea_schedule_2026-11-14.ics) | reviewed | 0/0 | актуально |
 | [backend/tests/fixtures/calendar/cbr_cal_mp_2026-11-14.html](../backend/tests/fixtures/calendar/cbr_cal_mp_2026-11-14.html) | reviewed | 0/0 | актуально |
 | [backend/tests/fixtures/calendar/eurostat_euroind_2026-11-14.json](../backend/tests/fixtures/calendar/eurostat_euroind_2026-11-14.json) | reviewed | 0/0 | актуально |
@@ -1016,7 +1016,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_home_popular_block.py](../backend/tests/test_home_popular_block.py) | reviewed | 11/11 | актуально |
 | [backend/tests/test_household_finance_seo.py](../backend/tests/test_household_finance_seo.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_housing_historical_backfill.py](../backend/tests/test_housing_historical_backfill.py) | reviewed | 8/8 | актуально |
-| [backend/tests/test_http_client.py](../backend/tests/test_http_client.py) | reviewed | 42/42 | актуально |
+| [backend/tests/test_http_client.py](../backend/tests/test_http_client.py) | reviewed | 51/51 | актуально |
 | [backend/tests/test_http_error_monitor.py](../backend/tests/test_http_error_monitor.py) | reviewed | 24/24 | актуально |
 | [backend/tests/test_human_evidence_2026_11_18.py](../backend/tests/test_human_evidence_2026_11_18.py) | reviewed | 12/12 | актуально |
 | [backend/tests/test_hypotheses_triage.py](../backend/tests/test_hypotheses_triage.py) | reviewed | 14/14 | актуально |
