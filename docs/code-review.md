@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `d7c16d0737459e0d53009db3c43aa7c5542ae549`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `b6ffbbab7a2f7fa5e9dcc7bbaedf6753b510ba5b`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2950 |
 | Код, шаблоны и стили | 2318 |
 | Актуальные рецензии без пропусков guard | 2950 |
-| Именованные определения Python/JS: с аннотацией / всего | 19567 / 19567 |
+| Именованные определения Python/JS: с аннотацией / всего | 19572 / 19572 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -262,7 +262,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/data/seo_static/robots.en.txt](../backend/app/data/seo_static/robots.en.txt) | reviewed | 0/0 | актуально |
 | [backend/app/data/seo_static/robots.txt](../backend/app/data/seo_static/robots.txt) | reviewed | 0/0 | актуально |
 | [backend/app/data/tourism_regional.py](../backend/app/data/tourism_regional.py) | reviewed | 19/19 | актуально |
-| [backend/app/data/tourism_russia.py](../backend/app/data/tourism_russia.py) | reviewed | 24/24 | актуально |
+| [backend/app/data/tourism_russia.py](../backend/app/data/tourism_russia.py) | reviewed | 25/25 | актуально |
 | [backend/app/data/tourism_snapshots/Poezdki_10-2026.xlsx](../backend/app/data/tourism_snapshots/Poezdki_10-2026.xlsx) | data_schema_reviewed | 0/0 | актуально |
 | [backend/app/data/tourism_snapshots/VDS_ti_OKVED2_vvp.xlsx](../backend/app/data/tourism_snapshots/VDS_ti_OKVED2_vvp.xlsx) | data_schema_reviewed | 0/0 | актуально |
 | [backend/app/data/tourism_snapshots/destinations_russians.csv](../backend/app/data/tourism_snapshots/destinations_russians.csv) | data_schema_reviewed | 0/0 | актуально |
@@ -675,7 +675,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/world_subnational_ingest.py](../backend/app/services/world_subnational_ingest.py) | reviewed | 27/27 | актуально |
 | [backend/app/services/world_subnational_queries.py](../backend/app/services/world_subnational_queries.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/world_tourism_ingest.py](../backend/app/services/world_tourism_ingest.py) | reviewed | 15/15 | актуально |
-| [backend/app/services/world_tourism_sources.py](../backend/app/services/world_tourism_sources.py) | reviewed | 30/30 | актуально |
+| [backend/app/services/world_tourism_sources.py](../backend/app/services/world_tourism_sources.py) | reviewed | 31/31 | актуально |
 | [backend/app/services/world_view_modes.py](../backend/app/services/world_view_modes.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/yandex_clean_param.py](../backend/app/services/yandex_clean_param.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/yandex_client.py](../backend/app/services/yandex_client.py) | reviewed | 7/7 | актуально |
@@ -1242,7 +1242,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_title_uniqueness.py](../backend/tests/test_title_uniqueness.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_topic_mail.py](../backend/tests/test_topic_mail.py) | reviewed | 23/23 | актуально |
 | [backend/tests/test_tourism_regional.py](../backend/tests/test_tourism_regional.py) | reviewed | 70/70 | актуально |
-| [backend/tests/test_tourism_russia.py](../backend/tests/test_tourism_russia.py) | reviewed | 31/31 | актуально |
+| [backend/tests/test_tourism_russia.py](../backend/tests/test_tourism_russia.py) | reviewed | 32/32 | актуально |
 | [backend/tests/test_tourism_showcase.py](../backend/tests/test_tourism_showcase.py) | reviewed | 17/17 | актуально |
 | [backend/tests/test_unemployment_seo.py](../backend/tests/test_unemployment_seo.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_upsert.py](../backend/tests/test_upsert.py) | reviewed | 12/12 | актуально |
@@ -1317,7 +1317,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_world_statcan_adapter.py](../backend/tests/test_world_statcan_adapter.py) | reviewed | 16/16 | актуально |
 | [backend/tests/test_world_subnational.py](../backend/tests/test_world_subnational.py) | reviewed | 43/43 | актуально |
 | [backend/tests/test_world_superseded.py](../backend/tests/test_world_superseded.py) | reviewed | 13/13 | актуально |
-| [backend/tests/test_world_tourism_sources.py](../backend/tests/test_world_tourism_sources.py) | reviewed | 31/31 | актуально |
+| [backend/tests/test_world_tourism_sources.py](../backend/tests/test_world_tourism_sources.py) | reviewed | 33/33 | актуально |
 | [backend/tests/test_world_truthfulness.py](../backend/tests/test_world_truthfulness.py) | reviewed | 19/19 | актуально |
 | [backend/tests/test_world_us_bls_bea_adapters.py](../backend/tests/test_world_us_bls_bea_adapters.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_world_value_digits.py](../backend/tests/test_world_value_digits.py) | reviewed | 10/10 | актуально |

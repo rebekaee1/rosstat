@@ -25938,7 +25938,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "a8756b8456c9b86d61bf51885f21a40a22d8274d881be6797f3533414fcad3c8",
+    "sha256": "f0a203bbaf75f2a43ea6ae46dbba765151c13b416920556291ac5ca87d49ab18",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -26046,7 +26046,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "def82b8db2a4a53a3533fb7e29ebcac7279c54533ad3c1879f01d34f049f6112",
+    "sha256": "cbf93d14e8c909f4a43c8ceba00cfd01636d6062fbc83e2c9dd1b495bf1f4bfc",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -41019,48 +41019,48 @@
     "anonymous_functions": 55
   },
   "frontend/src/lib/indicatorVariants.js": {
-    "sha256": "8c77da12b578cd7a4a58246fc17acfb16fdafc0e1bcfe84c6c37aaeea36a7aaf",
+    "sha256": "059ba205ee03ef642272601581af70d8154e9901434e720115fc6662df8ed222",
     "definitions": [
       {
         "name": "findVariantGroup",
-        "line": 483,
-        "end_line": 485,
+        "line": 525,
+        "end_line": 527,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "lowerFirst",
-        "line": 508,
-        "end_line": 510,
+        "line": 550,
+        "end_line": 552,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isSharedMemberLabel",
-        "line": 513,
-        "end_line": 520,
+        "line": 555,
+        "end_line": 562,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "relatedIndicatorCardCopy",
-        "line": 526,
-        "end_line": 559,
+        "line": 568,
+        "end_line": 601,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isVariantSiblingNavigation",
-        "line": 567,
-        "end_line": 573,
+        "line": 609,
+        "end_line": 615,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "allVariantMemberCodes",
-        "line": 576,
-        "end_line": 578,
+        "line": 618,
+        "end_line": 620,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "indicatorDetailHeaderMobileLines",
-        "line": 585,
-        "end_line": 593,
+        "line": 627,
+        "end_line": 635,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -41081,31 +41081,31 @@
         "names": [
           "findVariantGroup"
         ],
-        "line": 483
+        "line": 525
       },
       {
         "names": [
           "relatedIndicatorCardCopy"
         ],
-        "line": 526
+        "line": 568
       },
       {
         "names": [
           "isVariantSiblingNavigation"
         ],
-        "line": 567
+        "line": 609
       },
       {
         "names": [
           "allVariantMemberCodes"
         ],
-        "line": 576
+        "line": 618
       },
       {
         "names": [
           "indicatorDetailHeaderMobileLines"
         ],
-        "line": 585
+        "line": 627
       }
     ],
     "anonymous_functions": 7

@@ -690,8 +690,8 @@
     },
     {
       "path": "backend/app/data/i18n/glossary_en.py",
-      "sha256": "20624caaa7d464ea63f7c84c812d932f117ce9ba2ec96681d5372eebdda9fd9f",
-      "lines": 130
+      "sha256": "97d88b4a2a94ec429ff216d065a59013697e08719fdd3b503cd758f4eb320aa7",
+      "lines": 131
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
@@ -825,8 +825,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "sha256": "aa77a483814107cc35e6fa20142eb4d7579ea0628f1c4c17b7de8b3f52ab9062",
-      "lines": 1625
+      "sha256": "ce50c67fb8b84af931a6799f395673de8736043f295bee0e2d5d99831cb2ab28",
+      "lines": 1701
     },
     {
       "path": "backend/app/data/tourism_snapshots/emiss_31003.json",
@@ -2385,8 +2385,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "sha256": "42d8a75a01c469e8ae05f935382f9ba98a1182b1637f01be4e4bc22d71cf3c01",
-      "lines": 2392
+      "sha256": "686c3fd9a789929692afc1ff5cbd7fb127c49c95a302b8017db06e34dd1a5cc5",
+      "lines": 2394
     },
     {
       "path": "backend/app/services/seo_world_compare.py",
@@ -2845,13 +2845,13 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "sha256": "57d5540774a3b7e150aabc8f0f5e64527a1398d74de88ad6658355d7b227480a",
-      "lines": 364
+      "sha256": "fb06689c75205e8d562d992c764e09d9288385fd200345c767c788887e23874b",
+      "lines": 368
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "sha256": "f9fd1eecf940f786f1862ca0f276c6621e77553a145c17bac0469bf38f0177e6",
-      "lines": 1152
+      "sha256": "43f9ba53159993bed2901c761502768cc891f3ac40f4b91340c61c4c9faad46d",
+      "lines": 1265
     },
     {
       "path": "backend/app/services/world_view_modes.py",
@@ -77566,7 +77566,7 @@
     {
       "path": "backend/app/data/i18n/glossary_en.py",
       "line": 10,
-      "end_line": 122,
+      "end_line": 123,
       "owner": "<module>",
       "conditions": [],
       "name": "GLOSSARY_EN",
@@ -77636,6 +77636,7 @@
         "'Национальная туристическая организация Японии (JNTO)'",
         "'Корейская организация туризма'",
         "'Национальное бюро статистики Китая'",
+        "'Министерство экономики Грузии (пограничный учёт МВД)'",
         "'Статистическое управление Черногории (Monstat)'",
         "'Республиканское статистическое управление Сербии'",
         "'Национальный институт статистики Испании (INE)'",
@@ -78122,6 +78123,13 @@
           "ast_sha256": "1e5a7dcee8f2ec4f0e3d8cc2d61dd78441f1ce1a9da8fa213cf488344ba009b1"
         },
         {
+          "key": "'Министерство экономики Грузии (пограничный учёт МВД)'",
+          "expression": "'Ministry of Economy of Georgia (Interior Ministry border records)'",
+          "expression_truncated": false,
+          "expression_chars": 67,
+          "ast_sha256": "64c31b24b7ae7b249961a2b9d1ccdabe2a01c525d75a6b21fec05bc970617850"
+        },
+        {
           "key": "'Статистическое управление Черногории (Monstat)'",
           "expression": "'Statistical Office of Montenegro (Monstat)'",
           "expression_truncated": false,
@@ -78418,8 +78426,8 @@
       ],
       "expression": "{'Инфляция': 'Inflation', 'ИПЦ': 'CPI', 'Индекс потребительских цен': 'Consumer Price Index', 'Ключевая ставка': 'Key rate', 'Безработица': 'Unemployment rate', 'Уровень безработицы': 'Unemployment rate', 'ВВП': 'GDP', 'Номинальный ВВП': 'Nominal GDP', 'Реальный ВВП': 'Real GDP', 'Заработная плата': 'Wages', 'г/г': 'YoY', 'м/м': 'MoM', 'кв/кв': 'QoQ', 'Росстат': 'Rosstat', 'Банк России': 'Bank of Russia', 'Росстат по данным ФСБ России': 'Rosstat, based on FSB border service data', 'Росавиация (ЕМИСС)': 'Federal Air Transport Agency (via EMISS)', 'Росавиация (архив отчётов)': 'Federal Air Transport Agency (archived reports)', 'Росавиация; аэропорт и отраслевые рейтинги (вторичные)': 'Federal Air Transport Agency; airport and industry rankings (secondary)', 'ФНС России': 'Federal Tax Service of Russia', 'Федеральное казначейство': 'Federal Treasury of Russia', 'ОЭСР по данным Египта': 'OECD, based on Egyptian data', 'Министерство туризма и спорта Таиланда': 'Ministry of Tourism and Sports of Thailand', 'Нацкомстат Узбекистана': 'National Statistics Committee of Uzbekistan', 'Бюро национальной статистики Казахстана': 'Bureau of National Statistics of Kazakhstan', 'Национальное управление туризма Вьетнама': 'Vietnam National Authority of Tourism', 'Бюро статистики Мальдив': 'Maldives Bureau of Statistics', 'Статистическое агентство Индонезии': 'Statistics Indonesia (BPS)', 'Управление по развитию туризма Шри-Ланки': 'Sri Lanka Tourism Development Authority', 'Белстат': 'Belstat', 'Национальное бюро статистики Сейшел': 'National Bureau of Statistics of Seychelles', 'Центральный банк Доминиканской Республики': 'Central Bank of the Dominican Republic', 'Национальная статистическая служба Монголии': 'National Statistics Office of Mongolia', 'Statistics Mauritius': 'Statistics Mauritius', 'Управление статистики Занзибара': 'Office of the Chief Government Statistician, Zanzibar', 'Национальное статистическое управление Кубы': 'National Office of Statistics and Information of ",
       "expression_truncated": true,
-      "expression_chars": 6475,
-      "ast_sha256": "50713f13ca8ceef72bedf429b29258adb84fb7a885c4fbabc128798bfddb3546",
+      "expression_chars": 6600,
+      "ast_sha256": "c8ffbb36c52317fb352bea5d2e7736d03fabec9a6757ea80bafbcc7b5b13c5bd",
       "runtime_expansion": false
     },
     {
@@ -101233,7 +101241,7 @@
     {
       "path": "backend/app/data/tourism_russia.py",
       "line": 705,
-      "end_line": 736,
+      "end_line": 737,
       "owner": "<module>",
       "conditions": [],
       "name": "DEST_URLS",
@@ -101268,6 +101276,7 @@
         "'AE-AZ'",
         "'AE-DU-RU'",
         "'AB'",
+        "'TH-A'",
         "'MO'",
         "'MO-YTD'"
       ],
@@ -101469,6 +101478,13 @@
           "ast_sha256": "dccad067fa935b6f1d9d821a3a636ac5aeeff4c822774e30b409f200e5abf973"
         },
         {
+          "key": "'TH-A'",
+          "expression": "'https://www.mots.go.th/news/category/411'",
+          "expression_truncated": false,
+          "expression_chars": 42,
+          "ast_sha256": "305616baf03c1ae1791c182c0237ff6981bf92594c55693a7747c0fbe18a8a39"
+        },
+        {
           "key": "'MO'",
           "expression": "'https://dataplus.macaotourism.gov.mo/Publication/document/ENG/Book/VAHightlights/'",
           "expression_truncated": false,
@@ -101483,16 +101499,16 @@
           "ast_sha256": "96c0def8a561f6c0072381ad9cf22e5000ad0781820c7e77d17754c11c96b752"
         }
       ],
-      "expression": "{'EG': 'https://sdmx.oecd.org/public/rest/data/OECD.CFE.TOU,DSD_TOURISM_INTER@DF_INBOUND/all', 'TH': 'https://www.mots.go.th/news/category/411', 'UZ': 'https://api.siat.stat.uz/media/uploads/sdmx/sdmx_data_1031.json', 'KZ': 'https://stat.gov.kz/ru/industries/business-statistics/stat-tourism/', 'VN': 'https://vietnamtourism.gov.vn/en/statistic/international', 'MV': 'https://statisticsmaldives.gov.mv/yearbook/2026/', 'MV-M': 'https://statisticsmaldives.gov.mv/yearbook/2026/', 'ID': 'https://www.bps.go.id/en/statistics-table/2/MTQ3MCMy/', 'LK': 'https://www.sltda.gov.lk/en/monthly-tourist-arrivals-reports-2026', 'BY': 'https://www.belstat.gov.by/ofitsialnaya-statistika/realny-sector-ekonomiki/turizm/', 'SC': 'https://www.nbs.gov.sc/component/edocman/2042-visitor-arrivals-data-series-2/download', 'DO': 'https://www.bancentral.gov.do/a/d/2537-sector-turismo', 'MN': 'https://data.1212.mn/api/v1/en/NSO/Industry,%20service/Tourism', 'MN-M': 'https://data.1212.mn/api/v1/en/NSO/Industry,%20service/Tourism', 'MU': 'https://statsmauritius.govmu.org/Pages/Statistics/By_Subject/Tourism/SB_Tourism.aspx', 'MU-M': 'https://statsmauritius.govmu.org/Pages/Statistics/By_Subject/Tourism/SB_Tourism.aspx', 'TZ-ZN': 'http://ocgs.go.tz/publication-list/24', 'CU': 'https://onei.gob.cu/turismo-0', 'TJ': 'https://www.stat.tj/ru/v-2025-godu-bolee-21-milliona-inostranczev-posetili-tadzhikistan/', 'AE-DU': 'https://www.dubaidet.gov.ae/en/research-and-insights/annual-visitor-report-2025', 'UZ-M': 'https://stat.uz/ru/press-tsentr/novosti-goskomstata', 'HK-M': 'https://partnernet.hktb.com/en/research_statistics/research_publications/index.html?id=3631', 'PH': 'http://tourism.gov.ph/Tourism_demand/', 'PH-M': 'http://tourism.gov.ph/Tourism_demand/', 'KG': 'https://www.stat.gov.kg/ru/statistics/turizm/', 'AE-AZ': 'https://dct.gov.ae/en/', 'AE-DU-RU': 'https://www.dubaidet.gov.ae/en/research-and-insights/', 'AB': 'https://cgsra.org/media/files/25.pdf', 'MO': 'https://dataplus.macaotourism.gov.mo/Publica",
+      "expression": "{'EG': 'https://sdmx.oecd.org/public/rest/data/OECD.CFE.TOU,DSD_TOURISM_INTER@DF_INBOUND/all', 'TH': 'https://www.mots.go.th/news/category/411', 'UZ': 'https://api.siat.stat.uz/media/uploads/sdmx/sdmx_data_1031.json', 'KZ': 'https://stat.gov.kz/ru/industries/business-statistics/stat-tourism/', 'VN': 'https://vietnamtourism.gov.vn/en/statistic/international', 'MV': 'https://statisticsmaldives.gov.mv/yearbook/2026/', 'MV-M': 'https://statisticsmaldives.gov.mv/yearbook/2026/', 'ID': 'https://www.bps.go.id/en/statistics-table/2/MTQ3MCMy/', 'LK': 'https://www.sltda.gov.lk/en/monthly-tourist-arrivals-reports-2026', 'BY': 'https://www.belstat.gov.by/ofitsialnaya-statistika/realny-sector-ekonomiki/turizm/', 'SC': 'https://www.nbs.gov.sc/component/edocman/2042-visitor-arrivals-data-series-2/download', 'DO': 'https://www.bancentral.gov.do/a/d/2537-sector-turismo', 'MN': 'https://data.1212.mn/api/v1/en/NSO/Industry,%20service/Tourism', 'MN-M': 'https://data.1212.mn/api/v1/en/NSO/Industry,%20service/Tourism', 'MU': 'https://statsmauritius.govmu.org/Pages/Statistics/By_Subject/Tourism/SB_Tourism.aspx', 'MU-M': 'https://statsmauritius.govmu.org/Pages/Statistics/By_Subject/Tourism/SB_Tourism.aspx', 'TZ-ZN': 'http://ocgs.go.tz/publication-list/24', 'CU': 'https://onei.gob.cu/turismo-0', 'TJ': 'https://www.stat.tj/ru/v-2025-godu-bolee-21-milliona-inostranczev-posetili-tadzhikistan/', 'AE-DU': 'https://www.dubaidet.gov.ae/en/research-and-insights/annual-visitor-report-2025', 'UZ-M': 'https://stat.uz/ru/press-tsentr/novosti-goskomstata', 'HK-M': 'https://partnernet.hktb.com/en/research_statistics/research_publications/index.html?id=3631', 'PH': 'http://tourism.gov.ph/Tourism_demand/', 'PH-M': 'http://tourism.gov.ph/Tourism_demand/', 'KG': 'https://www.stat.gov.kg/ru/statistics/turizm/', 'AE-AZ': 'https://dct.gov.ae/en/', 'AE-DU-RU': 'https://www.dubaidet.gov.ae/en/research-and-insights/', 'AB': 'https://cgsra.org/media/files/25.pdf', 'TH-A': 'https://www.mots.go.th/news/category/411',",
       "expression_truncated": true,
-      "expression_chars": 2134,
-      "ast_sha256": "68d946ecb303936bbc1ca33f082f86eba2837a9f2965ac17fff9f1ce1d5c886a",
+      "expression_chars": 2186,
+      "ast_sha256": "a1d347e1be61834eeebe73fb6a7da05f369e65527c020a5f55c628cfa9c2e069",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 738,
-      "end_line": 810,
+      "line": 739,
+      "end_line": 814,
       "owner": "<module>",
       "conditions": [],
       "name": "DESTINATIONS",
@@ -101500,16 +101516,16 @@
       "kind": "Tuple",
       "literal_keys": [],
       "entries": [],
-      "expression": "(('egypt', 'EG', 'annual', 'annual', 'Египет', 'Egypt', 'ОЭСР по данным Египта', 'с 2008 года', 'Туристы из России'), ('thailand', 'TH', 'monthly', 'monthly', 'Таиланд', 'Thailand', 'Министерство туризма и спорта Таиланда', 'с 2025 года', 'Туристы-граждане России'), ('uzbekistan', 'UZ', 'annual', 'annual', 'Узбекистан', 'Uzbekistan', 'Нацкомстат Узбекистана', 'с 2014 года', 'Граждане России, въехавшие с туристскими целями'), ('kazakhstan', 'KZ', 'ytd_quarterly', 'quarterly', 'Казахстан', 'Kazakhstan', 'Бюро национальной статистики Казахстана', 'с 2026 года', 'Посетители — граждане России (пересечения границы)'), ('vietnam', 'VN', 'monthly', 'monthly', 'Вьетнам', 'Vietnam', 'Национальное управление туризма Вьетнама', 'с 2012 года (часть месяцев не опубликована)', 'Иностранные гости — граждане России', None, 'Вьетнам'), ('maldives', 'MV', 'annual', 'annual', 'Мальдивы', 'Maldives', 'Бюро статистики Мальдив', 'с 2012 года', 'Туристы — граждане России', 'T10', 'Мальдивы'), ('maldives-monthly', 'MV-M', 'monthly', 'monthly', 'Мальдивы', 'Maldives', 'Бюро статистики Мальдив', '2018–2025 годов (2019–2020 — не все месяцы)', 'Туристы — граждане России', None, 'Мальдивы по месяцам'), ('indonesia', 'ID', 'monthly', 'monthly', 'Индонезия', 'Indonesia', 'Статистическое агентство Индонезии', 'с 2017 года', 'Иностранные туристы — граждане России (Бали и вся страна)', 'T6', 'Индонезия'), ('sri-lanka', 'LK', 'monthly', 'monthly', 'Шри-Ланка', 'Sri Lanka', 'Управление по развитию туризма Шри-Ланки', 'с марта 2017 года (отчёты за три месяца 2017 года не найдены)', 'Туристы — граждане России', None, 'Шри-Ланка'), ('belarus', 'BY', 'annual', 'annual', 'Беларусь', 'Belarus', 'Белстат', '2021–2025 годов (кроме 2023)', 'Организованные туристы и экскурсанты из России, принятые турфирмами Беларуси', 'T10', 'Беларусь'), ('seychelles', 'SC', 'monthly', 'monthly', 'Сейшелы', 'Seychelles', 'Национальное бюро статистики Сейшел', 'с 2000 года', 'Гости из России', 'T6', 'Сейшелы'), ('dominican-repub",
+      "expression": "(('egypt', 'EG', 'annual', 'annual', 'Египет', 'Egypt', 'ОЭСР по данным Египта', 'с 2008 года', 'Туристы из России'), ('thailand', 'TH', 'monthly', 'monthly', 'Таиланд', 'Thailand', 'Министерство туризма и спорта Таиланда', 'за 2013 и 2016 годы и с 2025 года', 'Туристы-граждане России'), ('uzbekistan', 'UZ', 'annual', 'annual', 'Узбекистан', 'Uzbekistan', 'Нацкомстат Узбекистана', 'с 2014 года', 'Граждане России, въехавшие с туристскими целями'), ('kazakhstan', 'KZ', 'ytd_quarterly', 'quarterly', 'Казахстан', 'Kazakhstan', 'Бюро национальной статистики Казахстана', 'с 2026 года', 'Посетители — граждане России (пересечения границы)'), ('vietnam', 'VN', 'monthly', 'monthly', 'Вьетнам', 'Vietnam', 'Национальное управление туризма Вьетнама', 'с 2012 года (часть месяцев не опубликована)', 'Иностранные гости — граждане России', None, 'Вьетнам'), ('maldives', 'MV', 'annual', 'annual', 'Мальдивы', 'Maldives', 'Бюро статистики Мальдив', 'с 2012 года', 'Туристы — граждане России', 'T10', 'Мальдивы'), ('maldives-monthly', 'MV-M', 'monthly', 'monthly', 'Мальдивы', 'Maldives', 'Бюро статистики Мальдив', '2018–2025 годов (2019–2020 — не все месяцы)', 'Туристы — граждане России', None, 'Мальдивы по месяцам'), ('indonesia', 'ID', 'monthly', 'monthly', 'Индонезия', 'Indonesia', 'Статистическое агентство Индонезии', 'с 2017 года', 'Иностранные туристы — граждане России (Бали и вся страна)', 'T6', 'Индонезия'), ('sri-lanka', 'LK', 'monthly', 'monthly', 'Шри-Ланка', 'Sri Lanka', 'Управление по развитию туризма Шри-Ланки', 'с марта 2017 года (отчёты за три месяца 2017 года не найдены)', 'Туристы — граждане России', None, 'Шри-Ланка'), ('belarus', 'BY', 'annual', 'annual', 'Беларусь', 'Belarus', 'Белстат', '2021–2025 годов (кроме 2023)', 'Организованные туристы и экскурсанты из России, принятые турфирмами Беларуси', 'T10', 'Беларусь'), ('seychelles', 'SC', 'monthly', 'monthly', 'Сейшелы', 'Seychelles', 'Национальное бюро статистики Сейшел', 'с 2000 года', 'Гости из России', 'T6', 'Сейшел",
       "expression_truncated": true,
-      "expression_chars": 5978,
-      "ast_sha256": "9d90beaca8d74ffb665aafb2a47996aab6651fca53b6a86c8c9c35a4c9aa8cb5",
+      "expression_chars": 6244,
+      "ast_sha256": "9b8e361b03b27da3a30d5580bf86d3521b2366835605446b39b548a9a8e4e083",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 813,
-      "end_line": 814,
+      "line": 817,
+      "end_line": 818,
       "owner": "<module>",
       "conditions": [],
       "name": "_DEST_DEFAULT_TAIL",
@@ -101559,8 +101575,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 888,
-      "end_line": 918,
+      "line": 894,
+      "end_line": 924,
       "owner": "<module>",
       "conditions": [],
       "name": "CPI_ITEMS",
@@ -101576,8 +101592,371 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 963,
-      "end_line": 976,
+      "line": 969,
+      "end_line": 991,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_HIST_INFO",
+      "symbol": "app.data.tourism_russia._HIST_INFO",
+      "kind": "Dict",
+      "literal_keys": [
+        "'austria'",
+        "'uk'",
+        "'germany'",
+        "'israel'",
+        "'italy'",
+        "'china'",
+        "'latvia'",
+        "'lithuania'",
+        "'mongolia'",
+        "'netherlands'",
+        "'poland'",
+        "'korea'",
+        "'usa'",
+        "'turkey'",
+        "'finland'",
+        "'france'",
+        "'sweden'",
+        "'estonia'",
+        "'japan'",
+        "'spain'",
+        "'norway'",
+        "'canada'",
+        "'switzerland'",
+        "'india'",
+        "'bulgaria'",
+        "'australia'",
+        "'hungary'",
+        "'greece'",
+        "'egypt'",
+        "'cyprus'",
+        "'cuba'",
+        "'uae'",
+        "'romania'",
+        "'slovakia'",
+        "'thailand'",
+        "'tunisia'",
+        "'philippines'",
+        "'croatia'",
+        "'czechia'",
+        "'jordan'",
+        "'malaysia'",
+        "'malta'",
+        "'serbia'"
+      ],
+      "entries": [
+        {
+          "key": "'austria'",
+          "expression": "('Австрия', 'Austria', 'Австрии')",
+          "expression_truncated": false,
+          "expression_chars": 33,
+          "ast_sha256": "6c660b13a3d17ca53c8cbb80489e2bc0f8f2f625f05cf99d0912f27438733686"
+        },
+        {
+          "key": "'uk'",
+          "expression": "('Великобритания', 'United Kingdom', 'Великобритании')",
+          "expression_truncated": false,
+          "expression_chars": 54,
+          "ast_sha256": "c0488bb4c6f98b423ae78ab38efaf6c1fd77c422fce957cf3c22f01462051a01"
+        },
+        {
+          "key": "'germany'",
+          "expression": "('Германия', 'Germany', 'Германии')",
+          "expression_truncated": false,
+          "expression_chars": 35,
+          "ast_sha256": "1cc11079a4fec3f9093766e256ad8366ff273b4492bd465be8286f240b6f6530"
+        },
+        {
+          "key": "'israel'",
+          "expression": "('Израиль', 'Israel', 'Израиля')",
+          "expression_truncated": false,
+          "expression_chars": 32,
+          "ast_sha256": "792da4031189aa7e66c2d50f21f16e45f142ac96f3f8a0da5a4de13c34acd213"
+        },
+        {
+          "key": "'italy'",
+          "expression": "('Италия', 'Italy', 'Италии')",
+          "expression_truncated": false,
+          "expression_chars": 29,
+          "ast_sha256": "783e770f4a03a4d213696186cfb7b7d4b4ff997747fb8ca9373e74b9426431ac"
+        },
+        {
+          "key": "'china'",
+          "expression": "('Китай', 'China', 'Китая')",
+          "expression_truncated": false,
+          "expression_chars": 27,
+          "ast_sha256": "4e7a24b31c12b302efc6ff3ba94982d78cb42bf48819b9ab8746baa60af41fec"
+        },
+        {
+          "key": "'latvia'",
+          "expression": "('Латвия', 'Latvia', 'Латвии')",
+          "expression_truncated": false,
+          "expression_chars": 30,
+          "ast_sha256": "56e6c3f6846cb4ee2d02fbf4eea9961837b9ec947c22fe7d1f48b5e5a6733654"
+        },
+        {
+          "key": "'lithuania'",
+          "expression": "('Литва', 'Lithuania', 'Литвы')",
+          "expression_truncated": false,
+          "expression_chars": 31,
+          "ast_sha256": "08268f23a2eb6038ad11574c3ea7bba79d4c1314ffe37225b0437a5585432063"
+        },
+        {
+          "key": "'mongolia'",
+          "expression": "('Монголия', 'Mongolia', 'Монголии')",
+          "expression_truncated": false,
+          "expression_chars": 36,
+          "ast_sha256": "57e68954c28498525f9d983b18e862122214aed541a7db6009ee008c835277c0"
+        },
+        {
+          "key": "'netherlands'",
+          "expression": "('Нидерланды', 'Netherlands', 'Нидерландов')",
+          "expression_truncated": false,
+          "expression_chars": 44,
+          "ast_sha256": "8b5850600c9c663ad19a1c63055dce8e6df121c5236ccdaffc8c1eafa20f5873"
+        },
+        {
+          "key": "'poland'",
+          "expression": "('Польша', 'Poland', 'Польши')",
+          "expression_truncated": false,
+          "expression_chars": 30,
+          "ast_sha256": "ec1cc62341e362c3594d92ef56e6b16ea9ed87ba82758d0ef67b20c38c717257"
+        },
+        {
+          "key": "'korea'",
+          "expression": "('Республика Корея', 'South Korea', 'Кореи')",
+          "expression_truncated": false,
+          "expression_chars": 44,
+          "ast_sha256": "da7f0e6d38eb790fd2848b84aa6ea728abd95c4ec130eacc15a5aac6d5883d8a"
+        },
+        {
+          "key": "'usa'",
+          "expression": "('США', 'United States', 'США')",
+          "expression_truncated": false,
+          "expression_chars": 31,
+          "ast_sha256": "b378a4b4ef7a8c429f5f572b7858e1cb8863793069f5e55ad3461d2a64e772bc"
+        },
+        {
+          "key": "'turkey'",
+          "expression": "('Турция', 'Turkey', 'Турции')",
+          "expression_truncated": false,
+          "expression_chars": 30,
+          "ast_sha256": "3193be3dc4b4f4f5f4f5e8b49fc8db50eedc88a8530a31643cc954af203ff91c"
+        },
+        {
+          "key": "'finland'",
+          "expression": "('Финляндия', 'Finland', 'Финляндии')",
+          "expression_truncated": false,
+          "expression_chars": 37,
+          "ast_sha256": "9ce80c82242fa4b008723d5d420f56d0dc487dc0a941603633211edb85625393"
+        },
+        {
+          "key": "'france'",
+          "expression": "('Франция', 'France', 'Франции')",
+          "expression_truncated": false,
+          "expression_chars": 32,
+          "ast_sha256": "e613d2681cb6bd095462eaf61ea51d0cbd55b07c59cafcb79f888075840e1ecc"
+        },
+        {
+          "key": "'sweden'",
+          "expression": "('Швеция', 'Sweden', 'Швеции')",
+          "expression_truncated": false,
+          "expression_chars": 30,
+          "ast_sha256": "aade4d8c7ec42363b204c2d292ddb6e3181a10b0848e5fb36c5e3e53fb6ffac9"
+        },
+        {
+          "key": "'estonia'",
+          "expression": "('Эстония', 'Estonia', 'Эстонии')",
+          "expression_truncated": false,
+          "expression_chars": 33,
+          "ast_sha256": "ea42155d8feee6e100101b0a08348a0e8aa88ee145d5e3904bb21793c48fe615"
+        },
+        {
+          "key": "'japan'",
+          "expression": "('Япония', 'Japan', 'Японии')",
+          "expression_truncated": false,
+          "expression_chars": 29,
+          "ast_sha256": "a435949164cfc82695a340e663694802d55ba88bd4c89d3478977940444fdca0"
+        },
+        {
+          "key": "'spain'",
+          "expression": "('Испания', 'Spain', 'Испании')",
+          "expression_truncated": false,
+          "expression_chars": 31,
+          "ast_sha256": "1f9f427627f13738ede8979994f11de3ae0121d25dd0a1125dea6f1ca00242cd"
+        },
+        {
+          "key": "'norway'",
+          "expression": "('Норвегия', 'Norway', 'Норвегии')",
+          "expression_truncated": false,
+          "expression_chars": 34,
+          "ast_sha256": "a886c1b573cf9a6bc42b3b238a83d173b6ff659484058324051376146e7b3f41"
+        },
+        {
+          "key": "'canada'",
+          "expression": "('Канада', 'Canada', 'Канады')",
+          "expression_truncated": false,
+          "expression_chars": 30,
+          "ast_sha256": "0a29755bc37b1ec61cffec84221850cf5360c8b18dac462d6b994df7e71df930"
+        },
+        {
+          "key": "'switzerland'",
+          "expression": "('Швейцария', 'Switzerland', 'Швейцарии')",
+          "expression_truncated": false,
+          "expression_chars": 41,
+          "ast_sha256": "972e7991ae4b261b2211c6eb8db033b0785255218a5d4c8cbebb141e305ae3c7"
+        },
+        {
+          "key": "'india'",
+          "expression": "('Индия', 'India', 'Индии')",
+          "expression_truncated": false,
+          "expression_chars": 27,
+          "ast_sha256": "5c5f2d2cea45d846398f656f0fa1cc72fde7aed4cf4a8577ce67330896329d0f"
+        },
+        {
+          "key": "'bulgaria'",
+          "expression": "('Болгария', 'Bulgaria', 'Болгарии')",
+          "expression_truncated": false,
+          "expression_chars": 36,
+          "ast_sha256": "a8f011af4a4daf889cf666d23d9b869ec310fca62360033d7237a28e66d6b89a"
+        },
+        {
+          "key": "'australia'",
+          "expression": "('Австралия', 'Australia', 'Австралии')",
+          "expression_truncated": false,
+          "expression_chars": 39,
+          "ast_sha256": "193df5e1f4a7d6d82c81896e1b184aa81098981a4242a29ece820a5bc9ccdcca"
+        },
+        {
+          "key": "'hungary'",
+          "expression": "('Венгрия', 'Hungary', 'Венгрии')",
+          "expression_truncated": false,
+          "expression_chars": 33,
+          "ast_sha256": "91a89257a276986f5c15df471f411de51813e672825c56cf4ca7df1daf54df30"
+        },
+        {
+          "key": "'greece'",
+          "expression": "('Греция', 'Greece', 'Греции')",
+          "expression_truncated": false,
+          "expression_chars": 30,
+          "ast_sha256": "32aff004a9e06152e8af5366f1880b9017705c949bbce6c7cd7cb24eaf91c419"
+        },
+        {
+          "key": "'egypt'",
+          "expression": "('Египет', 'Egypt', 'Египта')",
+          "expression_truncated": false,
+          "expression_chars": 29,
+          "ast_sha256": "814a03b0fee667ccf859e82121e1d616dc38afa071d036c1e045f56dea6f76e1"
+        },
+        {
+          "key": "'cyprus'",
+          "expression": "('Кипр', 'Cyprus', 'Кипра')",
+          "expression_truncated": false,
+          "expression_chars": 27,
+          "ast_sha256": "27b7cab0b4b65b65cb243341ae29ae45171bc26312a52379a69bf897b245ee40"
+        },
+        {
+          "key": "'cuba'",
+          "expression": "('Куба', 'Cuba', 'Кубы')",
+          "expression_truncated": false,
+          "expression_chars": 24,
+          "ast_sha256": "77ef55ed5d3eb7616b20003d696e94a0e35f5399ac7f2775e7deb905d703f67a"
+        },
+        {
+          "key": "'uae'",
+          "expression": "('ОАЭ', 'United Arab Emirates', 'ОАЭ')",
+          "expression_truncated": false,
+          "expression_chars": 38,
+          "ast_sha256": "062a59258a362b306d944660a087d2e412c999796979496e6ecfa3a2b265d95a"
+        },
+        {
+          "key": "'romania'",
+          "expression": "('Румыния', 'Romania', 'Румынии')",
+          "expression_truncated": false,
+          "expression_chars": 33,
+          "ast_sha256": "d745a066425b80fd6881afecb3f5e85aa24982944c262060cccd038cbbca0965"
+        },
+        {
+          "key": "'slovakia'",
+          "expression": "('Словакия', 'Slovakia', 'Словакии')",
+          "expression_truncated": false,
+          "expression_chars": 36,
+          "ast_sha256": "1e82da89ec42fff1fc7408ae9c29dfc8cc88b68021be6ffdb26a7e8136047c2c"
+        },
+        {
+          "key": "'thailand'",
+          "expression": "('Таиланд', 'Thailand', 'Таиланда')",
+          "expression_truncated": false,
+          "expression_chars": 35,
+          "ast_sha256": "ebe3e9d869852c566194846487278f9bfd9c0a3ba854fae4764aee5d95c41428"
+        },
+        {
+          "key": "'tunisia'",
+          "expression": "('Тунис', 'Tunisia', 'Туниса')",
+          "expression_truncated": false,
+          "expression_chars": 30,
+          "ast_sha256": "fe873fe57c42ff6edad59901654ef67a52845530fff1e50ccf1eb2fef440397d"
+        },
+        {
+          "key": "'philippines'",
+          "expression": "('Филиппины', 'Philippines', 'Филиппин')",
+          "expression_truncated": false,
+          "expression_chars": 40,
+          "ast_sha256": "14169b55f67e31c7c4ceb3afa947705b03168e792f14f2a27cde46cde1514b9e"
+        },
+        {
+          "key": "'croatia'",
+          "expression": "('Хорватия', 'Croatia', 'Хорватии')",
+          "expression_truncated": false,
+          "expression_chars": 35,
+          "ast_sha256": "e37733cdd1b19a58acd07526ecb2fb50aa25352117b0c0b7aecb02cc2c9a9f00"
+        },
+        {
+          "key": "'czechia'",
+          "expression": "('Чехия', 'Czechia', 'Чехии')",
+          "expression_truncated": false,
+          "expression_chars": 29,
+          "ast_sha256": "69bc0c52982e4c683baf8e4c8a5c6fd8825ae4ed9c37d96fc72890685ee666e8"
+        },
+        {
+          "key": "'jordan'",
+          "expression": "('Иордания', 'Jordan', 'Иордании')",
+          "expression_truncated": false,
+          "expression_chars": 34,
+          "ast_sha256": "ac725545d087f8cbbe94fc035b0b97c3949af976c7f654fe058fcbb1cf8927b3"
+        },
+        {
+          "key": "'malaysia'",
+          "expression": "('Малайзия', 'Malaysia', 'Малайзии')",
+          "expression_truncated": false,
+          "expression_chars": 36,
+          "ast_sha256": "fa0513e7f3c85ef81c2988376db973219b006cf09430854af94d806909a65965"
+        },
+        {
+          "key": "'malta'",
+          "expression": "('Мальта', 'Malta', 'Мальты')",
+          "expression_truncated": false,
+          "expression_chars": 29,
+          "ast_sha256": "408181f6874b138aadff020d40078727cfe3b09e8fd062427ec098266e3bb3d0"
+        },
+        {
+          "key": "'serbia'",
+          "expression": "('Сербия', 'Serbia', 'Сербии')",
+          "expression_truncated": false,
+          "expression_chars": 30,
+          "ast_sha256": "ac45b55679bb06e12bee6185f1a3f20c82f74acf368c9466aee15e66391b9534"
+        }
+      ],
+      "expression": "{'austria': ('Австрия', 'Austria', 'Австрии'), 'uk': ('Великобритания', 'United Kingdom', 'Великобритании'), 'germany': ('Германия', 'Germany', 'Германии'), 'israel': ('Израиль', 'Israel', 'Израиля'), 'italy': ('Италия', 'Italy', 'Италии'), 'china': ('Китай', 'China', 'Китая'), 'latvia': ('Латвия', 'Latvia', 'Латвии'), 'lithuania': ('Литва', 'Lithuania', 'Литвы'), 'mongolia': ('Монголия', 'Mongolia', 'Монголии'), 'netherlands': ('Нидерланды', 'Netherlands', 'Нидерландов'), 'poland': ('Польша', 'Poland', 'Польши'), 'korea': ('Республика Корея', 'South Korea', 'Кореи'), 'usa': ('США', 'United States', 'США'), 'turkey': ('Турция', 'Turkey', 'Турции'), 'finland': ('Финляндия', 'Finland', 'Финляндии'), 'france': ('Франция', 'France', 'Франции'), 'sweden': ('Швеция', 'Sweden', 'Швеции'), 'estonia': ('Эстония', 'Estonia', 'Эстонии'), 'japan': ('Япония', 'Japan', 'Японии'), 'spain': ('Испания', 'Spain', 'Испании'), 'norway': ('Норвегия', 'Norway', 'Норвегии'), 'canada': ('Канада', 'Canada', 'Канады'), 'switzerland': ('Швейцария', 'Switzerland', 'Швейцарии'), 'india': ('Индия', 'India', 'Индии'), 'bulgaria': ('Болгария', 'Bulgaria', 'Болгарии'), 'australia': ('Австралия', 'Australia', 'Австралии'), 'hungary': ('Венгрия', 'Hungary', 'Венгрии'), 'greece': ('Греция', 'Greece', 'Греции'), 'egypt': ('Египет', 'Egypt', 'Египта'), 'cyprus': ('Кипр', 'Cyprus', 'Кипра'), 'cuba': ('Куба', 'Cuba', 'Кубы'), 'uae': ('ОАЭ', 'United Arab Emirates', 'ОАЭ'), 'romania': ('Румыния', 'Romania', 'Румынии'), 'slovakia': ('Словакия', 'Slovakia', 'Словакии'), 'thailand': ('Таиланд', 'Thailand', 'Таиланда'), 'tunisia': ('Тунис', 'Tunisia', 'Туниса'), 'philippines': ('Филиппины', 'Philippines', 'Филиппин'), 'croatia': ('Хорватия', 'Croatia', 'Хорватии'), 'czechia': ('Чехия', 'Czechia', 'Чехии'), 'jordan': ('Иордания', 'Jordan', 'Иордании'), 'malaysia': ('Малайзия', 'Malaysia', 'Малайзии'), 'malta': ('Мальта', 'Malta', 'Мальты'), 'serbia': ('Сербия', 'Serbia', 'Сербии')}",
+      "expression_truncated": false,
+      "expression_chars": 1969,
+      "ast_sha256": "63ee3518e5878e8b8a8024afda9b3604d8eab9d5989a1d0bf6d238c8eac9abed",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/data/tourism_russia.py",
+      "line": 999,
+      "end_line": 1007,
       "owner": "<module>",
       "conditions": [],
       "name": "HIST_INBOUND",
@@ -101585,16 +101964,16 @@
       "kind": "Call",
       "literal_keys": [],
       "entries": [],
-      "expression": "_hc((('germany', 'Германия', 'Germany', 'Германии', 11), ('finland', 'Финляндия', 'Finland', 'Финляндии', 11), ('china', 'Китай', 'China', 'Китая', 11), ('usa', 'США', 'United States', 'США', 11), ('poland', 'Польша', 'Poland', 'Польши', 11), ('estonia', 'Эстония', 'Estonia', 'Эстонии', 11), ('latvia', 'Латвия', 'Latvia', 'Латвии', 11), ('lithuania', 'Литва', 'Lithuania', 'Литвы', 11), ('uk', 'Великобритания', 'United Kingdom', 'Великобритании', 11), ('italy', 'Италия', 'Italy', 'Италии', 11), ('france', 'Франция', 'France', 'Франции', 11), ('turkey', 'Турция', 'Turkey', 'Турции', 11), ('japan', 'Япония', 'Japan', 'Японии', 11), ('korea', 'Республика Корея', 'South Korea', 'Кореи', 11), ('mongolia', 'Монголия', 'Mongolia', 'Монголии', 11), ('israel', 'Израиль', 'Israel', 'Израиля', 11), ('netherlands', 'Нидерланды', 'Netherlands', 'Нидерландов', 11), ('sweden', 'Швеция', 'Sweden', 'Швеции', 11), ('austria', 'Австрия', 'Austria', 'Австрии', 11), ('spain', 'Испания', 'Spain', 'Испании', 10), ('norway', 'Норвегия', 'Norway', 'Норвегии', 8), ('canada', 'Канада', 'Canada', 'Канады', 5), ('india', 'Индия', 'India', 'Индии', 3), ('switzerland', 'Швейцария', 'Switzerland', 'Швейцарии', 3)))",
+      "expression": "_hc((('germany', 12), ('finland', 12), ('china', 12), ('usa', 12), ('poland', 12), ('estonia', 12), ('latvia', 12), ('lithuania', 12), ('uk', 12), ('italy', 12), ('france', 12), ('turkey', 12), ('japan', 12), ('korea', 12), ('mongolia', 12), ('israel', 12), ('netherlands', 12), ('sweden', 12), ('austria', 12), ('spain', 11), ('norway', 11), ('canada', 9), ('switzerland', 8), ('india', 7), ('bulgaria', 6), ('australia', 5), ('hungary', 5), ('greece', 5), ('egypt', 5), ('cyprus', 5), ('cuba', 5), ('uae', 5), ('romania', 5), ('slovakia', 5), ('thailand', 5), ('tunisia', 5), ('philippines', 5), ('croatia', 5), ('czechia', 5), ('jordan', 4), ('malaysia', 4), ('malta', 4), ('serbia', 3)))",
       "expression_truncated": false,
-      "expression_chars": 1201,
-      "ast_sha256": "dfec86e42534c8b52116a496b09bef6ae32962fa16f9fa6620ddd10a499c9662",
+      "expression_chars": 691,
+      "ast_sha256": "36702e8d4085c6704e34760fbab3316cc7bb29ca5e018b43725e1caf5f4c10c7",
       "runtime_expansion": true
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 977,
-      "end_line": 991,
+      "line": 1008,
+      "end_line": 1015,
       "owner": "<module>",
       "conditions": [],
       "name": "HIST_OUTBOUND",
@@ -101602,16 +101981,16 @@
       "kind": "Call",
       "literal_keys": [],
       "entries": [],
-      "expression": "_hc((('turkey', 'Турция', 'Turkey', 'Турции', 12), ('egypt', 'Египет', 'Egypt', 'Египта', 12), ('china', 'Китай', 'China', 'Китая', 12), ('finland', 'Финляндия', 'Finland', 'Финляндии', 12), ('germany', 'Германия', 'Germany', 'Германии', 12), ('spain', 'Испания', 'Spain', 'Испании', 12), ('italy', 'Италия', 'Italy', 'Италии', 12), ('greece', 'Греция', 'Greece', 'Греции', 12), ('uae', 'ОАЭ', 'United Arab Emirates', 'ОАЭ', 12), ('cyprus', 'Кипр', 'Cyprus', 'Кипра', 12), ('bulgaria', 'Болгария', 'Bulgaria', 'Болгарии', 12), ('france', 'Франция', 'France', 'Франции', 12), ('poland', 'Польша', 'Poland', 'Польши', 12), ('estonia', 'Эстония', 'Estonia', 'Эстонии', 12), ('latvia', 'Латвия', 'Latvia', 'Латвии', 12), ('lithuania', 'Литва', 'Lithuania', 'Литвы', 12), ('uk', 'Великобритания', 'United Kingdom', 'Великобритании', 12), ('usa', 'США', 'United States', 'США', 12), ('czechia', 'Чехия', 'Czechia', 'Чехии', 10), ('thailand', 'Таиланд', 'Thailand', 'Таиланда', 8), ('switzerland', 'Швейцария', 'Switzerland', 'Швейцарии', 8), ('japan', 'Япония', 'Japan', 'Японии', 7), ('israel', 'Израиль', 'Israel', 'Израиля', 6), ('austria', 'Австрия', 'Austria', 'Австрии', 5), ('korea', 'Республика Корея', 'South Korea', 'Кореи', 4)))",
+      "expression": "_hc((('turkey', 13), ('egypt', 13), ('china', 13), ('finland', 13), ('germany', 13), ('spain', 13), ('italy', 13), ('greece', 13), ('uae', 13), ('cyprus', 13), ('bulgaria', 13), ('france', 13), ('poland', 13), ('estonia', 13), ('latvia', 13), ('lithuania', 13), ('uk', 13), ('usa', 13), ('switzerland', 13), ('japan', 13), ('korea', 12), ('czechia', 12), ('israel', 10), ('thailand', 10), ('austria', 9), ('hungary', 9), ('canada', 9), ('cuba', 9), ('netherlands', 9), ('norway', 9), ('romania', 9), ('slovakia', 9), ('tunisia', 9), ('croatia', 9), ('sweden', 9), ('jordan', 8), ('malta', 8), ('australia', 4), ('philippines', 4), ('malaysia', 3)))",
       "expression_truncated": false,
-      "expression_chars": 1233,
-      "ast_sha256": "dfa3f0e8ed684a194885453a326b30ad24bd77e3dcaf657b85d45c3efb043152",
+      "expression_chars": 648,
+      "ast_sha256": "7d055785dc0380be6162e0a6264defeb900a8f76332f65ab7c0b66a19fb9e250",
       "runtime_expansion": true
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1277,
-      "end_line": 1279,
+      "line": 1346,
+      "end_line": 1348,
       "owner": "<module>",
       "conditions": [],
       "name": "SERIES",
@@ -101627,8 +102006,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1313,
-      "end_line": 1314,
+      "line": 1382,
+      "end_line": 1383,
       "owner": "<module>",
       "conditions": [],
       "name": "SERIES",
@@ -101644,8 +102023,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1318,
-      "end_line": 1436,
+      "line": 1387,
+      "end_line": 1512,
       "owner": "<module>",
       "conditions": [],
       "name": "VARIANT_GROUPS",
@@ -101655,14 +102034,14 @@
       "entries": [],
       "expression": "(('tourTravelExports', 'Траты иностранцев в России', (('tour-travel-exports', 'Все поездки', 'All trips'), ('tour-travel-business-exports', 'Деловые', 'Business'), ('tour-travel-personal-exports', 'Личные', 'Personal'))), ('tourTravelImports', 'Траты россиян за границей', (('tour-travel-imports', 'Все поездки', 'All trips'), ('tour-travel-business-imports', 'Деловые', 'Business'), ('tour-travel-personal-imports', 'Личные', 'Personal'))), ('tourInbound', 'Въезд иностранцев по странам', (('tour-inbound-trips', 'Все страны', 'All countries'), *((f'tour-inbound-{c.slug}', c.name, c.name_en) for c in INBOUND_COUNTRIES))), ('tourOutbound', 'Выезд россиян по странам', (('tour-outbound-trips', 'Все страны', 'All countries'), *((f'tour-outbound-{c.slug}', c.name, c.name_en) for c in OUTBOUND_COUNTRIES))), ('tourDestinations', 'Россияне по данным стран назначения', tuple(((f'tour-dest-{d[0]}', d[10] if len(d) > 9 else _DEST_DEFAULT_TAIL[d[0]][1], d[5] + (', monthly' if d[0].endswith('-monthly') else '')) for d in DESTINATIONS))), ('tourEconomy', 'Туризм в экономике', (('tour-gva', 'Добавленная стоимость', 'Value added'), ('tour-gva-share', 'Доля в ВВП', 'Share of GDP'), ('tour-gva-volume', 'Реальный рост', 'Real growth'), ('tour-gva-hotels-food', 'Гостиницы и общепит: ВДС', 'Hotels and restaurants: value added'), ('tour-gva-culture-leisure', 'Культура и досуг: ВДС', 'Culture and leisure: value added'), ('tour-turnover-hotels', 'Оборот гостиниц', 'Hotel turnover'), ('tour-turnover-travel-agencies', 'Оборот турфирм', 'Travel agency turnover'), ('tour-turnover-hotels-food', 'Оборот гостиниц и общепита', 'Hotels and restaurants turnover'), ('tour-workers-hotels', 'Работники гостиниц', 'Hotel employees'), ('tour-workers-travel-agencies', 'Работники турфирм', 'Travel agency employees'), ('tour-invest-hotels', 'Инвестиции в гостиницы', 'Investment in hotels'), ('tour-invest-hotels-food', 'Инвестиции в гостиницы и общепит', 'Investment in hotels and restaurants'), ('tour-invest-trave",
       "expression_truncated": true,
-      "expression_chars": 5979,
-      "ast_sha256": "90cbe5d0f377d932fe2ae063416ff788df647aea909bbc40badcf8da474e0584",
+      "expression_chars": 6475,
+      "ast_sha256": "cbe640a77356aa3e2d1ef71da7723354185220695e4f6051808548bf922591df",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1455,
-      "end_line": 1462,
+      "line": 1531,
+      "end_line": 1538,
       "owner": "<module>",
       "conditions": [],
       "name": "_FORECAST_CFG",
@@ -101712,8 +102091,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1516,
-      "end_line": 1541,
+      "line": 1592,
+      "end_line": 1617,
       "owner": "<module>",
       "conditions": [],
       "name": "_WHY",
@@ -101771,8 +102150,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1554,
-      "end_line": 1566,
+      "line": 1630,
+      "end_line": 1642,
       "owner": "<module>",
       "conditions": [],
       "name": "_FREQ",
@@ -139212,7 +139591,7 @@
     {
       "path": "backend/app/services/seo_world.py",
       "line": 571,
-      "end_line": 616,
+      "end_line": 618,
       "owner": "<module>",
       "conditions": [],
       "name": "_SOURCE_BY_PROVIDER",
@@ -139261,7 +139640,9 @@
         "'rzs_serbia'",
         "'ine_spain'",
         "'eurostat_residence'",
-        "'nbs_china_yearbook'"
+        "'nbs_china_yearbook'",
+        "'cystat_annual'",
+        "'ge_mineconomy'"
       ],
       "entries": [
         {
@@ -139564,18 +139945,32 @@
           "expression_truncated": false,
           "expression_chars": 36,
           "ast_sha256": "87ae4e00729003807692e20200de0a7c39a91f0aa91efbbd4dc8f4496126dd0f"
+        },
+        {
+          "key": "'cystat_annual'",
+          "expression": "'Статистическая служба Кипра (CYSTAT)'",
+          "expression_truncated": false,
+          "expression_chars": 38,
+          "ast_sha256": "8513f8cf115fef869b875b54cfae6f3a7f3161526bf5984e061b7e3297be7a73"
+        },
+        {
+          "key": "'ge_mineconomy'",
+          "expression": "'Министерство экономики Грузии (пограничный учёт МВД)'",
+          "expression_truncated": false,
+          "expression_chars": 54,
+          "ast_sha256": "5334df0ebc477f118a0d19cd0c495c93d9975b070f0c1f5bc0860b0eb792a68d"
         }
       ],
-      "expression": "{'eurostat': _SOURCE_PUBLIC, 'statcan': 'Статистическое управление Канады', 'boc_valet': 'Банк Канады', 'abs': 'Австралийское бюро статистики', 'rba': 'Резервный банк Австралии', 'ons': 'Управление национальной статистики Великобритании', 'boe_iadb': 'Банк Англии', 'fred': 'Федеральный резервный банк Сент-Луиса', 'bls': 'Бюро трудовой статистики США', 'bea': 'Бюро экономического анализа США', 'boj': 'Банк Японии', 'estat': 'Статистическое бюро Японии', 'ecos': 'Банк Кореи', 'bcb_sgs': 'Банк Бразилии', 'banxico_sie': 'Банк Мексики', 'nbs': 'Национальное статистическое бюро Китая', 'cfets': 'Китайская система валютных торгов', 'mospi': 'Министерство статистики и программной реализации Индии', 'rbi': 'Резервный банк Индии', 'imf': 'Международный валютный фонд', 'bis': 'Банк международных расчётов', 'worldbank': 'Всемирный банк', 'ilo': 'Международная организация труда', 'census': 'Бюро переписи населения США', 'ibge': 'Бразильский институт географии и статистики (IBGE)', 'imf_bop': 'Международный валютный фонд', 'untourism': 'UN Tourism (Всемирная туристская организация ООН)', 'oecd_tourism': 'ОЭСР', 'eurostat_travel': 'Евростат', 'cystat': 'Статистическая служба Кипра (CYSTAT)', 'geostat': 'Национальная статистическая служба Грузии (Geostat)', 'ktb_tr': 'Министерство культуры и туризма Турции', 'armstat': 'Статистический комитет Армении', 'azstat': 'Государственный комитет по статистике Азербайджана', 'mot_india': 'Министерство туризма Индии', 'cbs_israel': 'Центральное статистическое бюро Израиля', 'jnto': 'Национальная туристическая организация Японии (JNTO)', 'kto_korea': 'Корейская организация туризма', 'monstat': 'Статистическое управление Черногории (Monstat)', 'rzs_serbia': 'Республиканское статистическое управление Сербии', 'ine_spain': 'Национальный институт статистики Испании (INE)', 'eurostat_residence': 'Евростат', 'nbs_china_yearbook': 'Национальное бюро статистики Китая'}",
-      "expression_truncated": false,
-      "expression_chars": 1916,
-      "ast_sha256": "ee1bb4c70170a26e68e12dcbeda940c25b23e98bc20f8a91efc40ab1b26f95ed",
+      "expression": "{'eurostat': _SOURCE_PUBLIC, 'statcan': 'Статистическое управление Канады', 'boc_valet': 'Банк Канады', 'abs': 'Австралийское бюро статистики', 'rba': 'Резервный банк Австралии', 'ons': 'Управление национальной статистики Великобритании', 'boe_iadb': 'Банк Англии', 'fred': 'Федеральный резервный банк Сент-Луиса', 'bls': 'Бюро трудовой статистики США', 'bea': 'Бюро экономического анализа США', 'boj': 'Банк Японии', 'estat': 'Статистическое бюро Японии', 'ecos': 'Банк Кореи', 'bcb_sgs': 'Банк Бразилии', 'banxico_sie': 'Банк Мексики', 'nbs': 'Национальное статистическое бюро Китая', 'cfets': 'Китайская система валютных торгов', 'mospi': 'Министерство статистики и программной реализации Индии', 'rbi': 'Резервный банк Индии', 'imf': 'Международный валютный фонд', 'bis': 'Банк международных расчётов', 'worldbank': 'Всемирный банк', 'ilo': 'Международная организация труда', 'census': 'Бюро переписи населения США', 'ibge': 'Бразильский институт географии и статистики (IBGE)', 'imf_bop': 'Международный валютный фонд', 'untourism': 'UN Tourism (Всемирная туристская организация ООН)', 'oecd_tourism': 'ОЭСР', 'eurostat_travel': 'Евростат', 'cystat': 'Статистическая служба Кипра (CYSTAT)', 'geostat': 'Национальная статистическая служба Грузии (Geostat)', 'ktb_tr': 'Министерство культуры и туризма Турции', 'armstat': 'Статистический комитет Армении', 'azstat': 'Государственный комитет по статистике Азербайджана', 'mot_india': 'Министерство туризма Индии', 'cbs_israel': 'Центральное статистическое бюро Израиля', 'jnto': 'Национальная туристическая организация Японии (JNTO)', 'kto_korea': 'Корейская организация туризма', 'monstat': 'Статистическое управление Черногории (Monstat)', 'rzs_serbia': 'Республиканское статистическое управление Сербии', 'ine_spain': 'Национальный институт статистики Испании (INE)', 'eurostat_residence': 'Евростат', 'nbs_china_yearbook': 'Национальное бюро статистики Китая', 'cystat_annual': 'Статистическая служба Кипра (CYSTAT)', 'ge_mineconomy': 'Министер",
+      "expression_truncated": true,
+      "expression_chars": 2046,
+      "ast_sha256": "aba6cfd9108da9df45109f7da37ed9983bbcecddbeb9a38f254bea9c2ed1f1ec",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 690,
-      "end_line": 693,
+      "line": 692,
+      "end_line": 695,
       "owner": "<module>",
       "conditions": [],
       "name": "_PROVIDER_OPEN_LABEL",
@@ -151011,8 +151406,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 51,
-      "end_line": 54,
+      "line": 53,
+      "end_line": 56,
       "owner": "<module>",
       "conditions": [],
       "name": "NETWORK_PROVIDERS",
@@ -151028,8 +151423,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 60,
-      "end_line": 64,
+      "line": 62,
+      "end_line": 66,
       "owner": "<module>",
       "conditions": [],
       "name": "_DATASET_BY_PROVIDER",
@@ -151416,8 +151811,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 493,
-      "end_line": 506,
+      "line": 495,
+      "end_line": 511,
       "owner": "<module>",
       "conditions": [],
       "name": "NATIONAL_SOURCES",
@@ -151435,6 +151830,8 @@
         "RZS_PROVIDER",
         "INE_PROVIDER",
         "NBS_CN_PROVIDER",
+        "CYSTAT_HIST_PROVIDER",
+        "GE_BORDER_PROVIDER",
         "ESTAT_RES_PROVIDER"
       ],
       "entries": [
@@ -151516,6 +151913,20 @@
           "ast_sha256": "1d9c5e8b4ff7382a45eaac292ac076e34dee172833b71e527cf9420498932f2b"
         },
         {
+          "key": "CYSTAT_HIST_PROVIDER",
+          "expression": "('Статистическая служба Кипра (CYSTAT)', 'https://cystatdb.cystat.gov.cy/pxweb/en/8.CYSTAT-DB/8.CYSTAT-DB__Tourism__Tourists__Annual/')",
+          "expression_truncated": false,
+          "expression_chars": 135,
+          "ast_sha256": "6fcaec2090e3ff90e996bd0d69f862915d345daf8d8ac92ab6011f4feb8cc79b"
+        },
+        {
+          "key": "GE_BORDER_PROVIDER",
+          "expression": "('Министерство экономики Грузии (пограничный учёт МВД)', 'https://www.economy.ge/')",
+          "expression_truncated": false,
+          "expression_chars": 83,
+          "ast_sha256": "206eaf5ab7bbbd202162ac74868f3d45b452538bb38d884e96b92e817a616b1b"
+        },
+        {
           "key": "ESTAT_RES_PROVIDER",
           "expression": "('Евростат', 'https://ec.europa.eu/eurostat/databrowser/view/tour_occ_ninraw/default/table')",
           "expression_truncated": false,
@@ -151523,16 +151934,16 @@
           "ast_sha256": "048f8b5cc84d76c547c06b240e48a47768b7df7762267def428780723529de6a"
         }
       ],
-      "expression": "{KTB_PROVIDER: ('Министерство культуры и туризма Турции', 'https://yigm.ktb.gov.tr/TR-249704/aylik-bultenler.html'), ARMSTAT_PROVIDER: ('Статистический комитет Армении', 'https://www.armstat.am/en/?nid=1039'), AZSTAT_PROVIDER: ('Государственный комитет по статистике Азербайджана', 'https://www.stat.gov.az/source/tourism/?lang=en'), INDIA_PROVIDER: ('Министерство туризма Индии', 'https://tourism.gov.in/market-research-and-statistics'), CBS_IL_PROVIDER: ('Центральное статистическое бюро Израиля', 'https://www.cbs.gov.il/en/'), JNTO_PROVIDER: ('Национальная туристическая организация Японии (JNTO)', 'https://www.jnto.go.jp/statistics/data/visitors-statistics/'), KTO_PROVIDER: ('Корейская организация туризма', 'https://datalab.visitkorea.or.kr/'), MONSTAT_PROVIDER: ('Статистическое управление Черногории (Monstat)', 'https://www.monstat.org/eng/page.php?id=1454&page_id=1454'), RZS_PROVIDER: ('Республиканское статистическое управление Сербии', 'https://opendata.stat.gov.rs/'), INE_PROVIDER: ('Национальный институт статистики Испании (INE)', 'https://www.ine.es/'), NBS_CN_PROVIDER: ('Национальное бюро статистики Китая', 'https://www.stats.gov.cn/sj/ndsj/'), ESTAT_RES_PROVIDER: ('Евростат', 'https://ec.europa.eu/eurostat/databrowser/view/tour_occ_ninraw/default/table')}",
+      "expression": "{KTB_PROVIDER: ('Министерство культуры и туризма Турции', 'https://yigm.ktb.gov.tr/TR-249704/aylik-bultenler.html'), ARMSTAT_PROVIDER: ('Статистический комитет Армении', 'https://www.armstat.am/en/?nid=1039'), AZSTAT_PROVIDER: ('Государственный комитет по статистике Азербайджана', 'https://www.stat.gov.az/source/tourism/?lang=en'), INDIA_PROVIDER: ('Министерство туризма Индии', 'https://tourism.gov.in/market-research-and-statistics'), CBS_IL_PROVIDER: ('Центральное статистическое бюро Израиля', 'https://www.cbs.gov.il/en/'), JNTO_PROVIDER: ('Национальная туристическая организация Японии (JNTO)', 'https://www.jnto.go.jp/statistics/data/visitors-statistics/'), KTO_PROVIDER: ('Корейская организация туризма', 'https://datalab.visitkorea.or.kr/'), MONSTAT_PROVIDER: ('Статистическое управление Черногории (Monstat)', 'https://www.monstat.org/eng/page.php?id=1454&page_id=1454'), RZS_PROVIDER: ('Республиканское статистическое управление Сербии', 'https://opendata.stat.gov.rs/'), INE_PROVIDER: ('Национальный институт статистики Испании (INE)', 'https://www.ine.es/'), NBS_CN_PROVIDER: ('Национальное бюро статистики Китая', 'https://www.stats.gov.cn/sj/ndsj/'), CYSTAT_HIST_PROVIDER: ('Статистическая служба Кипра (CYSTAT)', 'https://cystatdb.cystat.gov.cy/pxweb/en/8.CYSTAT-DB/8.CYSTAT-DB__Tourism__Tourists__Annual/'), GE_BORDER_PROVIDER: ('Министерство экономики Грузии (пограничный учёт МВД)', 'https://www.economy.ge/'), ESTAT_RES_PROVIDER: ('Евростат', 'https://ec.europa.eu/eurostat/databrowser/view/tour_occ_ninraw/default/table')}",
       "expression_truncated": false,
-      "expression_chars": 1281,
-      "ast_sha256": "5627660b344b8fdf67f62971d31b5285bad4388e3c183913675c0f808cac436c",
+      "expression_chars": 1545,
+      "ast_sha256": "6061b1fa55675efa83536c9e6df3a533641a86dc565cfd567e256cbcc53156c1",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 509,
-      "end_line": 509,
+      "line": 514,
+      "end_line": 514,
       "owner": "<module>",
       "conditions": [],
       "name": "_FREQ_RU",
@@ -151574,8 +151985,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 510,
-      "end_line": 510,
+      "line": 515,
+      "end_line": 515,
       "owner": "<module>",
       "conditions": [],
       "name": "_FREQ_EN",
@@ -151617,8 +152028,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 511,
-      "end_line": 511,
+      "line": 516,
+      "end_line": 516,
       "owner": "<module>",
       "conditions": [],
       "name": "_PERIOD_RU",
@@ -151660,8 +152071,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 512,
-      "end_line": 512,
+      "line": 517,
+      "end_line": 517,
       "owner": "<module>",
       "conditions": [],
       "name": "_PERIOD_EN",
@@ -151703,8 +152114,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 537,
-      "end_line": 555,
+      "line": 542,
+      "end_line": 560,
       "owner": "<module>",
       "conditions": [],
       "name": "_KTB_ORIGINS",
@@ -151712,16 +152123,16 @@
       "kind": "Tuple",
       "literal_keys": [],
       "entries": [],
-      "expression": "(('de', ('ALMANYA',), 'Германии', 'Germany'), ('uk', ('INGILTERE',), 'Великобритании', 'the United Kingdom'), ('ir', ('IRAN',), 'Ирана', 'Iran'), ('bg', ('BULGARISTAN',), 'Болгарии', 'Bulgaria'), ('pl', ('POLONYA',), 'Польши', 'Poland'), ('us', ('AMERIKABIRLEŞIKDEVLETLERI', 'ABD'), 'США', 'the United States'), ('ge', ('GÜRCISTAN',), 'Грузии', 'Georgia'), ('nl', ('HOLLANDA',), 'Нидерландов', 'the Netherlands'), ('ro', ('ROMANYA',), 'Румынии', 'Romania'), ('fr', ('FRANSA',), 'Франции', 'France'), ('iq', ('IRAK',), 'Ирака', 'Iraq'), ('ua', ('UKRAYNA',), 'Украины', 'Ukraine'), ('az', ('AZERBAYCAN',), 'Азербайджана', 'Azerbaijan'), ('sa', ('SUUDIARABISTAN',), 'Саудовской Аравии', 'Saudi Arabia'), ('it', ('ITALYA',), 'Италии', 'Italy'), ('kz', ('KAZAKISTAN',), 'Казахстана', 'Kazakhstan'), ('by', ('BEYAZRUSYA',), 'Беларуси', 'Belarus'))",
+      "expression": "(('de', ('ALMANYA',), 'Германии', 'Germany'), ('uk', ('INGILTERE',), 'Великобритании', 'the United Kingdom'), ('ir', ('IRAN',), 'Ирана', 'Iran'), ('bg', ('BULGARISTAN',), 'Болгарии', 'Bulgaria'), ('pl', ('POLONYA',), 'Польши', 'Poland'), ('us', ('AMERIKABIRLEŞIKDEVLETLERI', 'ABD'), 'США', 'the United States'), ('ge', ('GÜRCISTAN',), 'Грузии', 'Georgia'), ('nl', ('HOLLANDA',), 'Нидерландов', 'the Netherlands'), ('ro', ('ROMANYA',), 'Румынии', 'Romania'), ('fr', ('FRANSA',), 'Франции', 'France'), ('iq', ('IRAK',), 'Ирака', 'Iraq'), ('ua', ('UKRAYNA',), 'Украины', 'Ukraine'), ('az', ('AZERBAYCAN',), 'Азербайджана', 'Azerbaijan'), ('sa', ('SUUDIARABISTAN',), 'Саудовской Аравии', 'Saudi Arabia'), ('it', ('ITALYA',), 'Италии', 'Italy'), ('kz', ('KAZAKISTAN',), 'Казахстана', 'Kazakhstan'), ('by', ('BEYAZRUSYA', 'BELARUS'), 'Беларуси', 'Belarus'))",
       "expression_truncated": false,
-      "expression_chars": 841,
-      "ast_sha256": "10fb7ec3c389d7fc1e0523521b02e58f3b3e0b68b6c22131fb66163c4eb32f0c",
+      "expression_chars": 851,
+      "ast_sha256": "43a6b080ceb13913efbf516b6fe77c0378f25537143c3371253cd5651c455fa3",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 633,
-      "end_line": 634,
+      "line": 639,
+      "end_line": 640,
       "owner": "<module>",
       "conditions": [],
       "name": "KTB_RU_ARRIVALS",
@@ -151737,8 +152148,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 635,
-      "end_line": 637,
+      "line": 641,
+      "end_line": 643,
       "owner": "<module>",
       "conditions": [],
       "name": "KTB_TOTAL_ARRIVALS",
@@ -151754,8 +152165,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 638,
-      "end_line": 644,
+      "line": 644,
+      "end_line": 650,
       "owner": "<module>",
       "conditions": [],
       "name": "KTB_ORIGIN_SERIES",
@@ -151771,8 +152182,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 646,
-      "end_line": 648,
+      "line": 652,
+      "end_line": 654,
       "owner": "<module>",
       "conditions": [],
       "name": "_ACC_RU_ARRIVALS",
@@ -151788,8 +152199,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 649,
-      "end_line": 651,
+      "line": 655,
+      "end_line": 657,
       "owner": "<module>",
       "conditions": [],
       "name": "_ACC_RU_NIGHTS",
@@ -151805,8 +152216,253 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 672,
-      "end_line": 765,
+      "line": 692,
+      "end_line": 696,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "KTB_RU_ANNUAL",
+      "symbol": "app.services.world_tourism_sources.KTB_RU_ANNUAL",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "_nat(KTB_PROVIDER, 'tour-arrivals-russia-annual', 'annual', 'Туристы из России за год', 'Tourist arrivals from Russia, annual', 'Сколько граждан России въехало в страну', 'How many Russian citizens entered the country', _KTB_Y_RU + ' Россия отдельно — с 1998 года; раньше см. ряд «Туристы из СССР и стран СНГ».', _KTB_Y_EN + ' Russia is shown separately from 1998; earlier see the USSR/CIS series.')",
+      "expression_truncated": false,
+      "expression_chars": 399,
+      "ast_sha256": "6df27ee26c1fc82c45b73ee1a508c3e5b86b65f981c466cef7d0d3efeed3a6b3",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 697,
+      "end_line": 701,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "KTB_USSR_CIS",
+      "symbol": "app.services.world_tourism_sources.KTB_USSR_CIS",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "_nat(KTB_PROVIDER, 'tour-arrivals-ussr-cis', 'annual', 'Туристы из СССР и стран СНГ (1973–1997)', 'Arrivals from the USSR and CIS (1973–1997)', 'Сколько граждан СССР, затем стран СНГ въехало в страну', 'How many citizens of the USSR, later of the CIS, entered the country', _KTB_Y_RU + _USSR_TR_RU, _KTB_Y_EN + _USSR_TR_EN, keywords='туристы из СССР {country}, туристы из СНГ {country}, история турпотока {country}')",
+      "expression_truncated": false,
+      "expression_chars": 416,
+      "ast_sha256": "31ef92b0169d83b0a52f1de63558aabb58a5acfa9b4b4d7d226523f2fe4518b2",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 702,
+      "end_line": 704,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "KTB_TOTAL_ANNUAL",
+      "symbol": "app.services.world_tourism_sources.KTB_TOTAL_ANNUAL",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "_nat(KTB_PROVIDER, 'tour-arrivals-total-annual', 'annual', 'Иностранные посетители за год', 'Foreign visitor arrivals, annual', 'Сколько иностранцев въехало в страну', 'How many foreigners entered the country', _KTB_Y_RU, _KTB_Y_EN, keywords=_TOTAL_KEYWORDS)",
+      "expression_truncated": false,
+      "expression_chars": 258,
+      "ast_sha256": "16692a6702357d66d55e0806693cd7775b6524607275e79c4a06cded8cb9dbdd",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 705,
+      "end_line": 706,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_KEY_ORIGINS",
+      "symbol": "app.services.world_tourism_sources._KEY_ORIGINS",
+      "kind": "Dict",
+      "literal_keys": [
+        "'us'",
+        "'de'",
+        "'bg'",
+        "'fr'",
+        "'nl'",
+        "'uk'",
+        "'ir'"
+      ],
+      "entries": [
+        {
+          "key": "'us'",
+          "expression": "'A.B.D'",
+          "expression_truncated": false,
+          "expression_chars": 7,
+          "ast_sha256": "e9472ed14a740686296d865444e4049aec21c68ff47feca3f2322609247a1d5a"
+        },
+        {
+          "key": "'de'",
+          "expression": "'ALMANYA'",
+          "expression_truncated": false,
+          "expression_chars": 9,
+          "ast_sha256": "44c6ef26fa1bbb1fb0f3b626f0f4a4e6dd61dda97100b689fcae6f9b7eaed05d"
+        },
+        {
+          "key": "'bg'",
+          "expression": "'BULGARİSTAN'",
+          "expression_truncated": false,
+          "expression_chars": 13,
+          "ast_sha256": "e6ebeaf2e15b277eebb39bdad30347b1a5c6daa49ed665984f0022342cdbb498"
+        },
+        {
+          "key": "'fr'",
+          "expression": "'FRANSA'",
+          "expression_truncated": false,
+          "expression_chars": 8,
+          "ast_sha256": "78d514acda3bd089a55719c5895848056f0ecf72b31bbcb4f0920791a4ce1906"
+        },
+        {
+          "key": "'nl'",
+          "expression": "'HOLLANDA'",
+          "expression_truncated": false,
+          "expression_chars": 10,
+          "ast_sha256": "b176a6e70bafc31d19046b8c5dac81d893940d1a8de01e52b683bffe668ef727"
+        },
+        {
+          "key": "'uk'",
+          "expression": "'İNGİLTERE'",
+          "expression_truncated": false,
+          "expression_chars": 11,
+          "ast_sha256": "775c1a1a429eaa977f799b47b5c370b2cf72100e84dc495af3726d606ce48a6c"
+        },
+        {
+          "key": "'ir'",
+          "expression": "'İRAN'",
+          "expression_truncated": false,
+          "expression_chars": 6,
+          "ast_sha256": "487d95020365b6dcde8b21d85100fb8c86c636c7f58eaead3c37e1d672a9f083"
+        }
+      ],
+      "expression": "{'us': 'A.B.D', 'de': 'ALMANYA', 'bg': 'BULGARİSTAN', 'fr': 'FRANSA', 'nl': 'HOLLANDA', 'uk': 'İNGİLTERE', 'ir': 'İRAN'}",
+      "expression_truncated": false,
+      "expression_chars": 120,
+      "ast_sha256": "f4bdc2c89eb467417f28fe85a68d154cccee8773e4ba06b0c698966b9ee26177",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 707,
+      "end_line": 707,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_ORIGIN_NAMES",
+      "symbol": "app.services.world_tourism_sources._ORIGIN_NAMES",
+      "kind": "DictComp",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "{code: (name_ru, name_en) for code, _labels, name_ru, name_en in _KTB_ORIGINS}",
+      "expression_truncated": false,
+      "expression_chars": 78,
+      "ast_sha256": "a117aa4ac2c11b7462411d80eec5306afc91324e9a60e89648ed0c016b9785eb",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 708,
+      "end_line": 717,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "KTB_ORIGIN_ANNUAL",
+      "symbol": "app.services.world_tourism_sources.KTB_ORIGIN_ANNUAL",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "tuple(((label, _nat(KTB_PROVIDER, f'tour-arrivals-{code}-annual', 'annual', f'Туристы из {_ORIGIN_NAMES[code][0]} за год', f'Tourist arrivals from {_ORIGIN_NAMES[code][1]}, annual', f'Сколько граждан {_ORIGIN_NAMES[code][0]} въехало в страну', f'How many citizens of {_ORIGIN_NAMES[code][1]} entered the country', _KTB_Y_RU + (' До 1990 года — ФРГ.' if code == 'de' else ''), _KTB_Y_EN + (' Until 1990 — West Germany.' if code == 'de' else ''), keywords=f'туристы из {_ORIGIN_NAMES[code][0]} {{country}}')) for code, label in _KEY_ORIGINS.items()))",
+      "expression_truncated": false,
+      "expression_chars": 548,
+      "ast_sha256": "3b687072907b230085921944367052a35bef1e61f3c3ddc152a309811f9fa323",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 722,
+      "end_line": 726,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "CY_RU_ANNUAL",
+      "symbol": "app.services.world_tourism_sources.CY_RU_ANNUAL",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "_nat(CYSTAT_HIST_PROVIDER, 'tour-arrivals-russia-annual', 'annual', 'Туристы из России за год', 'Tourist arrivals from Russia, annual', 'Сколько туристов из России приехало в страну', 'How many tourists from Russia arrived', _CY_Y_RU + ' Россия отдельно — с 1998 года; раньше см. ряд «Туристы из СССР и бывшего СССР».', _CY_Y_EN + ' Russia is shown separately from 1998; earlier see the USSR series.')",
+      "expression_truncated": false,
+      "expression_chars": 401,
+      "ast_sha256": "517faa1fce16217304aebb086028b8193f8f6d0076aa3de5e6f2e24600b05f95",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 727,
+      "end_line": 735,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "CY_USSR",
+      "symbol": "app.services.world_tourism_sources.CY_USSR",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "_nat(CYSTAT_HIST_PROVIDER, 'tour-arrivals-ussr-cis', 'annual', 'Туристы из СССР и бывшего СССР (1980–1997)', 'Arrivals from the USSR and former USSR (1980–1997)', 'Сколько туристов из СССР, затем из России и стран бывшего СССР приехало в страну', 'How many tourists from the USSR, later from Russia and the former USSR, arrived', _CY_Y_RU + ' 1980–1985 и 1990 — СССР; 1994–1997 — Россия вместе со странами бывшего СССР; за 1986–1989 и 1991–1993 разбивки нет. С 1998 года — отдельный ряд «Туристы из России».', _CY_Y_EN + ' 1980–1985 and 1990 — USSR; 1994–1997 — Russia together with the former USSR; no detail for 1986–1989 and 1991–1993. From 1998 see «Tourist arrivals from Russia».', keywords='туристы из СССР {country}, история турпотока {country}')",
+      "expression_truncated": false,
+      "expression_chars": 753,
+      "ast_sha256": "2b62eaacc2d130b132d228259d0d64494ad698693358e53863345502aeb0b0a8",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 736,
+      "end_line": 738,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "CY_TOTAL_ANNUAL",
+      "symbol": "app.services.world_tourism_sources.CY_TOTAL_ANNUAL",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "_nat(CYSTAT_HIST_PROVIDER, 'tour-arrivals-total-annual', 'annual', 'Прибытия туристов за год', 'Tourist arrivals, annual', 'Сколько иностранных туристов приехало в страну', 'How many foreign tourists arrived', _CY_Y_RU, _CY_Y_EN, keywords=_TOTAL_KEYWORDS)",
+      "expression_truncated": false,
+      "expression_chars": 255,
+      "ast_sha256": "df9463399d47f47c711259e0645610dca38ac15e06efbcb25b9368a23d235d8c",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 745,
+      "end_line": 748,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "GE_RU_BORDER",
+      "symbol": "app.services.world_tourism_sources.GE_RU_BORDER",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "_nat(GE_BORDER_PROVIDER, 'tour-arrivals-russia-border', 'annual', 'Прибытия из России по пограничному учёту (2012–2014)', 'Arrivals from Russia, border records (2012–2014)', 'Сколько раз граждане России въезжали в страну', 'How many times Russian citizens entered the country', _GE_B_RU, _GE_B_EN)",
+      "expression_truncated": false,
+      "expression_chars": 297,
+      "ast_sha256": "736e502144cb9252d60c523bfac81be906dd62afd6903beddd03c8531a1c21bb",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 749,
+      "end_line": 753,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "GE_TOTAL_BORDER",
+      "symbol": "app.services.world_tourism_sources.GE_TOTAL_BORDER",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "_nat(GE_BORDER_PROVIDER, 'tour-arrivals-total-border', 'annual', 'Прибытия нерезидентов по пограничному учёту (2010–2014)', 'Non-resident arrivals, border records (2010–2014)', 'Сколько раз нерезиденты въезжали в страну', 'How many times non-residents entered the country', _GE_B_RU, _GE_B_EN, keywords=_TOTAL_KEYWORDS)",
+      "expression_truncated": false,
+      "expression_chars": 319,
+      "ast_sha256": "f05eb860102f1d0d5f683f222cb4239faf8ab180edc69d7d93f31d742e024112",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 755,
+      "end_line": 865,
       "owner": "<module>",
       "conditions": [],
       "name": "TIDY_SPECS",
@@ -151814,16 +152470,16 @@
       "kind": "Tuple",
       "literal_keys": [],
       "entries": [],
-      "expression": "(TidySpec('TR', 'turkey', 'foreign_arrivals_month', ('RUSYAFED', 'RUSYA'), KTB_RU_ARRIVALS), TidySpec('TR', 'turkey', 'foreign_arrivals_month', ('YABANCITOPLAM',), KTB_TOTAL_ARRIVALS), *(TidySpec('TR', 'turkey', 'foreign_arrivals_month', labels, series) for labels, series in KTB_ORIGIN_SERIES), TidySpec('AM', 'armenia', 'tourists_ytd', ('РОССИЙСКАЯФЕДЕРАЦИЯ',), _ru_arrivals(ARMSTAT_PROVIDER, 'quarterly', 'Сколько граждан России приехало в страну как туристы', 'How many Russian citizens came to the country as tourists', _ARM_M_RU, _ARM_M_EN), cumulative=True), TidySpec('AM', 'armenia', 'inbound_tourists_quarter', ('TOTAL',), _total_arrivals(ARMSTAT_PROVIDER, 'quarterly', 'Въездные туристы', 'Inbound tourists', 'Сколько иностранных туристов приехало в страну', 'How many foreign tourists arrived', 'Статистический комитет Армении: въездные туристы по данным пограничного учёта и обследований.', 'Statistical Committee of Armenia: inbound tourists from border records and surveys.')), TidySpec('AZ', 'azerbaijan', 'foreign_arrivals_by_country_annual', ('RUSSIANFEDERATION',), _ru_arrivals(AZSTAT_PROVIDER, 'annual', 'Сколько граждан России прибыло в страну', 'How many Russian citizens arrived in the country', _AZ_M_RU, _AZ_M_EN)), TidySpec('AZ', 'azerbaijan', 'foreign_arrivals_by_country_annual', ('TOTAL',), _total_arrivals(AZSTAT_PROVIDER, 'annual', 'Прибытия иностранцев', 'Foreign arrivals', 'Сколько иностранцев прибыло в страну', 'How many foreigners arrived in the country', _AZ_M_RU, _AZ_M_EN)), TidySpec('IN', 'india', 'FTAs_by_country_of_nationality', ('RUSSIANFEDERATION',), _ru_arrivals(INDIA_PROVIDER, 'annual', 'Сколько туристов-граждан России приехало в страну', 'How many tourists with Russian citizenship arrived', _IN_M_RU, _IN_M_EN)), TidySpec('IL', 'israel', 'tourist_arrivals_by_citizenship_thousands', ('RUSSIANFEDERATION',), _ru_arrivals(CBS_IL_PROVIDER, 'monthly', 'Сколько туристов-граждан России приехало в страну', 'How many tourists with Russian citizenship arri",
+      "expression": "(TidySpec('TR', 'turkey_m2001', 'foreign_arrivals_month', ('RUSYAFED', 'RUSYA'), KTB_RU_ARRIVALS), TidySpec('TR', 'turkey_m2001', 'foreign_arrivals_month', ('YABANCITOPLAM',), KTB_TOTAL_ARRIVALS), *(TidySpec('TR', 'turkey_m2001', 'foreign_arrivals_month', labels, series) for labels, series in KTB_ORIGIN_SERIES), TidySpec('TR', 'turkey_mtotal', 'foreign_arrivals_month', ('YABANCITOPLAM',), KTB_TOTAL_ARRIVALS), TidySpec('TR', 'turkey_key', 'foreign_arrivals_year', ('RUSSIA/USSR',), KTB_RU_ANNUAL, years=(1998, 2100)), TidySpec('TR', 'turkey_key', 'foreign_arrivals_year', ('RUSSIA/USSR',), KTB_USSR_CIS, years=(1900, 1997)), TidySpec('TR', 'turkey_key', 'foreign_arrivals_year', ('YABANCITOPLAM',), KTB_TOTAL_ANNUAL), *(TidySpec('TR', 'turkey_key', 'foreign_arrivals_year', (label,), series) for label, series in KTB_ORIGIN_ANNUAL), TidySpec('CY', 'cy_hist', 'прибытия туристов', ('Россия',), CY_RU_ANNUAL), TidySpec('CY', 'cy_hist', 'прибытия туристов', ('СССР', 'Россия и страны бывшего СССР'), CY_USSR, years=(1900, 1997)), TidySpec('CY', 'cy_hist', 'прибытия туристов', ('всего',), CY_TOTAL_ANNUAL), TidySpec('GE', 'ge_border', 'международные прибытия нерезидентов (пограничный учёт МВД Грузии)', ('Россия',), GE_RU_BORDER), TidySpec('GE', 'ge_border', 'международные прибытия нерезидентов (пограничный учёт МВД Грузии)', ('все страны',), GE_TOTAL_BORDER), TidySpec('TR', 'turkey', 'foreign_arrivals_month', ('RUSYAFED', 'RUSYA'), KTB_RU_ARRIVALS), TidySpec('TR', 'turkey', 'foreign_arrivals_month', ('YABANCITOPLAM',), KTB_TOTAL_ARRIVALS), *(TidySpec('TR', 'turkey', 'foreign_arrivals_month', labels, series) for labels, series in KTB_ORIGIN_SERIES), TidySpec('AM', 'armenia', 'tourists_ytd', ('РОССИЙСКАЯФЕДЕРАЦИЯ',), _ru_arrivals(ARMSTAT_PROVIDER, 'quarterly', 'Сколько граждан России приехало в страну как туристы', 'How many Russian citizens came to the country as tourists', _ARM_M_RU, _ARM_M_EN), cumulative=True), TidySpec('AM', 'armenia', 'inbound_tourists_quarter', ('TOTAL',), _tota",
       "expression_truncated": true,
-      "expression_chars": 6884,
-      "ast_sha256": "ce4123035914072ab6180773137c596bda20ff06a5b2a8fa47b26807eaef3eef",
+      "expression_chars": 8247,
+      "ast_sha256": "fdc8b583ef18770d550770087dc59a0ac6c0a5d99f20aece1aa456945089f44a",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 766,
-      "end_line": 766,
+      "line": 866,
+      "end_line": 866,
       "owner": "<module>",
       "conditions": [],
       "name": "TIDY_PROVIDERS",
@@ -151839,15 +152495,20 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 768,
-      "end_line": 768,
+      "line": 868,
+      "end_line": 875,
       "owner": "<module>",
       "conditions": [],
       "name": "TIDY_FILES",
       "symbol": "app.services.world_tourism_sources.TIDY_FILES",
       "kind": "Dict",
       "literal_keys": [
-        "'japan_annual'"
+        "'japan_annual'",
+        "'turkey_m2001'",
+        "'turkey_mtotal'",
+        "'turkey_key'",
+        "'cy_hist'",
+        "'ge_border'"
       ],
       "entries": [
         {
@@ -151856,18 +152517,53 @@
           "expression_truncated": false,
           "expression_chars": 23,
           "ast_sha256": "ab9a0fb02f1274240de659ef17f815d1ec9416b25730f9443654770e6a8bb621"
+        },
+        {
+          "key": "'turkey_m2001'",
+          "expression": "'turkey/tidy_monthly_2001_2015_digital.csv'",
+          "expression_truncated": false,
+          "expression_chars": 43,
+          "ast_sha256": "428b7e7dfd394a5a8d4276a09bfd284cd33c37121adff3200e7e5a003c2b2027"
+        },
+        {
+          "key": "'turkey_mtotal'",
+          "expression": "'turkey/tidy_monthly_total_1984_2000_digital.csv'",
+          "expression_truncated": false,
+          "expression_chars": 49,
+          "ast_sha256": "f9ecd134d16479f310e828e3cc7c7e724281de5d172daeffe0c87a4cbc3c16c8"
+        },
+        {
+          "key": "'turkey_key'",
+          "expression": "'turkey/stitched_key_annual_1973_2025.csv'",
+          "expression_truncated": false,
+          "expression_chars": 42,
+          "ast_sha256": "39700b6f0315f73d4c74343b349f160b7bb120109d213650885f4087e5d69e0a"
+        },
+        {
+          "key": "'cy_hist'",
+          "expression": "'cy_arrivals_russia_annual/tidy.csv'",
+          "expression_truncated": false,
+          "expression_chars": 36,
+          "ast_sha256": "043d7f116fae2ce38c1f487d56f531799ba5d92e7eebc68f854296e83f47164e"
+        },
+        {
+          "key": "'ge_border'",
+          "expression": "'ge_arrivals_russia/tidy.csv'",
+          "expression_truncated": false,
+          "expression_chars": 29,
+          "ast_sha256": "cc283abeab5d17249a2a3a35c2a982e0b7cd79daef0c09904892beda2644cf50"
         }
       ],
-      "expression": "{'japan_annual': 'japan/tidy_annual.csv'}",
+      "expression": "{'japan_annual': 'japan/tidy_annual.csv', 'turkey_m2001': 'turkey/tidy_monthly_2001_2015_digital.csv', 'turkey_mtotal': 'turkey/tidy_monthly_total_1984_2000_digital.csv', 'turkey_key': 'turkey/stitched_key_annual_1973_2025.csv', 'cy_hist': 'cy_arrivals_russia_annual/tidy.csv', 'ge_border': 'ge_arrivals_russia/tidy.csv'}",
       "expression_truncated": false,
-      "expression_chars": 41,
-      "ast_sha256": "ff637a2b63f71c21f613cdaa3a8acacb7976c92322f5068cbe20e285fc6b6f68",
+      "expression_chars": 321,
+      "ast_sha256": "8ae0961b67de935ae267cca5c6ef7204880861136bf2ba80b7f9348f72877eed",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 780,
-      "end_line": 780,
+      "line": 887,
+      "end_line": 887,
       "owner": "<module>",
       "conditions": [],
       "name": "TOURISM_PROVIDERS",
@@ -151883,8 +152579,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 781,
-      "end_line": 781,
+      "line": 888,
+      "end_line": 888,
       "owner": "<module>",
       "conditions": [],
       "name": "_SERIES_BY_KEY",
@@ -151900,8 +152596,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 783,
-      "end_line": 785,
+      "line": 890,
+      "end_line": 892,
       "owner": "<module>",
       "conditions": [],
       "name": "NATIONAL_RU_ARRIVALS",
@@ -151943,8 +152639,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 812,
-      "end_line": 820,
+      "line": 919,
+      "end_line": 927,
       "owner": "<module>",
       "conditions": [],
       "name": "ISO3_TO_CATALOG",
@@ -152410,8 +153106,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 822,
-      "end_line": 829,
+      "line": 929,
+      "end_line": 936,
       "owner": "<module>",
       "conditions": [],
       "name": "M49_TO_CATALOG",
@@ -152861,8 +153557,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 831,
-      "end_line": 831,
+      "line": 938,
+      "end_line": 938,
       "owner": "<module>",
       "conditions": [],
       "name": "ESTAT_GEO_TO_CATALOG",
@@ -152896,8 +153592,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1050,
-      "end_line": 1050,
+      "line": 1157,
+      "end_line": 1157,
       "owner": "<module>",
       "conditions": [],
       "name": "_ROMAN_QUARTER",
@@ -160368,8 +161064,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1542,
-      "end_line": 1545,
+      "line": 1618,
+      "end_line": 1621,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.tourism_russia._WHY",
@@ -160380,8 +161076,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1546,
-      "end_line": 1549,
+      "line": 1622,
+      "end_line": 1625,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.tourism_russia._WHY",
@@ -160392,8 +161088,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1550,
-      "end_line": 1553,
+      "line": 1626,
+      "end_line": 1629,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.tourism_russia._WHY",
@@ -160815,8 +161511,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 507,
-      "end_line": 507,
+      "line": 512,
+      "end_line": 512,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.services.world_tourism_sources.SOURCE_BY_PROVIDER",
@@ -171319,8 +172015,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1469,
-      "end_line": 1469,
+      "line": 1545,
+      "end_line": 1545,
       "owner": "seed_indicators",
       "conditions": [],
       "operation": "update",
@@ -193718,8 +194414,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 658,
-      "end_line": 658,
+      "line": 660,
+      "end_line": 660,
       "owner": "_join_sources",
       "conditions": [],
       "operation": "set",
@@ -193732,8 +194428,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 711,
-      "end_line": 711,
+      "line": 713,
+      "end_line": 713,
       "owner": "_source_links_html",
       "conditions": [],
       "operation": "set",
@@ -193746,8 +194442,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 712,
-      "end_line": 712,
+      "line": 714,
+      "end_line": 714,
       "owner": "_source_links_html",
       "conditions": [],
       "operation": "set",
@@ -193760,8 +194456,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 663,
-      "end_line": 663,
+      "line": 665,
+      "end_line": 665,
       "owner": "_join_sources",
       "conditions": [],
       "operation": "add",
@@ -193774,8 +194470,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 726,
-      "end_line": 726,
+      "line": 728,
+      "end_line": 728,
       "owner": "_source_links_html",
       "conditions": [],
       "operation": "add",
@@ -193788,8 +194484,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 729,
-      "end_line": 729,
+      "line": 731,
+      "end_line": 731,
       "owner": "_source_links_html",
       "conditions": [],
       "operation": "add",
@@ -193802,8 +194498,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1609,
-      "end_line": 1609,
+      "line": 1611,
+      "end_line": 1611,
       "owner": "render_world_country_html",
       "conditions": [],
       "operation": "update",
@@ -193816,8 +194512,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2061,
-      "end_line": 2067,
+      "line": 2063,
+      "end_line": 2069,
       "owner": "render_world_indicator_html",
       "conditions": [
         "is_retired_world_hicp(slug, code)"
@@ -193832,8 +194528,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2076,
-      "end_line": 2076,
+      "line": 2078,
+      "end_line": 2078,
       "owner": "render_world_indicator_html",
       "conditions": [
         "freshness_note is not None"
@@ -193904,8 +194600,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 794,
-      "end_line": 794,
+      "line": 796,
+      "end_line": 796,
       "owner": "_concept_allowed_datasets",
       "conditions": [
         "concept.provider_dataset_ids"
@@ -193951,8 +194647,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 830,
-      "end_line": 835,
+      "line": 832,
+      "end_line": 837,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "operation": "execute",
@@ -193965,8 +194661,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 852,
-      "end_line": 868,
+      "line": 854,
+      "end_line": 870,
       "owner": "_world_rating_members",
       "conditions": [],
       "operation": "execute",
@@ -193979,8 +194675,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1930,
-      "end_line": 1934,
+      "line": 1932,
+      "end_line": 1936,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "operation": "execute",
@@ -194010,8 +194706,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 938,
-      "end_line": 946,
+      "line": 940,
+      "end_line": 948,
       "owner": "build_world_rating_payload",
       "conditions": [
         "ids"
@@ -194026,8 +194722,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1512,
-      "end_line": 1525,
+      "line": 1514,
+      "end_line": 1527,
       "owner": "render_world_country_html",
       "conditions": [],
       "operation": "execute",
@@ -194040,8 +194736,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1665,
-      "end_line": 1673,
+      "line": 1667,
+      "end_line": 1675,
       "owner": "render_world_country_html",
       "conditions": [],
       "operation": "execute",
@@ -194086,8 +194782,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 810,
-      "end_line": 814,
+      "line": 812,
+      "end_line": 816,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [
         "materialized is not None"
@@ -203290,8 +203986,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 168,
-      "end_line": 168,
+      "line": 172,
+      "end_line": 172,
       "owner": "build_snapshot",
       "conditions": [],
       "operation": "set",
@@ -203304,8 +204000,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 318,
-      "end_line": 318,
+      "line": 322,
+      "end_line": 322,
       "owner": "run_world_tourism_ingest",
       "conditions": [],
       "operation": "set",
@@ -203318,8 +204014,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 110,
-      "end_line": 110,
+      "line": 112,
+      "end_line": 112,
       "owner": "fetch_network",
       "conditions": [
         "provider == src.OECD_PROVIDER"
@@ -203334,22 +204030,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 142,
-      "end_line": 142,
-      "owner": "fetch_tidy",
-      "conditions": [],
-      "operation": "update",
-      "receiver": "parsed",
-      "symbol": "app.services.world_tourism_ingest.parsed.update",
-      "expression": "parsed.update(src.parse_tidy_csv(text, [spec for spec in specs if spec.folder == folder]))",
-      "expression_truncated": false,
-      "expression_chars": 90,
-      "ast_sha256": "1219b49ef7e15da71bc8545c0bc329f662f89265df67d5d711bce5abec9831a9"
-    },
-    {
-      "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 196,
-      "end_line": 196,
+      "line": 200,
+      "end_line": 200,
       "owner": "fetch_local",
       "conditions": [
         "provider == src.OECD_PROVIDER"
@@ -203364,8 +204046,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 253,
-      "end_line": 253,
+      "line": 257,
+      "end_line": 257,
       "owner": "_write_provider",
       "conditions": [],
       "operation": "add",
@@ -203378,8 +204060,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 299,
-      "end_line": 301,
+      "line": 303,
+      "end_line": 305,
       "owner": "_log_failure",
       "conditions": [],
       "operation": "add",
@@ -203392,8 +204074,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 339,
-      "end_line": 339,
+      "line": 343,
+      "end_line": 343,
       "owner": "run_world_tourism_ingest",
       "conditions": [],
       "operation": "bump_namespaces",
@@ -203406,8 +204088,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 167,
-      "end_line": 167,
+      "line": 171,
+      "end_line": 171,
       "owner": "build_snapshot",
       "conditions": [],
       "operation": "add",
@@ -203420,8 +204102,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 254,
-      "end_line": 254,
+      "line": 258,
+      "end_line": 258,
       "owner": "_write_provider",
       "conditions": [],
       "operation": "commit",
@@ -203434,8 +204116,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 271,
-      "end_line": 274,
+      "line": 275,
+      "end_line": 278,
       "owner": "_write_provider",
       "conditions": [],
       "operation": "add",
@@ -203448,8 +204130,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 291,
-      "end_line": 291,
+      "line": 295,
+      "end_line": 295,
       "owner": "_log_failure",
       "conditions": [
         "run_id is None"
@@ -203464,8 +204146,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 302,
-      "end_line": 302,
+      "line": 306,
+      "end_line": 306,
       "owner": "_log_failure",
       "conditions": [],
       "operation": "commit",
@@ -203478,8 +204160,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 266,
-      "end_line": 266,
+      "line": 270,
+      "end_line": 270,
       "owner": "_write_provider",
       "conditions": [
         "state is None"
@@ -203494,8 +204176,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 279,
-      "end_line": 279,
+      "line": 283,
+      "end_line": 283,
       "owner": "_write_provider",
       "conditions": [],
       "operation": "commit",
@@ -203508,8 +204190,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 296,
+      "end_line": 296,
       "owner": "_log_failure",
       "conditions": [
         "run_id is None"
@@ -203524,8 +204206,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 334,
+      "end_line": 334,
       "owner": "run_world_tourism_ingest",
       "conditions": [],
       "operation": "add",
@@ -203538,8 +204220,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 333,
-      "end_line": 333,
+      "line": 337,
+      "end_line": 337,
       "owner": "run_world_tourism_ingest",
       "conditions": [],
       "operation": "set",
@@ -203552,8 +204234,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 281,
-      "end_line": 281,
+      "line": 285,
+      "end_line": 285,
       "owner": "_write_provider",
       "conditions": [],
       "operation": "rollback",
@@ -203566,8 +204248,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 167,
-      "end_line": 167,
+      "line": 171,
+      "end_line": 171,
       "owner": "build_snapshot",
       "conditions": [],
       "operation": "set",
@@ -203580,8 +204262,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 315,
-      "end_line": 315,
+      "line": 319,
+      "end_line": 319,
       "owner": "run_world_tourism_ingest",
       "conditions": [],
       "operation": "execute",
@@ -203594,8 +204276,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 507,
-      "end_line": 507,
+      "line": 512,
+      "end_line": 512,
       "owner": "<module>",
       "conditions": [],
       "operation": "update",
@@ -203608,8 +204290,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 897,
-      "end_line": 897,
+      "line": 1004,
+      "end_line": 1004,
       "owner": "parse_imf_bop_csv",
       "conditions": [],
       "operation": "set",
@@ -203622,8 +204304,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 897,
-      "end_line": 897,
+      "line": 1004,
+      "end_line": 1004,
       "owner": "parse_imf_bop_csv",
       "conditions": [],
       "operation": "set",
@@ -309056,8 +309738,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 840,
-      "end_line": 840,
+      "line": 842,
+      "end_line": 842,
       "owner": "_world_rating_countries",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -309065,8 +309747,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1076,
-      "end_line": 1076,
+      "line": 1078,
+      "end_line": 1078,
       "owner": "_country",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -309191,8 +309873,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 783,
-      "end_line": 783,
+      "line": 785,
+      "end_line": 785,
       "owner": "_same_public_unit",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -309200,8 +309882,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1601,
-      "end_line": 1601,
+      "line": 1603,
+      "end_line": 1603,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -309218,8 +309900,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 697,
-      "end_line": 697,
+      "line": 699,
+      "end_line": 699,
       "owner": "_source_links_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -309227,8 +309909,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 762,
-      "end_line": 762,
+      "line": 764,
+      "end_line": 764,
       "owner": "_country_source_phrase",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -309236,8 +309918,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 798,
-      "end_line": 798,
+      "line": 800,
+      "end_line": 800,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -309245,8 +309927,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 847,
-      "end_line": 847,
+      "line": 849,
+      "end_line": 849,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -309254,8 +309936,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 847,
-      "end_line": 847,
+      "line": 849,
+      "end_line": 849,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -309263,8 +309945,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 951,
-      "end_line": 951,
+      "line": 953,
+      "end_line": 953,
       "owner": "build_world_rating_payload._item_country_name",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -309272,8 +309954,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1548,
-      "end_line": 1548,
+      "line": 1550,
+      "end_line": 1550,
       "owner": "render_world_country_html._redirects_to_listed",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -309281,8 +309963,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1578,
-      "end_line": 1578,
+      "line": 1580,
+      "end_line": 1580,
       "owner": "render_world_country_html._key_sort",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -309290,8 +309972,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1588,
-      "end_line": 1588,
+      "line": 1590,
+      "end_line": 1590,
       "owner": "render_world_country_html._is_curated_card",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -309326,8 +310008,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 826,
-      "end_line": 826,
+      "line": 828,
+      "end_line": 828,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -309335,8 +310017,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 870,
-      "end_line": 870,
+      "line": 872,
+      "end_line": 872,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -309344,8 +310026,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 870,
-      "end_line": 870,
+      "line": 872,
+      "end_line": 872,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -309353,8 +310035,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1636,
-      "end_line": 1636,
+      "line": 1638,
+      "end_line": 1638,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -309362,8 +310044,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 826,
-      "end_line": 826,
+      "line": 828,
+      "end_line": 828,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -309371,8 +310053,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 879,
-      "end_line": 879,
+      "line": 881,
+      "end_line": 881,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -309380,8 +310062,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 879,
-      "end_line": 879,
+      "line": 881,
+      "end_line": 881,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -309389,8 +310071,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 825,
-      "end_line": 825,
+      "line": 827,
+      "end_line": 827,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
@@ -309398,8 +310080,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 834,
-      "end_line": 834,
+      "line": 836,
+      "end_line": 836,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldCountry.sort_order",
@@ -309407,8 +310089,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 834,
-      "end_line": 834,
+      "line": 836,
+      "end_line": 836,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru",
@@ -309416,8 +310098,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 867,
-      "end_line": 867,
+      "line": 869,
+      "end_line": 869,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldCountry.sort_order",
@@ -309425,8 +310107,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 867,
-      "end_line": 867,
+      "line": 869,
+      "end_line": 869,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru",
@@ -309434,8 +310116,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 867,
-      "end_line": 867,
+      "line": 869,
+      "end_line": 869,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -309443,8 +310125,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1933,
-      "end_line": 1933,
+      "line": 1935,
+      "end_line": 1935,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -309452,8 +310134,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 825,
-      "end_line": 825,
+      "line": 827,
+      "end_line": 827,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -309461,8 +310143,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 834,
-      "end_line": 834,
+      "line": 836,
+      "end_line": 836,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -309470,8 +310152,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 834,
-      "end_line": 834,
+      "line": 836,
+      "end_line": 836,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -309479,8 +310161,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 867,
-      "end_line": 867,
+      "line": 869,
+      "end_line": 869,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -309488,8 +310170,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 867,
-      "end_line": 867,
+      "line": 869,
+      "end_line": 869,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -309497,8 +310179,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 867,
-      "end_line": 867,
+      "line": 869,
+      "end_line": 869,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -309506,8 +310188,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 945,
-      "end_line": 945,
+      "line": 947,
+      "end_line": 947,
       "owner": "build_world_rating_payload",
       "conditions": [
         "ids"
@@ -309517,8 +310199,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 945,
-      "end_line": 945,
+      "line": 947,
+      "end_line": 947,
       "owner": "build_world_rating_payload",
       "conditions": [
         "ids"
@@ -309528,8 +310210,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1933,
-      "end_line": 1933,
+      "line": 1935,
+      "end_line": 1935,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -309564,8 +310246,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 819,
-      "end_line": 819,
+      "line": 821,
+      "end_line": 821,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -309573,8 +310255,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 945,
-      "end_line": 945,
+      "line": 947,
+      "end_line": 947,
       "owner": "build_world_rating_payload",
       "conditions": [
         "ids"
@@ -309584,8 +310266,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 945,
-      "end_line": 945,
+      "line": 947,
+      "end_line": 947,
       "owner": "build_world_rating_payload",
       "conditions": [
         "ids"
@@ -309595,8 +310277,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1524,
-      "end_line": 1524,
+      "line": 1526,
+      "end_line": 1526,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.category_ru",
@@ -309604,8 +310286,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1524,
-      "end_line": 1524,
+      "line": 1526,
+      "end_line": 1526,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.name_ru",
@@ -309662,8 +310344,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 813,
-      "end_line": 813,
+      "line": 815,
+      "end_line": 815,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [
         "materialized is not None"
@@ -309673,8 +310355,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 813,
-      "end_line": 813,
+      "line": 815,
+      "end_line": 815,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [
         "materialized is not None"
@@ -309684,8 +310366,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 819,
-      "end_line": 819,
+      "line": 821,
+      "end_line": 821,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -309693,8 +310375,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 833,
-      "end_line": 833,
+      "line": 835,
+      "end_line": 835,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active.is_",
@@ -309702,8 +310384,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 856,
-      "end_line": 856,
+      "line": 858,
+      "end_line": 858,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active.is_",
@@ -309711,8 +310393,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 857,
-      "end_line": 857,
+      "line": 859,
+      "end_line": 859,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed.is_",
@@ -309720,8 +310402,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1524,
-      "end_line": 1524,
+      "line": 1526,
+      "end_line": 1526,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -309729,8 +310411,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1524,
-      "end_line": 1524,
+      "line": 1526,
+      "end_line": 1526,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -309738,8 +310420,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1932,
-      "end_line": 1932,
+      "line": 1934,
+      "end_line": 1934,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.indicator_id",
@@ -309791,8 +310473,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 813,
-      "end_line": 813,
+      "line": 815,
+      "end_line": 815,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [
         "materialized is not None"
@@ -309802,8 +310484,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 813,
-      "end_line": 813,
+      "line": 815,
+      "end_line": 815,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [
         "materialized is not None"
@@ -309813,21 +310495,12 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 833,
-      "end_line": 833,
+      "line": 835,
+      "end_line": 835,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active",
       "expression": "WorldCountry.is_active"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 854,
-      "end_line": 854,
-      "owner": "_world_rating_members",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
     },
     {
       "path": "backend/app/services/seo_world.py",
@@ -309835,13 +310508,22 @@
       "end_line": 856,
       "owner": "_world_rating_members",
       "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 858,
+      "end_line": 858,
+      "owner": "_world_rating_members",
+      "conditions": [],
       "symbol": "app.models.WorldCountry.is_active",
       "expression": "WorldCountry.is_active"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 857,
-      "end_line": 857,
+      "line": 859,
+      "end_line": 859,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
@@ -309849,8 +310531,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 944,
-      "end_line": 944,
+      "line": 946,
+      "end_line": 946,
       "owner": "build_world_rating_payload",
       "conditions": [
         "ids"
@@ -309860,8 +310542,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1671,
-      "end_line": 1671,
+      "line": 1673,
+      "end_line": 1673,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.sort_order",
@@ -309869,8 +310551,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1671,
-      "end_line": 1671,
+      "line": 1673,
+      "end_line": 1673,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru",
@@ -309878,8 +310560,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1931,
-      "end_line": 1931,
+      "line": 1933,
+      "end_line": 1933,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -309887,8 +310569,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1931,
-      "end_line": 1931,
+      "line": 1933,
+      "end_line": 1933,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.value",
@@ -309896,8 +310578,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1932,
-      "end_line": 1932,
+      "line": 1934,
+      "end_line": 1934,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -309972,8 +310654,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 832,
-      "end_line": 832,
+      "line": 834,
+      "end_line": 834,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldCountry.id",
@@ -309981,30 +310663,12 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 833,
-      "end_line": 833,
+      "line": 835,
+      "end_line": 835,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
       "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 854,
-      "end_line": 854,
-      "owner": "_world_rating_members",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.country_id",
-      "expression": "WorldIndicator.country_id"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 854,
-      "end_line": 854,
-      "owner": "_world_rating_members",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry.id",
-      "expression": "WorldCountry.id"
     },
     {
       "path": "backend/app/services/seo_world.py",
@@ -310012,13 +310676,31 @@
       "end_line": 856,
       "owner": "_world_rating_members",
       "conditions": [],
+      "symbol": "app.models.WorldIndicator.country_id",
+      "expression": "WorldIndicator.country_id"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 856,
+      "end_line": 856,
+      "owner": "_world_rating_members",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.id",
+      "expression": "WorldCountry.id"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 858,
+      "end_line": 858,
+      "owner": "_world_rating_members",
+      "conditions": [],
       "symbol": "app.models.WorldCountry",
       "expression": "WorldCountry"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 857,
-      "end_line": 857,
+      "line": 859,
+      "end_line": 859,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -310026,34 +310708,12 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 861,
-      "end_line": 861,
+      "line": 863,
+      "end_line": 863,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code.in_",
       "expression": "WorldIndicator.code.in_"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 940,
-      "end_line": 940,
-      "owner": "build_world_rating_payload",
-      "conditions": [
-        "ids"
-      ],
-      "symbol": "app.models.WorldDataPoint.indicator_id",
-      "expression": "WorldDataPoint.indicator_id"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 941,
-      "end_line": 941,
-      "owner": "build_world_rating_payload",
-      "conditions": [
-        "ids"
-      ],
-      "symbol": "app.models.WorldDataPoint.date",
-      "expression": "WorldDataPoint.date"
     },
     {
       "path": "backend/app/services/seo_world.py",
@@ -310063,8 +310723,19 @@
       "conditions": [
         "ids"
       ],
-      "symbol": "app.models.WorldDataPoint.value",
-      "expression": "WorldDataPoint.value"
+      "symbol": "app.models.WorldDataPoint.indicator_id",
+      "expression": "WorldDataPoint.indicator_id"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 943,
+      "end_line": 943,
+      "owner": "build_world_rating_payload",
+      "conditions": [
+        "ids"
+      ],
+      "symbol": "app.models.WorldDataPoint.date",
+      "expression": "WorldDataPoint.date"
     },
     {
       "path": "backend/app/services/seo_world.py",
@@ -310074,13 +310745,24 @@
       "conditions": [
         "ids"
       ],
+      "symbol": "app.models.WorldDataPoint.value",
+      "expression": "WorldDataPoint.value"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 946,
+      "end_line": 946,
+      "owner": "build_world_rating_payload",
+      "conditions": [
+        "ids"
+      ],
       "symbol": "app.models.WorldDataPoint.indicator_id",
       "expression": "WorldDataPoint.indicator_id"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1516,
-      "end_line": 1516,
+      "line": 1518,
+      "end_line": 1518,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -310088,8 +310770,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1522,
-      "end_line": 1522,
+      "line": 1524,
+      "end_line": 1524,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed.is_",
@@ -310097,8 +310779,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1671,
-      "end_line": 1671,
+      "line": 1673,
+      "end_line": 1673,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -310106,8 +310788,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1671,
-      "end_line": 1671,
+      "line": 1673,
+      "end_line": 1673,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -310115,8 +310797,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1931,
-      "end_line": 1931,
+      "line": 1933,
+      "end_line": 1933,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -310124,8 +310806,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1931,
-      "end_line": 1931,
+      "line": 1933,
+      "end_line": 1933,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -310242,8 +310924,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 812,
-      "end_line": 812,
+      "line": 814,
+      "end_line": 814,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [
         "materialized is not None"
@@ -310253,8 +310935,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 831,
-      "end_line": 831,
+      "line": 833,
+      "end_line": 833,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -310262,8 +310944,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 832,
-      "end_line": 832,
+      "line": 834,
+      "end_line": 834,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -310271,8 +310953,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 853,
-      "end_line": 853,
+      "line": 855,
+      "end_line": 855,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -310280,8 +310962,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 853,
-      "end_line": 853,
+      "line": 855,
+      "end_line": 855,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -310289,8 +310971,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 854,
-      "end_line": 854,
+      "line": 856,
+      "end_line": 856,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -310298,8 +310980,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 854,
-      "end_line": 854,
+      "line": 856,
+      "end_line": 856,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -310307,8 +310989,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 861,
-      "end_line": 861,
+      "line": 863,
+      "end_line": 863,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -310316,8 +310998,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 864,
-      "end_line": 864,
+      "line": 866,
+      "end_line": 866,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.dataset_id",
@@ -310325,30 +311007,19 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 940,
-      "end_line": 940,
-      "owner": "build_world_rating_payload",
-      "conditions": [
-        "ids"
-      ],
-      "symbol": "app.models.WorldDataPoint",
-      "expression": "WorldDataPoint"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
-      "line": 941,
-      "end_line": 941,
-      "owner": "build_world_rating_payload",
-      "conditions": [
-        "ids"
-      ],
-      "symbol": "app.models.WorldDataPoint",
-      "expression": "WorldDataPoint"
-    },
-    {
-      "path": "backend/app/services/seo_world.py",
       "line": 942,
       "end_line": 942,
+      "owner": "build_world_rating_payload",
+      "conditions": [
+        "ids"
+      ],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 943,
+      "end_line": 943,
       "owner": "build_world_rating_payload",
       "conditions": [
         "ids"
@@ -310369,8 +311040,19 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1516,
-      "end_line": 1516,
+      "line": 946,
+      "end_line": 946,
+      "owner": "build_world_rating_payload",
+      "conditions": [
+        "ids"
+      ],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/app/services/seo_world.py",
+      "line": 1518,
+      "end_line": 1518,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -310378,8 +311060,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1522,
-      "end_line": 1522,
+      "line": 1524,
+      "end_line": 1524,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
@@ -310467,8 +311149,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 811,
-      "end_line": 811,
+      "line": 813,
+      "end_line": 813,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [
         "materialized is not None"
@@ -310478,8 +311160,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 812,
-      "end_line": 812,
+      "line": 814,
+      "end_line": 814,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [
         "materialized is not None"
@@ -310489,8 +311171,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 860,
-      "end_line": 860,
+      "line": 862,
+      "end_line": 862,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.dataset_id",
@@ -310498,8 +311180,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 861,
-      "end_line": 861,
+      "line": 863,
+      "end_line": 863,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -310507,8 +311189,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 864,
-      "end_line": 864,
+      "line": 866,
+      "end_line": 866,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -310516,8 +311198,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1522,
-      "end_line": 1522,
+      "line": 1524,
+      "end_line": 1524,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -310525,8 +311207,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1668,
-      "end_line": 1668,
+      "line": 1670,
+      "end_line": 1670,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active.is_",
@@ -310534,8 +311216,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1669,
-      "end_line": 1669,
+      "line": 1671,
+      "end_line": 1671,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug",
@@ -310617,8 +311299,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 812,
-      "end_line": 812,
+      "line": 814,
+      "end_line": 814,
       "owner": "_active_countries_with_listed_counts",
       "conditions": [
         "materialized is not None"
@@ -310628,8 +311310,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 860,
-      "end_line": 860,
+      "line": 862,
+      "end_line": 862,
       "owner": "_world_rating_members",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -310637,8 +311319,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1513,
-      "end_line": 1513,
+      "line": 1515,
+      "end_line": 1515,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -310646,8 +311328,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1666,
-      "end_line": 1666,
+      "line": 1668,
+      "end_line": 1668,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -310655,8 +311337,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1668,
-      "end_line": 1668,
+      "line": 1670,
+      "end_line": 1670,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active",
@@ -310664,8 +311346,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1669,
-      "end_line": 1669,
+      "line": 1671,
+      "end_line": 1671,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -310729,8 +311411,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1668,
-      "end_line": 1668,
+      "line": 1670,
+      "end_line": 1670,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -336503,8 +337185,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 256,
+      "end_line": 256,
       "owner": "_write_provider",
       "conditions": [],
       "symbol": "app.models.WorldIngestRun",
@@ -336512,8 +337194,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 249,
-      "end_line": 249,
+      "line": 253,
+      "end_line": 253,
       "owner": "_write_provider",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -336521,8 +337203,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 290,
-      "end_line": 290,
+      "line": 294,
+      "end_line": 294,
       "owner": "_log_failure",
       "conditions": [
         "run_id is None"
@@ -336532,8 +337214,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 294,
-      "end_line": 294,
+      "line": 298,
+      "end_line": 298,
       "owner": "_log_failure",
       "conditions": [],
       "symbol": "app.models.WorldIngestRun",
@@ -336541,8 +337223,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 299,
-      "end_line": 299,
+      "line": 303,
+      "end_line": 303,
       "owner": "_log_failure",
       "conditions": [],
       "symbol": "app.models.WorldIngestDatasetLog",
@@ -336550,8 +337232,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 263,
-      "end_line": 263,
+      "line": 267,
+      "end_line": 267,
       "owner": "_write_provider",
       "conditions": [],
       "symbol": "app.models.WorldDatasetState",
@@ -336559,8 +337241,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 265,
-      "end_line": 265,
+      "line": 269,
+      "end_line": 269,
       "owner": "_write_provider",
       "conditions": [
         "state is None"
@@ -336570,8 +337252,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 271,
-      "end_line": 271,
+      "line": 275,
+      "end_line": 275,
       "owner": "_write_provider",
       "conditions": [],
       "symbol": "app.models.WorldIngestDatasetLog",
@@ -336579,8 +337261,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 275,
-      "end_line": 275,
+      "line": 279,
+      "end_line": 279,
       "owner": "_write_provider",
       "conditions": [],
       "symbol": "app.models.WorldIngestRun",
@@ -336588,8 +337270,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 315,
-      "end_line": 315,
+      "line": 319,
+      "end_line": 319,
       "owner": "run_world_tourism_ingest",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -361622,8 +362304,8 @@
     },
     {
       "path": "backend/app/data/i18n/glossary_en.py",
-      "line": 125,
-      "end_line": 130,
+      "line": 126,
+      "end_line": 131,
       "owner": "<module>",
       "conditions": [],
       "name": "term",
@@ -362369,8 +363051,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 817,
-      "end_line": 864,
+      "line": 821,
+      "end_line": 870,
       "owner": "<module>",
       "conditions": [],
       "name": "_dest_series",
@@ -362378,8 +363060,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 922,
-      "end_line": 939,
+      "line": 928,
+      "end_line": 945,
       "owner": "<module>",
       "conditions": [],
       "name": "_cpi_series",
@@ -362387,8 +363069,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 959,
-      "end_line": 960,
+      "line": 965,
+      "end_line": 966,
       "owner": "<module>",
       "conditions": [],
       "name": "_hc",
@@ -362397,7 +363079,16 @@
     {
       "path": "backend/app/data/tourism_russia.py",
       "line": 994,
-      "end_line": 1274,
+      "end_line": 995,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_hc",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/data/tourism_russia.py",
+      "line": 1018,
+      "end_line": 1343,
       "owner": "<module>",
       "conditions": [],
       "name": "_static_series",
@@ -362405,8 +363096,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1289,
-      "end_line": 1310,
+      "line": 1358,
+      "end_line": 1379,
       "owner": "<module>",
       "conditions": [],
       "name": "_source_url_override",
@@ -362414,8 +363105,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1439,
-      "end_line": 1444,
+      "line": 1515,
+      "end_line": 1520,
       "owner": "<module>",
       "conditions": [],
       "name": "is_seasonal",
@@ -362423,8 +363114,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1447,
-      "end_line": 1448,
+      "line": 1523,
+      "end_line": 1524,
       "owner": "<module>",
       "conditions": [],
       "name": "hidden_codes",
@@ -362432,8 +363123,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1451,
-      "end_line": 1452,
+      "line": 1527,
+      "end_line": 1528,
       "owner": "<module>",
       "conditions": [],
       "name": "forecast_codes",
@@ -362441,8 +363132,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1465,
-      "end_line": 1488,
+      "line": 1541,
+      "end_line": 1564,
       "owner": "<module>",
       "conditions": [],
       "name": "seed_indicators",
@@ -362450,8 +363141,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1491,
-      "end_line": 1498,
+      "line": 1567,
+      "end_line": 1574,
       "owner": "<module>",
       "conditions": [],
       "name": "family_defs",
@@ -362459,8 +363150,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1501,
-      "end_line": 1502,
+      "line": 1577,
+      "end_line": 1578,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_keywords",
@@ -362468,8 +363159,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1505,
-      "end_line": 1506,
+      "line": 1581,
+      "end_line": 1582,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_meta",
@@ -362477,8 +363168,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1509,
-      "end_line": 1511,
+      "line": 1585,
+      "end_line": 1587,
       "owner": "<module>",
       "conditions": [],
       "name": "copy_en",
@@ -362486,8 +363177,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1569,
-      "end_line": 1584,
+      "line": 1645,
+      "end_line": 1660,
       "owner": "<module>",
       "conditions": [],
       "name": "_group",
@@ -362495,8 +363186,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1587,
-      "end_line": 1604,
+      "line": 1663,
+      "end_line": 1680,
       "owner": "<module>",
       "conditions": [],
       "name": "_mode_text",
@@ -362504,8 +363195,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1607,
-      "end_line": 1625,
+      "line": 1683,
+      "end_line": 1701,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_blocks",
@@ -393178,8 +393869,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 619,
-      "end_line": 650,
+      "line": 621,
+      "end_line": 652,
       "owner": "<module>",
       "conditions": [],
       "name": "_source_label",
@@ -393187,8 +393878,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 653,
-      "end_line": 673,
+      "line": 655,
+      "end_line": 675,
       "owner": "<module>",
       "conditions": [],
       "name": "_join_sources",
@@ -393196,8 +393887,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 676,
-      "end_line": 685,
+      "line": 678,
+      "end_line": 687,
       "owner": "<module>",
       "conditions": [],
       "name": "_on_site_provider_href",
@@ -393205,8 +393896,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 696,
-      "end_line": 730,
+      "line": 698,
+      "end_line": 732,
       "owner": "<module>",
       "conditions": [],
       "name": "_source_links_html",
@@ -393214,8 +393905,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 733,
-      "end_line": 736,
+      "line": 735,
+      "end_line": 738,
       "owner": "<module>",
       "conditions": [],
       "name": "_source_links_phrase",
@@ -393223,8 +393914,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 739,
-      "end_line": 759,
+      "line": 741,
+      "end_line": 761,
       "owner": "<module>",
       "conditions": [],
       "name": "_period_sentence",
@@ -393232,8 +393923,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 762,
-      "end_line": 772,
+      "line": 764,
+      "end_line": 774,
       "owner": "<module>",
       "conditions": [],
       "name": "_country_source_phrase",
@@ -393241,8 +393932,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 775,
-      "end_line": 776,
+      "line": 777,
+      "end_line": 778,
       "owner": "<module>",
       "conditions": [],
       "name": "world_rating_default_sort",
@@ -393250,8 +393941,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 779,
-      "end_line": 780,
+      "line": 781,
+      "end_line": 782,
       "owner": "<module>",
       "conditions": [],
       "name": "_is_money_rating",
@@ -393259,8 +393950,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 783,
-      "end_line": 787,
+      "line": 785,
+      "end_line": 789,
       "owner": "<module>",
       "conditions": [],
       "name": "_same_public_unit",
@@ -393268,8 +393959,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 790,
-      "end_line": 795,
+      "line": 792,
+      "end_line": 797,
       "owner": "<module>",
       "conditions": [],
       "name": "_concept_allowed_datasets",
@@ -393277,8 +393968,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 798,
-      "end_line": 837,
+      "line": 800,
+      "end_line": 839,
       "owner": "<module>",
       "conditions": [],
       "name": "_active_countries_with_listed_counts",
@@ -393286,8 +393977,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 840,
-      "end_line": 841,
+      "line": 842,
+      "end_line": 843,
       "owner": "<module>",
       "conditions": [],
       "name": "_world_rating_countries",
@@ -393295,8 +393986,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 844,
-      "end_line": 893,
+      "line": 846,
+      "end_line": 895,
       "owner": "<module>",
       "conditions": [],
       "name": "_world_rating_members",
@@ -393304,8 +393995,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 896,
-      "end_line": 905,
+      "line": 898,
+      "end_line": 907,
       "owner": "<module>",
       "conditions": [],
       "name": "_resolve_rating_year",
@@ -393313,8 +394004,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 908,
-      "end_line": 1046,
+      "line": 910,
+      "end_line": 1048,
       "owner": "<module>",
       "conditions": [],
       "name": "build_world_rating_payload",
@@ -393322,8 +394013,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1049,
-      "end_line": 1064,
+      "line": 1051,
+      "end_line": 1066,
       "owner": "<module>",
       "conditions": [],
       "name": "_period_label",
@@ -393331,8 +394022,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1067,
-      "end_line": 1073,
+      "line": 1069,
+      "end_line": 1075,
       "owner": "<module>",
       "conditions": [],
       "name": "_date_range_ru",
@@ -393340,8 +394031,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1076,
-      "end_line": 1080,
+      "line": 1078,
+      "end_line": 1082,
       "owner": "<module>",
       "conditions": [],
       "name": "_country",
@@ -393349,8 +394040,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1083,
-      "end_line": 1095,
+      "line": 1085,
+      "end_line": 1097,
       "owner": "<module>",
       "conditions": [],
       "name": "listed_country_links",
@@ -393358,8 +394049,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1098,
-      "end_line": 1501,
+      "line": 1100,
+      "end_line": 1503,
       "owner": "<module>",
       "conditions": [],
       "name": "render_world_rating_html",
@@ -393367,8 +394058,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1504,
-      "end_line": 1912,
+      "line": 1506,
+      "end_line": 1914,
       "owner": "<module>",
       "conditions": [],
       "name": "render_world_country_html",
@@ -393376,8 +394067,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1915,
-      "end_line": 2392,
+      "line": 1917,
+      "end_line": 2394,
       "owner": "<module>",
       "conditions": [],
       "name": "render_world_indicator_html",
@@ -393385,8 +394076,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 951,
-      "end_line": 954,
+      "line": 953,
+      "end_line": 956,
       "owner": "build_world_rating_payload",
       "conditions": [],
       "name": "_item_country_name",
@@ -393394,8 +394085,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1142,
-      "end_line": 1148,
+      "line": 1144,
+      "end_line": 1150,
       "owner": "render_world_rating_html",
       "conditions": [],
       "name": "_value_text",
@@ -393403,8 +394094,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1150,
-      "end_line": 1155,
+      "line": 1152,
+      "end_line": 1157,
       "owner": "render_world_rating_html",
       "conditions": [],
       "name": "_date_text",
@@ -393412,8 +394103,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1157,
-      "end_line": 1167,
+      "line": 1159,
+      "end_line": 1169,
       "owner": "render_world_rating_html",
       "conditions": [],
       "name": "_countries_phrase",
@@ -393421,8 +394112,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1278,
-      "end_line": 1281,
+      "line": 1280,
+      "end_line": 1283,
       "owner": "render_world_rating_html",
       "conditions": [],
       "name": "_unit_cell",
@@ -393430,8 +394121,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1283,
-      "end_line": 1286,
+      "line": 1285,
+      "end_line": 1288,
       "owner": "render_world_rating_html",
       "conditions": [],
       "name": "_country_link",
@@ -393439,8 +394130,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1548,
-      "end_line": 1552,
+      "line": 1550,
+      "end_line": 1554,
       "owner": "render_world_country_html",
       "conditions": [],
       "name": "_redirects_to_listed",
@@ -393448,8 +394139,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1578,
-      "end_line": 1586,
+      "line": 1580,
+      "end_line": 1588,
       "owner": "render_world_country_html",
       "conditions": [],
       "name": "_key_sort",
@@ -393457,8 +394148,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1588,
-      "end_line": 1592,
+      "line": 1590,
+      "end_line": 1594,
       "owner": "render_world_country_html",
       "conditions": [],
       "name": "_is_curated_card",
@@ -393466,8 +394157,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2021,
-      "end_line": 2022,
+      "line": 2023,
+      "end_line": 2024,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "name": "_fmt_series",
@@ -393475,8 +394166,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 2236,
-      "end_line": 2245,
+      "line": 2238,
+      "end_line": 2247,
       "owner": "render_world_indicator_html",
       "conditions": [],
       "name": "_title_with",
@@ -406520,8 +407211,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 72,
-      "end_line": 75,
+      "line": 74,
+      "end_line": 77,
       "owner": "<module>",
       "conditions": [],
       "name": "_session",
@@ -406529,8 +407220,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 78,
-      "end_line": 81,
+      "line": 80,
+      "end_line": 83,
       "owner": "<module>",
       "conditions": [],
       "name": "_get",
@@ -406538,8 +407229,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 84,
-      "end_line": 87,
+      "line": 86,
+      "end_line": 89,
       "owner": "<module>",
       "conditions": [],
       "name": "_post_json",
@@ -406547,8 +407238,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 90,
-      "end_line": 91,
+      "line": 92,
+      "end_line": 93,
       "owner": "<module>",
       "conditions": [],
       "name": "_text",
@@ -406556,8 +407247,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 96,
-      "end_line": 122,
+      "line": 98,
+      "end_line": 124,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_network",
@@ -406565,8 +407256,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 127,
-      "end_line": 129,
+      "line": 129,
+      "end_line": 131,
       "owner": "<module>",
       "conditions": [],
       "name": "_read",
@@ -406574,8 +407265,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 132,
-      "end_line": 143,
+      "line": 134,
+      "end_line": 147,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_tidy",
@@ -406583,8 +407274,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 149,
-      "end_line": 156,
+      "line": 153,
+      "end_line": 160,
       "owner": "<module>",
       "conditions": [],
       "name": "snapshot_table",
@@ -406592,8 +407283,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 159,
-      "end_line": 184,
+      "line": 163,
+      "end_line": 188,
       "owner": "<module>",
       "conditions": [],
       "name": "build_snapshot",
@@ -406601,8 +407292,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 187,
-      "end_line": 207,
+      "line": 191,
+      "end_line": 211,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_local",
@@ -406610,8 +407301,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 212,
-      "end_line": 244,
+      "line": 216,
+      "end_line": 248,
       "owner": "<module>",
       "conditions": [],
       "name": "plan_writes",
@@ -406619,8 +407310,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 249,
-      "end_line": 284,
+      "line": 253,
+      "end_line": 288,
       "owner": "<module>",
       "conditions": [],
       "name": "_write_provider",
@@ -406628,8 +407319,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 287,
-      "end_line": 302,
+      "line": 291,
+      "end_line": 306,
       "owner": "<module>",
       "conditions": [],
       "name": "_log_failure",
@@ -406637,8 +407328,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 305,
-      "end_line": 341,
+      "line": 309,
+      "end_line": 345,
       "owner": "<module>",
       "conditions": [],
       "name": "run_world_tourism_ingest",
@@ -406646,8 +407337,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 344,
-      "end_line": 359,
+      "line": 348,
+      "end_line": 363,
       "owner": "<module>",
       "conditions": [],
       "name": "_cli",
@@ -406691,8 +407382,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 515,
-      "end_line": 527,
+      "line": 520,
+      "end_line": 532,
       "owner": "<module>",
       "conditions": [],
       "name": "_nat",
@@ -406700,8 +407391,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 559,
-      "end_line": 568,
+      "line": 564,
+      "end_line": 574,
       "owner": "<module>",
       "conditions": [],
       "name": "TidySpec",
@@ -406709,8 +407400,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 571,
-      "end_line": 573,
+      "line": 577,
+      "end_line": 579,
       "owner": "<module>",
       "conditions": [],
       "name": "_ru_arrivals",
@@ -406718,8 +407409,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 576,
-      "end_line": 579,
+      "line": 582,
+      "end_line": 585,
       "owner": "<module>",
       "conditions": [],
       "name": "_total_arrivals",
@@ -406727,8 +407418,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 654,
-      "end_line": 669,
+      "line": 660,
+      "end_line": 675,
       "owner": "<module>",
       "conditions": [],
       "name": "_acc",
@@ -406736,8 +407427,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 771,
-      "end_line": 772,
+      "line": 878,
+      "end_line": 879,
       "owner": "<module>",
       "conditions": [],
       "name": "tidy_file",
@@ -406745,8 +407436,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 788,
-      "end_line": 793,
+      "line": 895,
+      "end_line": 900,
       "owner": "<module>",
       "conditions": [],
       "name": "series_for_indicator",
@@ -406754,8 +407445,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 796,
-      "end_line": 804,
+      "line": 903,
+      "end_line": 911,
       "owner": "<module>",
       "conditions": [],
       "name": "curated_copy_en",
@@ -406763,8 +407454,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 837,
-      "end_line": 847,
+      "line": 944,
+      "end_line": 954,
       "owner": "<module>",
       "conditions": [],
       "name": "_num",
@@ -406772,8 +407463,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 850,
-      "end_line": 861,
+      "line": 957,
+      "end_line": 968,
       "owner": "<module>",
       "conditions": [],
       "name": "_period",
@@ -406781,8 +407472,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 864,
-      "end_line": 865,
+      "line": 971,
+      "end_line": 972,
       "owner": "<module>",
       "conditions": [],
       "name": "_finish",
@@ -406790,8 +407481,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 872,
-      "end_line": 902,
+      "line": 979,
+      "end_line": 1009,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_imf_bop_csv",
@@ -406799,8 +407490,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 909,
-      "end_line": 922,
+      "line": 1016,
+      "end_line": 1029,
       "owner": "<module>",
       "conditions": [],
       "name": "_unt_rows",
@@ -406808,8 +407499,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 925,
-      "end_line": 946,
+      "line": 1032,
+      "end_line": 1053,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_untourism_workbooks",
@@ -406817,8 +407508,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 949,
-      "end_line": 951,
+      "line": 1056,
+      "end_line": 1058,
       "owner": "<module>",
       "conditions": [],
       "name": "untourism_zip_link",
@@ -406826,8 +407517,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 954,
-      "end_line": 956,
+      "line": 1061,
+      "end_line": 1063,
       "owner": "<module>",
       "conditions": [],
       "name": "untourism_workbooks_from_zip",
@@ -406835,8 +407526,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 963,
-      "end_line": 975,
+      "line": 1070,
+      "end_line": 1082,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_oecd_key_csv",
@@ -406844,8 +407535,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 978,
-      "end_line": 998,
+      "line": 1085,
+      "end_line": 1105,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_oecd_inbound_russia_csv",
@@ -406853,8 +407544,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1005,
-      "end_line": 1022,
+      "line": 1112,
+      "end_line": 1129,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_estat_travel_russia_csv",
@@ -406862,8 +407553,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1029,
-      "end_line": 1047,
+      "line": 1136,
+      "end_line": 1154,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_cystat_csv",
@@ -406871,8 +407562,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1053,
-      "end_line": 1083,
+      "line": 1160,
+      "end_line": 1190,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_geostat_visits_xlsx",
@@ -406880,8 +407571,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1086,
-      "end_line": 1088,
+      "line": 1193,
+      "end_line": 1195,
       "owner": "<module>",
       "conditions": [],
       "name": "geostat_visits_link",
@@ -406889,8 +407580,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1091,
-      "end_line": 1094,
+      "line": 1198,
+      "end_line": 1201,
       "owner": "<module>",
       "conditions": [],
       "name": "_origin_key",
@@ -406898,8 +407589,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1097,
-      "end_line": 1111,
+      "line": 1204,
+      "end_line": 1218,
       "owner": "<module>",
       "conditions": [],
       "name": "_cumulative_to_quarters",
@@ -406907,8 +407598,8 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1114,
-      "end_line": 1145,
+      "line": 1221,
+      "end_line": 1234,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_tidy_csv",
@@ -406916,8 +407607,17 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1151,
-      "end_line": 1152,
+      "line": 1237,
+      "end_line": 1258,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_tidy_row",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 1264,
+      "end_line": 1265,
       "owner": "<module>",
       "conditions": [],
       "name": "series_lookup",
@@ -427148,8 +427848,8 @@
     },
     {
       "path": "backend/app/data/i18n/glossary_en.py",
-      "line": 128,
-      "end_line": 128,
+      "line": 129,
+      "end_line": 129,
       "owner": "term",
       "conditions": [],
       "symbol": "app.data.i18n.glossary_en.GLOSSARY_EN"
@@ -428318,40 +429018,40 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 821,
-      "end_line": 821,
+      "line": 825,
+      "end_line": 825,
       "owner": "_dest_series",
       "conditions": [],
       "symbol": "app.data.tourism_russia.DESTINATIONS"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 927,
-      "end_line": 927,
+      "line": 933,
+      "end_line": 933,
       "owner": "_cpi_series",
       "conditions": [],
       "symbol": "app.data.tourism_russia.CPI_ITEMS"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1542,
-      "end_line": 1542,
+      "line": 1618,
+      "end_line": 1618,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia._WHY"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1546,
-      "end_line": 1546,
+      "line": 1622,
+      "end_line": 1622,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia._WHY"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1550,
-      "end_line": 1550,
+      "line": 1626,
+      "end_line": 1626,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia._WHY"
@@ -428374,56 +429074,56 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1142,
-      "end_line": 1142,
+      "line": 1166,
+      "end_line": 1166,
       "owner": "_static_series",
       "conditions": [],
       "symbol": "app.data.tourism_russia.HIST_INBOUND"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1142,
-      "end_line": 1142,
+      "line": 1166,
+      "end_line": 1166,
       "owner": "_static_series",
       "conditions": [],
       "symbol": "app.data.tourism_russia.HIST_OUTBOUND"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1466,
-      "end_line": 1466,
+      "line": 1542,
+      "end_line": 1542,
       "owner": "seed_indicators",
       "conditions": [],
       "symbol": "app.data.tourism_russia.SERIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1495,
-      "end_line": 1495,
+      "line": 1571,
+      "end_line": 1571,
       "owner": "family_defs",
       "conditions": [],
       "symbol": "app.data.tourism_russia.SERIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1609,
-      "end_line": 1609,
+      "line": 1685,
+      "end_line": 1685,
       "owner": "seo_blocks",
       "conditions": [],
       "symbol": "app.data.tourism_russia.SERIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 822,
-      "end_line": 822,
+      "line": 826,
+      "end_line": 826,
       "owner": "_dest_series",
       "conditions": [],
       "symbol": "app.data.tourism_russia._DEST_DEFAULT_TAIL"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1314,
-      "end_line": 1314,
+      "line": 1383,
+      "end_line": 1383,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia.SERIES"
@@ -428438,136 +429138,144 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 856,
-      "end_line": 856,
+      "line": 862,
+      "end_line": 862,
       "owner": "_dest_series",
       "conditions": [],
       "symbol": "app.data.tourism_russia.DEST_URLS"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1339,
-      "end_line": 1339,
+      "line": 1408,
+      "end_line": 1408,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia.DESTINATIONS"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1448,
-      "end_line": 1448,
+      "line": 1524,
+      "end_line": 1524,
       "owner": "hidden_codes",
       "conditions": [],
       "symbol": "app.data.tourism_russia.SERIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1452,
-      "end_line": 1452,
+      "line": 1528,
+      "end_line": 1528,
       "owner": "forecast_codes",
       "conditions": [],
       "symbol": "app.data.tourism_russia.SERIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1468,
-      "end_line": 1468,
+      "line": 1544,
+      "end_line": 1544,
       "owner": "seed_indicators",
       "conditions": [],
       "symbol": "app.data.tourism_russia._FORECAST_CFG"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1502,
-      "end_line": 1502,
+      "line": 1578,
+      "end_line": 1578,
       "owner": "seo_keywords",
       "conditions": [],
       "symbol": "app.data.tourism_russia.SERIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1506,
-      "end_line": 1506,
+      "line": 1582,
+      "end_line": 1582,
       "owner": "seo_meta",
       "conditions": [],
       "symbol": "app.data.tourism_russia.SERIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1511,
-      "end_line": 1511,
+      "line": 1587,
+      "end_line": 1587,
       "owner": "copy_en",
       "conditions": [],
       "symbol": "app.data.tourism_russia.SERIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1614,
-      "end_line": 1614,
+      "line": 1690,
+      "end_line": 1690,
       "owner": "seo_blocks",
       "conditions": [],
       "symbol": "app.data.tourism_russia._WHY"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1622,
-      "end_line": 1622,
+      "line": 1698,
+      "end_line": 1698,
       "owner": "seo_blocks",
       "conditions": [],
       "symbol": "app.data.tourism_russia._FREQ"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1331,
-      "end_line": 1331,
+      "line": 995,
+      "end_line": 995,
+      "owner": "_hc",
+      "conditions": [],
+      "symbol": "app.data.tourism_russia._HIST_INFO"
+    },
+    {
+      "path": "backend/app/data/tourism_russia.py",
+      "line": 1400,
+      "end_line": 1400,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia.INBOUND_COUNTRIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1335,
-      "end_line": 1335,
+      "line": 1404,
+      "end_line": 1404,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia.OUTBOUND_COUNTRIES"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1365,
-      "end_line": 1365,
+      "line": 1434,
+      "end_line": 1434,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia.AIRPORTS"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1380,
-      "end_line": 1380,
+      "line": 1449,
+      "end_line": 1449,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia.HIST_OUTBOUND"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1385,
-      "end_line": 1385,
+      "line": 1454,
+      "end_line": 1454,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia.HIST_INBOUND"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1402,
-      "end_line": 1402,
+      "line": 1473,
+      "end_line": 1473,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia.CPI_ITEMS"
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1405,
-      "end_line": 1405,
+      "line": 1476,
+      "end_line": 1476,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia.CPI_ITEMS"
@@ -428592,8 +429300,8 @@
     },
     {
       "path": "backend/app/data/tourism_russia.py",
-      "line": 1338,
-      "end_line": 1338,
+      "line": 1407,
+      "end_line": 1407,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.tourism_russia._DEST_DEFAULT_TAIL"
@@ -443721,8 +444429,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 780,
-      "end_line": 780,
+      "line": 782,
+      "end_line": 782,
       "owner": "_is_money_rating",
       "conditions": [],
       "symbol": "app.services.seo_world._WORLD_RATING_MONEY_CONCEPTS"
@@ -443769,24 +444477,24 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 776,
-      "end_line": 776,
+      "line": 778,
+      "end_line": 778,
       "owner": "world_rating_default_sort",
       "conditions": [],
       "symbol": "app.services.seo_world._WORLD_RATING_LOW_FIRST"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 914,
-      "end_line": 914,
+      "line": 916,
+      "end_line": 916,
       "owner": "build_world_rating_payload",
       "conditions": [],
       "symbol": "app.data.world_concepts.CONCEPT_BY_SLUG"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1129,
-      "end_line": 1129,
+      "line": 1131,
+      "end_line": 1131,
       "owner": "render_world_rating_html",
       "conditions": [],
       "symbol": "app.services.world_rank_values.WORLD_RATING_QUERY_NAMES"
@@ -443813,8 +444521,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 632,
-      "end_line": 632,
+      "line": 634,
+      "end_line": 634,
       "owner": "_source_label",
       "conditions": [
         "prov"
@@ -443823,24 +444531,24 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 692,
-      "end_line": 692,
+      "line": 694,
+      "end_line": 694,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.seo_world._SOURCE_BY_PROVIDER"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 719,
-      "end_line": 719,
+      "line": 721,
+      "end_line": 721,
       "owner": "_source_links_html",
       "conditions": [],
       "symbol": "app.services.seo_world._PROVIDER_OPEN_LABEL"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1174,
-      "end_line": 1174,
+      "line": 1176,
+      "end_line": 1176,
       "owner": "render_world_rating_html",
       "conditions": [
         "en"
@@ -443849,8 +444557,8 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1175,
-      "end_line": 1175,
+      "line": 1177,
+      "end_line": 1177,
       "owner": "render_world_rating_html",
       "conditions": [
         "en"
@@ -443859,40 +444567,40 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1256,
-      "end_line": 1256,
+      "line": 1258,
+      "end_line": 1258,
       "owner": "render_world_rating_html",
       "conditions": [],
       "symbol": "app.data.world_concepts.WORLD_CONCEPTS"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1445,
-      "end_line": 1445,
+      "line": 1447,
+      "end_line": 1447,
       "owner": "render_world_rating_html",
       "conditions": [],
       "symbol": "app.data.world_concepts.CONCEPT_BY_SLUG"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 1576,
-      "end_line": 1576,
+      "line": 1578,
+      "end_line": 1578,
       "owner": "render_world_country_html",
       "conditions": [],
       "symbol": "app.services.seo_world._KEY_CATEGORY_ORDER"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 691,
-      "end_line": 691,
+      "line": 693,
+      "end_line": 693,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.i18n.glossary_en.GLOSSARY_EN"
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "line": 721,
-      "end_line": 721,
+      "line": 723,
+      "end_line": 723,
       "owner": "_source_links_html",
       "conditions": [],
       "symbol": "app.services.seo_world._PROVIDER_OPEN_LABEL"
@@ -448469,24 +449177,24 @@
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 56,
-      "end_line": 56,
+      "line": 58,
+      "end_line": 58,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_ingest.NETWORK_PROVIDERS"
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 254,
+      "end_line": 254,
       "owner": "_write_provider",
       "conditions": [],
       "symbol": "app.services.world_tourism_ingest._DATASET_BY_PROVIDER"
     },
     {
       "path": "backend/app/services/world_tourism_ingest.py",
-      "line": 332,
-      "end_line": 332,
+      "line": 336,
+      "end_line": 336,
       "owner": "run_world_tourism_ingest",
       "conditions": [],
       "symbol": "app.services.world_tourism_ingest._DATASET_BY_PROVIDER"
@@ -448517,120 +449225,216 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1148,
-      "end_line": 1148,
+      "line": 1261,
+      "end_line": 1261,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.NETWORK_SOURCE_PROVIDERS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1148,
-      "end_line": 1148,
+      "line": 1261,
+      "end_line": 1261,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.TIDY_PROVIDERS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 507,
-      "end_line": 507,
+      "line": 512,
+      "end_line": 512,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.SOURCE_BY_PROVIDER"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 518,
-      "end_line": 518,
+      "line": 523,
+      "end_line": 523,
       "owner": "_nat",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.NATIONAL_SOURCES"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 655,
-      "end_line": 655,
+      "line": 661,
+      "end_line": 661,
       "owner": "_acc",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources._ACC_RU_NIGHTS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 655,
-      "end_line": 655,
+      "line": 661,
+      "end_line": 661,
       "owner": "_acc",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources._ACC_RU_ARRIVALS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 673,
-      "end_line": 673,
+      "line": 707,
+      "end_line": 707,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources._KTB_ORIGINS"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 757,
+      "end_line": 757,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.KTB_RU_ARRIVALS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 674,
-      "end_line": 674,
+      "line": 758,
+      "end_line": 758,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.KTB_TOTAL_ARRIVALS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 965,
-      "end_line": 965,
+      "line": 760,
+      "end_line": 760,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources.KTB_TOTAL_ARRIVALS"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 761,
+      "end_line": 761,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources.KTB_RU_ANNUAL"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 762,
+      "end_line": 762,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources.KTB_USSR_CIS"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 763,
+      "end_line": 763,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources.KTB_TOTAL_ANNUAL"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 765,
+      "end_line": 765,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources.CY_RU_ANNUAL"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 766,
+      "end_line": 766,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources.CY_USSR"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 768,
+      "end_line": 768,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources.CY_TOTAL_ANNUAL"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 770,
+      "end_line": 770,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources.GE_RU_BORDER"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 772,
+      "end_line": 772,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources.GE_TOTAL_BORDER"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 773,
+      "end_line": 773,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources.KTB_RU_ARRIVALS"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 774,
+      "end_line": 774,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources.KTB_TOTAL_ARRIVALS"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 1072,
+      "end_line": 1072,
       "owner": "parse_oecd_key_csv",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.OECD_EMP_SHARE"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 965,
-      "end_line": 965,
+      "line": 1072,
+      "end_line": 1072,
       "owner": "parse_oecd_key_csv",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.OECD_GDP_SHARE"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1007,
-      "end_line": 1007,
+      "line": 1114,
+      "end_line": 1114,
       "owner": "parse_estat_travel_russia_csv",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.ESTAT_RU_CREDIT"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1007,
-      "end_line": 1007,
+      "line": 1114,
+      "end_line": 1114,
       "owner": "parse_estat_travel_russia_csv",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.ESTAT_RU_DEBIT"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1031,
-      "end_line": 1031,
+      "line": 1138,
+      "end_line": 1138,
       "owner": "parse_cystat_csv",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.CYSTAT_RU_ARRIVALS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1031,
-      "end_line": 1031,
+      "line": 1138,
+      "end_line": 1138,
       "owner": "parse_cystat_csv",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.CYSTAT_TOTAL_ARRIVALS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1152,
-      "end_line": 1152,
+      "line": 1265,
+      "end_line": 1265,
       "owner": "series_lookup",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources._SERIES_BY_KEY"
@@ -448653,152 +449457,152 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 643,
-      "end_line": 643,
+      "line": 649,
+      "end_line": 649,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources._KTB_ORIGINS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 772,
-      "end_line": 772,
+      "line": 879,
+      "end_line": 879,
       "owner": "tidy_file",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.TIDY_FILES"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 775,
-      "end_line": 775,
+      "line": 882,
+      "end_line": 882,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.IMF_SERIES"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 775,
-      "end_line": 775,
+      "line": 882,
+      "end_line": 882,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.UNT_SERIES"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 776,
-      "end_line": 776,
+      "line": 883,
+      "end_line": 883,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.OECD_EMP_SHARE"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 776,
-      "end_line": 776,
+      "line": 883,
+      "end_line": 883,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.OECD_GDP_SHARE"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 776,
-      "end_line": 776,
+      "line": 883,
+      "end_line": 883,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.OECD_RU_ARRIVALS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 776,
-      "end_line": 776,
+      "line": 883,
+      "end_line": 883,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.ESTAT_RU_CREDIT"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 776,
-      "end_line": 776,
+      "line": 883,
+      "end_line": 883,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.ESTAT_RU_DEBIT"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 777,
-      "end_line": 777,
+      "line": 884,
+      "end_line": 884,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.CYSTAT_RU_ARRIVALS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 777,
-      "end_line": 777,
+      "line": 884,
+      "end_line": 884,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.CYSTAT_TOTAL_ARRIVALS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 777,
-      "end_line": 777,
+      "line": 884,
+      "end_line": 884,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.GEOSTAT_RU_VISITS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 777,
-      "end_line": 777,
+      "line": 884,
+      "end_line": 884,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.GEOSTAT_TOTAL_VISITS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 791,
-      "end_line": 791,
+      "line": 898,
+      "end_line": 898,
       "owner": "series_for_indicator",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.TOURISM_PROVIDERS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 793,
-      "end_line": 793,
+      "line": 900,
+      "end_line": 900,
       "owner": "series_for_indicator",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources._SERIES_BY_KEY"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 877,
-      "end_line": 877,
+      "line": 984,
+      "end_line": 984,
       "owner": "parse_imf_bop_csv",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.IMF_SERIES"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 927,
-      "end_line": 927,
+      "line": 1034,
+      "end_line": 1034,
       "owner": "parse_untourism_workbooks",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.UNT_SERIES"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 950,
-      "end_line": 950,
+      "line": 1057,
+      "end_line": 1057,
       "owner": "untourism_zip_link",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.UNT_ZIP_RE"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1087,
-      "end_line": 1087,
+      "line": 1194,
+      "end_line": 1194,
       "owner": "geostat_visits_link",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.GEOSTAT_VISITS_RE"
@@ -448853,105 +449657,105 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 675,
-      "end_line": 675,
+      "line": 759,
+      "end_line": 759,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.KTB_ORIGIN_SERIES"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 766,
-      "end_line": 766,
+      "line": 764,
+      "end_line": 764,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources.KTB_ORIGIN_ANNUAL"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 775,
+      "end_line": 775,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources.KTB_ORIGIN_SERIES"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 866,
+      "end_line": 866,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.TIDY_SPECS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 778,
-      "end_line": 778,
+      "line": 885,
+      "end_line": 885,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.TIDY_SPECS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 883,
-      "end_line": 883,
+      "line": 990,
+      "end_line": 990,
       "owner": "parse_imf_bop_csv",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.ISO3_TO_CATALOG"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 969,
-      "end_line": 969,
+      "line": 1076,
+      "end_line": 1076,
       "owner": "parse_oecd_key_csv",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.ISO3_TO_CATALOG"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 986,
-      "end_line": 986,
+      "line": 1093,
+      "end_line": 1093,
       "owner": "parse_oecd_inbound_russia_csv",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.ISO3_TO_CATALOG"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 998,
-      "end_line": 998,
+      "line": 1105,
+      "end_line": 1105,
       "owner": "parse_oecd_inbound_russia_csv",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.OECD_RU_ARRIVALS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1016,
-      "end_line": 1016,
+      "line": 1123,
+      "end_line": 1123,
       "owner": "parse_estat_travel_russia_csv",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.ESTAT_GEO_TO_CATALOG"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1075,
-      "end_line": 1075,
+      "line": 1182,
+      "end_line": 1182,
       "owner": "parse_geostat_visits_xlsx",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.GEOSTAT_RU_VISITS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1075,
-      "end_line": 1075,
+      "line": 1182,
+      "end_line": 1182,
       "owner": "parse_geostat_visits_xlsx",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources.GEOSTAT_TOTAL_VISITS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 507,
-      "end_line": 507,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "app.services.world_tourism_sources.NATIONAL_SOURCES"
-    },
-    {
-      "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1071,
-      "end_line": 1071,
-      "owner": "parse_geostat_visits_xlsx",
-      "conditions": [],
-      "symbol": "app.services.world_tourism_sources._ROMAN_QUARTER"
-    },
-    {
-      "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1129,
-      "end_line": 1129,
-      "owner": "parse_tidy_csv",
+      "line": 1245,
+      "end_line": 1245,
+      "owner": "_tidy_row",
       "conditions": [
         "country == '*'"
       ],
@@ -448959,25 +449763,33 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 938,
-      "end_line": 938,
-      "owner": "parse_untourism_workbooks",
+      "line": 512,
+      "end_line": 512,
+      "owner": "<module>",
       "conditions": [],
-      "symbol": "app.services.world_tourism_sources.M49_TO_CATALOG"
+      "symbol": "app.services.world_tourism_sources.NATIONAL_SOURCES"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1019,
-      "end_line": 1019,
-      "owner": "parse_estat_travel_russia_csv",
+      "line": 716,
+      "end_line": 716,
+      "owner": "<module>",
       "conditions": [],
-      "symbol": "app.services.world_tourism_sources.M49_TO_CATALOG"
+      "symbol": "app.services.world_tourism_sources._KEY_ORIGINS"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 1130,
-      "end_line": 1130,
-      "owner": "parse_tidy_csv",
+      "line": 1178,
+      "end_line": 1178,
+      "owner": "parse_geostat_visits_xlsx",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources._ROMAN_QUARTER"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 1246,
+      "end_line": 1246,
+      "owner": "_tidy_row",
       "conditions": [
         "country == '*'"
       ],
@@ -448985,35 +449797,91 @@
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 523,
-      "end_line": 523,
+      "line": 1045,
+      "end_line": 1045,
+      "owner": "parse_untourism_workbooks",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources.M49_TO_CATALOG"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 1126,
+      "end_line": 1126,
+      "owner": "parse_estat_travel_russia_csv",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources.M49_TO_CATALOG"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 528,
+      "end_line": 528,
       "owner": "_nat",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources._PERIOD_RU"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 524,
-      "end_line": 524,
+      "line": 529,
+      "end_line": 529,
       "owner": "_nat",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources._FREQ_RU"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 525,
-      "end_line": 525,
+      "line": 530,
+      "end_line": 530,
       "owner": "_nat",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources._PERIOD_EN"
     },
     {
       "path": "backend/app/services/world_tourism_sources.py",
-      "line": 526,
-      "end_line": 526,
+      "line": 531,
+      "end_line": 531,
       "owner": "_nat",
       "conditions": [],
       "symbol": "app.services.world_tourism_sources._FREQ_EN"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 709,
+      "end_line": 709,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources._ORIGIN_NAMES"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 710,
+      "end_line": 710,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources._ORIGIN_NAMES"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 711,
+      "end_line": 711,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources._ORIGIN_NAMES"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 712,
+      "end_line": 712,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources._ORIGIN_NAMES"
+    },
+    {
+      "path": "backend/app/services/world_tourism_sources.py",
+      "line": 715,
+      "end_line": 715,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.world_tourism_sources._ORIGIN_NAMES"
     },
     {
       "path": "backend/app/services/world_view_modes.py",
