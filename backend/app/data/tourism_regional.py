@@ -1158,11 +1158,11 @@ INDUSTRY: tuple[TSeries, ...] = (
             emiss=Emiss(57848, "человек", periods="month", match=((_AGENCIES,),))),
     TSeries("tour-investicii-gostinicy", "annual", "Инвестиции в гостиницы", "Investment in hotels",
             "миллионов рублей", "RUB million", _INVEST_RU, _INVEST_EN, "emiss", "6.t160", scale=THOUSAND,
-            first_year=2017, emiss=Emiss(59084, "тысяча рублей", match=((_HOTELS, _INVEST_SCOPE),)),
+            first_year=2017, emiss=Emiss(59084, "тысяча рублей", periods="year_or_dec", match=((_HOTELS, _INVEST_SCOPE),)),
             keywords="строительство гостиниц, инвестиции в туризм"),
     TSeries("tour-investicii-sanatorii", "annual", "Инвестиции в санатории", "Investment in health resorts",
             "миллионов рублей", "RUB million", _INVEST_RU, _INVEST_EN, "emiss", "6.t161", scale=THOUSAND,
-            first_year=2017, emiss=Emiss(59084, "тысяча рублей", match=((_SANATORIUMS, _INVEST_SCOPE),))),
+            first_year=2017, emiss=Emiss(59084, "тысяча рублей", periods="year_or_dec", match=((_SANATORIUMS, _INVEST_SCOPE),))),
     TSeries("tour-msp-gostinicy", "annual", "Малые и средние предприятия: гостиницы",
             "Small and medium-sized businesses: accommodation", "предприятий и предпринимателей",
             "businesses", _MSP_RU := ("Сколько малых и средних предприятий и предпринимателей с основным видом "

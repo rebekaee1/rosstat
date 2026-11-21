@@ -752,3 +752,17 @@ def test_run_uses_short_sessions_and_no_db_during_fetch(monkeypatch):
     stats = asyncio.run(L.run_tourism_regional_update(_Session, today=TODAY, cbr=False, fsa=False, others=False,
                                                       post_grid=lambda *a: None))
     assert stats["emiss_31560"]["added"] >= 1 and len(opened) >= 3
+
+
+
+def test_page_without_filters_and_without_periods(terr):
+    """Стенд 21.11.2026: 42105/62073 — страница без справочника; 59084 — нет годового периода."""
+    with pytest.raises(L.EmissPageError):
+        L.parse_indicator_page("<html>Вход в систему</html>")
+    page = L.parse_indicator_page(_page(1, "x").replace("filters: {", "filters:{"))
+    assert "57831" in page["filters"]
+    s = R.SERIES_BY_CODE["tour-investicii-gostinicy"]
+    with pytest.raises(L.EmissNoPeriods):
+        L.build_grid_params(59084, page["filters"], [s], [2025])
+    assert L.period_index("январь-декабрь", "year_or_dec") == 0
+    assert L.period_index("значение показателя за год", "year_or_dec") == 0
